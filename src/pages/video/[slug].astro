@@ -13,25 +13,41 @@ const { slug } = Astro.params;
 const video = videos.find(v => v.slug === slug);
 if (!video) return Astro.redirect('/');
 const cat = categories.find(c => c.dataCat === video.category);
+const r2Base = 'https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev';
+const videoUrl = video.r2Key ? r2Base + '/' + video.r2Key : '';
 ---
+
 <BaseLayout title={video.title} description={video.description}>
   <Topbar />
+
   <div class="page-content" style="max-width:1040px;">
     <div style="margin-bottom:8px;">
       <a href="/" style="color:var(--accent);font-size:14px;">&larr; Zurück zur Übersicht</a>
       {cat && <span style="color:#666;font-size:14px;margin-left:12px;">/ <a href={`/kategorie/${video.category}`} style="color:var(--accent);">{cat.label}</a></span>}
     </div>
 
-    <div style="aspect-ratio:16/9;border-radius:10px;overflow:hidden;margin-bottom:32px;position:relative;">
-      <div style={`position:absolute;inset:0;${video.gradient}`}></div>
-      <div style="position:absolute;inset:0;background:radial-gradient(circle at 25% 35%,rgba(255,255,255,0.06) 0%,transparent 45%),radial-gradient(circle at 75% 65%,rgba(255,255,255,0.04) 0%,transparent 35%);opacity:0.35;"></div>
-      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-        <div style="width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,0.4);">
-          <svg width="24" height="24" viewBox="0 0 16 16" fill="#1b1b1b"><path d="M4 2l10 6-10 6z"/></svg>
+    <!-- Video Player -->
+    <div id="videoContainer" style="aspect-ratio:16/9;border-radius:10px;overflow:hidden;margin-bottom:32px;position:relative;cursor:pointer;">
+      {videoUrl && (
+        <video
+          id="videoPlayer"
+          style="width:100%;height:100%;object-fit:cover;display:none;"
+          controls
+          preload="metadata"
+        >
+          <source src={videoUrl} type="video/mp4" />
+        </video>
+      )}
+      <div id="videoPoster" style={`position:absolute;inset:0;${video.gradient}`}>
+        <div style="position:absolute;inset:0;background:radial-gradient(circle at 25% 35%,rgba(255,255,255,0.06) 0%,transparent 45%),radial-gradient(circle at 75% 65%,rgba(255,255,255,0.04) 0%,transparent 35%);opacity:0.35;"></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <div id="playBtn" style="width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,0.4);transition:transform 0.2s;">
+            <svg width="24" height="24" viewBox="0 0 16 16" fill="#1b1b1b"><path d="M4 2l10 6-10 6z"/></svg>
+          </div>
         </div>
       </div>
-      <span class={`res-badge ${video.resolution === '4K' ? 'res-4k' : 'res-hd'}`} style="position:absolute;top:16px;left:16px;">{video.resolution}</span>
-      <span class="dur-badge" style="position:absolute;bottom:16px;right:16px;">{video.duration}</span>
+      <span class={`res-badge ${video.resolution === '4K' ? 'res-4k' : 'res-hd'}`} style="position:absolute;top:16px;left:16px;z-index:2;">{video.resolution}</span>
+      <span class="dur-badge" style="position:absolute;bottom:16px;right:16px;z-index:2;">{video.duration}</span>
     </div>
 
     <h1 style="font-size:clamp(22px,3vw,32px);">{video.title}</h1>
@@ -56,22 +72,97 @@ const cat = categories.find(c => c.dataCat === video.category);
         <div class="price-label">Web / Social</div>
         <div class="price-res">Full HD</div>
         <div class="price-amount">{video.prices.web} &euro;</div>
-        <button class="btn-primary" style="width:100%;margin-top:12px;">Kaufen</button>
+        <button class="btn-primary buy-btn" data-license="web" data-price={video.prices.web} data-title={video.title} style="width:100%;margin-top:12px;">Kaufen</button>
       </div>
       <div class="price-card">
         <div class="price-label">Standard</div>
         <div class="price-res">Full HD</div>
         <div class="price-amount">{video.prices.standard} &euro;</div>
-        <button class="btn-primary" style="width:100%;margin-top:12px;">Kaufen</button>
+        <button class="btn-primary buy-btn" data-license="standard" data-price={video.prices.standard} data-title={video.title} style="width:100%;margin-top:12px;">Kaufen</button>
       </div>
       <div class="price-card featured">
         <div class="price-label">Premium</div>
         <div class="price-res">4K UHD</div>
         <div class="price-amount">{video.prices.premium} &euro;</div>
-        <button class="btn-primary" style="width:100%;margin-top:12px;background:#fff;color:var(--accent);">Kaufen</button>
+        <button class="btn-primary buy-btn" data-license="premium" data-price={video.prices.premium} data-title={video.title} style="width:100%;margin-top:12px;background:#fff;color:var(--accent);">Kaufen</button>
+      </div>
+    </div>
+
+    <!-- Kauf-Modal -->
+    <div id="buyModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center;">
+      <div style="background:#1e1e1e;border-radius:12px;padding:32px;max-width:480px;width:90%;position:relative;">
+        <button id="closeModal" style="position:absolute;top:12px;right:16px;background:none;border:none;color:#999;font-size:24px;cursor:pointer;">&times;</button>
+        <h3 style="margin-bottom:16px;">Lizenz kaufen</h3>
+        <p id="modalInfo" style="color:#ccc;margin-bottom:24px;"></p>
+        <p style="color:#999;font-size:14px;margin-bottom:16px;">Bitte senden Sie uns eine Anfrage und wir melden uns innerhalb von 24 Stunden mit den Zahlungsdetails.</p>
+        <form id="buyForm" style="display:flex;flex-direction:column;gap:12px;">
+          <input type="text" name="name" placeholder="Ihr Name" required style="padding:10px 14px;border-radius:6px;border:1px solid #333;background:#2a2a2a;color:#fff;font-size:14px;" />
+          <input type="email" name="email" placeholder="Ihre E-Mail-Adresse" required style="padding:10px 14px;border-radius:6px;border:1px solid #333;background:#2a2a2a;color:#fff;font-size:14px;" />
+          <input type="hidden" name="license" id="modalLicense" />
+          <input type="hidden" name="price" id="modalPrice" />
+          <input type="hidden" name="videoTitle" id="modalVideoTitle" />
+          <button type="submit" class="btn-primary" style="padding:12px;font-size:16px;">Anfrage senden</button>
+        </form>
+        <div id="buySuccess" style="display:none;text-align:center;padding:24px 0;">
+          <div style="font-size:48px;margin-bottom:12px;">&#10003;</div>
+          <h3>Anfrage gesendet!</h3>
+          <p style="color:#999;margin-top:8px;">Wir melden uns in Kürze bei Ihnen.</p>
+        </div>
       </div>
     </div>
   </div>
+
+  <script>
+    // Video Player
+    const container = document.getElementById('videoContainer');
+    const poster = document.getElementById('videoPoster');
+    const player = document.getElementById('videoPlayer');
+
+    if (container && player) {
+      container.addEventListener('click', function() {
+        if (player.style.display === 'none' || player.style.display === '') {
+          player.style.display = 'block';
+          poster.style.display = 'none';
+          player.play();
+        }
+      });
+    }
+
+    // Kauf-Modal
+    const modal = document.getElementById('buyModal');
+    const closeBtn = document.getElementById('closeModal');
+    const buyForm = document.getElementById('buyForm');
+    const buySuccess = document.getElementById('buySuccess');
+
+    document.querySelectorAll('.buy-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var license = this.dataset.license;
+        var price = this.dataset.price;
+        var title = this.dataset.title;
+        var names = { web: 'Web / Social (Full HD)', standard: 'Standard (Full HD)', premium: 'Premium (4K UHD)' };
+        document.getElementById('modalInfo').textContent = title + ' \u2014 ' + names[license] + ' \u2014 ' + price + ' \u20AC';
+        document.getElementById('modalLicense').value = license;
+        document.getElementById('modalPrice').value = price;
+        document.getElementById('modalVideoTitle').value = title;
+        buyForm.style.display = 'flex';
+        buySuccess.style.display = 'none';
+        modal.style.display = 'flex';
+      });
+    });
+
+    if (closeBtn) closeBtn.addEventListener('click', function() { modal.style.display = 'none'; });
+    if (modal) modal.addEventListener('click', function(e) { if (e.target === modal) modal.style.display = 'none'; });
+
+    if (buyForm) buyForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var fd = new FormData(this);
+      var subject = encodeURIComponent('Lizenzanfrage: ' + fd.get('videoTitle') + ' (' + fd.get('license') + ')');
+      var body = encodeURIComponent('Name: ' + fd.get('name') + '\nE-Mail: ' + fd.get('email') + '\nVideo: ' + fd.get('videoTitle') + '\nLizenz: ' + fd.get('license') + '\nPreis: ' + fd.get('price') + ' EUR');
+      window.open('mailto:info@stockvideo.de?subject=' + subject + '&body=' + body, '_blank');
+      buyForm.style.display = 'none';
+      buySuccess.style.display = 'block';
+    });
+  </script>
 
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
@@ -79,8 +170,8 @@ const cat = categories.find(c => c.dataCat === video.category);
     "name": video.title,
     "description": video.description,
     "thumbnailUrl": `https://stockvideo.de/thumbnails/${video.slug}.jpg`,
-    "duration": `PT${video.duration.replace('0:', '')}S`,
-    "contentUrl": `https://stockvideo.de/video/${video.slug}`,
+    "duration": `PT${video.duration.replace("0:", "")}S`,
+    "contentUrl": videoUrl || `https://stockvideo.de/video/${video.slug}`,
     "offers": {
       "@type": "Offer",
       "price": video.prices.premium.toFixed(2),
