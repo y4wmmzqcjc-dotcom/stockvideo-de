@@ -1,0 +1,92 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Topbar from '../../components/Topbar.astro';
+import Footer from '../../components/Footer.astro';
+import videos from '../../data/videos.json';
+import categories from '../../data/categories.json';
+
+export function getStaticPaths() {
+  return videos.map(v => ({ params: { slug: v.slug } }));
+}
+
+const { slug } = Astro.params;
+const video = videos.find(v => v.slug === slug);
+if (!video) return Astro.redirect('/');
+const cat = categories.find(c => c.dataCat === video.category);
+---
+<BaseLayout title={video.title} description={video.description}>
+  <Topbar />
+  <div class="page-content" style="max-width:1040px;">
+    <div style="margin-bottom:8px;">
+      <a href="/" style="color:var(--accent);font-size:14px;">&larr; Zurück zur Übersicht</a>
+      {cat && <span style="color:#666;font-size:14px;margin-left:12px;">/ <a href={`/kategorie/${video.category}`} style="color:var(--accent);">{cat.label}</a></span>}
+    </div>
+
+    <div style="aspect-ratio:16/9;border-radius:10px;overflow:hidden;margin-bottom:32px;position:relative;">
+      <div style={`position:absolute;inset:0;${video.gradient}`}></div>
+      <div style="position:absolute;inset:0;background:radial-gradient(circle at 25% 35%,rgba(255,255,255,0.06) 0%,transparent 45%),radial-gradient(circle at 75% 65%,rgba(255,255,255,0.04) 0%,transparent 35%);opacity:0.35;"></div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+        <div style="width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,0.4);">
+          <svg width="24" height="24" viewBox="0 0 16 16" fill="#1b1b1b"><path d="M4 2l10 6-10 6z"/></svg>
+        </div>
+      </div>
+      <span class={`res-badge ${video.resolution === '4K' ? 'res-4k' : 'res-hd'}`} style="position:absolute;top:16px;left:16px;">{video.resolution}</span>
+      <span class="dur-badge" style="position:absolute;bottom:16px;right:16px;">{video.duration}</span>
+    </div>
+
+    <h1 style="font-size:clamp(22px,3vw,32px);">{video.title}</h1>
+    <p>{video.description}</p>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 24px;">
+      {video.tags.map(tag => (
+        <span style="background:#2c2c2c;color:#999;padding:4px 12px;border-radius:12px;font-size:13px;">#{tag}</span>
+      ))}
+    </div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 32px;">
+      <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">Auflösung: {video.resolution}</span>
+      <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">Dauer: {video.duration}</span>
+      <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">{video.fps} FPS</span>
+      <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">MP4 / MOV</span>
+    </div>
+
+    <h2>Lizenz wählen</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:16px;">
+      <div class="price-card">
+        <div class="price-label">Web / Social</div>
+        <div class="price-res">Full HD</div>
+        <div class="price-amount">{video.prices.web} &euro;</div>
+        <button class="btn-primary" style="width:100%;margin-top:12px;">Kaufen</button>
+      </div>
+      <div class="price-card">
+        <div class="price-label">Standard</div>
+        <div class="price-res">Full HD</div>
+        <div class="price-amount">{video.prices.standard} &euro;</div>
+        <button class="btn-primary" style="width:100%;margin-top:12px;">Kaufen</button>
+      </div>
+      <div class="price-card featured">
+        <div class="price-label">Premium</div>
+        <div class="price-res">4K UHD</div>
+        <div class="price-amount">{video.prices.premium} &euro;</div>
+        <button class="btn-primary" style="width:100%;margin-top:12px;background:#fff;color:var(--accent);">Kaufen</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    "name": video.title,
+    "description": video.description,
+    "thumbnailUrl": `https://stockvideo.de/thumbnails/${video.slug}.jpg`,
+    "duration": `PT${video.duration.replace('0:', '')}S`,
+    "contentUrl": `https://stockvideo.de/video/${video.slug}`,
+    "offers": {
+      "@type": "Offer",
+      "price": video.prices.premium.toFixed(2),
+      "priceCurrency": "EUR"
+    }
+  })} />
+
+  <Footer />
+</BaseLayout>

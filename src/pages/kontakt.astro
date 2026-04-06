@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Topbar from '../components/Topbar.astro';
+import Footer from '../components/Footer.astro';
+import config from '../data/config.json';
+---
+<BaseLayout title="Kontakt" description="Kontaktieren Sie stockvideo.de">
+  <Topbar />
+  <div class="page-content">
+    <h1>Kontakt</h1>
+    <p>Haben Sie Fragen zu unseren Videos, Lizenzen oder benötigen individuelle Beratung? Wir helfen Ihnen gerne weiter.</p>
+    <h2>Kontaktdaten</h2>
+    <p>
+      {config.contact.name}<br>
+      {config.contact.street}<br>
+      {config.contact.city}<br><br>
+      Telefon: {config.contact.phone}<br>
+      Fax: {config.contact.fax}<br>
+      E-Mail: <a href={`mailto:${config.contact.email}`}>{config.contact.email}</a>
+    </p>
+    <h2>Kontaktformular</h2>
+    <form id="contactForm" style="display:flex;flex-direction:column;gap:16px;max-width:500px;">
+      <input type="text" name="name" placeholder="Ihr Name" required style="background:#2c2c2c;border:1px solid #3a3a3a;border-radius:8px;padding:12px 16px;color:#fff;font-size:15px;font-family:inherit;outline:none;">
+      <input type="email" name="email" placeholder="Ihre E-Mail-Adresse" required style="background:#2c2c2c;border:1px solid #3a3a3a;border-radius:8px;padding:12px 16px;color:#fff;font-size:15px;font-family:inherit;outline:none;">
+      <select name="subject" style="background:#2c2c2c;border:1px solid #3a3a3a;border-radius:8px;padding:12px 16px;color:#ccc;font-size:15px;font-family:inherit;outline:none;">
+        <option value="allgemein">Allgemeine Anfrage</option>
+        <option value="lizenz">Lizenzfrage</option>
+        <option value="technik">Technischer Support</option>
+        <option value="enterprise">Enterprise / Agentur</option>
+      </select>
+      <textarea name="message" placeholder="Ihre Nachricht" rows="6" required style="background:#2c2c2c;border:1px solid #3a3a3a;border-radius:8px;padding:12px 16px;color:#fff;font-size:15px;font-family:inherit;outline:none;resize:vertical;"></textarea>
+      <button type="submit" class="btn-primary" style="align-self:flex-start;padding:12px 28px;font-size:15px;">Nachricht senden</button>
+    </form>
+  </div>
+  <Footer />
+</BaseLayout>

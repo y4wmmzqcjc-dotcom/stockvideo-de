@@ -1,0 +1,11 @@
+[
+  { "slug": "all", "label": "Alle Videos", "dataCat": "all" },
+  { "slug": "natur", "label": "Natur & Landschaft", "dataCat": "natur" },
+  { "slug": "business", "label": "Business & B\u00fcro", "dataCat": "business" },
+  { "slug": "tech", "label": "Technologie", "dataCat": "tech" },
+  { "slug": "aerial", "label": "Aerial & Drohne", "dataCat": "aerial" },
+  { "slug": "urban", "label": "Stadt & Architektur", "dataCat": "urban" },
+  { "slug": "menschen", "label": "Menschen & Lifestyle", "dataCat": "menschen" },
+  { "slug": "abstrakt", "label": "Abstrakt & Motion", "dataCat": "abstrakt" },
+  { "slug": "timelapse", "label": "Timelapse", "dataCat": "timelapse" }
+]

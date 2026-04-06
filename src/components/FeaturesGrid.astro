@@ -1,0 +1,12 @@
+---
+import config from '../data/config.json';
+---
+<div class="features">
+  {config.features.map(f => (
+    <div class="feature-card">
+      <div class="feature-icon">{f.icon}</div>
+      <div class="feature-title">{f.title}</div>
+      <div class="feature-desc">{f.desc}</div>
+    </div>
+  ))}
+</div>
