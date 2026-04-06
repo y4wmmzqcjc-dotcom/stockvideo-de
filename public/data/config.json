@@ -1,0 +1,71 @@
+{
+  "hero": {
+    "title": "",
+    "subtitle": "",
+    "searchPlaceholder": ""
+  },
+  "features": [
+    {
+      "icon": "🎬",
+      "title": "",
+      "description": ""
+    },
+    {
+      "icon": "🔒",
+      "title": "",
+      "description": ""
+    },
+    {
+      "icon": "⚡",
+      "title": "",
+      "description": ""
+    },
+    {
+      "icon": "💰",
+      "title": "",
+      "description": ""
+    }
+  ],
+  "pricing": [
+    {
+      "label": "",
+      "resolution": "",
+      "price": "",
+      "description": "",
+      "featured": false
+    },
+    {
+      "label": "",
+      "resolution": "",
+      "price": "",
+      "description": "",
+      "featured": false
+    },
+    {
+      "label": "",
+      "resolution": "",
+      "price": "",
+      "description": "",
+      "featured": false
+    },
+    {
+      "label": "",
+      "resolution": "",
+      "price": "",
+      "description": "",
+      "featured": false
+    }
+  ],
+  "nav": {
+    "links": [],
+    "ctaText": ""
+  },
+  "footer": {
+    "copyright": "",
+    "columns": []
+  },
+  "seo": {
+    "title": "",
+    "description": ""
+  }
+}
