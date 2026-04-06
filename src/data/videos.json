@@ -2,8 +2,8 @@
   {
     "id": 1,
     "slug": "goldener-sonnenuntergang-alpen",
-    "title": "Goldener Sonnenuntergang über den Alpen mit Wolkenmeer",
-    "description": "Atemberaubende 4K-Aufnahme eines Sonnenuntergangs über den Alpen mit dramatischem Wolkenmeer und goldenem Licht.",
+    "title": "Goldener Sonnenuntergang Ã¼ber den Alpen mit Wolkenmeer",
+    "description": "Atemberaubende 4K-Aufnahme eines Sonnenuntergangs Ã¼ber den Alpen mit dramatischem Wolkenmeer und goldenem Licht.",
     "category": "natur",
     "tags": [
       "natur",
@@ -24,13 +24,14 @@
     "gradient": "linear-gradient(135deg,#2d4a3e,#1a3528,#0f2018)",
     "thumbnail": "",
     "r2Key": "videos/goldener-sonnenuntergang-alpen.mp4",
-    "featured": true
+    "featured": true,
+    "r2Preview": ""
   },
   {
     "id": 2,
     "slug": "buero-team-strategiebesprechung",
-    "title": "Professionelles Büro-Team bei der Strategiebesprechung",
-    "description": "4K-Aufnahme eines professionellen Teams bei der Strategiebesprechung im modernen Büro.",
+    "title": "Professionelles BÃ¼ro-Team bei der Strategiebesprechung",
+    "description": "4K-Aufnahme eines professionellen Teams bei der Strategiebesprechung im modernen BÃ¼ro.",
     "category": "business",
     "tags": [
       "business",
@@ -51,13 +52,14 @@
     "gradient": "linear-gradient(135deg,#2a3042,#1c2033,#0f1320)",
     "thumbnail": "",
     "r2Key": "videos/buero-team-strategiebesprechung.mp4",
-    "featured": false
+    "featured": false,
+    "r2Preview": ""
   },
   {
     "id": 3,
     "slug": "drohnenflug-steilkueste-sonnenaufgang",
-    "title": "Drohnenflug über dramatische Steilküste bei Sonnenaufgang",
-    "description": "Spektakulärer 4K-Drohnenflug über eine dramatische Steilküste bei Sonnenaufgang.",
+    "title": "Drohnenflug Ã¼ber dramatische SteilkÃ¼ste bei Sonnenaufgang",
+    "description": "SpektakulÃ¤rer 4K-Drohnenflug Ã¼ber eine dramatische SteilkÃ¼ste bei Sonnenaufgang.",
     "category": "aerial",
     "tags": [
       "aerial",
@@ -78,7 +80,8 @@
     "gradient": "linear-gradient(135deg,#1a3545,#0f2535,#051a28)",
     "thumbnail": "",
     "r2Key": "videos/drohnenflug-steilkueste-sonnenaufgang.mp4",
-    "featured": false
+    "featured": false,
+    "r2Preview": ""
   },
   {
     "id": 4,
@@ -105,13 +108,14 @@
     "gradient": "linear-gradient(135deg,#3a2045,#2a1535,#180a22)",
     "thumbnail": "",
     "r2Key": "videos/abstrakte-partikel-dunkel.mp4",
-    "featured": false
+    "featured": false,
+    "r2Preview": ""
   },
   {
     "id": 5,
     "slug": "berlin-friedrichstrasse-nacht-zeitraffer",
-    "title": "Berlin Friedrichstraße Verkehr bei Nacht Zeitraffer",
-    "description": "4K-Zeitraffer des Verkehrs auf der Berliner Friedrichstraße bei Nacht.",
+    "title": "Berlin FriedrichstraÃe Verkehr bei Nacht Zeitraffer",
+    "description": "4K-Zeitraffer des Verkehrs auf der Berliner FriedrichstraÃe bei Nacht.",
     "category": "urban",
     "tags": [
       "urban",
@@ -132,7 +136,8 @@
     "gradient": "linear-gradient(135deg,#252528,#18181a,#0a0a0c)",
     "thumbnail": "",
     "r2Key": "videos/berlin-friedrichstrasse-nacht-zeitraffer.mp4",
-    "featured": false
+    "featured": false,
+    "r2Preview": ""
   },
   {
     "id": 6,
@@ -159,13 +164,14 @@
     "gradient": "linear-gradient(135deg,#152540,#0a1a30,#050e1c)",
     "thumbnail": "",
     "r2Key": "videos/serverraum-blaues-led-licht.mp4",
-    "featured": false
+    "featured": false,
+    "r2Preview": ""
   },
   {
     "id": 7,
     "slug": "wolken-timelapse-berggipfel",
-    "title": "Dramatischer Wolken-Timelapse über Berggipfeln",
-    "description": "4K-Timelapse dramatischer Wolkenformationen über Berggipfeln.",
+    "title": "Dramatischer Wolken-Timelapse Ã¼ber Berggipfeln",
+    "description": "4K-Timelapse dramatischer Wolkenformationen Ã¼ber Berggipfeln.",
     "category": "timelapse",
     "tags": [
       "timelapse",
@@ -186,13 +192,14 @@
     "gradient": "linear-gradient(135deg,#354050,#252e3a,#141a22)",
     "thumbnail": "",
     "r2Key": "videos/wolken-timelapse-berggipfel.mp4",
-    "featured": false
+    "featured": false,
+    "r2Preview": ""
   },
   {
     "id": 8,
     "slug": "geschaeftsfrau-laptop-konzentriert",
-    "title": "Junge Geschäftsfrau arbeitet konzentriert am Laptop",
-    "description": "HD-Aufnahme einer jungen Geschäftsfrau bei konzentrierter Arbeit am Laptop.",
+    "title": "Junge GeschÃ¤ftsfrau arbeitet konzentriert am Laptop",
+    "description": "HD-Aufnahme einer jungen GeschÃ¤ftsfrau bei konzentrierter Arbeit am Laptop.",
     "category": "menschen",
     "tags": [
       "menschen",
@@ -213,7 +220,8 @@
     "gradient": "linear-gradient(135deg,#3a2828,#2a1a1a,#180e0e)",
     "thumbnail": "",
     "r2Key": "videos/geschaeftsfrau-laptop-konzentriert.mp4",
-    "featured": false
+    "featured": false,
+    "r2Preview": ""
   },
   {
     "id": 9,
@@ -240,7 +248,8 @@
     "gradient": "linear-gradient(135deg,#3a3520,#2a2510,#1a1808)",
     "thumbnail": "",
     "r2Key": "videos/herbstwald-luftaufnahme-morgennebel.mp4",
-    "featured": false
+    "featured": false,
+    "r2Preview": ""
   },
   {
     "id": 10,
@@ -267,7 +276,8 @@
     "gradient": "linear-gradient(135deg,#2a2a3a,#1a1a2a,#0e0e18)",
     "thumbnail": "",
     "r2Key": "videos/startup-team-erfolg-coworking.mp4",
-    "featured": false
+    "featured": false,
+    "r2Preview": ""
   },
   {
     "id": 11,
@@ -294,7 +304,8 @@
     "gradient": "linear-gradient(135deg,#1a2838,#101c2a,#08121c)",
     "thumbnail": "",
     "r2Key": "videos/roboterarm-produktionslinie.mp4",
-    "featured": false
+    "featured": false,
+    "r2Preview": ""
   },
   {
     "id": 12,
@@ -321,13 +332,14 @@
     "gradient": "linear-gradient(135deg,#153040,#0a2030,#051520)",
     "thumbnail": "",
     "r2Key": "videos/nordsee-brandung-vogelperspektive-sturm.mp4",
-    "featured": false
+    "featured": false,
+    "r2Preview": ""
   },
   {
     "id": 13,
     "slug": "braune-kuh-auf-der-weide-4k-stock-video",
-    "title": "Braune Kuh auf der Weide – 4K Stock Video",
-    "description": "Nahaufnahme einer braunen Kuh auf einer grünen Weide. Perfekt für Landwirtschaft, Natur und Tierfilme. 4K Ultra HD Auflösung.",
+    "title": "Braune Kuh auf der Weide â 4K Stock Video",
+    "description": "Nahaufnahme einer braunen Kuh auf einer grÃ¼nen Weide. Perfekt fÃ¼r Landwirtschaft, Natur und Tierfilme. 4K Ultra HD AuflÃ¶sung.",
     "category": "natur",
     "tags": [
       "kuh",
@@ -352,6 +364,7 @@
     "gradient": "linear-gradient(135deg,#1a5e1a,#3d8b3d,#0f2018)",
     "thumbnail": "",
     "r2Key": "videos/kuhbraun.mp4",
-    "featured": true
+    "featured": true,
+    "r2Preview": "previews/kuhbraun.mp4"
   }
 ]
