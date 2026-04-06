@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Über uns — stockvideo.de"
+  description="Erfahre mehr über stockvideo.de — die deutsche Plattform für lizenzfreie Stock-Videos in professioneller 4K-Qualität."
+>
+  <Navbar />
+  <main>
+    <section class="section">
+      <div class="container" style="max-width: 760px; text-align: center;">
+        <div class="badge badge-accent" style="margin-bottom: 16px;">Über uns</div>
+        <h1>Deutsche Stock-Videos. Für deutsche Kreative.</h1>
+        <p style="font-size: 1.125rem; margin-top: 16px; max-width: 600px; margin-left: auto; margin-right: auto;">
+          Wir sind Filmemacher und Kreativprofis aus Deutschland, die hochwertige Stock-Videos in ihrer Muttersprache vermissen.
+          Das haben wir geändert.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" style="background: var(--color-bg-2); border-top: 1px solid var(--color-border);">
+      <div class="container" style="max-width: 860px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;">
+          <div>
+            <h2>Unsere Geschichte</h2>
+            <p style="margin-top: 16px;">
+              stockvideo.de wurde gegründet, weil auf dem deutschen Markt hochwertige, lizenzfreie
+              Stock-Videos mit echtem deutschen Bezug fehlten. Internationale Plattformen bieten
+              zwar viel — aber selten den authentischen deutschen Alltag, die Nordseeküste oder
+              das Berliner Stadtleben.
+            </p>
+            <p style="margin-top: 12px;">
+              Unser Team aus Kameraleuten, Filmemachern und Kreativen bringt Jahrzehnte Erfahrung
+              in der Videoproduktion mit. Wir kennen, was Agenturen, Medienunternehmen und
+              Selbstständige wirklich brauchen.
+            </p>
+          </div>
+          <div style="background: var(--color-bg-3); border: 1px solid var(--color-border); border-radius: var(--radius-lg); aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; font-size: 4rem;">
+            🎬
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container" style="max-width: 860px;">
+        <h2 class="text-center">Unsere Werte</h2>
+        <div class="grid-3" style="margin-top: 32px;">
+          {[
+            { icon: '🏆', title: 'Qualität first', text: 'Jedes Video wird kuratorisch geprüft. Keine minderwertigen Aufnahmen — nur professionelles Material.' },
+            { icon: '🤝', title: 'Faire Preise', text: 'Wir wollen, dass kreatives Material für alle zugänglich ist — ohne Abofallen oder versteckte Gebühren.' },
+            { icon: '🔐', title: 'Klare Rechte', text: 'Verständliche Lizenzbedingungen auf Deutsch. Kein Juristendeutsch, keine Überraschungen.' },
+          ].map(val => (
+            <div style="background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 28px; text-align: center;">
+              <div style="font-size: 2rem; margin-bottom: 12px;">{val.icon}</div>
+              <h3 style="font-size: 1.0625rem; margin-bottom: 8px;">{val.title}</h3>
+              <p style="font-size: 0.875rem;">{val.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background: var(--color-bg-2); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); text-align: center;">
+      <div class="container">
+        <h2>Bereit loszulegen?</h2>
+        <p style="margin-top: 12px; max-width: 480px; margin-left: auto; margin-right: auto;">
+          Stöbere in unserer Videobibliothek und finde das perfekte Material für dein nächstes Projekt.
+        </p>
+        <div style="margin-top: 28px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <a href="/kategorie" class="btn btn-primary btn-lg">Videos entdecken</a>
+          <a href="/kontakt" class="btn btn-secondary btn-lg">Kontakt aufnehmen</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>

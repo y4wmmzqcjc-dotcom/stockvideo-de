@@ -1,0 +1,17 @@
+{
+  "title": "Drohnenaufnahmen Stadtpanorama",
+  "description": "Atemberaubende 4K-Drohnenaufnahmen über einer deutschen Großstadt. Luftaufnahmen zeigen Skyline, Parks und Stadtteile aus der Vogelperspektive. Perfekt für Immobilien, Stadtmarketing und Imagefilme.",
+  "category": "natur",
+  "tags": ["drohne", "luftaufnahme", "stadt", "panorama", "4k", "aerial"],
+  "duration": 60,
+  "resolution": "4K",
+  "fps": 30,
+  "thumbnail": "/thumbnails/drohne.jpg",
+  "preview": "/previews/drohne.mp4",
+  "price": {
+    "web": 39,
+    "broadcast": 99,
+    "extended": 249
+  },
+  "featured": true
+}

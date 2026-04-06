@@ -1,0 +1,91 @@
+---
+import VideoCard from './VideoCard.astro';
+
+interface Video {
+  id: string;
+  data: {
+    title: string;
+    description: string;
+    category: string;
+    resolution: string;
+    duration: number;
+    thumbnail?: string;
+    price: { web: number };
+    featured?: boolean;
+  };
+}
+
+interface Props {
+  videos: Video[];
+  title?: string;
+  showMore?: boolean;
+  moreHref?: string;
+}
+
+const {
+  videos,
+  title,
+  showMore = false,
+  moreHref = '/kategorie',
+} = Astro.props;
+---
+
+<section class="video-grid section" aria-label={title ?? 'Videos'}>
+  <div class="container">
+    {title && (
+      <div class="section-header">
+        <h2>{title}</h2>
+        {showMore && (
+          <a href={moreHref} class="btn btn-ghost" style="margin-top: 8px;">
+            Alle Videos ansehen →
+          </a>
+        )}
+      </div>
+    )}
+
+    {videos.length > 0 ? (
+      <div class="grid-4" role="list" aria-label="Videoliste">
+        {videos.map((video) => (
+          <div role="listitem">
+            <VideoCard
+              slug={video.id}
+              title={video.data.title}
+              description={video.data.description}
+              category={video.data.category}
+              resolution={video.data.resolution}
+              duration={video.data.duration}
+              thumbnail={video.data.thumbnail}
+              price={video.data.price}
+              featured={video.data.featured}
+            />
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div class="video-grid__empty">
+        <p>Keine Videos gefunden.</p>
+      </div>
+    )}
+
+    {showMore && videos.length > 0 && (
+      <div class="video-grid__more">
+        <a href={moreHref} class="btn btn-secondary btn-lg">
+          Alle Videos durchsuchen →
+        </a>
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+.video-grid__empty {
+  text-align: center;
+  padding: 64px 24px;
+  color: var(--color-text-muted);
+}
+.video-grid__more {
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+}
+</style>

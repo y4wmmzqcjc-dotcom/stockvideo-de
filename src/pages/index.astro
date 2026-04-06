@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PromoBar from '../components/PromoBar.astro';
+import Navbar from '../components/Navbar.astro';
+import Hero from '../components/Hero.astro';
+import CategoryStrip from '../components/CategoryStrip.astro';
+import VideoGrid from '../components/VideoGrid.astro';
+import FeaturesGrid from '../components/FeaturesGrid.astro';
+import PricingSection from '../components/PricingSection.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+const allVideos = await getCollection('videos');
+const featuredVideos = allVideos.filter(v => v.data.featured).slice(0, 8);
+---
+
+<BaseLayout
+  title="stockvideo.de — Lizenzfreie Stock-Videos auf Deutsch"
+  description="Hochwertige 4K Stock-Videos lizenzieren. Business, Natur, Lifestyle und mehr. Sofort-Download, klare Lizenzen, faire Preise. 100% Deutscher Content."
+>
+  <PromoBar />
+  <Navbar />
+  <main id="main-content">
+    <Hero />
+    <CategoryStrip />
+    <VideoGrid
+      videos={featuredVideos}
+      title="Ausgewählte Stock-Videos"
+      showMore={true}
+      moreHref="/kategorie"
+    />
+    <FeaturesGrid />
+    <PricingSection />
+  </main>
+  <Footer />
+</BaseLayout>

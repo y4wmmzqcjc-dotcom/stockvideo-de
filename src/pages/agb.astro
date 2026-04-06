@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Allgemeine Geschäftsbedingungen — stockvideo.de"
+  description="AGB von stockvideo.de — Nutzungsbedingungen für den Kauf und die Lizenzierung von Stock-Videos."
+  noIndex={true}
+>
+  <Navbar />
+  <main class="section">
+    <div class="container" style="max-width: 680px;">
+      <h1>Allgemeine Geschäftsbedingungen (AGB)</h1>
+      <p style="color: var(--color-text-muted); font-size: 0.875rem; margin-top: 8px; margin-bottom: 32px;">
+        Stand: [Datum einfügen] · ⚠️ Platzhalter — bitte rechtlich prüfen lassen
+      </p>
+
+      {[
+        {
+          title: '§ 1 Geltungsbereich',
+          text: 'Diese Allgemeinen Geschäftsbedingungen gelten für alle Verträge zwischen stockvideo.de ([Firmenname], nachfolgend "Anbieter") und dem Kunden über den Kauf und die Lizenzierung von digitalen Videoinhalten über die Website stockvideo.de.',
+        },
+        {
+          title: '§ 2 Vertragsschluss',
+          text: 'Das Angebot auf unserer Website stellt eine Aufforderung zur Abgabe eines Angebots dar. Mit dem Klick auf den Kaufbutton gibt der Kunde ein verbindliches Angebot ab. Der Vertrag kommt mit Bestätigung der Zahlung durch unseren Zahlungsdienstleister zustande.',
+        },
+        {
+          title: '§ 3 Lizenzen und Nutzungsrechte',
+          text: 'Mit dem Kauf erwirbt der Kunde ein nicht-exklusives, weltweites, dauerhaftes Nutzungsrecht an dem erworbenen Videomaterial im Rahmen der gewählten Lizenzklasse (Web, Broadcast oder Extended). Die genauen Verwendungsmöglichkeiten sind in der Lizenzübersicht auf stockvideo.de/lizenzen beschrieben.',
+        },
+        {
+          title: '§ 4 Preise und Zahlung',
+          text: 'Alle Preise verstehen sich in Euro zzgl. der gesetzlichen Mehrwertsteuer. Die Zahlung erfolgt über den Zahlungsdienstleister Stripe. Akzeptierte Zahlungsmittel: Kreditkarte (Visa, Mastercard), SEPA-Lastschrift. Nach erfolgreicher Zahlung wird der Download-Link sofort bereitgestellt.',
+        },
+        {
+          title: '§ 5 Widerrufsrecht / digitale Inhalte',
+          text: 'Da es sich um digitale Inhalte handelt, die nach Kaufabschluss sofort zum Download bereitgestellt werden, erlischt das Widerrufsrecht mit Beginn der Ausführung des Vertrags, sofern der Verbraucher ausdrücklich zugestimmt hat und seine Kenntnis über den Verlust des Widerrufsrechts bestätigt hat.',
+        },
+        {
+          title: '§ 6 Gewährleistung',
+          text: 'Der Anbieter gewährleistet, dass die verkauften Videos die erforderlichen Modell- und Eigentumsfreigaben besitzen und keine Rechte Dritter verletzen. Bei berechtigten Mängelansprüchen wird vorrangig Nacherfüllung geleistet.',
+        },
+        {
+          title: '§ 7 Haftungsbeschränkung',
+          text: 'Der Anbieter haftet unbeschränkt für Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit sowie für vorsätzliche und grob fahrlässige Pflichtverletzungen. Im Übrigen ist die Haftung auf vorhersehbare, vertragstypische Schäden begrenzt.',
+        },
+        {
+          title: '§ 8 Anwendbares Recht',
+          text: 'Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts. Gerichtsstand ist, soweit gesetzlich zulässig, der Sitz des Anbieters.',
+        },
+      ].map(section => (
+        <div class="legal-block">
+          <h2>{section.title}</h2>
+          <p>{section.text}</p>
+        </div>
+      ))}
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+.legal-block { margin-bottom: 32px; }
+.legal-block h2 {
+  font-size: 1.0625rem;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+.legal-block p { font-size: 0.9rem; line-height: 1.75; color: var(--color-text-muted); }
+</style>

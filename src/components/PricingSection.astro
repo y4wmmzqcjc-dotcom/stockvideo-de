@@ -1,0 +1,177 @@
+---
+const plans = [
+  {
+    name: 'Web-Lizenz',
+    price: 'ab €19',
+    desc: 'Ideal für Websites, Social Media und Online-Werbung.',
+    features: [
+      'Online-Nutzung unbegrenzt',
+      'Social Media & YouTube',
+      'Streaming bis 1 Mio. Views',
+      'Keine zeitliche Begrenzung',
+      'Download in Full-HD & 4K',
+    ],
+    cta: 'Jetzt lizenzieren',
+    href: '/preise',
+    highlighted: false,
+  },
+  {
+    name: 'Broadcast-Lizenz',
+    price: 'ab €79',
+    desc: 'Für TV, Kino, Werbespots und professionelle Produktionen.',
+    features: [
+      'TV & Kinowerbung',
+      'Unlimitierte Zuschauer',
+      'Redaktionelle Nutzung',
+      'Weltweite Ausstrahlung',
+      'Download in 4K & RAW',
+      'Exklusive Lizenz möglich',
+    ],
+    cta: 'Broadcast wählen',
+    href: '/preise#broadcast',
+    highlighted: true,
+  },
+  {
+    name: 'Extended-Lizenz',
+    price: 'ab €199',
+    desc: 'Für Produktverpackungen, Templates und Weiterverkauf.',
+    features: [
+      'Alle Broadcast-Features',
+      'Weiterverkauf als Teil',
+      'Template-Nutzung',
+      'Print & Verpackung',
+      'OEM & Produktlizenzen',
+      'Dedizierter Support',
+    ],
+    cta: 'Extended wählen',
+    href: '/preise#extended',
+    highlighted: false,
+  },
+];
+---
+
+<section class="pricing section" id="preise" aria-labelledby="pricing-title">
+  <div class="container">
+    <div class="section-header">
+      <h2 id="pricing-title">Einfache, transparente Preise</h2>
+      <p>Nur einmal zahlen — und das Video dauerhaft nutzen. Keine Abos, keine Überraschungen.</p>
+    </div>
+
+    <div class="pricing__grid" role="list">
+      {plans.map(plan => (
+        <div class={`pricing-card ${plan.highlighted ? 'pricing-card--featured' : ''}`} role="listitem">
+          {plan.highlighted && (
+            <div class="pricing-card__badge">Beliebt</div>
+          )}
+          <div class="pricing-card__header">
+            <h3 class="pricing-card__name">{plan.name}</h3>
+            <div class="pricing-card__price">{plan.price}</div>
+            <p class="pricing-card__desc">{plan.desc}</p>
+          </div>
+          <ul class="pricing-card__features" aria-label={`${plan.name} Leistungen`}>
+            {plan.features.map(f => (
+              <li class="pricing-card__feature">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" class="pricing-card__check">
+                  <path d="M20 6 9 17l-5-5"/>
+                </svg>
+                {f}
+              </li>
+            ))}
+          </ul>
+          <a href={plan.href} class={`btn ${plan.highlighted ? 'btn-primary' : 'btn-secondary'} pricing-card__cta`}>
+            {plan.cta}
+          </a>
+        </div>
+      ))}
+    </div>
+
+    <p class="pricing__note">
+      Alle Preise zzgl. MwSt. · Fragen? <a href="/kontakt">Kontaktiere uns</a>
+    </p>
+  </div>
+</section>
+
+<style>
+.pricing__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.pricing-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  transition: transform var(--transition), border-color var(--transition);
+}
+.pricing-card:hover { transform: translateY(-3px); }
+
+.pricing-card--featured {
+  border-color: var(--color-accent);
+  background: linear-gradient(180deg, rgba(232,23,60,0.05) 0%, var(--color-bg-card) 60%);
+}
+
+.pricing-card__badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-accent);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 100px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.pricing-card__header { display: flex; flex-direction: column; gap: 8px; }
+.pricing-card__name { font-size: 1.0625rem; font-weight: 700; }
+.pricing-card__price { font-size: 2rem; font-weight: 700; color: var(--color-text); }
+.pricing-card__desc { font-size: 0.875rem; color: var(--color-text-muted); }
+
+.pricing-card__features {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+.pricing-card__feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+.pricing-card__check {
+  color: var(--color-accent);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.pricing-card__cta {
+  width: 100%;
+  justify-content: center;
+}
+
+.pricing__note {
+  text-align: center;
+  margin-top: 32px;
+  font-size: 0.875rem;
+  color: var(--color-text-faint);
+}
+.pricing__note a { color: var(--color-text-muted); }
+.pricing__note a:hover { color: var(--color-accent); }
+
+@media (max-width: 960px) {
+  .pricing__grid { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; }
+}
+</style>

@@ -1,0 +1,223 @@
+---
+interface Props {
+  headline?: string;
+  subline?: string;
+}
+const {
+  headline = 'Lizenzfreie Stock-Videos auf Deutsch',
+  subline = 'Tausende hochwertige 4K-Aufnahmen — von Business bis Natur. Sofort-Download, klare Lizenzen, faire Preise.',
+} = Astro.props;
+---
+
+<section class="hero" aria-label="Startbereich">
+  <div class="hero__bg" aria-hidden="true">
+    <div class="hero__gradient"></div>
+    <div class="hero__grid"></div>
+  </div>
+
+  <div class="container hero__content">
+    <div class="hero__badge badge badge-accent">🎬 4K Stock-Videos · Deutsch</div>
+
+    <h1 class="hero__headline">{headline}</h1>
+    <p class="hero__subline">{subline}</p>
+
+    <form class="hero__search" action="/suche" method="get" role="search" aria-label="Video-Suche">
+      <div class="hero__search-inner">
+        <svg class="hero__search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input
+          type="search"
+          name="q"
+          class="hero__search-input"
+          placeholder="Suche nach Videos … (z.B. Business, Natur, Drohne)"
+          aria-label="Videos suchen"
+          autocomplete="off"
+        />
+        <button type="submit" class="btn btn-primary hero__search-btn">Suchen</button>
+      </div>
+    </form>
+
+    <div class="hero__tags" aria-label="Beliebte Kategorien">
+      <span class="hero__tags-label">Beliebt:</span>
+      {['Business', 'Natur', 'Lifestyle', 'Drohne', 'Zeitraffer', 'Architektur'].map(tag => (
+        <a href={`/kategorie/${tag.toLowerCase()}`} class="tag">{tag}</a>
+      ))}
+    </div>
+
+    <div class="hero__stats" aria-label="Statistiken">
+      <div class="hero__stat">
+        <strong>500+</strong>
+        <span>Stock-Videos</span>
+      </div>
+      <div class="hero__stat-divider" aria-hidden="true"></div>
+      <div class="hero__stat">
+        <strong>4K</strong>
+        <span>Ultra HD Qualität</span>
+      </div>
+      <div class="hero__stat-divider" aria-hidden="true"></div>
+      <div class="hero__stat">
+        <strong>Sofort</strong>
+        <span>Download nach Kauf</span>
+      </div>
+      <div class="hero__stat-divider" aria-hidden="true"></div>
+      <div class="hero__stat">
+        <strong>100%</strong>
+        <span>Royalty-Free</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.hero {
+  position: relative;
+  min-height: 620px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 80px 0 64px;
+}
+
+/* Background */
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.hero__gradient {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(232, 23, 60, 0.15) 0%, transparent 60%),
+    linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-2) 100%);
+}
+.hero__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 40%, transparent 100%);
+}
+
+/* Content */
+.hero__content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.hero__badge { margin-bottom: 4px; }
+
+.hero__headline {
+  max-width: 720px;
+  font-size: clamp(2.25rem, 5.5vw, 3.5rem);
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffffff 30%, #c0c0c0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.15;
+}
+
+.hero__subline {
+  max-width: 580px;
+  font-size: 1.125rem;
+  color: var(--color-text-muted);
+  margin-top: -8px;
+}
+
+/* Search */
+.hero__search { width: 100%; max-width: 620px; }
+.hero__search-inner {
+  display: flex;
+  align-items: center;
+  background: var(--color-bg-3);
+  border: 1.5px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.hero__search-inner:focus-within {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(232, 23, 60, 0.12);
+}
+.hero__search-icon {
+  color: var(--color-text-faint);
+  margin-left: 16px;
+  flex-shrink: 0;
+}
+.hero__search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 14px 12px;
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  outline: none;
+}
+.hero__search-input::placeholder { color: var(--color-text-faint); }
+.hero__search-btn {
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  padding: 14px 20px;
+  font-size: 0.9375rem;
+}
+
+/* Tags */
+.hero__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+.hero__tags-label {
+  font-size: 0.875rem;
+  color: var(--color-text-faint);
+}
+
+/* Stats */
+.hero__stats {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-top: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.hero__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 32px;
+}
+.hero__stat strong {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+.hero__stat span {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+.hero__stat-divider {
+  width: 1px;
+  height: 36px;
+  background: var(--color-border);
+}
+
+@media (max-width: 768px) {
+  .hero { padding: 60px 0 48px; min-height: auto; }
+  .hero__headline { font-size: 2rem; }
+  .hero__subline { font-size: 1rem; }
+  .hero__stat { padding: 0 16px; }
+  .hero__search-btn { padding: 14px 14px; font-size: 0.875rem; }
+}
+</style>

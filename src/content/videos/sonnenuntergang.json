@@ -1,0 +1,17 @@
+{
+  "title": "Sonnenuntergang über den Alpen",
+  "description": "Dramatischer Sonnenuntergang über der Alpensilhouette in leuchtendem Orange und Rot. Zeitraffsequenz zeigt das Farbenspiel des Abendhimmels. Perfekt für inspirierende Imagefilme und Reisewerbung.",
+  "category": "natur",
+  "tags": ["sonnenuntergang", "alpen", "berge", "timelapse", "himmel", "natur"],
+  "duration": 40,
+  "resolution": "4K",
+  "fps": 25,
+  "thumbnail": "/thumbnails/sonnenuntergang.jpg",
+  "preview": "/previews/sonnenuntergang.mp4",
+  "price": {
+    "web": 29,
+    "broadcast": 79,
+    "extended": 199
+  },
+  "featured": true
+}
