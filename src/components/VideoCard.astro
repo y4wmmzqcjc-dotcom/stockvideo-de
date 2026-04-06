@@ -1,0 +1,230 @@
+---
+import categories from '../data/categories.json';
+
+interface Props {
+  slug: string;
+  title: string;
+  description: string;
+  category: string;
+  resolution: string;
+  duration: string;
+  thumbnail: string;
+  price: number;
+  featured?: boolean;
+}
+
+const {
+  slug,
+  title,
+  description,
+  category,
+  resolution,
+  duration,
+  thumbnail,
+  price,
+  featured = false
+} = Astro.props;
+
+const categoryData = categories.find(cat => cat.id === category);
+const categoryLabel = categoryData?.label || category;
+---
+
+<a href={`/video/${slug}`} class={`video-card ${featured ? 'video-card--featured' : ''}`}>
+  <div class="video-card__image-wrapper">
+    <img
+      src={thumbnail}
+      alt={title}
+      class="video-card__image"
+      loading="lazy"
+      decoding="async"
+    />
+    <div class="video-card__overlay">
+      <svg class="video-card__play" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M8 5v14l11-7z"/>
+      </svg>
+    </div>
+    <div class="video-card__badges">
+      <span class="video-card__badge">{resolution}</span>
+      <span class="video-card__badge">{duration}</span>
+    </div>
+  </div>
+
+  <div class="video-card__content">
+    <div class="video-card__category-tag">
+      <span class="tag">{categoryLabel}</span>
+    </div>
+
+    <h3 class="video-card__title">{title}</h3>
+
+    <p class="video-card__description">{description}</p>
+
+    <div class="video-card__footer">
+      <div class="video-card__price">
+        <span class="video-card__price-label">ab</span>
+        <span class="video-card__price-amount">{price}</span>
+        <span class="video-card__price-currency">EUR</span>
+      </div>
+      <button class="btn btn-primary btn-sm">Lizenzieren</button>
+    </div>
+  </div>
+</a>
+
+<style>
+  .video-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all var(--transition);
+    cursor: pointer;
+  }
+
+  .video-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .video-card__image-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    background-color: var(--color-bg-3);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .video-card__image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .video-card:hover .video-card__image {
+    transform: scale(1.05);
+  }
+
+  .video-card__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--transition);
+  }
+
+  .video-card:hover .video-card__overlay {
+    opacity: 1;
+  }
+
+  .video-card__play {
+    width: 56px;
+    height: 56px;
+    color: white;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+  }
+
+  .video-card__badges {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .video-card__badge {
+    background-color: rgba(20, 115, 230, 0.9);
+    color: white;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+  }
+
+  .video-card__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .video-card__category-tag {
+    display: flex;
+  }
+
+  .video-card__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--color-text);
+    line-height: 1.4;
+  }
+
+  .video-card__description {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .video-card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .video-card__price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+  }
+
+  .video-card__price-label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .video-card__price-amount {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+
+  .video-card__price-currency {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .video-card--featured {
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-lg);
+    padding: 0;
+  }
+
+  @media (max-width: 480px) {
+    .video-card__title {
+      font-size: 1rem;
+    }
+
+    .video-card__badge {
+      font-size: 0.7rem;
+      padding: 0.25rem 0.5rem;
+    }
+  }
+</style>

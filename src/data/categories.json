@@ -1,0 +1,58 @@
+[
+  {
+    "id": "natur",
+    "slug": "natur",
+    "label": "Natur",
+    "description": "Landschaften, Tiere, Pflanzen und Naturphänomene",
+    "icon": "film"
+  },
+  {
+    "id": "business",
+    "slug": "business",
+    "label": "Business",
+    "description": "Unternehmensvideos, Meetings und Büroumgebungen",
+    "icon": "tag"
+  },
+  {
+    "id": "technologie",
+    "slug": "technologie",
+    "label": "Technologie",
+    "description": "Tech-Produkte, Code, Innovation und digitale Inhalte",
+    "icon": "film"
+  },
+  {
+    "id": "lifestyle",
+    "slug": "lifestyle",
+    "label": "Lifestyle",
+    "description": "Menschen, Mode, Wellness und tägliches Leben",
+    "icon": "map"
+  },
+  {
+    "id": "reisen",
+    "slug": "reisen",
+    "label": "Reisen",
+    "description": "Städte, Länder, Strände und Sehenswürdigkeiten",
+    "icon": "map"
+  },
+  {
+    "id": "abstrakt",
+    "slug": "abstrakt",
+    "label": "Abstrakt",
+    "description": "Farben, Formen, Bewegungen und künstlerische Inhalte",
+    "icon": "film"
+  },
+  {
+    "id": "musik",
+    "slug": "musik",
+    "label": "Musik",
+    "description": "Musikvideos, Konzerte und Tonaufnahmen",
+    "icon": "film"
+  },
+  {
+    "id": "sport",
+    "slug": "sport",
+    "label": "Sport",
+    "description": "Athleten, Training und Sportereignisse",
+    "icon": "tag"
+  }
+]

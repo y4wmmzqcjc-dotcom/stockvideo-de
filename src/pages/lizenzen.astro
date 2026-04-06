@@ -1,0 +1,550 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Lizenzbedingungen"
+  description="Alle Informationen zu unseren Lizenzmodellen und Nutzungsrechten"
+>
+  <Navbar />
+
+  <div class="lizenzen-container">
+    <div class="container">
+      <h1>Lizenzbedingungen</h1>
+
+      <!-- License Overview -->
+      <section class="license-overview">
+        <p class="intro-text">
+          Wir bieten drei flexible Lizenzmodelle, damit Sie die richtige Lösung für Ihr Projekt finden. Alle Lizenzen sind einfach zu verstehen und bieten vollständige rechtliche Sicherheit.
+        </p>
+      </section>
+
+      <!-- License Comparison Table -->
+      <section class="license-table-section">
+        <h2>Vergleich der Lizenzmodelle</h2>
+        <div class="table-wrapper">
+          <table class="license-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Web<br><span class="price">29 EUR</span></th>
+                <th>Broadcast<br><span class="price">299 EUR</span></th>
+                <th>Extended<br><span class="price">599 EUR</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="feature-name">Lizenzlaufzeit</td>
+                <td>3 Jahre</td>
+                <td>Unbegrenzt</td>
+                <td>Unbegrenzt</td>
+              </tr>
+              <tr>
+                <td class="feature-name">Online-Nutzung</td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td class="feature-name">TV & Streaming</td>
+                <td><span class="cross">✗</span></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td class="feature-name">Max. Aufrufe</td>
+                <td>1 Million</td>
+                <td>Unbegrenzt</td>
+                <td>Unbegrenzt</td>
+              </tr>
+              <tr>
+                <td class="feature-name">Maximale Auflösung</td>
+                <td>1920x1080 (Full HD)</td>
+                <td>4K</td>
+                <td>4K</td>
+              </tr>
+              <tr>
+                <td class="feature-name">Mehrfach-Nutzung</td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td class="feature-name">Bearbeitung</td>
+                <td>Begrenzt</td>
+                <td>Erweitert</td>
+                <td><span class="check">Vollständig</span></td>
+              </tr>
+              <tr>
+                <td class="feature-name">Kommerzielle Rechte</td>
+                <td>Eingeschränkt</td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td class="feature-name">Resale/Redistribution</td>
+                <td><span class="cross">✗</span></td>
+                <td><span class="cross">✗</span></td>
+                <td><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td class="feature-name">Support</td>
+                <td>Standard</td>
+                <td>Priorisiert</td>
+                <td>Dediziert</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Web License Details -->
+      <section class="license-detail">
+        <h2>Web-Lizenz (29 EUR)</h2>
+        <p class="license-tagline">Perfekt für Websites, Social Media und Online-Inhalte</p>
+
+        <div class="detail-grid">
+          <div class="detail-block">
+            <h3>Gültig für:</h3>
+            <ul>
+              <li>Websites und Webseiten</li>
+              <li>Social Media (Instagram, TikTok, YouTube)</li>
+              <li>Blogs und Online-Magazine</li>
+              <li>E-Learning Plattformen</li>
+              <li>Online-Präsentationen</li>
+              <li>Newsletters und E-Mails</li>
+            </ul>
+          </div>
+
+          <div class="detail-block">
+            <h3>Nicht gültig für:</h3>
+            <ul>
+              <li>TV und Rundfunk</li>
+              <li>Kino-Produktionen</li>
+              <li>Streaming-Plattformen (Netflix, Amazon Prime)</li>
+              <li>Kommerzielle Videos über 1 Million Aufrufe</li>
+              <li>Resale oder Weitergabe</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="detail-block highlight">
+          <h3>Besonderheiten:</h3>
+          <ul>
+            <li>Gültig für 3 Jahre nach Kaufdatum</li>
+            <li>Bis zu 1 Million Aufrufe pro Video</li>
+            <li>Full HD Auflösung (1920x1080)</li>
+            <li>Mehrfach-Nutzung in verschiedenen Projekten erlaubt</li>
+            <li>Kostenloser technischer Support</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Broadcast License Details -->
+      <section class="license-detail">
+        <h2>Broadcast-Lizenz (299 EUR)</h2>
+        <p class="license-tagline">Für professionelle Produktionen und TV-Nutzung</p>
+
+        <div class="detail-grid">
+          <div class="detail-block">
+            <h3>Gültig für:</h3>
+            <ul>
+              <li>Fernsehen und Rundfunk</li>
+              <li>Streaming-Plattformen (Netflix, Amazon Prime, Disney+)</li>
+              <li>Kino-Produktionen</li>
+              <li>Kommerzielle Videoproduktionen</li>
+              <li>TV-Spots und Werbung</li>
+              <li>Dokumentationen und Magazine</li>
+            </ul>
+          </div>
+
+          <div class="detail-block">
+            <h3>Nicht gültig für:</h3>
+            <ul>
+              <li>Resale oder Weitergabe an Dritte</li>
+              <li>Einfügung in andere Stock-Video-Sammlungen</li>
+              <li>Sublizenzierung</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="detail-block highlight">
+          <h3>Besonderheiten:</h3>
+          <ul>
+            <li>Unbegrenzte Lizenzlaufzeit (zeitlich unbegrenzt)</li>
+            <li>Unbegrenzte Aufrufe und Zuschauer</li>
+            <li>4K-Auflösung (3840x2160)</li>
+            <li>Erweiterte kommerzielle Rechte</li>
+            <li>Priorisierter Support</li>
+            <li>Mehrfach-Nutzung in verschiedenen Produktionen</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Extended License Details -->
+      <section class="license-detail">
+        <h2>Extended-Lizenz (599 EUR)</h2>
+        <p class="license-tagline">Maximale Freiheit und unbegrenzte Nutzungsrechte</p>
+
+        <div class="detail-grid">
+          <div class="detail-block">
+            <h3>Gültig für:</h3>
+            <ul>
+              <li>Alle Zwecke der Broadcast-Lizenz</li>
+              <li>Resale und Weitergabe</li>
+              <li>Einbindung in andere Projekte und Sammlungen</li>
+              <li>Sublizenzierung (mit Einschränkungen)</li>
+              <li>Kommerzielle Nutzung ohne Limits</li>
+              <li>Private und öffentliche Projekte</li>
+            </ul>
+          </div>
+
+          <div class="detail-block">
+            <h3>Besonderheiten:</h3>
+            <ul>
+              <li>Unbegrenzte Lizenzlaufzeit (zeitlich unbegrenzt)</li>
+              <li>Unbegrenzte Aufrufe und Zuschauer</li>
+              <li>4K-Auflösung und alle verfügbaren Formate</li>
+              <li>Volle Bearbeitungsrechte</li>
+              <li>Dedizierter Account Manager</li>
+              <li>Enterprise-Support rund um die Uhr</li>
+              <li>Unbegrenzte Mehrfach-Nutzung</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- General Terms -->
+      <section class="general-terms">
+        <h2>Allgemeine Bedingungen</h2>
+
+        <div class="terms-grid">
+          <div class="term-block">
+            <h3>Watermarks</h3>
+            <p>
+              Alle heruntergeladenen Videos sind frei von Watermarks. Sie können sie unmittelbar nach dem Kauf verwenden.
+            </p>
+          </div>
+
+          <div class="term-block">
+            <h3>Quellcode</h3>
+            <p>
+              Sie erhalten nur die kompilierten Video-Dateien, nicht den Quellcode oder die Roh-Dateien.
+            </p>
+          </div>
+
+          <div class="term-block">
+            <h3>Geistige Eigentumsrechte</h3>
+            <p>
+              Alle Videos bleiben Eigentum von stockvideo.de. Sie erhalten eine Lizenz zur Nutzung, nicht den Besitz.
+            </p>
+          </div>
+
+          <div class="term-block">
+            <h3>Keine Rückerstattung</h3>
+            <p>
+              Downloads sind endgültig. Nach dem Herunterladen werden keine Rückerstattungen gewährt.
+            </p>
+          </div>
+
+          <div class="term-block">
+            <h3>Zuschreibung</h3>
+            <p>
+              Eine Zuschreibung ist nicht erforderlich, wird aber sehr geschätzt.
+            </p>
+          </div>
+
+          <div class="term-block">
+            <h3>Illegale Nutzung</h3>
+            <p>
+              Videos dürfen nicht für illegale, rassistische, sexuelle oder anderweitig unangemessene Inhalte verwendet werden.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Support Section -->
+      <section class="support-section">
+        <h2>Haben Sie noch Fragen?</h2>
+        <p>
+          Unsere Lizenzmodelle sind flexibel und fairpreis. Wenn Sie unsicher sind, welche Lizenz die richtige für Sie ist, kontaktieren Sie uns gerne. Unser Team hilft Ihnen gerne weiter.
+        </p>
+        <a href="/kontakt" class="btn-support">Zum Kontaktformular</a>
+      </section>
+    </div>
+  </div>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .lizenzen-container {
+    background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+    padding: 4rem 0;
+    color: #e5e7eb;
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .lizenzen-container h1 {
+    font-size: 2.5rem;
+    color: #1473e6;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .license-overview {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .intro-text {
+    font-size: 1.1rem;
+    color: #d1d5db;
+    line-height: 1.8;
+  }
+
+  .license-table-section,
+  .license-detail,
+  .general-terms,
+  .support-section {
+    margin-bottom: 3rem;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+    color: #1473e6;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+  }
+
+  .license-tagline {
+    font-size: 1rem;
+    color: #9ca3af;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+
+  /* License Table */
+  .table-wrapper {
+    overflow-x: auto;
+    background: rgba(30, 41, 59, 0.4);
+    border-radius: 8px;
+    border: 1px solid rgba(20, 115, 230, 0.1);
+  }
+
+  .license-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .license-table thead {
+    background: rgba(20, 115, 230, 0.1);
+  }
+
+  .license-table th {
+    padding: 1.5rem;
+    text-align: left;
+    color: #1473e6;
+    font-weight: 600;
+    border-bottom: 2px solid rgba(20, 115, 230, 0.2);
+  }
+
+  .license-table th span.price {
+    display: block;
+    font-size: 0.85rem;
+    color: #9ca3af;
+    margin-top: 0.25rem;
+  }
+
+  .license-table td {
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid rgba(20, 115, 230, 0.1);
+    color: #d1d5db;
+  }
+
+  .license-table .feature-name {
+    font-weight: 600;
+    color: #e5e7eb;
+  }
+
+  .license-table .check {
+    color: #22c55e;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  .license-table .cross {
+    color: #ef4444;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  .license-table tbody tr:hover {
+    background: rgba(20, 115, 230, 0.05);
+  }
+
+  /* Detail Sections */
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .detail-block {
+    background: rgba(30, 41, 59, 0.6);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid rgba(20, 115, 230, 0.1);
+  }
+
+  .detail-block.highlight {
+    grid-column: 1 / -1;
+    border-color: rgba(20, 115, 230, 0.3);
+    background: rgba(20, 115, 230, 0.05);
+  }
+
+  .detail-block h3 {
+    color: #1473e6;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+
+  .detail-block ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .detail-block li {
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+    color: #d1d5db;
+  }
+
+  .detail-block li:before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: #1473e6;
+  }
+
+  /* General Terms */
+  .terms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .term-block {
+    background: rgba(30, 41, 59, 0.6);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid rgba(20, 115, 230, 0.1);
+    transition: all 0.2s;
+  }
+
+  .term-block:hover {
+    border-color: rgba(20, 115, 230, 0.3);
+    background: rgba(30, 41, 59, 0.8);
+  }
+
+  .term-block h3 {
+    color: #1473e6;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .term-block p {
+    margin: 0;
+    color: #d1d5db;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* Support Section */
+  .support-section {
+    background: rgba(20, 115, 230, 0.1);
+    border: 2px solid rgba(20, 115, 230, 0.3);
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .support-section h2 {
+    margin-bottom: 1rem;
+  }
+
+  .support-section p {
+    color: #d1d5db;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .btn-support {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    background: #1473e6;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+
+  .btn-support:hover {
+    background: #0d59cc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(20, 115, 230, 0.3);
+  }
+
+  @media (max-width: 768px) {
+    .lizenzen-container {
+      padding: 2rem 0;
+    }
+
+    .lizenzen-container h1 {
+      font-size: 1.8rem;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+    }
+
+    .detail-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .detail-block.highlight {
+      grid-column: 1;
+    }
+
+    .terms-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .license-table {
+      font-size: 0.85rem;
+    }
+
+    .license-table th,
+    .license-table td {
+      padding: 0.75rem;
+    }
+
+    .support-section {
+      padding: 1.5rem;
+    }
+  }
+</style>

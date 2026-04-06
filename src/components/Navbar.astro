@@ -1,0 +1,270 @@
+---
+import config from '../data/config.json';
+
+interface Props {
+  variant?: 'light' | 'dark';
+}
+
+const { variant = 'dark' } = Astro.props;
+const { navLinks } = config;
+---
+
+<nav class="navbar" data-variant={variant}>
+  <div class="navbar__container container">
+    <a href="/" class="navbar__logo">
+      <svg class="navbar__logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="4" fill="#1473e6"/>
+        <path d="M13 10.5V21.5L22 16L13 10.5Z" fill="white"/>
+      </svg>
+      <span class="navbar__logo-text">stockvideo.de</span>
+    </a>
+
+    <button class="navbar__burger" aria-label="Toggle menu" id="navbar-burger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <div class="navbar__nav" id="navbar-menu">
+      <div class="navbar__nav-links">
+        {navLinks.map((link) => (
+          <a href={link.href} class="navbar__link">{link.label}</a>
+        ))}
+      </div>
+
+      <div class="navbar__actions">
+        <a href="/kontakt" class="btn btn-ghost">Kontakt</a>
+        <a href="/lizenzieren" class="btn btn-primary">Videos lizenzieren</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: var(--header-height);
+    background-color: rgba(8, 8, 8, 0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .navbar__container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  .navbar__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--color-text);
+    font-weight: 700;
+    font-size: 1.125rem;
+    transition: color var(--transition);
+  }
+
+  .navbar__logo:hover {
+    color: var(--color-accent);
+  }
+
+  .navbar__logo-icon {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+
+  .navbar__logo-text {
+    display: none;
+  }
+
+  @media (min-width: 480px) {
+    .navbar__logo-text {
+      display: inline;
+    }
+  }
+
+  .navbar__nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .navbar__nav-links {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .navbar__link {
+    padding: 0.5rem 0.75rem;
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    transition: all var(--transition);
+    position: relative;
+  }
+
+  .navbar__link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--color-accent);
+    transition: width var(--transition);
+  }
+
+  .navbar__link:hover {
+    color: var(--color-accent);
+  }
+
+  .navbar__link:hover::after {
+    width: 100%;
+  }
+
+  .navbar__actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .navbar__burger {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+  }
+
+  .navbar__burger span {
+    width: 24px;
+    height: 2px;
+    background-color: var(--color-text);
+    border-radius: 1px;
+    transition: all var(--transition);
+  }
+
+  .navbar__burger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+  }
+
+  .navbar__burger.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .navbar__burger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+  }
+
+  @media (max-width: 900px) {
+    .navbar__burger {
+      display: flex;
+    }
+
+    .navbar__nav {
+      position: absolute;
+      top: var(--header-height);
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--color-bg);
+      border-bottom: 1px solid var(--color-border);
+      flex-direction: column;
+      gap: 0;
+      align-items: stretch;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .navbar__nav.active {
+      max-height: 400px;
+    }
+
+    .navbar__nav-links {
+      flex-direction: column;
+      gap: 0;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .navbar__link {
+      padding: 0.875rem 1.5rem;
+      border-left: 3px solid transparent;
+    }
+
+    .navbar__link::after {
+      display: none;
+    }
+
+    .navbar__link:hover {
+      background-color: var(--color-bg-2);
+      border-left-color: var(--color-accent);
+    }
+
+    .navbar__actions {
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 1rem;
+      width: 100%;
+    }
+
+    .navbar__actions .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .navbar__logo {
+      gap: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .navbar__logo-icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    .navbar__nav-links {
+      padding: 0.75rem 0;
+    }
+
+    .navbar__link {
+      padding: 0.75rem 1.25rem;
+      font-size: 0.875rem;
+    }
+
+    .navbar__actions {
+      padding: 0.75rem;
+    }
+  }
+</style>
+
+<script>
+  const burger = document.getElementById('navbar-burger');
+  const menu = document.getElementById('navbar-menu');
+
+  if (burger && menu) {
+    burger.addEventListener('click', () => {
+      burger.classList.toggle('active');
+      menu.classList.toggle('active');
+    });
+
+    const navLinks = menu.querySelectorAll('.navbar__link');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        burger.classList.remove('active');
+        menu.classList.remove('active');
+      });
+    });
+  }
+</script>
