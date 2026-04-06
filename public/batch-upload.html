@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>stockvideo.de - Batch Video Upload</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f0f; color: #e0e0e0; min-height: 100vh; }
+  .header { background: #1a1a1a; border-bottom: 1px solid #2a2a2a; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .header h1 { font-size: 18px; color: #fff; }
+  .header a { color: #4ecdc4; text-decoration: none; font-size: 14px; }
+  .container { max-width: 900px; margin: 0 auto; padding: 24px; }
+
+  .config-section { background: #1a1a1a; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+  .config-section h3 { margin-bottom: 12px; font-size: 15px; color: #ccc; }
+  .config-row { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; }
+  .config-row label { min-width: 120px; font-size: 13px; color: #999; }
+  .config-row input { flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #333; background: #222; color: #fff; font-size: 13px; }
+  .config-row input:focus { outline: none; border-color: #4ecdc4; }
+  .btn { padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; font-weight: 500; }
+  .btn-save { background: #4ecdc4; color: #000; }
+  .btn-save:hover { background: #3dbdb5; }
+
+  .dropzone { border: 2px dashed #333; border-radius: 12px; padding: 48px; text-align: center; margin-bottom: 20px; transition: all 0.2s; cursor: pointer; }
+  .dropzone:hover, .dropzone.dragover { border-color: #4ecdc4; background: rgba(78, 205, 196, 0.05); }
+  .dropzone h2 { font-size: 20px; margin-bottom: 8px; color: #fff; }
+  .dropzone p { color: #777; font-size: 14px; }
+  .dropzone input[type="file"] { display: none; }
+
+  .queue { display: flex; flex-direction: column; gap: 8px; }
+  .queue-item { background: #1a1a1a; border-radius: 8px; padding: 14px 16px; display: flex; align-items: center; gap: 14px; }
+  .queue-item .filename { flex: 1; font-size: 14px; font-weight: 500; }
+  .queue-item .filesize { color: #777; font-size: 12px; min-width: 70px; text-align: right; }
+  .queue-item .status { font-size: 12px; min-width: 140px; text-align: right; }
+  .status-waiting { color: #777; }
+  .status-uploading { color: #f9c846; }
+  .status-preview { color: #c084fc; }
+  .status-done { color: #4ecdc4; }
+  .status-error { color: #f44; }
+
+  .progress-bar { width: 100%; height: 4px; background: #333; border-radius: 2px; overflow: hidden; margin-top: 6px; }
+  .progress-fill { height: 100%; background: #4ecdc4; transition: width 0.3s; width: 0%; }
+
+  .actions { display: flex; gap: 12px; margin: 20px 0; }
+  .btn-upload { background: #4ecdc4; color: #000; padding: 12px 24px; font-size: 15px; font-weight: 600; border-radius: 8px; border: none; cursor: pointer; }
+  .btn-upload:hover { background: #3dbdb5; }
+  .btn-upload:disabled { background: #333; color: #666; cursor: not-allowed; }
+  .btn-clear { background: #333; color: #ccc; padding: 12px 24px; font-size: 15px; border-radius: 8px; border: none; cursor: pointer; }
+
+  .log { background: #111; border: 1px solid #222; border-radius: 8px; padding: 12px 16px; font-family: monospace; font-size: 12px; color: #888; max-height: 200px; overflow-y: auto; margin-top: 20px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Batch Video Upload</h1>
+  <a href="/panel">&larr; Zur&uuml;ck zum Admin Panel</a>
+</div>
+
+<div class="container">
+  <div class="config-section">
+    <h3>Einstellungen</h3>
+    <div class="config-row">
+      <label>Worker URL:</label>
+      <input type="text" id="cfgWorkerUrl" value="https://stockvideo-upload.rende.workers.dev" />
+    </div>
+    <div class="config-row">
+      <label>Upload Key:</label>
+      <input type="password" id="cfgUploadKey" placeholder="UPLOAD_SECRET aus Cloudflare Worker" />
+    </div>
+    <div class="config-row">
+      <label>GitHub Token:</label>
+      <input type="password" id="cfgGithubToken" placeholder="GitHub PAT f&uuml;r videos.json Update" />
+    </div>
+    <div class="config-row">
+      <label>GitHub Repo:</label>
+      <input type="text" id="cfgGithubRepo" value="y4wmmzqcjc-dotcom/stockvideo-de" />
+    </div>
+    <div style="margin-top:12px;">
+      <button class="btn btn-save" onclick="saveConfig()">Einstellungen speichern</button>
+      <span id="cfgStatus" style="margin-left:12px;font-size:12px;color:#4ecdc4;"></span>
+    </div>
+  </div>
+
+  <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+    <h2>Videos hierher ziehen</h2>
+    <p>oder klicken zum Ausw&auml;hlen &middot; MP4, MOV, WEBM &middot; Mehrere Dateien m&ouml;glich</p>
+    <input type="file" id="fileInput" multiple accept="video/*" onchange="handleFiles(this.files)" />
+  </div>
+
+  <div class="actions">
+    <button class="btn-upload" id="btnUpload" onclick="startBatchUpload()" disabled>Alle hochladen &amp; Vorschau generieren</button>
+    <button class="btn-clear" onclick="clearQueue()">Liste leeren</button>
+  </div>
+
+  <div class="queue" id="queue"></div>
+  <div class="log" id="log"></div>
+</div>
+
+<script>
+// ===== CONFIG =====
+function loadConfig() {
+  const cfg = JSON.parse(localStorage.getItem('batchUploadConfig') || '{}');
+  document.getElementById('cfgWorkerUrl').value = cfg.workerUrl || 'https://stockvideo-upload.rende.workers.dev';
+  document.getElementById('cfgUploadKey').value = cfg.uploadKey || '';
+  document.getElementById('cfgGithubRepo').value = cfg.githubRepo || 'y4wmmzqcjc-dotcom/stockvideo-de';
+
+  // Try to load GitHub token from admin panel settings
+  try {
+    const adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{}');
+    if (adminSettings.gitHub && adminSettings.gitHub.token) {
+      document.getElementById('cfgGithubToken').value = cfg.githubToken || adminSettings.gitHub.token;
+    } else {
+      document.getElementById('cfgGithubToken').value = cfg.githubToken || '';
+    }
+  } catch(e) {
+    document.getElementById('cfgGithubToken').value = cfg.githubToken || '';
+  }
+}
+
+function saveConfig() {
+  const cfg = {
+    workerUrl: document.getElementById('cfgWorkerUrl').value.replace(/\\/+$/, ''),
+    uploadKey: document.getElementById('cfgUploadKey').value,
+    githubToken: document.getElementById('cfgGithubToken').value,
+    githubRepo: document.getElementById('cfgGithubRepo').value
+  };
+  localStorage.setItem('batchUploadConfig', JSON.stringify(cfg));
+  document.getElementById('cfgStatus').textContent = 'Gespeichert!';
+  setTimeout(function() { document.getElementById('cfgStatus').textContent = ''; }, 2000);
+}
+
+function getConfig() {
+  return JSON.parse(localStorage.getItem('batchUploadConfig') || '{}');
+}
+
+// ===== FILE QUEUE =====
+var fileQueue = [];
+
+function handleFiles(files) {
+  for (var i = 0; i < files.length; i++) {
+    var f = files[i];
+    if (!f.type.startsWith('video/')) continue;
+    fileQueue.push({
+      file: f,
+      name: f.name,
+      size: f.size,
+      status: 'waiting',
+      progress: 0
+    });
+  }
+  renderQueue();
+  document.getElementById('btnUpload').disabled = fileQueue.length === 0;
+}
+
+function renderQueue() {
+  var html = '';
+  fileQueue.forEach(function(item, idx) {
+    var statusClass = 'status-' + item.status;
+    var statusText = {
+      waiting: 'Wartend',
+      uploading: 'Original hochladen...',
+      preview: 'Vorschau generieren...',
+      'preview-upload': 'Vorschau hochladen...',
+      done: 'Fertig',
+      error: 'Fehler: ' + (item.error || '')
+    }[item.status] || item.status;
+
+    html += '<div class="queue-item" id="qi-' + idx + '">';
+    html += '<div class="filename">' + item.name + '</div>';
+    html += '<div class="filesize">' + formatSize(item.size) + '</div>';
+    html += '<div class="status ' + statusClass + '">' + statusText + '</div>';
+    html += '</div>';
+    if (item.status === 'uploading' || item.status === 'preview' || item.status === 'preview-upload') {
+      html += '<div class="progress-bar"><div class="progress-fill" style="width:' + item.progress + '%"></div></div>';
+    }
+  });
+  document.getElementById('queue').innerHTML = html;
+}
+
+function clearQueue() {
+  fileQueue = [];
+  renderQueue();
+  document.getElementById('btnUpload').disabled = true;
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / 1048576).toFixed(1) + ' MB';
+}
+
+// ===== DRAG & DROP =====
+var dz = document.getElementById('dropzone');
+dz.addEventListener('dragover', function(e) { e.preventDefault(); dz.classList.add('dragover'); });
+dz.addEventListener('dragleave', function() { dz.classList.remove('dragover'); });
+dz.addEventListener('drop', function(e) {
+  e.preventDefault();
+  dz.classList.remove('dragover');
+  handleFiles(e.dataTransfer.files);
+});
+
+// ===== UPLOAD =====
+async function startBatchUpload() {
+  var cfg = getConfig();
+  if (!cfg.uploadKey) { alert('Bitte zuerst den Upload Key eingeben!'); return; }
+
+  document.getElementById('btnUpload').disabled = true;
+  log('Batch-Upload gestartet: ' + fileQueue.length + ' Dateien');
+
+  for (var i = 0; i < fileQueue.length; i++) {
+    if (fileQueue[i].status === 'done') continue;
+    await processFile(i, cfg);
+  }
+
+  log('Alle Dateien verarbeitet!');
+  document.getElementById('btnUpload').disabled = false;
+}
+
+async function processFile(idx, cfg) {
+  var item = fileQueue[idx];
+  var baseName = item.name.replace(/\\.[^.]+$/, '').toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
+
+  try {
+    // 1. Upload original to R2
+    item.status = 'uploading';
+    item.progress = 0;
+    renderQueue();
+    log('Uploading original: ' + item.name + ' -> videos/' + baseName + '.mp4');
+
+    await uploadToR2(cfg, 'videos/' + baseName + '.mp4', item.file, function(pct) {
+      item.progress = pct;
+      renderQueue();
+    });
+
+    log('Original hochgeladen: videos/' + baseName + '.mp4');
+
+    // 2. Generate SD preview with watermark
+    item.status = 'preview';
+    item.progress = 0;
+    renderQueue();
+    log('Generiere SD-Vorschau mit Wasserzeichen...');
+
+    var previewBlob = await generatePreview(item.file, function(pct) {
+      item.progress = pct;
+      renderQueue();
+    });
+
+    log('Vorschau generiert: ' + formatSize(previewBlob.size));
+
+    // 3. Upload preview to R2
+    item.status = 'preview-upload';
+    item.progress = 0;
+    renderQueue();
+
+    await uploadToR2(cfg, 'previews/' + baseName + '.mp4', previewBlob, function(pct) {
+      item.progress = pct;
+      renderQueue();
+    });
+
+    log('Vorschau hochgeladen: previews/' + baseName + '.mp4');
+
+    // 4. Store R2 keys for later
+    item.r2Key = 'videos/' + baseName + '.mp4';
+    item.r2Preview = 'previews/' + baseName + '.mp4';
+    item.baseName = baseName;
+    item.status = 'done';
+    item.progress = 100;
+    renderQueue();
+
+  } catch (err) {
+    item.status = 'error';
+    item.error = err.message;
+    renderQueue();
+    log('FEHLER bei ' + item.name + ': ' + err.message);
+  }
+}
+
+async function uploadToR2(cfg, key, fileOrBlob, onProgress) {
+  var response = await fetch(cfg.workerUrl + '/' + key, {
+    method: 'PUT',
+    headers: {
+      'X-Upload-Key': cfg.uploadKey,
+      'Content-Type': 'video/mp4'
+    },
+    body: fileOrBlob
+  });
+
+  if (!response.ok) {
+    throw new Error('Upload fehlgeschlagen: HTTP ' + response.status);
+  }
+
+  if (onProgress) onProgress(100);
+  return await response.json();
+}
+
+// ===== SD PREVIEW GENERATION =====
+function generatePreview(videoFile, onProgress) {
+  return new Promise(function(resolve, reject) {
+    var video = document.createElement('video');
+    video.muted = true;
+    video.playsInline = true;
+
+    var url = URL.createObjectURL(videoFile);
+    video.src = url;
+
+    video.onloadedmetadata = function() {
+      // Target: 480p, maintain aspect ratio
+      var scale = 480 / video.videoHeight;
+      var w = Math.round(video.videoWidth * scale);
+      var h = 480;
+      // Make even dimensions
+      w = w % 2 === 0 ? w : w + 1;
+
+      var canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      var ctx = canvas.getContext('2d');
+
+      var stream = canvas.captureStream(25);
+
+      // Try to capture audio too
+      try {
+        var audioCtx = new AudioContext();
+        var source = audioCtx.createMediaElementSource(video);
+        var dest = audioCtx.createMediaStreamDestination();
+        source.connect(dest);
+        source.connect(audioCtx.destination);
+        dest.stream.getAudioTracks().forEach(function(t) { stream.addTrack(t); });
+      } catch(e) { /* no audio track, ok */ }
+
+      var recorder = new MediaRecorder(stream, {
+        mimeType: 'video/webm;codecs=vp8',
+        videoBitsPerSecond: 800000
+      });
+
+      var chunks = [];
+      recorder.ondataavailable = function(e) { if (e.data.size > 0) chunks.push(e.data); };
+
+      recorder.onstop = function() {
+        URL.revokeObjectURL(url);
+        var blob = new Blob(chunks, { type: 'video/webm' });
+        resolve(blob);
+      };
+
+      recorder.onerror = function(e) { reject(new Error('Recorder error')); };
+
+      // Start recording
+      recorder.start();
+      video.currentTime = 0;
+      video.play();
+
+      var duration = video.duration;
+
+      function drawFrame() {
+        if (video.ended || video.paused) {
+          recorder.stop();
+          return;
+        }
+
+        // Draw video frame
+        ctx.drawImage(video, 0, 0, w, h);
+
+        // Draw watermarks
+        ctx.save();
+        // Center watermark
+        ctx.font = (h * 0.08) + 'px Arial';
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('stockvideo.de', w / 2, h / 2);
+
+        // Top-left watermark
+        ctx.font = (h * 0.05) + 'px Arial';
+        ctx.fillStyle = 'rgba(255,255,255,0.2)';
+        ctx.fillText('stockvideo.de', w * 0.25, h * 0.25);
+
+        // Bottom-right watermark
+        ctx.fillText('stockvideo.de', w * 0.75, h * 0.75);
+        ctx.restore();
+
+        // Update progress
+        if (onProgress && duration > 0) {
+          onProgress(Math.min(99, Math.round((video.currentTime / duration) * 100)));
+        }
+
+        requestAnimationFrame(drawFrame);
+      }
+
+      video.onplay = function() { drawFrame(); };
+      video.onended = function() { recorder.stop(); };
+    };
+
+    video.onerror = function() {
+      URL.revokeObjectURL(url);
+      reject(new Error('Video konnte nicht geladen werden'));
+    };
+  });
+}
+
+// ===== LOG =====
+function log(msg) {
+  var el = document.getElementById('log');
+  var time = new Date().toLocaleTimeString('de-DE');
+  el.textContent += '[' + time + '] ' + msg + '\n';
+  el.scrollTop = el.scrollHeight;
+}
+
+// ===== INIT =====
+loadConfig();
+log('Batch Upload bereit. Konfiguration laden und Videos hierher ziehen.');
+</script>
+</body>
+</html>
