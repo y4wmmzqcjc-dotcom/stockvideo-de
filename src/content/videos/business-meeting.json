@@ -1,0 +1,17 @@
+{
+  "title": "Business Meeting im modernen Büro",
+  "description": "Professionelle 4K-Aufnahmen eines Business-Meetings in einem modernen Großraumbüro. Zeigt Teamarbeit, Präsentationen am Whiteboard und Diskussionen am Konferenztisch. Ideal für Unternehmenskommunikation und Werbespots.",
+  "category": "business",
+  "tags": ["business", "meeting", "büro", "team", "professionell", "konferenz"],
+  "duration": 45,
+  "resolution": "4K",
+  "fps": 25,
+  "thumbnail": "/thumbnails/business-meeting.jpg",
+  "preview": "/previews/business-meeting.mp4",
+  "price": {
+    "web": 29,
+    "broadcast": 79,
+    "extended": 199
+  },
+  "featured": true
+}

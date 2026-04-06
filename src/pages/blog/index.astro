@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+
+const posts = [
+  {
+    slug: 'stock-video-richtig-einsetzen',
+    title: 'Stock-Videos richtig einsetzen: 7 Tipps für professionelle Ergebnisse',
+    excerpt: 'Wie du lizenzfreie Stock-Videos so in deine Projekte integrierst, dass sie wie maßgeschneidert wirken — und nicht wie Füllmaterial.',
+    date: '2024-03-15',
+    readTime: '5 Min.',
+    category: 'Ratgeber',
+  },
+  {
+    slug: 'lizenzen-erklaert',
+    title: 'Video-Lizenzen einfach erklärt: Web, Broadcast und Extended',
+    excerpt: 'Du weißt nicht, welche Lizenz du brauchst? Wir erklären alle drei Lizenztypen verständlich — mit konkreten Anwendungsbeispielen.',
+    date: '2024-02-28',
+    readTime: '4 Min.',
+    category: 'Lizenzen',
+  },
+  {
+    slug: '4k-warum-wichtig',
+    title: 'Warum 4K bei Stock-Videos heute Standard sein sollte',
+    excerpt: 'Full-HD reicht doch noch, oder? Wir erklären, warum du bei neuen Projekten auf 4K setzen solltest — und was du dabei beachten musst.',
+    date: '2024-02-10',
+    readTime: '3 Min.',
+    category: 'Technik',
+  },
+];
+
+const formatDate = (s: string) =>
+  new Date(s).toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<BaseLayout
+  title="Blog — stockvideo.de"
+  description="Tipps und Wissen rund um Stock-Videos, Lizenzen und professionelle Videoproduktion. Ratgeber von stockvideo.de."
+>
+  <Navbar />
+  <main class="section">
+    <div class="container" style="max-width: 840px;">
+      <div style="text-align: center; margin-bottom: 48px;">
+        <div class="badge badge-accent" style="margin-bottom: 12px;">Blog</div>
+        <h1>Wissen & Tipps</h1>
+        <p style="margin-top: 12px; max-width: 500px; margin-left: auto; margin-right: auto;">
+          Praxisratgeber zu Stock-Videos, Lizenzen und professioneller Videoproduktion.
+        </p>
+      </div>
+
+      <div class="blog-list">
+        {posts.map(post => (
+          <article class="blog-card card">
+            <div class="blog-card__body">
+              <div class="blog-card__meta">
+                <span class="badge badge-muted">{post.category}</span>
+                <span class="blog-card__date">{formatDate(post.date)}</span>
+                <span class="blog-card__read">{post.readTime} Lesezeit</span>
+              </div>
+              <h2 class="blog-card__title">
+                <a href={`/blog/${post.slug}`}>{post.title}</a>
+              </h2>
+              <p class="blog-card__excerpt">{post.excerpt}</p>
+              <a href={`/blog/${post.slug}`} class="blog-card__more">Weiterlesen →</a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+.blog-list { display: flex; flex-direction: column; gap: 20px; }
+
+.blog-card__body { padding: 28px 32px; }
+.blog-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.blog-card__date, .blog-card__read {
+  font-size: 0.8125rem;
+  color: var(--color-text-faint);
+}
+
+.blog-card__title { font-size: 1.25rem; margin-bottom: 10px; }
+.blog-card__title a { color: var(--color-text); }
+.blog-card__title a:hover { color: var(--color-accent); }
+
+.blog-card__excerpt { font-size: 0.9rem; line-height: 1.7; }
+
+.blog-card__more {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+.blog-card__more:hover { color: var(--color-accent-hover); }
+</style>

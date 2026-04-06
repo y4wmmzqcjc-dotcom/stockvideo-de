@@ -1,0 +1,108 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Impressum — stockvideo.de"
+  description="Impressum von stockvideo.de gemäß § 5 TMG."
+  noIndex={true}
+>
+  <Navbar />
+  <main class="section">
+    <div class="container" style="max-width: 680px;">
+      <h1>Impressum</h1>
+      <p style="color: var(--color-accent); font-size: 0.85rem; margin-top: 8px; margin-bottom: 32px;">
+        ⚠️ Platzhalter — bitte mit echten Daten befüllen vor Go-Live
+      </p>
+
+      <div class="legal-block">
+        <h2>Angaben gemäß § 5 TMG</h2>
+        <p>
+          [Vorname Nachname / Firmenname]<br />
+          [Straße und Hausnummer]<br />
+          [PLZ Ort]<br />
+          Deutschland
+        </p>
+      </div>
+
+      <div class="legal-block">
+        <h2>Kontakt</h2>
+        <p>
+          Telefon: [Telefonnummer]<br />
+          E-Mail: <a href="mailto:info@stockvideo.de">info@stockvideo.de</a>
+        </p>
+      </div>
+
+      <div class="legal-block">
+        <h2>Umsatzsteuer-ID</h2>
+        <p>
+          Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:<br />
+          [USt-IdNr.]
+        </p>
+      </div>
+
+      <div class="legal-block">
+        <h2>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h2>
+        <p>
+          [Vorname Nachname]<br />
+          [Adresse wie oben]
+        </p>
+      </div>
+
+      <div class="legal-block">
+        <h2>Streitschlichtung</h2>
+        <p>
+          Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:
+          <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer">
+            https://ec.europa.eu/consumers/odr/
+          </a>.<br />
+          Unsere E-Mail-Adresse finden Sie oben im Impressum.
+        </p>
+        <p style="margin-top: 12px;">
+          Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer
+          Verbraucherschlichtungsstelle teilzunehmen.
+        </p>
+      </div>
+
+      <div class="legal-block">
+        <h2>Haftung für Inhalte</h2>
+        <p>
+          Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den
+          allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht
+          verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen
+          zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.
+        </p>
+      </div>
+
+      <div class="legal-block">
+        <h2>Urheberrecht</h2>
+        <p>
+          Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen
+          Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der
+          Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.
+        </p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+.legal-block {
+  margin-bottom: 36px;
+}
+.legal-block h2 {
+  font-size: 1.0625rem;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+.legal-block p {
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--color-text-muted);
+}
+.legal-block a { color: var(--color-accent); }
+</style>
