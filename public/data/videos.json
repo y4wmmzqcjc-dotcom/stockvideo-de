@@ -21,9 +21,9 @@
     "duration": 10,
     "fps": 25,
     "prices": {
-      "web": 29.99,
-      "standard": 79.99,
-      "premium": 149.99
+      "web": 5,
+      "standard": 15,
+      "premium": 22
     },
     "thumbnail": "",
     "r2Key": "videos/kuhbraun.mp4",
