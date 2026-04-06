@@ -1,0 +1,194 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import VideoGrid from '../../components/VideoGrid.astro';
+import categories from '../../data/categories.json';
+import videos from '../../data/videos.json';
+
+export async function getStaticPaths() {
+  return categories.map((category) => ({
+    params: { category: category.slug },
+    props: { category },
+  }));
+}
+
+const { category } = Astro.props;
+const categoryVideos = videos.filter((video) => video.category === category.id);
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Kategorien', href: '/kategorien' },
+  { label: category.label, href: `/kategorie/${category.slug}` },
+];
+---
+
+<BaseLayout
+  title={`${category.label} Videos`}
+  description={category.description}
+>
+  <Navbar />
+
+  <div class="category-container">
+    <div class="container">
+      <!-- Breadcrumb Navigation -->
+      <nav class="breadcrumb">
+        {breadcrumbs.map((crumb, index) => (
+          <>
+            {index > 0 && <span class="separator">/</span>}
+            <a href={crumb.href}>{crumb.label}</a>
+          </>
+        ))}
+      </nav>
+
+      <!-- Category Header -->
+      <div class="category-header">
+        <h1>{category.label}</h1>
+        <p>{category.description}</p>
+        <div class="category-stats">
+          <span>{categoryVideos.length} Videos</span>
+        </div>
+      </div>
+
+      <!-- Video Grid -->
+      <div class="videos-section">
+        {categoryVideos.length > 0 ? (
+          <VideoGrid videos={categoryVideos} />
+        ) : (
+          <div class="no-videos">
+            <p>Derzeit sind keine Videos in dieser Kategorie verfügbar.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+
+  <!-- Schema.org Markup -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "{category.label} Videos",
+      "description": "{category.description}",
+      "url": "https://stockvideo.de/kategorie/{category.slug}",
+      "mainEntity": {
+        "@type": "VideoObjectCollection",
+        "numberOfItems": {categoryVideos.length}
+      }
+    }
+  </script>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .category-container {
+    background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+    padding: 2rem 0 4rem;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    color: #9ca3af;
+  }
+
+  .breadcrumb a {
+    color: #1473e6;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .breadcrumb a:hover {
+    color: #0d59cc;
+    text-decoration: underline;
+  }
+
+  .breadcrumb .separator {
+    margin: 0 0.5rem;
+    color: #4b5563;
+  }
+
+  .category-header {
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+
+  .category-header h1 {
+    font-size: 2.5rem;
+    color: #1473e6;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+  }
+
+  .category-header p {
+    font-size: 1.1rem;
+    color: #9ca3af;
+    margin-bottom: 1.5rem;
+  }
+
+  .category-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .category-stats span {
+    background: rgba(20, 115, 230, 0.1);
+    color: #1473e6;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    border: 1px solid rgba(20, 115, 230, 0.2);
+  }
+
+  .videos-section {
+    margin-bottom: 3rem;
+  }
+
+  .no-videos {
+    text-align: center;
+    padding: 3rem;
+    background: rgba(30, 41, 59, 0.6);
+    border-radius: 8px;
+    border: 1px solid rgba(20, 115, 230, 0.1);
+  }
+
+  .no-videos p {
+    color: #9ca3af;
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .category-container {
+      padding: 1rem 0 2rem;
+    }
+
+    .category-header h1 {
+      font-size: 1.8rem;
+    }
+
+    .category-header p {
+      font-size: 1rem;
+    }
+
+    .category-stats {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .breadcrumb {
+      font-size: 0.85rem;
+    }
+  }
+</style>

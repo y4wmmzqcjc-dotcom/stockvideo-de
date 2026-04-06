@@ -1,0 +1,533 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import config from '../../data/config.json';
+import categories from '../../data/categories.json';
+import videos from '../../data/videos.json';
+
+export async function getStaticPaths() {
+  return videos.map((video) => ({
+    params: { slug: video.slug },
+    props: { video },
+  }));
+}
+
+const { video } = Astro.props;
+const category = categories.find((c) => c.id === video.category);
+const relatedVideos = videos.filter(
+  (v) => v.category === video.category && v.id !== video.id
+).slice(0, 4);
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Videos', href: '/' },
+  { label: category?.label, href: `/kategorie/${category?.slug}` },
+  { label: video.title, href: `/video/${video.slug}` },
+];
+
+const pricingTiers = config.pricing;
+---
+
+<BaseLayout
+  title={video.title}
+  description={video.description}
+  ogImage={video.thumbnail}
+  type="video.other"
+>
+  <Navbar />
+
+  <div class="video-detail-container">
+    <div class="container">
+      <!-- Breadcrumb Navigation -->
+      <nav class="breadcrumb">
+        {breadcrumbs.map((crumb, index) => (
+          <>
+            {index > 0 && <span class="separator">/</span>}
+            <a href={crumb.href}>{crumb.label}</a>
+          </>
+        ))}
+      </nav>
+
+      <div class="video-grid-layout">
+        <!-- Video Hero Section -->
+        <div class="video-hero">
+          <div class="video-thumbnail">
+            <img src={video.thumbnail} alt={video.title} />
+            <div class="play-button">
+              <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                <circle cx="30" cy="30" r="29" stroke="#1473e6" stroke-width="2" />
+                <path d="M25 20L25 40L40 30Z" fill="#1473e6" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Video Info -->
+          <div class="video-info">
+            <div class="category-badge">{category?.label}</div>
+            <h1>{video.title}</h1>
+            <p class="description">{video.description}</p>
+
+            <!-- Technical Details -->
+            <div class="details-grid">
+              <div class="detail">
+                <span class="label">Auflösung</span>
+                <span class="value">{video.resolution}</span>
+              </div>
+              <div class="detail">
+                <span class="label">Länge</span>
+                <span class="value">{video.duration}</span>
+              </div>
+              <div class="detail">
+                <span class="label">ID</span>
+                <span class="value">#{video.id}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pricing and CTA Section -->
+        <div class="pricing-cta">
+          <h2>Lizenzoptionen</h2>
+
+          <!-- Pricing Table -->
+          <div class="pricing-options">
+            {pricingTiers.map((tier) => (
+              <div class="pricing-card" class:list={{ popular: tier.popular }}>
+                <div class="pricing-header">
+                  <h3>{tier.name}</h3>
+                  <div class="price">
+                    <span class="amount">{tier.price}</span>
+                    <span class="currency">EUR</span>
+                  </div>
+                </div>
+                <p class="description">{tier.description}</p>
+                <ul class="features-list">
+                  {tier.features.map((feature) => (
+                    <li>{feature}</li>
+                  ))}
+                </ul>
+                <button class="btn-license" data-tier={tier.name}>
+                  {tier.cta}
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <!-- CTA Button -->
+          <div class="main-cta">
+            <a href={`/lizenzieren?video=${video.id}`} class="btn-lizenzieren">
+              Video Lizenzieren
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related Videos -->
+      {relatedVideos.length > 0 && (
+        <section class="related-videos">
+          <h2>Ähnliche Videos</h2>
+          <div class="related-grid">
+            {relatedVideos.map((relatedVideo) => (
+              <a href={`/video/${relatedVideo.slug}`} class="related-card">
+                <div class="thumbnail">
+                  <img src={relatedVideo.thumbnail} alt={relatedVideo.title} />
+                </div>
+                <div class="details">
+                  <h3>{relatedVideo.title}</h3>
+                  <span class="price">ab {relatedVideo.price} EUR</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  </div>
+
+  <!-- Schema.org VideoObject Markup -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoObject",
+      "name": "{video.title}",
+      "description": "{video.description}",
+      "thumbnailUrl": "{video.thumbnail}",
+      "uploadDate": new Date().toISOString(),
+      "duration": "PT{video.duration.replace(':', 'M')}S",
+      "content": {
+        "@type": "CreativeWork",
+        "url": "https://stockvideo.de/video/{video.slug}"
+      }
+    }
+  </script>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .video-detail-container {
+    background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+    padding: 2rem 0 4rem;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    color: #9ca3af;
+  }
+
+  .breadcrumb a {
+    color: #1473e6;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .breadcrumb a:hover {
+    color: #0d59cc;
+    text-decoration: underline;
+  }
+
+  .breadcrumb .separator {
+    margin: 0 0.5rem;
+    color: #4b5563;
+  }
+
+  .video-grid-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .video-hero {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .video-thumbnail {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #000;
+    border: 1px solid rgba(20, 115, 230, 0.2);
+  }
+
+  .video-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .play-button:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  .video-info {
+    background: rgba(30, 41, 59, 0.6);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid rgba(20, 115, 230, 0.1);
+  }
+
+  .category-badge {
+    display: inline-block;
+    background: rgba(20, 115, 230, 0.1);
+    color: #1473e6;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    border: 1px solid rgba(20, 115, 230, 0.2);
+  }
+
+  .video-info h1 {
+    font-size: 2rem;
+    color: #e5e7eb;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+  }
+
+  .description {
+    color: #d1d5db;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    font-size: 1rem;
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .detail {
+    display: flex;
+    flex-direction: column;
+    background: rgba(15, 23, 42, 0.5);
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid rgba(20, 115, 230, 0.1);
+  }
+
+  .detail .label {
+    color: #9ca3af;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .detail .value {
+    color: #1473e6;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  /* Pricing Section */
+  .pricing-cta {
+    background: rgba(30, 41, 59, 0.6);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid rgba(20, 115, 230, 0.1);
+    height: fit-content;
+    position: sticky;
+    top: 2rem;
+  }
+
+  .pricing-cta h2 {
+    font-size: 1.5rem;
+    color: #1473e6;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+  }
+
+  .pricing-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .pricing-card {
+    background: rgba(15, 23, 42, 0.6);
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid rgba(20, 115, 230, 0.1);
+    transition: all 0.2s;
+  }
+
+  .pricing-card:hover {
+    border-color: rgba(20, 115, 230, 0.3);
+    background: rgba(15, 23, 42, 0.8);
+  }
+
+  .pricing-card.popular {
+    border-color: #1473e6;
+    background: rgba(20, 115, 230, 0.1);
+  }
+
+  .pricing-header {
+    margin-bottom: 0.75rem;
+  }
+
+  .pricing-header h3 {
+    color: #e5e7eb;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+  }
+
+  .price .amount {
+    color: #1473e6;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .price .currency {
+    color: #9ca3af;
+    font-size: 0.8rem;
+  }
+
+  .pricing-card .description {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    margin-bottom: 0.75rem;
+  }
+
+  .features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.75rem 0;
+    font-size: 0.8rem;
+  }
+
+  .features-list li {
+    padding: 0.25rem 0;
+    color: #d1d5db;
+  }
+
+  .features-list li:before {
+    content: '✓ ';
+    color: #22c55e;
+    margin-right: 0.35rem;
+  }
+
+  .btn-license {
+    width: 100%;
+    padding: 0.5rem;
+    background: rgba(20, 115, 230, 0.1);
+    color: #1473e6;
+    border: 1px solid #1473e6;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.75rem;
+  }
+
+  .btn-license:hover {
+    background: #1473e6;
+    color: #fff;
+  }
+
+  .main-cta {
+    margin-top: 1rem;
+  }
+
+  .btn-lizenzieren {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    background: #1473e6;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.2s;
+    font-size: 1rem;
+  }
+
+  .btn-lizenzieren:hover {
+    background: #0d59cc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(20, 115, 230, 0.3);
+  }
+
+  /* Related Videos */
+  .related-videos {
+    margin-top: 3rem;
+  }
+
+  .related-videos h2 {
+    font-size: 1.8rem;
+    color: #1473e6;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .related-card {
+    background: rgba(30, 41, 59, 0.6);
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: 1px solid rgba(20, 115, 230, 0.1);
+  }
+
+  .related-card:hover {
+    border-color: rgba(20, 115, 230, 0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(20, 115, 230, 0.15);
+  }
+
+  .related-card .thumbnail {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .related-card .thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .related-card .details {
+    padding: 1rem;
+  }
+
+  .related-card h3 {
+    font-size: 0.95rem;
+    color: #e5e7eb;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .related-card .price {
+    color: #1473e6;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .video-grid-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .pricing-cta {
+      position: static;
+    }
+
+    .video-info h1 {
+      font-size: 1.5rem;
+    }
+
+    .details-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .related-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .breadcrumb {
+      font-size: 0.85rem;
+    }
+  }
+</style>

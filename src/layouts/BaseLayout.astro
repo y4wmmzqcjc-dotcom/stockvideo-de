@@ -1,0 +1,85 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  canonicalUrl?: string;
+  noIndex?: boolean;
+  type?: string;
+}
+
+const {
+  title,
+  description = "Hochwertige lizenzfreie Videos für kommerzielle und private Projekte",
+  ogImage = "https://stockvideo.de/og-image.png",
+  canonicalUrl = new URL(Astro.url.pathname, Astro.site),
+  noIndex = false,
+  type = "website"
+} = Astro.props as Props;
+
+const fullTitle = `${title} | stockvideo.de`;
+const siteUrl = "https://stockvideo.de";
+---
+
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+    
+    <link rel="canonical" href={canonicalUrl} />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content="stockvideo.de" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    
+    <!-- Schema.org Organization -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "stockvideo.de",
+        "url": "https://stockvideo.de",
+        "logo": "https://stockvideo.de/logo.png",
+        "description": "Hochwertige lizenzfreie Videos für kommerzielle und private Projekte",
+        "sameAs": [
+          "https://www.facebook.com/stockvideo.de",
+          "https://www.twitter.com/stockvideo",
+          "https://www.instagram.com/stockvideo.de"
+        ],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "Customer Service",
+          "email": "kontakt@stockvideo.de",
+          "telephone": "+49 (0) 30 12345678"
+        }
+      }
+    </script>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Font Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

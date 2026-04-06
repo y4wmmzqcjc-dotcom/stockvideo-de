@@ -1,0 +1,216 @@
+---
+import config from '../data/config.json';
+
+const { siteName, siteDescription, footerColumns, contactEmail } = config;
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="footer__content container">
+    <div class="footer__info">
+      <div class="footer__logo">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="4" fill="#1473e6"/>
+          <path d="M13 10.5V21.5L22 16L13 10.5Z" fill="white"/>
+        </svg>
+        <span>{siteName}</span>
+      </div>
+      <p class="footer__description">{siteDescription}</p>
+    </div>
+
+    <div class="footer__columns">
+      {footerColumns.map((column) => (
+        <div class="footer__column">
+          <h4 class="footer__column-title">{column.title}</h4>
+          <ul class="footer__column-links">
+            {column.links.map((link) => (
+              <li>
+                <a href={link.href}>{link.label}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="footer__bottom">
+    <div class="container">
+      <div class="footer__bottom-content">
+        <p class="footer__copyright">
+          &copy; {currentYear} {siteName}. Alle Rechte vorbehalten.
+        </p>
+        <div class="footer__contact">
+          <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background-color: var(--color-bg-2);
+    border-top: 1px solid var(--color-border);
+    margin-top: 6rem;
+  }
+
+  .footer__content {
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+    gap: 4rem;
+    padding: 3rem 1.5rem;
+  }
+
+  .footer__info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .footer__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--color-text);
+  }
+
+  .footer__logo svg {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+
+  .footer__description {
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    margin: 0;
+    max-width: 300px;
+  }
+
+  .footer__columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2rem;
+  }
+
+  .footer__column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .footer__column-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .footer__column-links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .footer__column-links a {
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    transition: color var(--transition);
+  }
+
+  .footer__column-links a:hover {
+    color: var(--color-accent);
+  }
+
+  .footer__bottom {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-top: 1px solid var(--color-border);
+    padding: 2rem 1.5rem;
+  }
+
+  .footer__bottom-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .footer__copyright {
+    color: var(--color-text-faint);
+    font-size: 0.875rem;
+    margin: 0;
+  }
+
+  .footer__contact {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .footer__contact a {
+    color: var(--color-text-faint);
+    font-size: 0.875rem;
+    transition: color var(--transition);
+  }
+
+  .footer__contact a:hover {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 768px) {
+    .footer__content {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding: 2rem 1.5rem;
+    }
+
+    .footer__columns {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .footer__bottom-content {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+    }
+
+    .footer__contact {
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .footer__content {
+      padding: 1.5rem 1rem;
+      gap: 1.5rem;
+    }
+
+    .footer__columns {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .footer__column-title {
+      font-size: 0.9375rem;
+    }
+
+    .footer__column-links a {
+      font-size: 0.875rem;
+    }
+
+    .footer__bottom {
+      padding: 1.5rem 1rem;
+    }
+
+    .footer__copyright,
+    .footer__contact a {
+      font-size: 0.75rem;
+    }
+  }
+</style>

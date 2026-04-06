@@ -1,0 +1,109 @@
+---
+import VideoCard from './VideoCard.astro';
+
+interface Video {
+  id: number;
+  slug: string;
+  title: string;
+  description: string;
+  category: string;
+  resolution: string;
+  duration: string;
+  thumbnail: string;
+  price: number;
+  featured?: boolean;
+}
+
+interface Props {
+  videos: Video[];
+  title?: string;
+  showMore?: boolean;
+}
+
+const { videos, title, showMore = false } = Astro.props;
+---
+
+<section class="video-grid-section">
+  {title && (
+    <div class="section-header container">
+      <h2>{title}</h2>
+    </div>
+  )}
+
+  <div class="container">
+    <div class="video-grid">
+      {videos.map((video) => (
+        <VideoCard
+          slug={video.slug}
+          title={video.title}
+          description={video.description}
+          category={video.category}
+          resolution={video.resolution}
+          duration={video.duration}
+          thumbnail={video.thumbnail}
+          price={video.price}
+          featured={video.featured}
+        />
+      ))}
+    </div>
+
+    {showMore && (
+      <div class="video-grid-more">
+        <a href="/videos" class="btn btn-secondary">Alle Videos ansehen</a>
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .video-grid-section {
+    padding: 3rem 0;
+  }
+
+  .section-header {
+    margin-bottom: 2rem;
+  }
+
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    width: 100%;
+  }
+
+  .video-grid-more {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+  }
+
+  @media (max-width: 768px) {
+    .video-grid-section {
+      padding: 2rem 0;
+    }
+
+    .section-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .video-grid {
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .video-grid-more {
+      margin-top: 2rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .video-grid-section {
+      padding: 1.5rem 0;
+    }
+
+    .video-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+</style>
