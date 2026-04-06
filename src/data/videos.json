@@ -2,15 +2,25 @@
   {
     "id": 1,
     "slug": "goldener-sonnenuntergang-alpen",
-    "title": "Goldener Sonnenuntergang \u00fcber den Alpen mit Wolkenmeer",
-    "description": "Atemberaubende 4K-Aufnahme eines Sonnenuntergangs \u00fcber den Alpen mit dramatischem Wolkenmeer und goldenem Licht.",
+    "title": "Goldener Sonnenuntergang über den Alpen mit Wolkenmeer",
+    "description": "Atemberaubende 4K-Aufnahme eines Sonnenuntergangs über den Alpen mit dramatischem Wolkenmeer und goldenem Licht.",
     "category": "natur",
-    "tags": ["natur", "alpen", "sonnenuntergang", "berge", "wolken"],
+    "tags": [
+      "natur",
+      "alpen",
+      "sonnenuntergang",
+      "berge",
+      "wolken"
+    ],
     "resolution": "4K",
     "duration": "0:18",
     "fps": 30,
     "price": 79,
-    "prices": { "web": 29, "standard": 49, "premium": 79 },
+    "prices": {
+      "web": 29,
+      "standard": 49,
+      "premium": 79
+    },
     "gradient": "linear-gradient(135deg,#2d4a3e,#1a3528,#0f2018)",
     "thumbnail": "",
     "r2Key": "videos/goldener-sonnenuntergang-alpen.mp4",
@@ -19,15 +29,25 @@
   {
     "id": 2,
     "slug": "buero-team-strategiebesprechung",
-    "title": "Professionelles B\u00fcro-Team bei der Strategiebesprechung",
-    "description": "4K-Aufnahme eines professionellen Teams bei der Strategiebesprechung im modernen B\u00fcro.",
+    "title": "Professionelles Büro-Team bei der Strategiebesprechung",
+    "description": "4K-Aufnahme eines professionellen Teams bei der Strategiebesprechung im modernen Büro.",
     "category": "business",
-    "tags": ["business", "buero", "team", "meeting", "strategie"],
+    "tags": [
+      "business",
+      "buero",
+      "team",
+      "meeting",
+      "strategie"
+    ],
     "resolution": "4K",
     "duration": "0:24",
     "fps": 30,
     "price": 89,
-    "prices": { "web": 29, "standard": 49, "premium": 89 },
+    "prices": {
+      "web": 29,
+      "standard": 49,
+      "premium": 89
+    },
     "gradient": "linear-gradient(135deg,#2a3042,#1c2033,#0f1320)",
     "thumbnail": "",
     "r2Key": "videos/buero-team-strategiebesprechung.mp4",
@@ -36,15 +56,25 @@
   {
     "id": 3,
     "slug": "drohnenflug-steilkueste-sonnenaufgang",
-    "title": "Drohnenflug \u00fcber dramatische Steilk\u00fcste bei Sonnenaufgang",
-    "description": "Spektakul\u00e4rer 4K-Drohnenflug \u00fcber eine dramatische Steilk\u00fcste bei Sonnenaufgang.",
+    "title": "Drohnenflug über dramatische Steilküste bei Sonnenaufgang",
+    "description": "Spektakulärer 4K-Drohnenflug über eine dramatische Steilküste bei Sonnenaufgang.",
     "category": "aerial",
-    "tags": ["aerial", "drohne", "kueste", "sonnenaufgang", "meer"],
+    "tags": [
+      "aerial",
+      "drohne",
+      "kueste",
+      "sonnenaufgang",
+      "meer"
+    ],
     "resolution": "4K",
     "duration": "0:32",
     "fps": 30,
     "price": 99,
-    "prices": { "web": 29, "standard": 49, "premium": 99 },
+    "prices": {
+      "web": 29,
+      "standard": 49,
+      "premium": 99
+    },
     "gradient": "linear-gradient(135deg,#1a3545,#0f2535,#051a28)",
     "thumbnail": "",
     "r2Key": "videos/drohnenflug-steilkueste-sonnenaufgang.mp4",
@@ -56,12 +86,22 @@
     "title": "Abstrakte leuchtende Partikel auf dunklem Hintergrund",
     "description": "HD-Aufnahme abstrakter leuchtender Partikel auf dunklem Hintergrund.",
     "category": "abstrakt",
-    "tags": ["abstrakt", "partikel", "motion", "effekt", "dunkel"],
+    "tags": [
+      "abstrakt",
+      "partikel",
+      "motion",
+      "effekt",
+      "dunkel"
+    ],
     "resolution": "HD",
     "duration": "0:15",
     "fps": 30,
     "price": 39,
-    "prices": { "web": 19, "standard": 29, "premium": 39 },
+    "prices": {
+      "web": 19,
+      "standard": 29,
+      "premium": 39
+    },
     "gradient": "linear-gradient(135deg,#3a2045,#2a1535,#180a22)",
     "thumbnail": "",
     "r2Key": "videos/abstrakte-partikel-dunkel.mp4",
@@ -70,15 +110,25 @@
   {
     "id": 5,
     "slug": "berlin-friedrichstrasse-nacht-zeitraffer",
-    "title": "Berlin Friedrichstra\u00dfe Verkehr bei Nacht Zeitraffer",
-    "description": "4K-Zeitraffer des Verkehrs auf der Berliner Friedrichstra\u00dfe bei Nacht.",
+    "title": "Berlin Friedrichstraße Verkehr bei Nacht Zeitraffer",
+    "description": "4K-Zeitraffer des Verkehrs auf der Berliner Friedrichstraße bei Nacht.",
     "category": "urban",
-    "tags": ["urban", "berlin", "nacht", "verkehr", "zeitraffer"],
+    "tags": [
+      "urban",
+      "berlin",
+      "nacht",
+      "verkehr",
+      "zeitraffer"
+    ],
     "resolution": "4K",
     "duration": "0:20",
     "fps": 30,
     "price": 69,
-    "prices": { "web": 29, "standard": 49, "premium": 69 },
+    "prices": {
+      "web": 29,
+      "standard": 49,
+      "premium": 69
+    },
     "gradient": "linear-gradient(135deg,#252528,#18181a,#0a0a0c)",
     "thumbnail": "",
     "r2Key": "videos/berlin-friedrichstrasse-nacht-zeitraffer.mp4",
@@ -90,12 +140,22 @@
     "title": "Moderner Serverraum mit blauem LED-Licht",
     "description": "4K-Aufnahme eines modernen Serverraums mit blauem LED-Licht.",
     "category": "tech",
-    "tags": ["tech", "server", "rechenzentrum", "led", "blau"],
+    "tags": [
+      "tech",
+      "server",
+      "rechenzentrum",
+      "led",
+      "blau"
+    ],
     "resolution": "4K",
     "duration": "0:12",
     "fps": 30,
     "price": 69,
-    "prices": { "web": 29, "standard": 49, "premium": 69 },
+    "prices": {
+      "web": 29,
+      "standard": 49,
+      "premium": 69
+    },
     "gradient": "linear-gradient(135deg,#152540,#0a1a30,#050e1c)",
     "thumbnail": "",
     "r2Key": "videos/serverraum-blaues-led-licht.mp4",
@@ -104,15 +164,25 @@
   {
     "id": 7,
     "slug": "wolken-timelapse-berggipfel",
-    "title": "Dramatischer Wolken-Timelapse \u00fcber Berggipfeln",
-    "description": "4K-Timelapse dramatischer Wolkenformationen \u00fcber Berggipfeln.",
+    "title": "Dramatischer Wolken-Timelapse über Berggipfeln",
+    "description": "4K-Timelapse dramatischer Wolkenformationen über Berggipfeln.",
     "category": "timelapse",
-    "tags": ["timelapse", "wolken", "berge", "dramatisch", "natur"],
+    "tags": [
+      "timelapse",
+      "wolken",
+      "berge",
+      "dramatisch",
+      "natur"
+    ],
     "resolution": "4K",
     "duration": "0:28",
     "fps": 30,
     "price": 89,
-    "prices": { "web": 29, "standard": 49, "premium": 89 },
+    "prices": {
+      "web": 29,
+      "standard": 49,
+      "premium": 89
+    },
     "gradient": "linear-gradient(135deg,#354050,#252e3a,#141a22)",
     "thumbnail": "",
     "r2Key": "videos/wolken-timelapse-berggipfel.mp4",
@@ -121,15 +191,25 @@
   {
     "id": 8,
     "slug": "geschaeftsfrau-laptop-konzentriert",
-    "title": "Junge Gesch\u00e4ftsfrau arbeitet konzentriert am Laptop",
-    "description": "HD-Aufnahme einer jungen Gesch\u00e4ftsfrau bei konzentrierter Arbeit am Laptop.",
+    "title": "Junge Geschäftsfrau arbeitet konzentriert am Laptop",
+    "description": "HD-Aufnahme einer jungen Geschäftsfrau bei konzentrierter Arbeit am Laptop.",
     "category": "menschen",
-    "tags": ["menschen", "geschaeftsfrau", "laptop", "arbeit", "buero"],
+    "tags": [
+      "menschen",
+      "geschaeftsfrau",
+      "laptop",
+      "arbeit",
+      "buero"
+    ],
     "resolution": "HD",
     "duration": "0:10",
     "fps": 30,
     "price": 49,
-    "prices": { "web": 19, "standard": 29, "premium": 49 },
+    "prices": {
+      "web": 19,
+      "standard": 29,
+      "premium": 49
+    },
     "gradient": "linear-gradient(135deg,#3a2828,#2a1a1a,#180e0e)",
     "thumbnail": "",
     "r2Key": "videos/geschaeftsfrau-laptop-konzentriert.mp4",
@@ -141,12 +221,22 @@
     "title": "Herbstlicher Mischwald Luftaufnahme mit Morgennebel",
     "description": "4K-Luftaufnahme eines herbstlichen Mischwalds mit Morgennebel.",
     "category": "natur",
-    "tags": ["natur", "herbst", "wald", "nebel", "luftaufnahme"],
+    "tags": [
+      "natur",
+      "herbst",
+      "wald",
+      "nebel",
+      "luftaufnahme"
+    ],
     "resolution": "4K",
     "duration": "0:22",
     "fps": 30,
     "price": 79,
-    "prices": { "web": 29, "standard": 49, "premium": 79 },
+    "prices": {
+      "web": 29,
+      "standard": 49,
+      "premium": 79
+    },
     "gradient": "linear-gradient(135deg,#3a3520,#2a2510,#1a1808)",
     "thumbnail": "",
     "r2Key": "videos/herbstwald-luftaufnahme-morgennebel.mp4",
@@ -158,12 +248,22 @@
     "title": "Startup-Team feiert Erfolg im modernen Coworking Space",
     "description": "HD-Aufnahme eines Startup-Teams das Erfolg im modernen Coworking Space feiert.",
     "category": "business",
-    "tags": ["business", "startup", "team", "erfolg", "coworking"],
+    "tags": [
+      "business",
+      "startup",
+      "team",
+      "erfolg",
+      "coworking"
+    ],
     "resolution": "HD",
     "duration": "0:30",
     "fps": 30,
     "price": 59,
-    "prices": { "web": 19, "standard": 29, "premium": 59 },
+    "prices": {
+      "web": 19,
+      "standard": 29,
+      "premium": 59
+    },
     "gradient": "linear-gradient(135deg,#2a2a3a,#1a1a2a,#0e0e18)",
     "thumbnail": "",
     "r2Key": "videos/startup-team-erfolg-coworking.mp4",
@@ -175,12 +275,22 @@
     "title": "Roboterarm in automatisierter Produktionslinie Nahaufnahme",
     "description": "4K-Nahaufnahme eines Roboterarms in einer automatisierten Produktionslinie.",
     "category": "tech",
-    "tags": ["tech", "roboter", "produktion", "industrie", "automation"],
+    "tags": [
+      "tech",
+      "roboter",
+      "produktion",
+      "industrie",
+      "automation"
+    ],
     "resolution": "4K",
     "duration": "0:16",
     "fps": 30,
     "price": 89,
-    "prices": { "web": 29, "standard": 49, "premium": 89 },
+    "prices": {
+      "web": 29,
+      "standard": 49,
+      "premium": 89
+    },
     "gradient": "linear-gradient(135deg,#1a2838,#101c2a,#08121c)",
     "thumbnail": "",
     "r2Key": "videos/roboterarm-produktionslinie.mp4",
@@ -192,15 +302,56 @@
     "title": "Nordsee Brandung aus der Vogelperspektive bei Sturm",
     "description": "4K-Drohnenaufnahme der Nordsee-Brandung aus der Vogelperspektive bei Sturm.",
     "category": "aerial",
-    "tags": ["aerial", "nordsee", "brandung", "sturm", "drohne"],
+    "tags": [
+      "aerial",
+      "nordsee",
+      "brandung",
+      "sturm",
+      "drohne"
+    ],
     "resolution": "4K",
     "duration": "0:25",
     "fps": 30,
     "price": 99,
-    "prices": { "web": 29, "standard": 49, "premium": 99 },
+    "prices": {
+      "web": 29,
+      "standard": 49,
+      "premium": 99
+    },
     "gradient": "linear-gradient(135deg,#153040,#0a2030,#051520)",
     "thumbnail": "",
     "r2Key": "videos/nordsee-brandung-vogelperspektive-sturm.mp4",
     "featured": false
+  },
+  {
+    "id": 13,
+    "slug": "braune-kuh-auf-der-weide-4k-stock-video",
+    "title": "Braune Kuh auf der Weide – 4K Stock Video",
+    "description": "Nahaufnahme einer braunen Kuh auf einer grünen Weide. Perfekt für Landwirtschaft, Natur und Tierfilme. 4K Ultra HD Auflösung.",
+    "category": "natur",
+    "tags": [
+      "kuh",
+      "tier",
+      "landwirtschaft",
+      "weide",
+      "natur",
+      "4k",
+      "braun",
+      "rind",
+      "farm"
+    ],
+    "resolution": "4K",
+    "duration": "0:10",
+    "fps": 25,
+    "price": 29.99,
+    "prices": {
+      "web": 29.99,
+      "standard": 79.99,
+      "premium": 149.99
+    },
+    "gradient": "linear-gradient(135deg,#1a5e1a,#3d8b3d,#0f2018)",
+    "thumbnail": "",
+    "r2Key": "videos/kuhbraun.mp4",
+    "featured": true
   }
 ]
