@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "id": "1775517468983",
+    "label": "Tiere",
+    "slug": "tiere",
+    "description": "Tiere",
+    "icon": "",
+    "order": 0
+  }
+]
