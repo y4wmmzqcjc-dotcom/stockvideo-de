@@ -1,0 +1,18 @@
+---
+import config from '../data/config.json';
+---
+<nav class="topbar">
+  <div class="topbar-inner">
+    <a href="/" class="logo-area">
+      <div class="logo-mark">SV</div>
+      <div class="logo-text">stockvideo<span>.de</span></div>
+    </a>
+    <div class="nav-links">
+      {config.nav.links.map(link => (
+        <a class="nav-link" href={link.href}>{link.label}</a>
+      ))}
+      <a class="btn-outline" href="/kontakt" style="margin-left:8px">Anmelden</a>
+      <a class="btn-primary" href="/preise">{config.nav.ctaText}</a>
+    </div>
+  </div>
+</nav>

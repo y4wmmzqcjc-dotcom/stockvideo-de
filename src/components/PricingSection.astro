@@ -1,0 +1,17 @@
+---
+import config from '../data/config.json';
+---
+<section class="pricing">
+  <h2>Faire Preise, transparent</h2>
+  <p>Einzelkauf oder spare mit Videopaketen — du entscheidest.</p>
+  <div class="pricing-grid">
+    {config.pricing.map(p => (
+      <div class={`price-card${p.featured ? ' featured' : ''}`}>
+        <div class="price-label">{p.label}</div>
+        <div class="price-res">{p.res}</div>
+        <div class="price-amount">{p.price} &euro;</div>
+        <div class="price-desc">{p.desc}</div>
+      </div>
+    ))}
+  </div>
+</section>

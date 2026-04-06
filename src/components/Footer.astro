@@ -1,0 +1,23 @@
+---
+import config from '../data/config.json';
+---
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo-text">stockvideo<span style="color:var(--accent)">.de</span></div>
+      <p>Hochwertige, lizenzfreie Stock Videos aus Deutschland. Für Kreative, Agenturen und Unternehmen.</p>
+    </div>
+    {config.footer.columns.map(col => (
+      <div>
+        <div class="footer-col-title">{col.title}</div>
+        {col.links.map(link => (
+          <a class="footer-link" href={link.href}>{link.label}</a>
+        ))}
+      </div>
+    ))}
+  </div>
+  <div class="footer-bottom">
+    <span>{config.footer.copyright}</span>
+    <span>Made in Germany &#x1F1E9;&#x1F1EA;</span>
+  </div>
+</footer>

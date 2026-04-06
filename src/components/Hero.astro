@@ -1,0 +1,14 @@
+---
+import config from '../data/config.json';
+---
+<section class="hero">
+  <h1 class="hero-title">{config.hero.title}</h1>
+  <p class="hero-sub" set:html={config.hero.subtitle.replace('\n', '<br>')} />
+  <div class="search-wrap">
+    <div class="search-bar">
+      <span class="search-icon">&#x2315;</span>
+      <input id="searchInput" class="search-input" type="text" placeholder={config.hero.searchPlaceholder}>
+      <button class="search-tag">Video &#x25BE;</button>
+    </div>
+  </div>
+</section>

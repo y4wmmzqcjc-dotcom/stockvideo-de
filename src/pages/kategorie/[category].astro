@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Topbar from '../../components/Topbar.astro';
+import Footer from '../../components/Footer.astro';
+import categories from '../../data/categories.json';
+import videos from '../../data/videos.json';
+
+export function getStaticPaths() {
+  return categories
+    .filter(c => c.slug !== 'all')
+    .map(c => ({ params: { category: c.slug } }));
+}
+
+const { category } = Astro.params;
+const cat = categories.find(c => c.slug === category);
+const catVideos = videos.filter(v => v.category === category);
+---
+<BaseLayout title={cat?.label || category} description={`${cat?.label} — Lizenzfreie Stock Videos bei stockvideo.de`}>
+  <Topbar />
+  <div class="page-content" style="max-width:var(--max-w);">
+    <h1>{cat?.label}</h1>
+    <p>{catVideos.length} Videos in dieser Kategorie</p>
+  </div>
+  <div class="video-grid" style="max-width:var(--max-w);margin:0 auto;padding:2px;">
+    {catVideos.map(v => (
+      <a href={`/video/${v.slug}`} class="video-card" style="animation:none;opacity:1;transform:none;">
+        <div class="video-thumb">
+          <div class="thumb-bg" style={`background:${v.gradient}`}></div>
+          <div class="thumb-texture" style="background:radial-gradient(circle at 25% 35%,rgba(255,255,255,0.06) 0%,transparent 45%),radial-gradient(circle at 75% 65%,rgba(255,255,255,0.04) 0%,transparent 35%),radial-gradient(circle at 50% 80%,rgba(255,255,255,0.02) 0%,transparent 50%)"></div>
+          <div class="play-btn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="#1b1b1b"><path d="M4 2l10 6-10 6z"/></svg>
+          </div>
+          <span class={`res-badge ${v.resolution === '4K' ? 'res-4k' : 'res-hd'}`}>{v.resolution}</span>
+          <span class="dur-badge">{v.duration}</span>
+        </div>
+        <div class="card-info">
+          <span class="card-title">{v.title}</span>
+          <span class="card-price">{v.price} &euro;</span>
+        </div>
+      </a>
+    ))}
+  </div>
+  <Footer />
+</BaseLayout>

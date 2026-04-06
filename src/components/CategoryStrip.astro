@@ -1,0 +1,8 @@
+---
+import categories from '../data/categories.json';
+---
+<div class="cat-strip" id="catStrip">
+  {categories.map((cat, i) => (
+    <button class={`cat-chip${i === 0 ? ' active' : ''}`} data-cat={cat.dataCat}>{cat.label}</button>
+  ))}
+</div>

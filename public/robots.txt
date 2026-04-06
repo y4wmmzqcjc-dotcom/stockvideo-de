@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin.html
+
+Sitemap: https://stockvideo.de/sitemap-index.xml
+Sitemap: https://stockvideo.de/video-sitemap.xml

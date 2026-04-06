@@ -1,0 +1,104 @@
+---
+import videos from '../data/videos.json';
+---
+<section>
+  <div class="video-grid" id="videoGrid"></div>
+  <div class="no-results" id="noResults">
+    <div class="no-results-icon">&#x2315;</div>
+    <h3>Keine Ergebnisse</h3>
+    <p>Versuch einen anderen Suchbegriff oder wähle eine Kategorie.</p>
+  </div>
+</section>
+
+<script define:vars={{ videos }}>
+const catLabels = {
+  all:"Alle Videos", natur:"Natur & Landschaft", business:"Business & Büro",
+  tech:"Technologie", aerial:"Aerial & Drohne", urban:"Stadt & Architektur",
+  menschen:"Menschen & Lifestyle", abstrakt:"Abstrakt & Motion", timelapse:"Timelapse"
+};
+
+let state = { search:"", cat:"all", res:"all", sort:"relevant" };
+
+function render() {
+  let list = videos.filter(v => {
+    const mc = state.cat === "all" || v.category === state.cat;
+    const ms = v.title.toLowerCase().includes(state.search.toLowerCase());
+    const mr = state.res === "all" || (state.res === "4k" && v.resolution === "4K") || (state.res === "hd" && v.resolution === "HD");
+    return mc && ms && mr;
+  });
+
+  if (state.sort === "price-asc")  list.sort((a,b) => a.price - b.price);
+  if (state.sort === "price-desc") list.sort((a,b) => b.price - a.price);
+
+  const grid = document.getElementById("videoGrid");
+  const noRes = document.getElementById("noResults");
+  const countEl = document.getElementById("resultCount");
+
+  const catText = state.cat !== "all" ? ` in \u201E${catLabels[state.cat]}\u201C` : "";
+  countEl.textContent = `${list.length} Ergebnis${list.length !== 1 ? "se" : ""}${catText}`;
+
+  if (list.length === 0) {
+    grid.innerHTML = "";
+    noRes.classList.add("visible");
+    return;
+  }
+  noRes.classList.remove("visible");
+
+  grid.innerHTML = list.map(v => `
+    <div class="video-card">
+      <div class="video-thumb">
+        <div class="thumb-bg" style="background:${v.gradient}"></div>
+        <div class="thumb-texture" style="background:
+          radial-gradient(circle at 25% 35%,rgba(255,255,255,0.06) 0%,transparent 45%),
+          radial-gradient(circle at 75% 65%,rgba(255,255,255,0.04) 0%,transparent 35%),
+          radial-gradient(circle at 50% 80%,rgba(255,255,255,0.02) 0%,transparent 50%)
+        "></div>
+        <div class="play-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="#1b1b1b"><path d="M4 2l10 6-10 6z"/></svg>
+        </div>
+        <span class="res-badge ${v.resolution === '4K' ? 'res-4k' : 'res-hd'}">${v.resolution}</span>
+        <span class="dur-badge">${v.duration}</span>
+        <div class="card-actions">
+          <button class="action-btn" title="Merkliste">\u2661</button>
+          <button class="action-btn" title="Warenkorb">+</button>
+          <button class="action-btn" title="\u00c4hnliche">\u22ef</button>
+        </div>
+      </div>
+      <div class="card-info">
+        <span class="card-title">${v.title}</span>
+        <span class="card-price">${v.price} \u20ac</span>
+      </div>
+    </div>
+  `).join("");
+}
+
+document.getElementById("searchInput")?.addEventListener("input", e => {
+  state.search = e.target.value;
+  render();
+});
+
+document.getElementById("catStrip")?.addEventListener("click", e => {
+  const btn = e.target.closest(".cat-chip");
+  if (!btn) return;
+  state.cat = btn.dataset.cat;
+  document.querySelectorAll(".cat-chip").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  render();
+});
+
+document.getElementById("resFilterBtn")?.addEventListener("click", e => {
+  const btn = e.target;
+  const cycle = { all:"4k", "4k":"hd", hd:"all" };
+  state.res = cycle[state.res];
+  btn.textContent = state.res === "all" ? "Auflösung" : state.res === "4k" ? "Nur 4K" : "Nur HD";
+  btn.classList.toggle("active", state.res !== "all");
+  render();
+});
+
+document.getElementById("sortSelect")?.addEventListener("change", e => {
+  state.sort = e.target.value;
+  render();
+});
+
+render();
+</script>
