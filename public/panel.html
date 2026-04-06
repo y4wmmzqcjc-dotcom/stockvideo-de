@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>stockvideo.de - Admin Panel</title>
+    <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+    <div id="authScreen" class="auth-screen">
+        <div class="auth-container">
+            <div class="auth-box">
+                <h1 class="auth-title">Admin Panel</h1>
+                <p class="auth-subtitle" id="authSubtitle">stockvideo.de</p>
+
+                <div id="authStep1">
+                    <div id="passwordAlert"></div>
+                    <div class="form-group">
+                        <label class="form-label">Passwort</label>
+                        <input type="password" id="passwordInput" class="form-input" placeholder="Admin-Passwort eingeben" autofocus>
+                    </div>
+                    <button class="button button-primary" onclick="auth.verifyPassword()">Weiter</button>
+                </div>
+
+                <div id="authStep2" style="display: none;">
+                    <div id="otpAlert"></div>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+                        6-stelliger Code wurde an <strong id="otpEmail"></strong> gesendet
+                    </p>
+                    <div class="form-group">
+                        <label class="form-label">Authentifizierungs-Code</label>
+                        <input type="text" id="otpInput" class="form-input" placeholder="000000" maxlength="6" inputmode="numeric">
+                    </div>
+                    <button class="button button-primary" onclick="auth.verifyOTP()">Anmelden</button>
+                    <button class="button button-secondary" style="width: 100%;" onclick="auth.backToPassword()">Zurück</button>
+                    <p style="color: var(--text-secondary); font-size: 0.75rem; text-align: center; margin-top: 1rem;">
+                        Versuche: <span id="otpAttempts">0</span>/3
+                    </p>
+                </div>
+
+                <div id="lockoutDisplay" style="display: none;">
+                    <div class="lockout-display">
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">🔒</div>
+                        <p style="margin-bottom: 1rem;">Account gesperrt</p>
+                        <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Zu viele fehlgeschlagene Versuche</p>
+                        <div class="lockout-timer" id="lockoutTimer">15:00</div>
+                        <p style="font-size: 0.875rem; color: var(--text-secondary);">Bitte warten Sie vor dem erneuten Versuch</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminLayout" class="admin-layout" style="display: none;">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">Admin</div>
+                <div class="sidebar-subtitle">stockvideo.de</div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-item active" onclick="admin.switchPanel('dashboard')">
+                    <span>📊</span> Dashboard
+                </div>
+                <div class="nav-item" onclick="admin.switchPanel('videos')">
+                    <span>🎬</span> Videos verwalten
+                </div>
+                <div class="nav-item" onclick="admin.switchPanel('categories')">
+                    <span>📁</span> Kategorien
+                </div>
+                <div class="nav-item" onclick="admin.switchPanel('content')">
+                    <span>📝</span> Seiteninhalte
+                </div>
+                <div class="nav-item" onclick="admin.switchPanel('design')">
+                    <span>🎨</span> Design
+                </div>
+                <div class="nav-item" onclick="admin.switchPanel('settings')">
+                    <span>⚙️</span> Einstellungen
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="logout-button" onclick="auth.logout()">Abmelden</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Dashboard Panel -->
+            <div id="panel-dashboard" class="content-panel active">
+                <div class="content-header">
+                    <h1 class="content-title">Dashboard</h1>
+                    <p class="content-subtitle">Überblick über Ihr System</p>
+                </div>
+
+                <div style="padding: 2rem;">
+                    <div id="dashboardAlert"></div>
+
+                    <div class="grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Videos</div>
+                            <div class="stat-value" id="statVideos">0</div>
+                            <div class="stat-meta">Insgesamt verfügbar</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Kategorien</div>
+                            <div class="stat-value" id="statCategories">0</div>
+                            <div class="stat-meta">Erstellt</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Letzte Änderung</div>
+                            <div class="stat-value" id="statLastChange" style="font-size: 1.25rem;">-</div>
+                            <div class="stat-meta" id="statLastChangeTime"></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Deploy Status</div>
+                            <div class="stat-value" id="statDeployStatus" style="font-size: 1.5rem;">-</div>
+                            <div class="stat-meta" id="statDeployTime"></div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="button button-primary" onclick="admin.loadVideos(); admin.switchPanel('videos')">Videos bearbeiten</button>
+                        <button class="button button-primary" onclick="admin.loadCategories(); admin.switchPanel('categories')">Kategorien bearbeiten</button>
+                        <button class="button button-primary" onclick="admin.publishToGitHub()">Veröffentlichen</button>
+                        <button class="button button-secondary" onclick="admin.refreshDeployStatus()">Status aktualisieren</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Videos Panel -->
+            <div id="panel-videos" class="content-panel">
+                <div class="content-header">
+                    <h1 class="content-title">Videos verwalten</h1>
+                    <p class="content-subtitle">Erstellen, bearbeiten und löschen Sie Videos</p>
+                </div>
+
+                <div style="padding: 2rem;">
+                    <div id="videosAlert"></div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <button class="button button-primary" onclick="admin.openVideoModal()">+ Neues Video</button>
+                    </div>
+
+                    <div id="videosList"></div>
+                </div>
+            </div>
+
+            <!-- Categories Panel -->
+            <div id="panel-categories" class="content-panel">
+                <div class="content-header">
+                    <h1 class="content-title">Kategorien verwalten</h1>
+                    <p class="content-subtitle">Verwalten Sie Video-Kategorien</p>
+                </div>
+
+                <div style="padding: 2rem;">
+                    <div id="categoriesAlert"></div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <button class="button button-primary" onclick="admin.openCategoryModal()">+ Neue Kategorie</button>
+                    </div>
+
+                    <div id="categoriesList"></div>
+                </div>
+            </div>
+
+            <!-- Content Panel -->
+            <div id="panel-content" class="content-panel">
+                <div class="content-header">
+                    <h1 class="content-title">Seiteninhalte bearbeiten</h1>
+                    <p class="content-subtitle">Bearbeiten Sie Text- und Navigationsinhalte</p>
+                </div>
+
+                <div style="padding: 2rem;">
+                    <div id="contentAlert"></div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">Hero-Bereich</div>
+                        <div class="form-row full">
+                            <div>
+                                <label class="form-label">Titel</label>
+                                <input type="text" class="form-input" id="contentHeroTitle" placeholder="Hero Titel">
+                            </div>
+                        </div>
+                        <div class="form-row full">
+                            <div>
+                                <label class="form-label">Untertitel</label>
+                                <input type="text" class="form-input" id="contentHeroSubtitle" placeholder="Hero Untertitel">
+                            </div>
+                        </div>
+                        <div class="form-row full">
+                            <div>
+                                <label class="form-label">Suchplatzhalter</label>
+                                <input type="text" class="form-input" id="contentHeroSearchPlaceholder" placeholder="Suchplatzhalter">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">Features (4 Karten)</div>
+                        <div id="contentFeaturesContainer"></div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">Preisgestaltung (4 Karten)</div>
+                        <div id="contentPricingContainer"></div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">Navigation</div>
+                        <div class="form-row full">
+                            <div>
+                                <label class="form-label">Navigations-Links (durch Komma getrennt)</label>
+                                <input type="text" class="form-input" id="contentNavLinks" placeholder="Home, Videos, Preise, Kontakt">
+                            </div>
+                        </div>
+                        <div class="form-row full">
+                            <div>
+                                <label class="form-label">CTA-Text</label>
+                                <input type="text" class="form-input" id="contentNavCTA" placeholder="Jetzt anmelden">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">Footer</div>
+                        <div class="form-row full">
+                            <div>
+                                <label class="form-label">Copyright</label>
+                                <input type="text" class="form-input" id="contentFooterCopyright" placeholder="© 2026 stockvideo.de">
+                            </div>
+                        </div>
+                        <div class="form-row full">
+                            <div>
+                                <label class="form-label">Footer-Spalten (JSON-Format)</label>
+                                <textarea class="textarea" id="contentFooterColumns" placeholder='[{"title": "Produkt", "links": ["Videos", "Lizenz"]}]'></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">SEO</div>
+                        <div class="form-row full">
+                            <div>
+                                <label class="form-label">Meta-Titel</label>
+                                <input type="text" class="form-input" id="contentSEOTitle" placeholder="stockvideo.de - Premium Stock Videos">
+                            </div>
+                        </div>
+                        <div class="form-row full">
+                            <div>
+                                <label class="form-label">Meta-Beschreibung</label>
+                                <textarea class="textarea" id="contentSEODescription" placeholder="Hochwertige Stock Videos für kommerzielle Projekte..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="button button-primary" onclick="admin.savePageContent()">Speichern</button>
+                        <button class="button button-secondary" onclick="admin.loadPageContent()">Zurücksetzen</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Design Panel -->
+            <div id="panel-design" class="content-panel">
+                <div class="content-header">
+                    <h1 class="content-title">Design-Verwaltung</h1>
+                    <p class="content-subtitle">CSS-Variablen und Design anpassen</p>
+                </div>
+
+                <div style="padding: 2rem;">
+                    <div id="designAlert"></div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">Design-Variablen</div>
+                        <div id="designVariablesContainer"></div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">Komplettes Design importieren</div>
+                        <label class="form-label">CSS-Code einfügen (ersetzen Sie alle Variablen)</label>
+                        <textarea class="textarea" id="designImportCSS" placeholder="Komplettes CSS-Variablen-Set hier einfügen..."></textarea>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button class="button button-primary" onclick="admin.saveDesignVariables()">Variablen speichern</button>
+                        <button class="button button-primary" onclick="admin.importDesignCSS()">CSS importieren</button>
+                        <button class="button button-secondary" onclick="admin.resetDesignToDefault()">Zurücksetzen</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Panel -->
+            <div id="panel-settings" class="content-panel">
+                <div class="content-header">
+                    <h1 class="content-title">Einstellungen</h1>
+                    <p class="content-subtitle">Konfigurieren Sie Admin-Funktionen</p>
+                </div>
+
+                <div style="padding: 2rem;">
+                    <div id="settingsAlert"></div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">Admin-Passwort</div>
+                        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">Das Passwort wird als SHA-256 Hash gespeichert</p>
+                        <div class="form-row">
+                            <div>
+                                <label class="form-label">Neues Passwort</label>
+                                <input type="password" class="form-input" id="settingsNewPassword" placeholder="Neues Passwort">
+                            </div>
+                            <div>
+                                <label class="form-label">Bestätigen</label>
+                                <input type="password" class="form-input" id="settingsConfirmPassword" placeholder="Passwort wiederholen">
+                            </div>
+                        </div>
+                        <button class="button button-primary" onclick="admin.changePassword()">Passwort ändern</button>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">2-Faktor-Authentifizierung (EmailJS)</div>
+                        <div class="form-row">
+                            <div>
+                                <label class="form-label">Service-ID</label>
+                                <input type="text" class="form-input" id="settings2faServiceId" placeholder="z.B. service_xxx">
+                            </div>
+                            <div>
+                                <label class="form-label">Template-ID</label>
+                                <input type="text" class="form-input" id="settings2faTemplateId" placeholder="z.B. template_xxx">
+                            </div>
+                        </div>
+                        <div class="form-row full">
+                            <div>
+                                <label class="form-label">Public-Key</label>
+                                <input type="text" class="form-input" id="settings2faPublicKey" placeholder="z.B. xxx_public">
+                            </div>
+                        </div>
+                        <div class="form-row full">
+                            <div>
+                                <label class="form-label">Admin-Email (für OTP)</label>
+                                <input type="email" class="form-input" id="settings2faEmail" placeholder="admin@example.com">
+                            </div>
+                        </div>
+                        <button class="button button-primary" onclick="admin.save2FASettings()">2FA-Einstellungen speichern</button>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">GitHub-Integration</div>
+                        <div class="form-row full">
+                            <div>
+                                <label class="form-label">Personal Access Token</label>
+                                <input type="password" class="form-input" id="settingsGitHubToken" placeholder="ghp_xxxxx">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div>
+                                <label class="form-label">Repository-Pfad</label>
+                                <input type="text" class="form-input" id="settingsGitHubRepo" placeholder="username/repo" value="y4wmmzqcjc-dotcom/stockvideo-de">
+                            </div>
+                            <div>
+                                <label class="form-label">Branch</label>
+                                <input type="text" class="form-input" id="settingsGitHubBranch" placeholder="main" value="main">
+                            </div>
+                        </div>
+                        <button class="button button-primary" onclick="admin.saveGitHubSettings()">GitHub-Einstellungen speichern</button>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">Daten exportieren/importieren</div>
+                        <button class="button button-secondary" onclick="admin.exportAllData()">Alle Daten exportieren</button>
+                        <button class="button button-secondary" onclick="admin.importAllData()">Daten importieren</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="videoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="videoModalTitle">Neues Video</span>
+                <button class="modal-close" onclick="admin.closeVideoModal()">&times;</button>
+            </div>
+
+            <div id="videoModalAlert"></div>
+
+            <div class="form-group">
+                <label class="form-label">Titel</label>
+                <input type="text" class="form-input" id="videoModalTitle_Input" placeholder="Video-Titel">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Slug (Auto-generiert)</label>
+                <input type="text" class="form-input" id="videoModalSlug" placeholder="video-slug" readonly>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Beschreibung</label>
+                <textarea class="textarea" id="videoModalDescription" placeholder="Video-Beschreibung"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Kategorie</label>
+                <select class="select" id="videoModalCategory">
+                    <option value="">-- Wählen Sie eine Kategorie --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Tags (durch Komma getrennt)</label>
+                <input type="text" class="form-input" id="videoModalTags" placeholder="Tag1, Tag2, Tag3">
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label class="form-label">Auflösung</label>
+                    <select class="select" id="videoModalResolution">
+                        <option value="4K">4K</option>
+                        <option value="HD">HD</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">Dauer (Sekunden)</label>
+                    <input type="number" class="form-input" id="videoModalDuration" placeholder="60" min="0">
+                </div>
+                <div>
+                    <label class="form-label">FPS</label>
+                    <input type="number" class="form-input" id="videoModalFPS" placeholder="30" min="0">
+                </div>
+            </div>
+
+            <div class="form-section-title">Preise</div>
+            <div class="form-row">
+                <div>
+                    <label class="form-label">Web (€)</label>
+                    <input type="number" class="form-input" id="videoModalPriceWeb" placeholder="29.99" min="0" step="0.01">
+                </div>
+                <div>
+                    <label class="form-label">Standard (€)</label>
+                    <input type="number" class="form-input" id="videoModalPriceStandard" placeholder="79.99" min="0" step="0.01">
+                </div>
+                <div>
+                    <label class="form-label">Premium (€)</label>
+                    <input type="number" class="form-input" id="videoModalPricePremium" placeholder="149.99" min="0" step="0.01">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Thumbnail-URL</label>
+                <input type="url" class="form-input" id="videoModalThumbnail" placeholder="https://...">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">R2 Key</label>
+                <input type="text" class="form-input" id="videoModalR2Key" placeholder="path/to/video.mp4">
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" class="checkbox" id="videoModalFeatured">
+                    <label class="form-label" style="margin-bottom: 0;">Featured</label>
+                </div>
+            </div>
+
+            <div class="form-section-title">Gradient-Farben</div>
+            <div id="videoModalGradients"></div>
+
+            <div class="modal-footer">
+                <button class="button button-secondary" onclick="admin.closeVideoModal()">Abbrechen</button>
+                <button class="button button-primary" onclick="admin.saveVideo()">Speichern</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="categoryModalTitle">Neue Kategorie</span>
+                <button class="modal-close" onclick="admin.closeCategoryModal()">&times;</button>
+            </div>
+
+            <div id="categoryModalAlert"></div>
+
+            <div class="form-group">
+                <label class="form-label">Label</label>
+                <input type="text" class="form-input" id="categoryModalLabel" placeholder="Kategorie-Name">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Slug</label>
+                <input type="text" class="form-input" id="categoryModalSlug" placeholder="kategorie-slug">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Beschreibung</label>
+                <textarea class="textarea" id="categoryModalDescription" placeholder="Kategorie-Beschreibung"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Icon</label>
+                <input type="text" class="form-input" id="categoryModalIcon" placeholder="🎬">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Reihenfolge</label>
+                <input type="number" class="form-input" id="categoryModalOrder" placeholder="1" min="0">
+            </div>
+
+            <div class="modal-footer">
+                <button class="button button-secondary" onclick="admin.closeCategoryModal()">Abbrechen</button>
+                <button class="button button-primary" onclick="admin.saveCategory()">Speichern</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inline SHA-256 shim (replaces CryptoJS CDN) -->
+    <script>
+    const CryptoJS = {
+        SHA256: function(msg) {
+            function sha256(ascii) {
+                function rr(v,a){return(v>>>a)|(v<<(32-a));}
+                var pw=Math.pow,mw=pw(2,32),i,j,res='',words=[],abl=ascii.length*8;
+                var h=sha256.h||(sha256.h=[]),k=sha256.k||(sha256.k=[]),pc=k.length,ic={};
+                for(var c=2;pc<64;c++){if(!ic[c]){for(i=0;i<313;i+=c)ic[i]=c;h[pc]=(pw(c,.5)*mw)|0;k[pc++]=(pw(c,1/3)*mw)|0;}}
+                ascii+='\x80';
+                while(ascii.length%64-56)ascii+='\x00';
+                for(i=0;i<ascii.length;i++){j=ascii.charCodeAt(i);if(j>>8)return;words[i>>2]|=j<<((3-i)%4)*8;}
+                words[words.length]=((abl/mw)|0);words[words.length]=(abl);
+                for(j=0;j<words.length;){
+                    var w=words.slice(j,j+=16),oh=h,t1,t2,a,e,w15,w2;
+                    h=h.slice(0,8);
+                    for(i=0;i<64;i++){
+                        w15=w[i-15];w2=w[i-2];a=h[0];e=h[4];
+                        t1=h[7]+(rr(e,6)^rr(e,11)^rr(e,25))+((e&h[5])^((~e)&h[6]))+k[i]+(w[i]=(i<16)?w[i]:(w[i-16]+(rr(w15,7)^rr(w15,18)^(w15>>>3))+w[i-7]+(rr(w2,17)^rr(w2,19)^(w2>>>10)))|0);
+                        t2=(rr(a,2)^rr(a,13)^rr(a,22))+((a&h[1])^(a&h[2])^(h[1]&h[2]));
+                        h=[(t1+t2)|0].concat(h);h[4]=(h[4]+t1)|0;h.length=8;
+                    }
+                    h=h.map(function(v,i){return(v+oh[i])|0;});
+                }
+                for(i=0;i<8;i++){for(j=3;j+1;j--){var b=(h[i]>>(j*8))&255;res+=((b<16)?'0':'')+b.toString(16);}}
+                return res;
+            }
+            return{toString:function(){return sha256(msg);}};
+        }
+    };
+    </script>
+    <script src="/admin.js"></script>
+</body>
+</html>
