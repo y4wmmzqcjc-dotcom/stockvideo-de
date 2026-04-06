@@ -13,8 +13,11 @@ const { slug } = Astro.params;
 const video = videos.find(v => v.slug === slug);
 if (!video) return Astro.redirect('/');
 const cat = categories.find(c => c.dataCat === video.category);
+
 const r2Base = 'https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev';
-const videoUrl = video.r2Key ? r2Base + '/' + video.r2Key : '';
+// Use SD preview for visitors, never expose original 4K
+const previewUrl = video.r2Preview ? r2Base + '/' + video.r2Preview : '';
+const videoUrl = previewUrl || (video.r2Key ? r2Base + '/' + video.r2Key : '');
 ---
 
 <BaseLayout title={video.title} description={video.description}>
@@ -22,17 +25,20 @@ const videoUrl = video.r2Key ? r2Base + '/' + video.r2Key : '';
 
   <div class="page-content" style="max-width:1040px;">
     <div style="margin-bottom:8px;">
-      <a href="/" style="color:var(--accent);font-size:14px;">&larr; Zurück zur Übersicht</a>
+      <a href="/" style="color:var(--accent);font-size:14px;">&larr; Zur\u00fcck zur \u00dcbersicht</a>
       {cat && <span style="color:#666;font-size:14px;margin-left:12px;">/ <a href={`/kategorie/${video.category}`} style="color:var(--accent);">{cat.label}</a></span>}
     </div>
 
-    <!-- Video Player -->
+    <!-- Video Player (SD Preview with watermark) -->
     <div id="videoContainer" style="aspect-ratio:16/9;border-radius:10px;overflow:hidden;margin-bottom:32px;position:relative;cursor:pointer;">
       {videoUrl && (
         <video
           id="videoPlayer"
           style="width:100%;height:100%;object-fit:cover;display:none;"
           controls
+          controlsList="nodownload"
+          disablePictureInPicture
+          oncontextmenu="return false"
           preload="metadata"
         >
           <source src={videoUrl} type="video/mp4" />
@@ -46,6 +52,7 @@ const videoUrl = video.r2Key ? r2Base + '/' + video.r2Key : '';
           </div>
         </div>
       </div>
+      {video.r2Preview && <span style="position:absolute;top:16px;right:16px;z-index:2;background:rgba(0,0,0,0.6);color:#fff;padding:4px 10px;border-radius:4px;font-size:11px;letter-spacing:0.5px;">VORSCHAU</span>}
       <span class={`res-badge ${video.resolution === '4K' ? 'res-4k' : 'res-hd'}`} style="position:absolute;top:16px;left:16px;z-index:2;">{video.resolution}</span>
       <span class="dur-badge" style="position:absolute;bottom:16px;right:16px;z-index:2;">{video.duration}</span>
     </div>
@@ -60,13 +67,13 @@ const videoUrl = video.r2Key ? r2Base + '/' + video.r2Key : '';
     </div>
 
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 32px;">
-      <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">Auflösung: {video.resolution}</span>
+      <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">Aufl\u00f6sung: {video.resolution}</span>
       <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">Dauer: {video.duration}</span>
       <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">{video.fps} FPS</span>
       <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">MP4 / MOV</span>
     </div>
 
-    <h2>Lizenz wählen</h2>
+    <h2>Lizenz w\u00e4hlen</h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:16px;">
       <div class="price-card">
         <div class="price-label">Web / Social</div>
@@ -106,18 +113,16 @@ const videoUrl = video.r2Key ? r2Base + '/' + video.r2Key : '';
         <div id="buySuccess" style="display:none;text-align:center;padding:24px 0;">
           <div style="font-size:48px;margin-bottom:12px;">&#10003;</div>
           <h3>Anfrage gesendet!</h3>
-          <p style="color:#999;margin-top:8px;">Wir melden uns in Kürze bei Ihnen.</p>
+          <p style="color:#999;margin-top:8px;">Wir melden uns in K\u00fcrze bei Ihnen.</p>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Video Player
-    const container = document.getElementById('videoContainer');
-    const poster = document.getElementById('videoPoster');
-    const player = document.getElementById('videoPlayer');
-
+    var container = document.getElementById('videoContainer');
+    var poster = document.getElementById('videoPoster');
+    var player = document.getElementById('videoPlayer');
     if (container && player) {
       container.addEventListener('click', function() {
         if (player.style.display === 'none' || player.style.display === '') {
@@ -128,11 +133,10 @@ const videoUrl = video.r2Key ? r2Base + '/' + video.r2Key : '';
       });
     }
 
-    // Kauf-Modal
-    const modal = document.getElementById('buyModal');
-    const closeBtn = document.getElementById('closeModal');
-    const buyForm = document.getElementById('buyForm');
-    const buySuccess = document.getElementById('buySuccess');
+    var modal = document.getElementById('buyModal');
+    var closeBtn = document.getElementById('closeModal');
+    var buyForm = document.getElementById('buyForm');
+    var buySuccess = document.getElementById('buySuccess');
 
     document.querySelectorAll('.buy-btn').forEach(function(btn) {
       btn.addEventListener('click', function() {
