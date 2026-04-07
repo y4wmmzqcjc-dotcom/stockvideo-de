@@ -1,3 +1,22 @@
+// ========== SYNC FROM LIVE SITE ==========
+(function(){
+  try {
+    var t = Date.now();
+    var x1 = new XMLHttpRequest();
+    x1.open('GET', '/data/videos.json?t=' + t, false);
+    x1.send(null);
+    if (x1.status === 200 && x1.responseText && x1.responseText.trim().startsWith('[')) {
+      localStorage.setItem('adminVideos', x1.responseText);
+    }
+    var x2 = new XMLHttpRequest();
+    x2.open('GET', '/data/categories.json?t=' + t, false);
+    x2.send(null);
+    if (x2.status === 200 && x2.responseText && x2.responseText.trim().startsWith('[')) {
+      localStorage.setItem('adminCategories', x2.responseText);
+    }
+  } catch(e) { console.error('sync from website failed', e); }
+})();
+
 // ========== AUTHENTICATION MODULE ==========
         const auth = {
             maxOTPAttempts: 3,
@@ -104,7 +123,7 @@
                 document.getElementById('otpEmail').textContent = email;
 
                 if (typeof emailjs === 'undefined') {
-                    // EmailJS not loaded – show OTP in console for dev/testing
+                    // EmailJS not loaded â show OTP in console for dev/testing
                     console.warn('EmailJS not loaded. OTP code:', otp);
                     document.getElementById('authStep1').style.display = 'none';
                     document.getElementById('authStep2').style.display = 'block';
@@ -161,7 +180,7 @@
                         this.showLockout();
                         this.startLockoutTimer();
                     } else {
-                        alert.innerHTML = '<div class="alert alert-error">Ungültiger Code. Bitte versuchen Sie es erneut.</div>';
+                        alert.innerHTML = '<div class="alert alert-error">UngÃ¼ltiger Code. Bitte versuchen Sie es erneut.</div>';
                     }
                 }
             },
@@ -272,7 +291,7 @@
             refreshDeployStatus() {
                 const settings = auth.loadSettings();
                 if (!settings.gitHub.token) {
-                    document.getElementById('statDeployStatus').textContent = '⚠️';
+                    document.getElementById('statDeployStatus').textContent = 'â ï¸';
                     document.getElementById('statDeployTime').textContent = 'GitHub nicht konfiguriert';
                     return;
                 }
@@ -288,7 +307,7 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.commit) {
-                        document.getElementById('statDeployStatus').textContent = '✅';
+                        document.getElementById('statDeployStatus').textContent = 'â';
                         const date = new Date(data.commit.author.date);
                         document.getElementById('statDeployTime').textContent = date.toLocaleTimeString('de-DE');
                     } else {
@@ -297,7 +316,7 @@
                 })
                 .catch(err => {
                     console.error('GitHub Error:', err);
-                    document.getElementById('statDeployStatus').textContent = '❌';
+                    document.getElementById('statDeployStatus').textContent = 'â';
                     document.getElementById('statDeployTime').textContent = 'Fehler beim Abrufen';
                 });
             },
@@ -312,7 +331,7 @@
             renderVideosList() {
                 const container = document.getElementById('videosList');
                 if (this.videos.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🎬</div><div class="empty-state-title">Keine Videos</div><p>Erstellen Sie Ihr erstes Video</p></div>';
+                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">ð¬</div><div class="empty-state-title">Keine Videos</div><p>Erstellen Sie Ihr erstes Video</p></div>';
                     return;
                 }
 
@@ -321,11 +340,11 @@
                         ${video.thumbnail ? `<img src="${video.thumbnail}" class="thumbnail-preview" onerror="this.style.display='none'">` : ''}
                         <div class="list-item-content">
                             <div class="list-item-title">${video.title}</div>
-                            <div class="list-item-meta">${video.category} • ${video.resolution} • €${video.prices.web}</div>
+                            <div class="list-item-meta">${video.category} â¢ ${video.resolution} â¢ â¬${video.prices.web}</div>
                         </div>
                         <div class="list-item-actions">
                             <button class="button button-small button-secondary" onclick="admin.editVideo(${idx})">Bearbeiten</button>
-                            <button class="button button-small button-danger" onclick="admin.deleteVideo(${idx})">Löschen</button>
+                            <button class="button button-small button-danger" onclick="admin.deleteVideo(${idx})">LÃ¶schen</button>
                         </div>
                     </div>
                 `).join('');
@@ -389,7 +408,7 @@
 
             updateCategoryDropdown() {
                 const dropdown = document.getElementById('videoModalCategory');
-                dropdown.innerHTML = '<option value="">-- Wählen Sie eine Kategorie --</option>' +
+                dropdown.innerHTML = '<option value="">-- WÃ¤hlen Sie eine Kategorie --</option>' +
                     this.categories.map(cat => `<option value="${cat.slug}">${cat.label}</option>`).join('');
             },
 
@@ -479,12 +498,12 @@
             },
 
             deleteVideo(idx) {
-                if (confirm('Wirklich löschen?')) {
+                if (confirm('Wirklich lÃ¶schen?')) {
                     this.videos.splice(idx, 1);
                     localStorage.setItem('adminVideos', JSON.stringify(this.videos));
                     localStorage.setItem('adminLastChange', new Date().toISOString());
                     this.loadVideos();
-                    this.showAlert('videosAlert', 'success', 'Video gelöscht');
+                    this.showAlert('videosAlert', 'success', 'Video gelÃ¶scht');
                 }
             },
 
@@ -502,7 +521,7 @@
             renderCategoriesList() {
                 const container = document.getElementById('categoriesList');
                 if (this.categories.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📁</div><div class="empty-state-title">Keine Kategorien</div><p>Erstellen Sie Ihre erste Kategorie</p></div>';
+                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">ð</div><div class="empty-state-title">Keine Kategorien</div><p>Erstellen Sie Ihre erste Kategorie</p></div>';
                     return;
                 }
 
@@ -515,7 +534,7 @@
                         </div>
                         <div class="list-item-actions">
                             <button class="button button-small button-secondary" onclick="admin.editCategory(${idx})">Bearbeiten</button>
-                            <button class="button button-small button-danger" onclick="admin.deleteCategory(${idx})">Löschen</button>
+                            <button class="button button-small button-danger" onclick="admin.deleteCategory(${idx})">LÃ¶schen</button>
                         </div>
                     </div>
                 `).join('');
@@ -582,12 +601,12 @@
             },
 
             deleteCategory(idx) {
-                if (confirm('Wirklich löschen?')) {
+                if (confirm('Wirklich lÃ¶schen?')) {
                     this.categories.splice(idx, 1);
                     localStorage.setItem('adminCategories', JSON.stringify(this.categories));
                     localStorage.setItem('adminLastChange', new Date().toISOString());
                     this.loadCategories();
-                    this.showAlert('categoriesAlert', 'success', 'Kategorie gelöscht');
+                    this.showAlert('categoriesAlert', 'success', 'Kategorie gelÃ¶scht');
                 }
             },
 
@@ -597,10 +616,10 @@
                 this.content = stored ? JSON.parse(stored) : {
                     hero: { title: '', subtitle: '', searchPlaceholder: '' },
                     features: [
-                        { icon: '🎬', title: '', description: '' },
-                        { icon: '🔒', title: '', description: '' },
-                        { icon: '⚡', title: '', description: '' },
-                        { icon: '💰', title: '', description: '' }
+                        { icon: 'ð¬', title: '', description: '' },
+                        { icon: 'ð', title: '', description: '' },
+                        { icon: 'â¡', title: '', description: '' },
+                        { icon: 'ð°', title: '', description: '' }
                     ],
                     pricing: [
                         { label: '', resolution: '', price: '', description: '', featured: false },
@@ -659,14 +678,14 @@
                                 <input type="text" class="form-input" value="${p.label}" placeholder="Plan-Name" data-pricing-label="${idx}">
                             </div>
                             <div>
-                                <label class="form-label">Auflösung</label>
+                                <label class="form-label">AuflÃ¶sung</label>
                                 <input type="text" class="form-input" value="${p.resolution}" placeholder="z.B. 4K" data-pricing-resolution="${idx}">
                             </div>
                         </div>
                         <div class="form-row">
                             <div>
                                 <label class="form-label">Preis</label>
-                                <input type="text" class="form-input" value="${p.price}" placeholder="€ 99.99" data-pricing-price="${idx}">
+                                <input type="text" class="form-input" value="${p.price}" placeholder="â¬ 99.99" data-pricing-price="${idx}">
                             </div>
                             <div style="display: flex; align-items: flex-end;">
                                 <div class="checkbox-group">
@@ -821,7 +840,7 @@
             },
 
             resetDesignToDefault() {
-                if (confirm('Wirklich zurücksetzen?')) {
+                if (confirm('Wirklich zurÃ¼cksetzen?')) {
                     localStorage.removeItem('adminDesignVariables');
                     location.reload();
                 }
@@ -851,7 +870,7 @@
                 }
 
                 if (newPassword !== confirmPassword) {
-                    this.showAlert('settingsAlert', 'error', 'Passwörter stimmen nicht überein');
+                    this.showAlert('settingsAlert', 'error', 'PasswÃ¶rter stimmen nicht Ã¼berein');
                     return;
                 }
 
@@ -861,7 +880,7 @@
                 document.getElementById('settingsNewPassword').value = '';
                 document.getElementById('settingsConfirmPassword').value = '';
 
-                this.showAlert('settingsAlert', 'success', 'Passwort geändert');
+                this.showAlert('settingsAlert', 'success', 'Passwort geÃ¤ndert');
             },
 
             save2FASettings() {
@@ -899,7 +918,7 @@
 
                 const button = event.target;
                 button.disabled = true;
-                button.textContent = 'Veröffentlichung...';
+                button.textContent = 'VerÃ¶ffentlichung...';
 
                 const config = {
                     videos: this.videos,
@@ -909,18 +928,18 @@
 
                 this.createGitHubCommit(settings, config)
                     .then(() => {
-                        this.showAlert('dashboardAlert', 'success', 'Erfolgreich veröffentlicht! Cloudflare Pages wird neu gebaut...');
+                        this.showAlert('dashboardAlert', 'success', 'Erfolgreich verÃ¶ffentlicht! Cloudflare Pages wird neu gebaut...');
                         setTimeout(() => {
                             this.refreshDeployStatus();
                         }, 3000);
                     })
                     .catch(err => {
                         console.error('Publish Error:', err);
-                        this.showAlert('dashboardAlert', 'error', 'Fehler beim Veröffentlichen: ' + err.message);
+                        this.showAlert('dashboardAlert', 'error', 'Fehler beim VerÃ¶ffentlichen: ' + err.message);
                     })
                     .finally(() => {
                         button.disabled = false;
-                        button.textContent = 'Veröffentlichen';
+                        button.textContent = 'VerÃ¶ffentlichen';
                     });
             },
 
