@@ -6,13 +6,5 @@
     "description": "Tiere",
     "icon": "",
     "order": 0
-  },
-  {
-    "id": "1775586766589",
-    "label": "Bussines",
-    "slug": "bussines",
-    "description": "",
-    "icon": "",
-    "order": 0
   }
 ]
