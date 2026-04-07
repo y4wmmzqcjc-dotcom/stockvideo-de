@@ -963,6 +963,7 @@
                             type: 'blob',
                             content: JSON.stringify(config.categories, null, 2)
                         },
+                        { path: 'src/data/categories.json', mode: '100644', type: 'blob', content: JSON.stringify((config.categories||[]).slice().sort((a,b)=>(a.order||0)-(b.order||0)).map(c=>({slug:c.slug,label:c.label,dataCat:c.slug})), null, 2) },
                         {
                             path: 'public/data/config.json',
                             mode: '100644',
