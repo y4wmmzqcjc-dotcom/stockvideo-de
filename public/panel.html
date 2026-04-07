@@ -404,7 +404,7 @@
             <div class="form-group">
                 <label class="form-label">R2 Key (auto)</label>
                 <input type="text" class="form-input" id="videoModalR2Key" placeholder="videos/slug.mp4">
-                <input type="hidden" id="videoModalThumbKey">
+                <input type="hidden" id="videoModalThumbKey"><input type="hidden" id="videoModalPreviewKey"><input type="hidden" id="videoModalHoverKey"><input type="hidden" id="videoModalVideoId">
             </div>
             <div class="form-group">
                 <div class="checkbox-group">
@@ -507,6 +507,9 @@
       try {
         const res = await window.uploadVideo(f, { slug, onStatus: m => status.textContent = m, onProgress: p => prog.value = p });
         r2.value = res.videoKey;
+              var pk=document.getElementById('videoModalPreviewKey'); if(pk) pk.value=res.previewKey||'';
+              var hk=document.getElementById('videoModalHoverKey'); if(hk) hk.value=res.hoverKey||'';
+              var vid=document.getElementById('videoModalVideoId'); if(vid) vid.value=res.videoId||'';
         if (thumbKey) thumbKey.value = res.thumbKey; var tu=document.getElementById("videoModalThumbnail"); if(tu&&res.thumbKey){tu.value="https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/"+res.thumbKey;}
         status.textContent = "Upload fertig: " + res.videoKey;
       } catch (err) {
@@ -550,5 +553,60 @@
   once();
 })();
 </script>
+
+
+<button id="batchReprocessBtn" type="button" style="position:fixed;bottom:20px;right:20px;z-index:9999;padding:12px 18px;border-radius:8px;background:#1473e6;color:#fff;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.4);font-weight:600;">Vorschauen neu generieren</button>
+<div id="batchReprocessModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:10000;overflow:auto;padding:40px;">
+<div style="max-width:760px;margin:0 auto;background:#1e1e1e;border-radius:12px;padding:28px;color:#eee;font-family:system-ui;">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="margin:0;font-size:20px;">Preview-Pipeline für bestehende Videos</h2><button onclick="document.getElementById('batchReprocessModal').style.display='none'" style="background:#333;border:none;color:#ccc;padding:6px 12px;border-radius:4px;cursor:pointer;">Schließen</button></div>
+<p style="color:#aaa;font-size:14px;margin:0 0 18px;">Wähle pro Video die <b>originale</b> Videodatei nochmal aus. Es wird automatisch ein 480p Preview + 360p Hover-Loop mit Wasserzeichen erzeugt und hochgeladen. Das Originalvideo in R2 wird dabei <b>nicht</b> erneut hochgeladen.</p>
+<div id="batchReprocessList"></div>
+<div style="margin-top:20px;display:flex;gap:10px;"><button id="batchReprocessPublish" style="padding:10px 18px;background:#16a34a;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;">Publish to GitHub</button></div>
+</div></div>
+<script>
+(function(){
+function openBatch(){
+  var list = document.getElementById("batchReprocessList");
+  var vids = (window.admin && admin.videos) || JSON.parse(localStorage.getItem("adminVideos")||"[]");
+  list.innerHTML = vids.map(function(v,i){
+    var thumb = v.thumbnail || "";
+    var prevTxt = v.r2Preview ? "Preview vorhanden" : "kein Preview";
+    var idTxt = v.videoId ? (" - ID " + v.videoId) : "";
+    return '<div class="batch-row" data-idx="'+i+'" data-slug="'+v.slug+'" style="display:flex;align-items:center;gap:12px;padding:10px;border-bottom:1px solid #2a2a2a;">'
+      + '<img src="'+thumb+'" style="width:80px;height:48px;object-fit:cover;border-radius:4px;background:#000;" onerror="this.style.opacity=0.2">'
+      + '<div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:14px;">'+v.title+'</div><div style="font-size:11px;color:#888;">'+v.slug+' - '+prevTxt+idTxt+'</div></div>'
+      + '<input type="file" accept="video/*" class="batch-file" style="font-size:12px;max-width:200px;">'
+      + '<span class="batch-status" style="font-size:11px;color:#888;min-width:160px;text-align:right;"></span>'
+      + '</div>';
+  }).join("");
+  document.getElementById("batchReprocessModal").style.display="block";
+}
+function bind(){
+  var b=document.getElementById("batchReprocessBtn"); if(b&&!b._bd){ b._bd=1; b.addEventListener("click",openBatch); }
+  var p=document.getElementById("batchReprocessPublish"); if(p&&!p._bd){ p._bd=1; p.addEventListener("click",function(){ if(window.admin&&admin.publishToGitHub){ admin.publishToGitHub(); } else { alert("publishToGitHub nicht verfügbar"); } }); }
+}
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bind); else bind();
+document.addEventListener("change", async function(e){
+  if(!e.target.classList || !e.target.classList.contains("batch-file")) return;
+  var row=e.target.closest(".batch-row");
+  var idx=parseInt(row.dataset.idx,10);
+  var slug=row.dataset.slug;
+  var file=e.target.files[0]; if(!file) return;
+  var status=row.querySelector(".batch-status");
+  try{
+    var v=admin.videos[idx];
+    var videoId=v.videoId||(window.genVideoId?window.genVideoId():"SV-"+Date.now().toString(36).toUpperCase());
+    var res=await window.uploadVideo(file,{slug:slug,videoId:videoId,skipOriginal:true,onStatus:function(m){status.textContent=m;}});
+    admin.videos[idx].r2Preview=res.previewKey;
+    admin.videos[idx].r2Hover=res.hoverKey;
+    admin.videos[idx].videoId=res.videoId;
+    admin.videos[idx].thumbnail="https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/"+res.thumbKey;
+    localStorage.setItem("adminVideos",JSON.stringify(admin.videos));
+    status.textContent="OK "+res.videoId;
+  }catch(err){ status.textContent="Fehler: "+(err.message||err); }
+});
+})();
+</script>
+
 </body>
 </html>
