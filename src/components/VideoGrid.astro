@@ -45,7 +45,7 @@ function render() {
   noRes.classList.remove("visible");
 
   grid.innerHTML = list.map(v => `
-    <div class="video-card">
+    <a href="/video/${v.slug}/" style="text-decoration:none;color:inherit;display:block"><div class="video-card">
       <div class="video-thumb">
         <div class="thumb-bg" style="background:${v.gradient}"></div>
         <div class="thumb-texture" style="background:
@@ -68,7 +68,7 @@ function render() {
         <span class="card-title">${v.title}</span>
         <span class="card-price">${v.price} \u20ac</span>
       </div>
-    </div>
+    </div></a>
   `).join("");
 }
 
