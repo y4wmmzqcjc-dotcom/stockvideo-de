@@ -109,7 +109,7 @@
       const baseURL='https://esm.sh/@ffmpeg/core@0.12.6/dist/esm';
       await ffmpeg.load({
         coreURL: await ut.toBlobURL(baseURL+'/ffmpeg-core.js','text/javascript'),
-        wasmURL: await ut.toBlobURL(baseURL+'/ffmpeg-core.wasm','application/wasm')
+        wasmURL: await ut.toBlobURL(baseURL+'/ffmpeg-core.wasm','application/wasm'), classWorkerURL: await ut.toBlobURL('https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/esm/worker.js','text/javascript')
       });
       return {ffmpeg:ffmpeg, util:ut};
     })();
