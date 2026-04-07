@@ -71,41 +71,6 @@
     ]
   },
   {
-    "id": "1775598494430",
-    "title": "Giesskanne",
-    "slug": "giesskanne",
-    "description": "Giesskanne",
-    "category": "pflanzen-und-blumen",
-    "tags": [
-      "Blumen",
-      "giessen"
-    ],
-    "resolution": "4K",
-    "duration": 12,
-    "fps": 25,
-    "prices": {
-      "web": 65.99,
-      "standard": 65.99,
-      "premium": 65.99
-    },
-    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/giesskanne.jpg",
-    "r2Key": "videos/giesskanne.mov",
-    "r2Preview": "previews/giesskanne.mp4",
-    "r2Hover": "previews/giesskanne-hover.mp4",
-    "videoId": "stockvideo.de-5HEJR1ZK",
-    "featured": false,
-    "gradient": [
-      {
-        "color": "#1473e6",
-        "position": 0
-      },
-      {
-        "color": "#0d5fcf",
-        "position": 100
-      }
-    ]
-  },
-  {
     "id": "1775598584986",
     "title": "PVC",
     "slug": "pvc",
@@ -193,6 +158,40 @@
     "r2Preview": "previews/drohne-shoot.mp4",
     "r2Hover": "previews/drohne-shoot-hover.mp4",
     "videoId": "stockvideo.de-5WGMC72C",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
+  },
+  {
+    "id": "1775600015931",
+    "title": "Giesskanne neu",
+    "slug": "giesskanne-neu",
+    "description": "Giesskanne neu",
+    "category": "pflanzen-und-blumen",
+    "tags": [
+      "Garten"
+    ],
+    "resolution": "4K",
+    "duration": 12,
+    "fps": 25,
+    "prices": {
+      "web": 99.99,
+      "standard": 99.99,
+      "premium": 99.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/giesskanne-neu.jpg",
+    "r2Key": "videos/giesskanne-neu.mov",
+    "r2Preview": "previews/giesskanne-neu.mp4",
+    "r2Hover": "previews/giesskanne-neu-hover.mp4",
+    "videoId": "stockvideo.de-6E18LJMX",
     "featured": false,
     "gradient": [
       {
