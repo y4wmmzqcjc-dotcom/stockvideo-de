@@ -6,13 +6,13 @@ import videos from '../../public/data/videos.json';
   <div class="no-results" id="noResults">
     <div class="no-results-icon">&#x2315;</div>
     <h3>Keine Ergebnisse</h3>
-    <p>Versuch einen anderen Suchbegriff oder wÃÂÃÂÃÂÃÂ¤hle eine Kategorie.</p>
+    <p>Versuch einen anderen Suchbegriff oder wÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤hle eine Kategorie.</p>
   </div>
 </section>
 
 <script define:vars={{ videos }}>
 const catLabels = {
-  all:"Alle Videos", natur:"Natur & Landschaft", business:"Business & BÃÂÃÂÃÂÃÂ¼ro",
+  all:"Alle Videos", natur:"Natur & Landschaft", business:"Business & BÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¼ro",
   tech:"Technologie", aerial:"Aerial & Drohne", urban:"Stadt & Architektur",
   menschen:"Menschen & Lifestyle", abstrakt:"Abstrakt & Motion", timelapse:"Timelapse"
 };
@@ -87,7 +87,7 @@ document.getElementById("resFilterBtn")?.addEventListener("click", e => {
   const btn = e.target;
   const cycle = { all:"4k", "4k":"hd", hd:"all" };
   state.res = cycle[state.res];
-  btn.textContent = state.res === "all" ? "AuflÃÂÃÂÃÂÃÂ¶sung" : state.res === "4k" ? "Nur 4K" : "Nur HD";
+  btn.textContent = state.res === "all" ? "AuflÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¶sung" : state.res === "4k" ? "Nur 4K" : "Nur HD";
   btn.classList.toggle("active", state.res !== "all");
   render();
 });
@@ -104,7 +104,7 @@ if(_grid){
     if(v._setup)return;v._setup=1;
     v.style.visibility='hidden';
     v.muted=true;v.playsInline=true;v.removeAttribute('loop');
-    v.addEventListener('ended',function(){try{v.currentTime=0;}catch(e){}var p=v.play();if(p&&p.catch)p.catch(function(){});});
+    v.addEventListener('ended',function(){try{v.currentTime=0.12;}catch(e){}var p=v.play();if(p&&p.catch)p.catch(function(){});});
   };
   var _showOnFrame=function(v){
     if(v._armed)return;v._armed=1;
@@ -118,13 +118,15 @@ if(_grid){
     var v=card.querySelector('video.hov-prev');if(!v)return;
     _setupVideo(v);
     if(!v.src&&v.dataset.src){v.src=v.dataset.src;try{v.load();}catch(e){}}
+    var _seek=function(){try{if(v.currentTime<0.1)v.currentTime=0.12;}catch(e){}};
+    if(v.readyState>=1)_seek();else v.addEventListener('loadedmetadata',_seek,{once:true});
     _showOnFrame(v);
     var p=v.play();if(p&&p.catch)p.catch(function(){});
   };
   var _leave=function(card){
     var v=card.querySelector('video.hov-prev');if(!v)return;
     try{v.pause();}catch(e){}
-    try{v.currentTime=0;}catch(e){}
+    try{v.currentTime=0.12;}catch(e){}
     v._armed=0;
     v.style.visibility='hidden';
   };
