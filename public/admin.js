@@ -588,7 +588,7 @@
                 localStorage.setItem('adminCategories', JSON.stringify(this.categories));
                 localStorage.setItem('adminLastChange', new Date().toISOString());
                 this.loadCategories();
-                this.closeCategoryModal();
+                this.closeCategoryModal(); if(this.publishToGitHub)this.publishToGitHub();
                 this.showAlert('categoriesAlert', 'success', 'Kategorie gespeichert');
             },
 
