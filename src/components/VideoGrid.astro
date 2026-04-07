@@ -6,13 +6,13 @@ import videos from '../data/videos.json';
   <div class="no-results" id="noResults">
     <div class="no-results-icon">&#x2315;</div>
     <h3>Keine Ergebnisse</h3>
-    <p>Versuch einen anderen Suchbegriff oder wähle eine Kategorie.</p>
+    <p>Versuch einen anderen Suchbegriff oder wÃ¤hle eine Kategorie.</p>
   </div>
 </section>
 
 <script define:vars={{ videos }}>
 const catLabels = {
-  all:"Alle Videos", natur:"Natur & Landschaft", business:"Business & Büro",
+  all:"Alle Videos", natur:"Natur & Landschaft", business:"Business & BÃ¼ro",
   tech:"Technologie", aerial:"Aerial & Drohne", urban:"Stadt & Architektur",
   menschen:"Menschen & Lifestyle", abstrakt:"Abstrakt & Motion", timelapse:"Timelapse"
 };
@@ -47,7 +47,7 @@ function render() {
   grid.innerHTML = list.map(v => `
     <a href="/video/${v.slug}/" style="text-decoration:none;color:inherit;display:block"><div class="video-card">
       <div class="video-thumb">
-        <div class="thumb-bg" style="background:${v.gradient}"></div>
+        ${v.thumbnail ? '<img src="https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/' + v.thumbnail + '" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;" loading="lazy">' : '<div class="thumb-bg" style="background:' + v.gradient + '"></div>'}
         <div class="thumb-texture" style="background:
           radial-gradient(circle at 25% 35%,rgba(255,255,255,0.06) 0%,transparent 45%),
           radial-gradient(circle at 75% 65%,rgba(255,255,255,0.04) 0%,transparent 35%),
@@ -90,7 +90,7 @@ document.getElementById("resFilterBtn")?.addEventListener("click", e => {
   const btn = e.target;
   const cycle = { all:"4k", "4k":"hd", hd:"all" };
   state.res = cycle[state.res];
-  btn.textContent = state.res === "all" ? "Auflösung" : state.res === "4k" ? "Nur 4K" : "Nur HD";
+  btn.textContent = state.res === "all" ? "AuflÃ¶sung" : state.res === "4k" ? "Nur 4K" : "Nur HD";
   btn.classList.toggle("active", state.res !== "all");
   render();
 });
