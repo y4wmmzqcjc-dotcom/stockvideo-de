@@ -1,0 +1,7 @@
+name = "stockvideo-de"
+compatibility_date = "2024-09-01"
+pages_build_output_dir = "dist"
+
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "stockvideo-media"
