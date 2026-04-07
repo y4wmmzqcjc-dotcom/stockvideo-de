@@ -66,5 +66,37 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1775595974245",
+    "title": "PVC",
+    "slug": "pvc",
+    "description": "PVC",
+    "category": "technologie",
+    "tags": [],
+    "resolution": "4K",
+    "duration": 14,
+    "fps": 25,
+    "prices": {
+      "web": 22.45,
+      "standard": 22.45,
+      "premium": 22.45
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/pvc.jpg",
+    "r2Key": "videos/pvc.mov",
+    "r2Preview": "previews/pvc.mp4",
+    "r2Hover": "previews/pvc-hover.mp4",
+    "videoId": "SV-3ZB8QCYL",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
