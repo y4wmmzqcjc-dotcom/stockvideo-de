@@ -201,5 +201,39 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1775605075247",
+    "title": "New test ",
+    "slug": "new-test",
+    "description": "New test ",
+    "category": "",
+    "tags": [
+      "new"
+    ],
+    "resolution": "4K",
+    "duration": 12,
+    "fps": 25,
+    "prices": {
+      "web": 45,
+      "standard": 45,
+      "premium": 45
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/new-test.jpg",
+    "r2Key": "videos/new-test.mov",
+    "r2Preview": "previews/new-test.mp4",
+    "r2Hover": "previews/new-test-hover.mp4",
+    "videoId": "stockvideo.de-9EZ5T3PE",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
