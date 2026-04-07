@@ -2,7 +2,7 @@
 (function(){
   function slugify(s){return (s||'').toString().toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').substring(0,80)||'video';}
   window.slugifyKey=slugify;
-  function genVideoId(){return 'SV-'+Date.now().toString(36).toUpperCase().slice(-5)+Math.random().toString(36).substring(2,5).toUpperCase();}
+  function genVideoId(){return 'stockvideo.de-'+Date.now().toString(36).toUpperCase().slice(-5)+Math.random().toString(36).substring(2,5).toUpperCase();}
 
   function loadVideoMeta(file){
     return new Promise(function(resolve,reject){
