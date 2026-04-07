@@ -167,5 +167,39 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1775597331592",
+    "title": "Bagger",
+    "slug": "bagger",
+    "description": "Bagger",
+    "category": "",
+    "tags": [
+      "Bagger"
+    ],
+    "resolution": "4K",
+    "duration": 16,
+    "fps": 25,
+    "prices": {
+      "web": 80.88,
+      "standard": 80.88,
+      "premium": 80.88
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/bagger.jpg",
+    "r2Key": "videos/bagger.mov",
+    "r2Preview": "previews/bagger.mp4",
+    "r2Hover": "previews/bagger-hover.mp4",
+    "videoId": "SV-4T02VOR6",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
