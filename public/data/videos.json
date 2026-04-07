@@ -40,26 +40,24 @@
     ]
   },
   {
-    "id": "1775587862421",
-    "title": "Kuh 55",
-    "slug": "kuh-55",
-    "description": "Kuh 55 ist nice",
-    "category": "gebude-und-architektur",
+    "id": "1775589784590",
+    "title": "Ku 112",
+    "slug": "ku-112",
+    "description": "Ku 112",
+    "category": "essen",
     "tags": [
-      "Kuh",
-      "nice",
-      "Muh"
+      "Ku 112"
     ],
     "resolution": "4K",
     "duration": 10,
     "fps": 25,
     "prices": {
-      "web": 11.11,
-      "standard": 11.11,
-      "premium": 11.11
+      "web": 112,
+      "standard": 112,
+      "premium": 112
     },
-    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/kuh-55.jpg",
-    "r2Key": "videos/kuh-55.mp4",
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/ku-112.jpg",
+    "r2Key": "videos/ku-112.mp4",
     "featured": false,
     "gradient": [
       {
