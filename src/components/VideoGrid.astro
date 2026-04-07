@@ -100,7 +100,7 @@ document.getElementById("sortSelect")?.addEventListener("change", e => {
 render();
 var _grid=document.getElementById('videoGrid');
 if(_grid){
-  _grid.addEventListener('mouseover',function(e){var c=e.target.closest('.video-card');if(!c)return;var v=c.querySelector('video.hov-prev');if(!v)return;if(!v.src)v.src=v.dataset.src;v.style.opacity='1';try{v.play();}catch(e){}});
+  _grid.addEventListener('mouseover',function(e){var c=e.target.closest('.video-card');if(!c)return;var v=c.querySelector('video.hov-prev');if(!v)return;if(!v.src)v.src=v.dataset.src;v.style.opacity='1';try{(function(){if(!v._fb){v._fb=1;v.style.opacity="0";v.style.transition="opacity .18s ease";v.addEventListener("playing",function(){try{v.style.opacity="1";}catch(e){}});}try{if(v.readyState<2||v.currentTime<0.05)v.currentTime=0.08;}catch(e){}var _p=v.play();if(_p&&_p.catch)_p.catch(function(){});})();}catch(e){}});
   _grid.addEventListener('mouseout',function(e){var c=e.target.closest('.video-card');if(!c||c.contains(e.relatedTarget))return;var v=c.querySelector('video.hov-prev');if(!v)return;v.style.opacity='0';try{v.pause();v.currentTime=0;}catch(e){}});
 }
 </script>
