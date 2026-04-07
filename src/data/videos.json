@@ -40,22 +40,26 @@
     ]
   },
   {
-    "id": "1775585746054",
-    "title": "Kuh 3",
-    "slug": "kuh-3",
-    "description": "Kuh 3",
-    "category": "",
-    "tags": [],
+    "id": "1775587862421",
+    "title": "Kuh 55",
+    "slug": "kuh-55",
+    "description": "Kuh 55 ist nice",
+    "category": "gebude-und-architektur",
+    "tags": [
+      "Kuh",
+      "nice",
+      "Muh"
+    ],
     "resolution": "4K",
     "duration": 10,
     "fps": 25,
     "prices": {
-      "web": 222,
-      "standard": 222,
-      "premium": 222
+      "web": 11.11,
+      "standard": 11.11,
+      "premium": 11.11
     },
-    "thumbnail": "",
-    "r2Key": "",
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/kuh-55.jpg",
+    "r2Key": "videos/kuh-55.mp4",
     "featured": false,
     "gradient": [
       {
