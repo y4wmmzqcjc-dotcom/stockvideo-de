@@ -34,7 +34,8 @@
 
   async function uploadVideo(file, opts){
     opts = opts || {};
-    const token = opts.token || (window.__adminUploadToken) || prompt('Upload-Token (ADMIN_TOKEN aus Cloudflare):');
+    const token = opts.token || window.__adminUploadToken || localStorage.getItem('adminUploadToken') || prompt('Upload-Token (ADMIN_TOKEN aus Cloudflare):');
+    if (token) localStorage.setItem('adminUploadToken', token);
     if (!token) throw new Error('Kein Upload-Token');
     window.__adminUploadToken = token;
     const baseSlug = slugify(opts.slug || file.name.replace(/\.[^.]+$/,''));
