@@ -95,7 +95,7 @@ const price = video.price || (video.prices && video.prices.web) || 5;
 
   </div>
 
-  <script define:vars={{ videoId: video.id, videoTitle: video.title, price, slug: video.slug }}>
+  <script define:vars={{ videoId: video.id, videoTitle: video.title, price, slug: video.slug, r2Key: video.r2Key }}>
     var container = document.getElementById('videoContainer');
     var poster = document.getElementById('videoPoster');
     var player = document.getElementById('videoPlayer');
