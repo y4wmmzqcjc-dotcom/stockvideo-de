@@ -362,6 +362,9 @@
                 document.getElementById('videoModalTitle').textContent = 'Neues Video';
                 document.getElementById('videoModalTitle_Input').value = '';
                 document.getElementById('videoModalSlug').value = '';
+        var _pkn=document.getElementById('videoModalPreviewKey'); if(_pkn) _pkn.value='';
+        var _hkn=document.getElementById('videoModalHoverKey'); if(_hkn) _hkn.value='';
+        var _vidn=document.getElementById('videoModalVideoId'); if(_vidn) _vidn.value='';
                 document.getElementById('videoModalDescription').value = '';
                 document.getElementById('videoModalCategory').value = '';
                 document.getElementById('videoModalTags').value = '';
@@ -399,6 +402,9 @@
                 document.getElementById('videoModalPrice').value = video.prices.premium;
                 document.getElementById('videoModalThumbnail').value = video.thumbnail;
                 document.getElementById('videoModalR2Key').value = video.r2Key;
+        var _pk=document.getElementById('videoModalPreviewKey'); if(_pk) _pk.value=video.r2Preview||'';
+        var _hk=document.getElementById('videoModalHoverKey'); if(_hk) _hk.value=video.r2Hover||'';
+        var _vid=document.getElementById('videoModalVideoId'); if(_vid) _vid.value=video.videoId||'';
                 document.getElementById('videoModalFeatured').checked = video.featured;
 
                 this.updateCategoryDropdown();
@@ -495,6 +501,9 @@
                     },
                     thumbnail: document.getElementById('videoModalThumbnail').value,
                     r2Key: document.getElementById('videoModalR2Key').value,
+        r2Preview: (document.getElementById('videoModalPreviewKey') && document.getElementById('videoModalPreviewKey').value) || (this.editingVideoId !== null && this.videos[this.editingVideoId] && this.videos[this.editingVideoId].r2Preview) || '',
+        r2Hover: (document.getElementById('videoModalHoverKey') && document.getElementById('videoModalHoverKey').value) || (this.editingVideoId !== null && this.videos[this.editingVideoId] && this.videos[this.editingVideoId].r2Hover) || '',
+        videoId: (document.getElementById('videoModalVideoId') && document.getElementById('videoModalVideoId').value) || (this.editingVideoId !== null && this.videos[this.editingVideoId] && this.videos[this.editingVideoId].videoId) || '',
                     featured: document.getElementById('videoModalFeatured').checked,
                     gradient
                 };
