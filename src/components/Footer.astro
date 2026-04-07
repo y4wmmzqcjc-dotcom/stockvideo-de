@@ -1,5 +1,6 @@
 ---
 import config from '../data/config.json';
+import categories from '../data/categories.json';
 ---
 <footer class="footer">
   <div class="footer-inner">
@@ -10,9 +11,13 @@ import config from '../data/config.json';
     {config.footer.columns.map(col => (
       <div>
         <div class="footer-col-title">{col.title}</div>
-        {col.links.map(link => (
-          <a class="footer-link" href={link.href}>{link.label}</a>
-        ))}
+        {col.title === 'Kategorien'
+          ? categories.map(cat => (
+              <a class="footer-link" href={`/#${cat.slug}`}>{cat.label}</a>
+            ))
+          : col.links.map(link => (
+              <a class="footer-link" href={link.href}>{link.label}</a>
+            ))}
       </div>
     ))}
   </div>
