@@ -1130,3 +1130,5 @@
   };
   ensure();
 })();
+
+;/*AUTO_BOOTSTRAP_DATA*/(function(){try{var need=!localStorage.getItem("adminVideos")||JSON.parse(localStorage.getItem("adminVideos")||"[]").length===0;if(!need)return;Promise.all([fetch("/data/videos.json").then(r=>r.ok?r.json():[]).catch(()=>[]),fetch("/data/categories.json").then(r=>r.ok?r.json():[]).catch(()=>[])]).then(function(a){localStorage.setItem("adminVideos",JSON.stringify(a[0]||[]));localStorage.setItem("adminCategories",JSON.stringify(a[1]||[]));try{window.admin&&window.admin.loadVideos&&window.admin.loadVideos();}catch(e){}});}catch(e){}})();
