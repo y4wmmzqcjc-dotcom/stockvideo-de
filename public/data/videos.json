@@ -69,5 +69,74 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1775598494430",
+    "title": "Giesskanne",
+    "slug": "giesskanne",
+    "description": "Giesskanne",
+    "category": "pflanzen-und-blumen",
+    "tags": [
+      "Blumen",
+      "giessen"
+    ],
+    "resolution": "4K",
+    "duration": 12,
+    "fps": 25,
+    "prices": {
+      "web": 65.99,
+      "standard": 65.99,
+      "premium": 65.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/giesskanne.jpg",
+    "r2Key": "videos/giesskanne.mov",
+    "r2Preview": "previews/giesskanne.mp4",
+    "r2Hover": "previews/giesskanne-hover.mp4",
+    "videoId": "stockvideo.de-5HEJR1ZK",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
+  },
+  {
+    "id": "1775598584986",
+    "title": "PVC",
+    "slug": "pvc",
+    "description": "PVC granulat",
+    "category": "technologie",
+    "tags": [
+      "PVC"
+    ],
+    "resolution": "4K",
+    "duration": 14,
+    "fps": 25,
+    "prices": {
+      "web": 55.9,
+      "standard": 55.9,
+      "premium": 55.9
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/pvc.jpg",
+    "r2Key": "videos/pvc.mov",
+    "r2Preview": "previews/pvc.mp4",
+    "r2Hover": "previews/pvc-hover.mp4",
+    "videoId": "stockvideo.de-5J9D2J0N",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
