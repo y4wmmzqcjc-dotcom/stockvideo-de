@@ -7,9 +7,9 @@ import Footer from '../../components/Footer.astro';
 <BaseLayout title="Zahlung erfolgreich" description="Vielen Dank für Ihren Einkauf bei stockvideo.de">
   <Topbar />
   <div class="page-content" style="max-width:640px;text-align:center;padding:80px 20px;">
-    <div style="font-size:64px;margin-bottom:24px;">✅</div>
-    <h1 style="font-size:28px;margin-bottom:16px;">Zahlung erfolgreich!</h1>
-    <p style="color:#999;font-size:16px;margin-bottom:32px;">
+    <div id="iconArea" style="font-size:64px;margin-bottom:24px;">✅</div>
+    <h1 id="headingArea" style="font-size:28px;margin-bottom:16px;">Zahlung erfolgreich!</h1>
+    <p id="subText" style="color:#999;font-size:16px;margin-bottom:32px;">
       Vielen Dank für Ihren Einkauf. Ihr Download wird vorbereitet.
     </p>
 
@@ -17,8 +17,9 @@ import Footer from '../../components/Footer.astro';
       <div id="statusText" style="color:#ccc;">Zahlung wird überprüft...</div>
       <div id="downloadSection" style="display:none;margin-top:20px;">
         <a id="downloadLink" href="#" class="btn-primary" style="display:inline-block;padding:14px 32px;font-size:16px;text-decoration:none;border-radius:8px;">
-          Video herunterladen
+          ⬇ Video herunterladen (4K Original)
         </a>
+        <p style="color:#666;font-size:12px;margin-top:12px;">Der Download startet automatisch. Falls nicht, klicken Sie den Button erneut.</p>
       </div>
     </div>
 
@@ -27,7 +28,6 @@ import Footer from '../../components/Footer.astro';
 
   <script>
     var CHECKOUT_WORKER = 'https://stockvideo-checkout.rende.workers.dev';
-    var R2_BASE = 'https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev';
     var params = new URLSearchParams(window.location.search);
     var paymentId = params.get('payment_id');
     var slug = params.get('slug');
@@ -35,34 +35,58 @@ import Footer from '../../components/Footer.astro';
     var statusText = document.getElementById('statusText');
     var downloadSection = document.getElementById('downloadSection');
     var downloadLink = document.getElementById('downloadLink');
+    var iconArea = document.getElementById('iconArea');
+    var headingArea = document.getElementById('headingArea');
+    var subText = document.getElementById('subText');
+
+    var checkCount = 0;
 
     async function checkPayment() {
       if (!paymentId) {
         statusText.textContent = 'Keine Zahlungs-ID gefunden.';
+        iconArea.textContent = '❌';
+        headingArea.textContent = 'Fehler';
+        subText.textContent = 'Es wurde keine Zahlungs-ID übergeben.';
         return;
       }
 
+      checkCount++;
       try {
-        var res = await fetch(CHECKOUT_WORKER + '/payment-status?id=' + paymentId);
+        var res = await fetch(CHECKOUT_WORKER + '/payment-status?id=' + encodeURIComponent(paymentId));
         var data = await res.json();
 
+        if (data.error) {
+          statusText.textContent = 'Fehler: ' + data.error;
+          if (checkCount < 5) setTimeout(checkPayment, 3000);
+          return;
+        }
+
         if (data.status === 'paid') {
-          statusText.innerHTML = '<span style="color:#4ade80;font-weight:600;">Zahlung bestätigt!</span><br><span style="color:#999;font-size:14px;">' + (data.videoTitle || 'Video') + '</span>';
+          statusText.innerHTML = '<span style="color:#4ade80;font-weight:600;font-size:18px;">Zahlung bestätigt!</span><br><span style="color:#999;font-size:14px;margin-top:4px;display:inline-block;">' + (data.videoTitle || 'Stock Video') + '</span>';
           downloadSection.style.display = 'block';
-          downloadLink.href = '/video/' + (data.slug || slug) + '/';
-          downloadLink.textContent = 'Zum Video';
-        } else if (data.status === 'pending' || data.status === 'open') {
-          statusText.textContent = 'Zahlung wird noch verarbeitet... Bitte warten.';
-          setTimeout(checkPayment, 3000);
+          if (data.downloadUrl) {
+            downloadLink.href = data.downloadUrl;
+            downloadLink.setAttribute('download', '');
+          } else {
+            downloadLink.href = '/video/' + (data.slug || slug) + '/';
+            downloadLink.textContent = 'Zum Video';
+          }
+        } else if (data.status === 'open' || data.status === 'pending') {
+          statusText.textContent = 'Zahlung wird verarbeitet... (' + checkCount + ')';
+          if (checkCount < 20) setTimeout(checkPayment, 3000);
+          else statusText.textContent = 'Die Zahlung wird noch verarbeitet. Bitte prüfen Sie später erneut.';
         } else if (data.status === 'failed' || data.status === 'canceled' || data.status === 'expired') {
-          statusText.innerHTML = '<span style="color:#ef4444;">Zahlung ' + data.status + '.</span><br><a href="/video/' + (slug || '') + '/" style="color:var(--accent);">Erneut versuchen</a>';
+          iconArea.textContent = '❌';
+          headingArea.textContent = 'Zahlung nicht erfolgreich';
+          subText.textContent = 'Die Zahlung wurde ' + (data.status === 'canceled' ? 'abgebrochen' : data.status === 'expired' ? 'ist abgelaufen' : 'fehlgeschlagen') + '.';
+          statusText.innerHTML = '<a href="/video/' + (data.slug || slug || '') + '/" class="btn-primary" style="display:inline-block;padding:12px 24px;text-decoration:none;border-radius:8px;">Erneut versuchen</a>';
         } else {
-          statusText.textContent = 'Status: ' + (data.status || 'unbekannt');
-          if (data.error) statusText.textContent += ' - ' + data.error;
-          setTimeout(checkPayment, 3000);
+          statusText.textContent = 'Status: ' + data.status;
+          if (checkCount < 10) setTimeout(checkPayment, 3000);
         }
       } catch (err) {
-        statusText.textContent = 'Fehler beim Prüfen der Zahlung: ' + err.message;
+        statusText.textContent = 'Verbindungsfehler. Versuche erneut...';
+        if (checkCount < 10) setTimeout(checkPayment, 5000);
       }
     }
 
