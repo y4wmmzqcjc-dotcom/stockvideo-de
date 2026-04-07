@@ -5,72 +5,161 @@
   "hero": {
     "title": "Lizenzfreie Stock Videos in 4K & HD",
     "subtitle": "1.000+ handverlesene Videoclips. Einmal kaufen, unbegrenzt nutzen.\nKeine Abo-Pflicht. Faire Preise made in Germany.",
-    "searchPlaceholder": "Suche nach Videos\u2026 z.B. Natur, Business, Drohne, Berlin"
+    "searchPlaceholder": "Suche nach Videos… z.B. Natur, Business, Drohne, Berlin"
   },
   "features": [
-    { "icon": "\u2726", "title": "Keine Abo-Pflicht", "desc": "Einzelkauf oder Pakete. Keine monatliche Bindung, keine versteckten Kosten." },
-    { "icon": "\u00a7", "title": "Deutsche Lizenzen", "desc": "Klare Nutzungsrechte nach deutschem Recht. Einmal kaufen, unbegrenzt nutzen." },
-    { "icon": "\u25c6", "title": "Kuratierte Qualit\u00e4t", "desc": "Jeder Clip handverlesen und qualit\u00e4tsgepr\u00fcft. 4K und Full HD verf\u00fcgbar." },
-    { "icon": "\u2193", "title": "Sofort-Download", "desc": "MP4 & MOV direkt nach Kauf. Kein Wasserzeichen, keine Wartezeit." }
+    {
+      "icon": "✦",
+      "title": "Keine Abo-Pflicht",
+      "desc": "Einzelkauf oder Pakete. Keine monatliche Bindung, keine versteckten Kosten."
+    },
+    {
+      "icon": "§",
+      "title": "Deutsche Lizenzen",
+      "desc": "Klare Nutzungsrechte nach deutschem Recht. Einmal kaufen, unbegrenzt nutzen."
+    },
+    {
+      "icon": "◆",
+      "title": "Kuratierte Qualität",
+      "desc": "Jeder Clip handverlesen und qualitätsgeprüft. 4K und Full HD verfügbar."
+    },
+    {
+      "icon": "↓",
+      "title": "Sofort-Download",
+      "desc": "MP4 & MOV direkt nach Kauf. Kein Wasserzeichen, keine Wartezeit."
+    }
   ],
   "pricing": [
-    { "label": "Web / Social", "res": "Full HD", "price": 29, "desc": "Perfekt f\u00fcr Social Media und Websites", "featured": false },
-    { "label": "Standard", "res": "Full HD", "price": 49, "desc": "Kommerzielle Nutzung, unbegrenzt", "featured": false },
-    { "label": "Premium", "res": "4K UHD", "price": 79, "desc": "H\u00f6chste Qualit\u00e4t f\u00fcr professionelle Projekte", "featured": true },
-    { "label": "10er-Paket", "res": "Mix", "price": 249, "desc": "10 Videos nach Wahl \u2014 38% Ersparnis", "featured": false }
+    {
+      "label": "Web / Social",
+      "res": "Full HD",
+      "price": 29,
+      "desc": "Perfekt für Social Media und Websites",
+      "featured": false
+    },
+    {
+      "label": "Standard",
+      "res": "Full HD",
+      "price": 49,
+      "desc": "Kommerzielle Nutzung, unbegrenzt",
+      "featured": false
+    },
+    {
+      "label": "Premium",
+      "res": "4K UHD",
+      "price": 79,
+      "desc": "Höchste Qualität für professionelle Projekte",
+      "featured": true
+    },
+    {
+      "label": "10er-Paket",
+      "res": "Mix",
+      "price": 249,
+      "desc": "10 Videos nach Wahl — 38% Ersparnis",
+      "featured": false
+    }
   ],
   "nav": {
     "links": [
-      { "label": "Videos", "href": "/#videoGrid" },
-      { "label": "Kategorien", "href": "/#catStrip" },
-      { "label": "Pakete & Preise", "href": "/preise" },
-      { "label": "Unternehmen", "href": "/uber-uns" }
+      {
+        "label": "Kategorien",
+        "href": "/#kategorien"
+      },
+      {
+        "label": "Unternehmen",
+        "href": "/uber-uns"
+      }
     ],
-    "ctaText": "Videos lizenzieren"
+    "ctaText": "Kontakt"
   },
   "footer": {
     "columns": [
       {
         "title": "Videos",
         "links": [
-          { "label": "Alle Videos", "href": "/" },
-          { "label": "4K Videos", "href": "/#videoGrid" },
-          { "label": "HD Videos", "href": "/#videoGrid" },
-          { "label": "Neueste Videos", "href": "/#videoGrid" }
+          {
+            "label": "Alle Videos",
+            "href": "/"
+          },
+          {
+            "label": "4K Videos",
+            "href": "/#videoGrid"
+          },
+          {
+            "label": "HD Videos",
+            "href": "/#videoGrid"
+          },
+          {
+            "label": "Neueste Videos",
+            "href": "/#videoGrid"
+          }
         ]
       },
       {
         "title": "Kategorien",
         "links": [
-          { "label": "Natur", "href": "/kategorie/natur" },
-          { "label": "Business", "href": "/kategorie/business" },
-          { "label": "Technologie", "href": "/kategorie/tech" },
-          { "label": "Aerial", "href": "/kategorie/aerial" },
-          { "label": "Menschen", "href": "/kategorie/menschen" }
+          {
+            "label": "Natur",
+            "href": "/kategorie/natur"
+          },
+          {
+            "label": "Business",
+            "href": "/kategorie/business"
+          },
+          {
+            "label": "Technologie",
+            "href": "/kategorie/tech"
+          },
+          {
+            "label": "Aerial",
+            "href": "/kategorie/aerial"
+          },
+          {
+            "label": "Menschen",
+            "href": "/kategorie/menschen"
+          }
         ]
       },
       {
         "title": "Info",
         "links": [
-          { "label": "\u00dcber uns", "href": "/uber-uns" },
-          { "label": "Lizenzbedingungen", "href": "/lizenzen" },
-          { "label": "Kontakt", "href": "/kontakt" }
+          {
+            "label": "Über uns",
+            "href": "/uber-uns"
+          },
+          {
+            "label": "Lizenzbedingungen",
+            "href": "/lizenzen"
+          },
+          {
+            "label": "Kontakt",
+            "href": "/kontakt"
+          }
         ]
       },
       {
         "title": "Rechtliches",
         "links": [
-          { "label": "Impressum", "href": "/impressum" },
-          { "label": "Datenschutz", "href": "/datenschutz" },
-          { "label": "AGB", "href": "/agb" }
+          {
+            "label": "Impressum",
+            "href": "/impressum"
+          },
+          {
+            "label": "Datenschutz",
+            "href": "/datenschutz"
+          },
+          {
+            "label": "AGB",
+            "href": "/agb"
+          }
         ]
       }
     ],
-    "copyright": "\u00a9 2026 stockvideo.de \u2014 Alle Rechte vorbehalten"
+    "copyright": "© 2026 stockvideo.de — Alle Rechte vorbehalten"
   },
   "contact": {
     "name": "Timo Rende",
-    "street": "Haldenstra\u00dfe 16",
+    "street": "Haldenstraße 16",
     "city": "66806 Ensdorf/Saarlouis",
     "phone": "06831 5052856",
     "fax": "06831 5051619",
