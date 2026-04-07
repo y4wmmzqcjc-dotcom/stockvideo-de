@@ -488,9 +488,9 @@
         }
     };
     </script>
-    <script src="/admin.js?v=1775591609155"></script>
+    <script src="/admin.js?v=1775591684485"></script>
 <div id="__stat_stubs" style="display:none"><span id="statVideos"></span><span id="statCategories"></span><span id="statLastChange"></span><span id="statLastChangeTime"></span><span id="statDeployStatus"></span><span id="statDeployTime"></span></div>
-<script src="/upload.js?v=1775591609155"></script>
+<script src="/upload.js?v=1775591684485"></script>
 <script>
 (function(){
   document.addEventListener("change", async function(e){
@@ -528,9 +528,9 @@
     (async function bootstrap(){
       try{
         var rc=await fetch('/data/categories.json?cb='+Date.now(),{cache:'no-store'});
-        if(rc.ok){var jc=await rc.json();if(Array.isArray(jc)&&jc.length){try{localStorage.setItem('adminCategories',JSON.stringify(jc));}catch(e){}}}
+        if(rc.ok){var jc=await rc.json();if(Array.isArray(jc)&&jc.length && !localStorage.getItem('adminCategories')){try{localStorage.setItem('adminCategories',JSON.stringify(jc));}catch(e){}}}
         var rv=await fetch('/data/videos.json?cb='+Date.now(),{cache:'no-store'});
-        if(rv.ok){var jv=await rv.json();if(Array.isArray(jv)){try{localStorage.setItem('adminVideos',JSON.stringify(jv));}catch(e){}}}
+        if(rv.ok){var jv=await rv.json();if(Array.isArray(jv) && !localStorage.getItem('adminVideos')){try{localStorage.setItem('adminVideos',JSON.stringify(jv));}catch(e){}}}
       }catch(e){console.warn('bootstrap failed',e);}
       origLC();origLV();
     })();
