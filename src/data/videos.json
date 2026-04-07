@@ -38,5 +38,34 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1775585746054",
+    "title": "Kuh 3",
+    "slug": "kuh-3",
+    "description": "Kuh 3",
+    "category": "",
+    "tags": [],
+    "resolution": "4K",
+    "duration": 10,
+    "fps": 25,
+    "prices": {
+      "web": 222,
+      "standard": 222,
+      "premium": 222
+    },
+    "thumbnail": "",
+    "r2Key": "",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
