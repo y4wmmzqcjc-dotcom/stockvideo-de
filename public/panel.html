@@ -32,7 +32,7 @@
                         <input type="text" id="otpInput" class="form-input" placeholder="000000" maxlength="6" inputmode="numeric">
                     </div>
                     <button class="button button-primary" onclick="auth.verifyOTP()">Anmelden</button>
-                    <button class="button button-secondary" style="width: 100%;" onclick="auth.backToPassword()">ZurÃ¼ck</button>
+                    <button class="button button-secondary" style="width: 100%;" onclick="auth.backToPassword()">Zurück</button>
                     <p style="color: var(--text-secondary); font-size: 0.75rem; text-align: center; margin-top: 1rem;">
                         Versuche: <span id="otpAttempts">0</span>/3
                     </p>
@@ -40,7 +40,7 @@
 
                 <div id="lockoutDisplay" style="display: none;">
                     <div class="lockout-display">
-                        <div style="font-size: 2rem; margin-bottom: 1rem;">ð</div>
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">🔒</div>
                         <p style="margin-bottom: 1rem;">Account gesperrt</p>
                         <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Zu viele fehlgeschlagene Versuche</p>
                         <div class="lockout-timer" id="lockoutTimer">15:00</div>
@@ -59,22 +59,22 @@
             </div>
             <nav class="sidebar-nav">
                 <div class="nav-item active" onclick="admin.switchPanel('dashboard')">
-                    <span>ð</span> Dashboard
+                    <span>📊</span> Dashboard
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('videos')">
-                    <span>ð¬</span> Videos verwalten
+                    <span>🎬</span> Videos verwalten
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('categories')">
-                    <span>ð</span> Kategorien
+                    <span>📁</span> Kategorien
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('content')">
-                    <span>ð</span> Seiteninhalte
+                    <span>📝</span> Seiteninhalte
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('design')">
-                    <span>ð¨</span> Design
+                    <span>🎨</span> Design
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('settings')">
-                    <span>âï¸</span> Einstellungen
+                    <span>⚙️</span> Einstellungen
                 </div>
             </nav>
             <div class="sidebar-footer">
@@ -87,7 +87,7 @@
             <div id="panel-dashboard" class="content-panel active">
                 <div class="content-header">
                     <h1 class="content-title">Dashboard</h1>
-                    <p class="content-subtitle">Ãberblick Ã¼ber Ihr System</p>
+                    <p class="content-subtitle">Überblick über Ihr System</p>
                 </div>
                 <div style="padding: 2rem;">
                     <div id="dashboardAlert"></div>
@@ -97,7 +97,7 @@
                     <div class="action-buttons">
                         <button class="button button-primary" onclick="admin.loadVideos(); admin.switchPanel('videos')">Videos bearbeiten</button>
                         <button class="button button-primary" onclick="admin.loadCategories(); admin.switchPanel('categories')">Kategorien bearbeiten</button>
-                        <button class="button button-primary" onclick="admin.publishToGitHub()">VerÃ¶ffentlichen</button>
+                        <button class="button button-primary" onclick="admin.publishToGitHub()">Veröffentlichen</button>
                         <button class="button button-secondary" onclick="admin.refreshDeployStatus()">Status aktualisieren</button>
                     </div>
                 </div>
@@ -107,7 +107,7 @@
             <div id="panel-videos" class="content-panel">
                 <div class="content-header">
                     <h1 class="content-title">Videos verwalten</h1>
-                    <p class="content-subtitle">Erstellen, bearbeiten und lÃ¶schen Sie Videos</p>
+                    <p class="content-subtitle">Erstellen, bearbeiten und löschen Sie Videos</p>
                 </div>
                 <div style="padding: 2rem;">
                     <div id="videosAlert"></div>
@@ -195,7 +195,7 @@
                         <div class="form-row full">
                             <div>
                                 <label class="form-label">Copyright</label>
-                                <input type="text" class="form-input" id="contentFooterCopyright" placeholder="Â© 2026 stockvideo.de">
+                                <input type="text" class="form-input" id="contentFooterCopyright" placeholder="© 2026 stockvideo.de">
                             </div>
                         </div>
                         <div class="form-row full">
@@ -217,14 +217,14 @@
                         <div class="form-row full">
                             <div>
                                 <label class="form-label">Meta-Beschreibung</label>
-                                <textarea class="textarea" id="contentSEODescription" placeholder="Hochwertige Stock Videos fÃ¼r kommerzielle Projekte..."></textarea>
+                                <textarea class="textarea" id="contentSEODescription" placeholder="Hochwertige Stock Videos für kommerzielle Projekte..."></textarea>
                             </div>
                         </div>
                     </div>
 
                     <div style="display: flex; gap: 1rem;">
                         <button class="button button-primary" onclick="admin.savePageContent()">Speichern</button>
-                        <button class="button button-secondary" onclick="admin.loadPageContent()">ZurÃ¼cksetzen</button>
+                        <button class="button button-secondary" onclick="admin.loadPageContent()">Zurücksetzen</button>
                     </div>
                 </div>
             </div>
@@ -245,14 +245,14 @@
 
                     <div class="form-section">
                         <div class="form-section-title">Komplettes Design importieren</div>
-                        <label class="form-label">CSS-Code einfÃ¼gen (ersetzen Sie alle Variablen)</label>
-                        <textarea class="textarea" id="designImportCSS" placeholder="Komplettes CSS-Variablen-Set hier einfÃ¼gen..."></textarea>
+                        <label class="form-label">CSS-Code einfügen (ersetzen Sie alle Variablen)</label>
+                        <textarea class="textarea" id="designImportCSS" placeholder="Komplettes CSS-Variablen-Set hier einfügen..."></textarea>
                     </div>
 
                     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                         <button class="button button-primary" onclick="admin.saveDesignVariables()">Variablen speichern</button>
                         <button class="button button-primary" onclick="admin.importDesignCSS()">CSS importieren</button>
-                        <button class="button button-secondary" onclick="admin.resetDesignToDefault()">ZurÃ¼cksetzen</button>
+                        <button class="button button-secondary" onclick="admin.resetDesignToDefault()">Zurücksetzen</button>
                     </div>
                 </div>
             </div>
@@ -275,11 +275,11 @@
                                 <input type="password" class="form-input" id="settingsNewPassword" placeholder="Neues Passwort">
                             </div>
                             <div>
-                                <label class="form-label">BestÃ¤tigen</label>
+                                <label class="form-label">Bestätigen</label>
                                 <input type="password" class="form-input" id="settingsConfirmPassword" placeholder="Passwort wiederholen">
                             </div>
                         </div>
-                        <button class="button button-primary" onclick="admin.changePassword()">Passwort Ã¤ndern</button>
+                        <button class="button button-primary" onclick="admin.changePassword()">Passwort ändern</button>
                     </div>
 
                     <div class="form-section">
@@ -302,7 +302,7 @@
                         </div>
                         <div class="form-row full">
                             <div>
-                                <label class="form-label">Admin-Email (fÃ¼r OTP)</label>
+                                <label class="form-label">Admin-Email (für OTP)</label>
                                 <input type="email" class="form-input" id="settings2faEmail" placeholder="admin@example.com">
                             </div>
                         </div>
@@ -363,7 +363,7 @@
             <div class="form-group">
                 <label class="form-label">Kategorie</label>
                 <select class="select" id="videoModalCategory">
-                    <option value="">-- WÃ¤hlen Sie eine Kategorie --</option>
+                    <option value="">-- Wählen Sie eine Kategorie --</option>
                 </select>
             </div>
             <div class="form-group">
@@ -372,7 +372,7 @@
             </div>
             <div class="form-row">
                 <div>
-                    <label class="form-label">AuflÃ¶sung</label>
+                    <label class="form-label">Auflösung</label>
                     <select class="select" id="videoModalResolution">
                         <option value="4K">4K</option>
                         <option value="HD">HD</option>
@@ -388,7 +388,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="form-label">Preis (â¬)</label>
+                <label class="form-label">Preis (€)</label>
                 <input type="number" class="form-input" id="videoModalPrice" placeholder="49.99" min="0" step="0.01">
             </div>
             <div class="form-group">
@@ -442,7 +442,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Icon</label>
-                <input type="text" class="form-input" id="categoryModalIcon" placeholder="ð¬">
+                <input type="text" class="form-input" id="categoryModalIcon" placeholder="🎬">
             </div>
             <div class="form-group">
                 <label class="form-label">Reihenfolge</label>
@@ -490,7 +490,7 @@
     </script>
     <script src="/admin.js?v=1775593138636"></script>
 <div id="__stat_stubs" style="display:none"><span id="statVideos"></span><span id="statCategories"></span><span id="statLastChange"></span><span id="statLastChangeTime"></span><span id="statDeployStatus"></span><span id="statDeployTime"></span></div>
-<script src="/upload.js?v=1775594165032"></script>
+<script src="/upload.js?v=1775594331740"></script>
 <script>
 (function(){
   document.addEventListener("change", async function(e){
@@ -511,7 +511,7 @@
               var hk=document.getElementById('videoModalHoverKey'); if(hk) hk.value=res.hoverKey||'';
               var vid=document.getElementById('videoModalVideoId'); if(vid) vid.value=res.videoId||'';
         if (thumbKey) thumbKey.value = res.thumbKey; var tu=document.getElementById("videoModalThumbnail"); if(tu&&res.thumbKey){tu.value="https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/"+res.thumbKey;}
-        status.textContent = "Upload fertig â speichere & publiziereâ¦"; try{ var ti=document.getElementById("videoModalTitle"); if(ti && !ti.value) ti.value = f.name.replace(/\.[^.]+$/,""); var ds=document.getElementById("videoModalDescription"); if(ds && !ds.value) ds.value=ti?ti.value:""; if(window.admin && admin.saveVideo){ admin.saveVideo(); } status.textContent="Gespeichert. Publiziere zu GitHubâ¦"; if(window.admin && admin.publishToGitHub){ await admin.publishToGitHub(); } status.textContent="Fertig! Live in ~1-2 Min via Cloudflare Pages."; }catch(e2){ status.textContent="Auto-Publish Fehler: "+e2.message; }
+        status.textContent = "Upload fertig — speichere & publiziere…"; try{ var ti=document.getElementById("videoModalTitle"); if(ti && !ti.value) ti.value = f.name.replace(/\.[^.]+$/,""); var ds=document.getElementById("videoModalDescription"); if(ds && !ds.value) ds.value=ti?ti.value:""; if(window.admin && admin.saveVideo){ admin.saveVideo(); } status.textContent="Gespeichert. Publiziere zu GitHub…"; if(window.admin && admin.publishToGitHub){ await admin.publishToGitHub(); } status.textContent="Fertig! Live in ~1-2 Min via Cloudflare Pages."; }catch(e2){ status.textContent="Auto-Publish Fehler: "+e2.message; }
       } catch (err) {
         status.textContent = "Fehler: " + err.message;
       }
@@ -542,12 +542,12 @@
     };
     var origDel=admin.deleteVideo.bind(admin);
     admin.deleteVideo=function(idx){
-      if(!confirm('Wirklich lÃ¶schen?'))return;
+      if(!confirm('Wirklich löschen?'))return;
       this.videos.splice(idx,1);
       try{localStorage.setItem('adminVideos',JSON.stringify(this.videos));}catch(e){}
       this.renderVideosList&&this.renderVideosList();
       this.updateDashboard&&this.updateDashboard();
-      this.showAlert&&this.showAlert('videosAlert','success','Video gelÃ¶scht');
+      this.showAlert&&this.showAlert('videosAlert','success','Video gelöscht');
     };
   }
   once();
@@ -558,8 +558,8 @@
 <button id="batchReprocessBtn" type="button" style="position:fixed;bottom:20px;right:20px;z-index:9999;padding:12px 18px;border-radius:8px;background:#1473e6;color:#fff;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.4);font-weight:600;">Vorschauen neu generieren</button>
 <div id="batchReprocessModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:10000;overflow:auto;padding:40px;">
 <div style="max-width:760px;margin:0 auto;background:#1e1e1e;border-radius:12px;padding:28px;color:#eee;font-family:system-ui;">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="margin:0;font-size:20px;">Preview-Pipeline fÃ¼r bestehende Videos</h2><button onclick="document.getElementById('batchReprocessModal').style.display='none'" style="background:#333;border:none;color:#ccc;padding:6px 12px;border-radius:4px;cursor:pointer;">SchlieÃen</button></div>
-<p style="color:#aaa;font-size:14px;margin:0 0 18px;">WÃ¤hle pro Video die <b>originale</b> Videodatei nochmal aus. Es wird automatisch ein 480p Preview + 360p Hover-Loop mit Wasserzeichen erzeugt und hochgeladen. Das Originalvideo in R2 wird dabei <b>nicht</b> erneut hochgeladen.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="margin:0;font-size:20px;">Preview-Pipeline für bestehende Videos</h2><button onclick="document.getElementById('batchReprocessModal').style.display='none'" style="background:#333;border:none;color:#ccc;padding:6px 12px;border-radius:4px;cursor:pointer;">Schließen</button></div>
+<p style="color:#aaa;font-size:14px;margin:0 0 18px;">Wähle pro Video die <b>originale</b> Videodatei nochmal aus. Es wird automatisch ein 480p Preview + 360p Hover-Loop mit Wasserzeichen erzeugt und hochgeladen. Das Originalvideo in R2 wird dabei <b>nicht</b> erneut hochgeladen.</p>
 <div id="batchReprocessList"></div>
 <div style="margin-top:20px;display:flex;gap:10px;"><button id="batchReprocessPublish" style="padding:10px 18px;background:#16a34a;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;">Publish to GitHub</button></div>
 </div></div>
@@ -583,7 +583,7 @@ function openBatch(){
 }
 function bind(){
   var b=document.getElementById("batchReprocessBtn"); if(b&&!b._bd){ b._bd=1; b.addEventListener("click",openBatch); }
-  var p=document.getElementById("batchReprocessPublish"); if(p&&!p._bd){ p._bd=1; p.addEventListener("click",function(){ if(window.admin&&admin.publishToGitHub){ admin.publishToGitHub(); } else { alert("publishToGitHub nicht verfÃ¼gbar"); } }); }
+  var p=document.getElementById("batchReprocessPublish"); if(p&&!p._bd){ p._bd=1; p.addEventListener("click",function(){ if(window.admin&&admin.publishToGitHub){ admin.publishToGitHub(); } else { alert("publishToGitHub nicht verfügbar"); } }); }
 }
 if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bind); else bind();
 document.addEventListener("change", async function(e){
