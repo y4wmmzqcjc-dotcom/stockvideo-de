@@ -141,8 +141,7 @@
       };
       next();
     });
-    try{ctx.drawImage(v,0,0,c.width,c.height);}catch(e){}rec.start(250);
-    await v.play().catch(()=>{});
+    try{ctx.drawImage(v,0,0,c.width,c.height);}catch(e){}await v.play().catch(()=>{});await new Promise(r=>setTimeout(r,120));try{ctx.drawImage(v,0,0,c.width,c.height);}catch(e){}await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));try{ctx.drawImage(v,0,0,c.width,c.height);}catch(e){}rec.start(250);
     const start=performance.now();
     let lastPct=-1;
     return new Promise((resolve)=>{
