@@ -6,13 +6,13 @@ import videos from '../data/videos.json';
   <div class="no-results" id="noResults">
     <div class="no-results-icon">&#x2315;</div>
     <h3>Keine Ergebnisse</h3>
-    <p>Versuch einen anderen Suchbegriff oder wÃ¤hle eine Kategorie.</p>
+    <p>Versuch einen anderen Suchbegriff oder wähle eine Kategorie.</p>
   </div>
 </section>
 
 <script define:vars={{ videos }}>
 const catLabels = {
-  all:"Alle Videos", natur:"Natur & Landschaft", business:"Business & BÃ¼ro",
+  all:"Alle Videos", natur:"Natur & Landschaft", business:"Business & Büro",
   tech:"Technologie", aerial:"Aerial & Drohne", urban:"Stadt & Architektur",
   menschen:"Menschen & Lifestyle", abstrakt:"Abstrakt & Motion", timelapse:"Timelapse"
 };
@@ -90,7 +90,7 @@ document.getElementById("resFilterBtn")?.addEventListener("click", e => {
   const btn = e.target;
   const cycle = { all:"4k", "4k":"hd", hd:"all" };
   state.res = cycle[state.res];
-  btn.textContent = state.res === "all" ? "AuflÃ¶sung" : state.res === "4k" ? "Nur 4K" : "Nur HD";
+  btn.textContent = state.res === "all" ? "Auflösung" : state.res === "4k" ? "Nur 4K" : "Nur HD";
   btn.classList.toggle("active", state.res !== "all");
   render();
 });
