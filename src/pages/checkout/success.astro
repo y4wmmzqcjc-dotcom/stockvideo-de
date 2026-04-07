@@ -4,17 +4,17 @@ import Topbar from '../../components/Topbar.astro';
 import Footer from '../../components/Footer.astro';
 ---
 
-<BaseLayout title="Zahlung erfolgreich" description="Vielen Dank f\u00fcr Ihren Einkauf bei stockvideo.de">
+<BaseLayout title="Zahlung erfolgreich" description="Vielen Dank für Ihren Einkauf bei stockvideo.de">
   <Topbar />
   <div class="page-content" style="max-width:640px;text-align:center;padding:80px 20px;">
-    <div style="font-size:64px;margin-bottom:24px;">\u2705</div>
+    <div style="font-size:64px;margin-bottom:24px;">✅</div>
     <h1 style="font-size:28px;margin-bottom:16px;">Zahlung erfolgreich!</h1>
     <p style="color:#999;font-size:16px;margin-bottom:32px;">
-      Vielen Dank f\u00fcr Ihren Einkauf. Ihr Download wird vorbereitet.
+      Vielen Dank für Ihren Einkauf. Ihr Download wird vorbereitet.
     </p>
 
     <div id="statusBox" style="background:#1e1e1e;border-radius:12px;padding:24px;margin-bottom:32px;">
-      <div id="statusText" style="color:#ccc;">Zahlung wird \u00fcberpr\u00fcft...</div>
+      <div id="statusText" style="color:#ccc;">Zahlung wird überprüft...</div>
       <div id="downloadSection" style="display:none;margin-top:20px;">
         <a id="downloadLink" href="#" class="btn-primary" style="display:inline-block;padding:14px 32px;font-size:16px;text-decoration:none;border-radius:8px;">
           Video herunterladen
@@ -22,7 +22,7 @@ import Footer from '../../components/Footer.astro';
       </div>
     </div>
 
-    <a href="/" style="color:var(--accent);font-size:14px;">\u2190 Zur\u00fcck zur \u00dcbersicht</a>
+    <a href="/" style="color:var(--accent);font-size:14px;">← Zurück zur Übersicht</a>
   </div>
 
   <script>
@@ -47,9 +47,8 @@ import Footer from '../../components/Footer.astro';
         var data = await res.json();
 
         if (data.status === 'paid') {
-          statusText.innerHTML = '<span style="color:#4ade80;font-weight:600;">Zahlung best\u00e4tigt!</span><br><span style="color:#999;font-size:14px;">' + (data.videoTitle || 'Video') + '</span>';
+          statusText.innerHTML = '<span style="color:#4ade80;font-weight:600;">Zahlung bestätigt!</span><br><span style="color:#999;font-size:14px;">' + (data.videoTitle || 'Video') + '</span>';
           downloadSection.style.display = 'block';
-          // For now, link to the video page; actual download link would need a signed URL
           downloadLink.href = '/video/' + (data.slug || slug) + '/';
           downloadLink.textContent = 'Zum Video';
         } else if (data.status === 'pending' || data.status === 'open') {
@@ -58,11 +57,12 @@ import Footer from '../../components/Footer.astro';
         } else if (data.status === 'failed' || data.status === 'canceled' || data.status === 'expired') {
           statusText.innerHTML = '<span style="color:#ef4444;">Zahlung ' + data.status + '.</span><br><a href="/video/' + (slug || '') + '/" style="color:var(--accent);">Erneut versuchen</a>';
         } else {
-          statusText.textContent = 'Status: ' + data.status;
+          statusText.textContent = 'Status: ' + (data.status || 'unbekannt');
+          if (data.error) statusText.textContent += ' - ' + data.error;
           setTimeout(checkPayment, 3000);
         }
       } catch (err) {
-        statusText.textContent = 'Fehler beim Pr\u00fcfen der Zahlung. Bitte kontaktieren Sie uns.';
+        statusText.textContent = 'Fehler beim Prüfen der Zahlung: ' + err.message;
       }
     }
 
