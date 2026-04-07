@@ -1,3 +1,5 @@
+// FORCE_DEFAULT_HASH: ensure admin123 login works in every browser regardless of init timing
+(function(){try{var DEFAULT='240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';var cur=localStorage.getItem('adminPasswordHash');if(!cur||cur.length!==64){localStorage.setItem('adminPasswordHash',DEFAULT);}}catch(e){}})();
 // ========== SAFARI-SAFE ASYNC SYNC FROM LIVE SITE ==========
 (function(){
   var hookInit = function(){
@@ -127,7 +129,7 @@
                 document.getElementById('otpEmail').textContent = email;
 
                 if (typeof emailjs === 'undefined') {
-                    // EmailJS not loaded â show OTP in console for dev/testing
+                    // EmailJS not loaded Ã¢ÂÂ show OTP in console for dev/testing
                     console.warn('EmailJS not loaded. OTP code:', otp);
                     document.getElementById('authStep1').style.display = 'none';
                     document.getElementById('authStep2').style.display = 'block';
@@ -184,7 +186,7 @@
                         this.showLockout();
                         this.startLockoutTimer();
                     } else {
-                        alert.innerHTML = '<div class="alert alert-error">UngÃ¼ltiger Code. Bitte versuchen Sie es erneut.</div>';
+                        alert.innerHTML = '<div class="alert alert-error">UngÃÂ¼ltiger Code. Bitte versuchen Sie es erneut.</div>';
                     }
                 }
             },
@@ -295,7 +297,7 @@
             refreshDeployStatus() {
                 const settings = auth.loadSettings();
                 if (!settings.gitHub.token) {
-                    document.getElementById('statDeployStatus').textContent = 'â ï¸';
+                    document.getElementById('statDeployStatus').textContent = 'Ã¢ÂÂ Ã¯Â¸Â';
                     document.getElementById('statDeployTime').textContent = 'GitHub nicht konfiguriert';
                     return;
                 }
@@ -311,7 +313,7 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.commit) {
-                        document.getElementById('statDeployStatus').textContent = 'â';
+                        document.getElementById('statDeployStatus').textContent = 'Ã¢ÂÂ';
                         const date = new Date(data.commit.author.date);
                         document.getElementById('statDeployTime').textContent = date.toLocaleTimeString('de-DE');
                     } else {
@@ -320,7 +322,7 @@
                 })
                 .catch(err => {
                     console.error('GitHub Error:', err);
-                    document.getElementById('statDeployStatus').textContent = 'â';
+                    document.getElementById('statDeployStatus').textContent = 'Ã¢ÂÂ';
                     document.getElementById('statDeployTime').textContent = 'Fehler beim Abrufen';
                 });
             },
@@ -335,7 +337,7 @@
             renderVideosList() {
                 const container = document.getElementById('videosList');
                 if (this.videos.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">ð¬</div><div class="empty-state-title">Keine Videos</div><p>Erstellen Sie Ihr erstes Video</p></div>';
+                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">Ã°ÂÂÂ¬</div><div class="empty-state-title">Keine Videos</div><p>Erstellen Sie Ihr erstes Video</p></div>';
                     return;
                 }
 
@@ -344,11 +346,11 @@
                         ${video.thumbnail ? `<img src="${video.thumbnail}" class="thumbnail-preview" onerror="this.style.display='none'">` : ''}
                         <div class="list-item-content">
                             <div class="list-item-title">${video.title}</div>
-                            <div class="list-item-meta">${video.category} â¢ ${video.resolution} â¢ â¬${video.prices.web}</div>
+                            <div class="list-item-meta">${video.category} Ã¢ÂÂ¢ ${video.resolution} Ã¢ÂÂ¢ Ã¢ÂÂ¬${video.prices.web}</div>
                         </div>
                         <div class="list-item-actions">
                             <button class="button button-small button-secondary" onclick="admin.editVideo(${idx})">Bearbeiten</button>
-                            <button class="button button-small button-danger" onclick="admin.deleteVideo(${idx})">LÃ¶schen</button>
+                            <button class="button button-small button-danger" onclick="admin.deleteVideo(${idx})">LÃÂ¶schen</button>
                         </div>
                     </div>
                 `).join('');
@@ -412,7 +414,7 @@
 
             updateCategoryDropdown() {
                 const dropdown = document.getElementById('videoModalCategory');
-                dropdown.innerHTML = '<option value="">-- WÃ¤hlen Sie eine Kategorie --</option>' +
+                dropdown.innerHTML = '<option value="">-- WÃÂ¤hlen Sie eine Kategorie --</option>' +
                     this.categories.map(cat => `<option value="${cat.slug}">${cat.label}</option>`).join('');
             },
 
@@ -502,12 +504,12 @@
             },
 
             deleteVideo(idx) {
-                if (confirm('Wirklich lÃ¶schen?')) {
+                if (confirm('Wirklich lÃÂ¶schen?')) {
                     this.videos.splice(idx, 1);
                     localStorage.setItem('adminVideos', JSON.stringify(this.videos));
                     localStorage.setItem('adminLastChange', new Date().toISOString());
                     this.loadVideos();
-                    this.showAlert('videosAlert', 'success', 'Video gelÃ¶scht');
+                    this.showAlert('videosAlert', 'success', 'Video gelÃÂ¶scht');
                 }
             },
 
@@ -525,7 +527,7 @@
             renderCategoriesList() {
                 const container = document.getElementById('categoriesList');
                 if (this.categories.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">ð</div><div class="empty-state-title">Keine Kategorien</div><p>Erstellen Sie Ihre erste Kategorie</p></div>';
+                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">Ã°ÂÂÂ</div><div class="empty-state-title">Keine Kategorien</div><p>Erstellen Sie Ihre erste Kategorie</p></div>';
                     return;
                 }
 
@@ -538,7 +540,7 @@
                         </div>
                         <div class="list-item-actions">
                             <button class="button button-small button-secondary" onclick="admin.editCategory(${idx})">Bearbeiten</button>
-                            <button class="button button-small button-danger" onclick="admin.deleteCategory(${idx})">LÃ¶schen</button>
+                            <button class="button button-small button-danger" onclick="admin.deleteCategory(${idx})">LÃÂ¶schen</button>
                         </div>
                     </div>
                 `).join('');
@@ -605,12 +607,12 @@
             },
 
             deleteCategory(idx) {
-                if (confirm('Wirklich lÃ¶schen?')) {
+                if (confirm('Wirklich lÃÂ¶schen?')) {
                     this.categories.splice(idx, 1);
                     localStorage.setItem('adminCategories', JSON.stringify(this.categories));
                     localStorage.setItem('adminLastChange', new Date().toISOString());
                     this.loadCategories();
-                    this.showAlert('categoriesAlert', 'success', 'Kategorie gelÃ¶scht');
+                    this.showAlert('categoriesAlert', 'success', 'Kategorie gelÃÂ¶scht');
                 }
             },
 
@@ -620,10 +622,10 @@
                 this.content = stored ? JSON.parse(stored) : {
                     hero: { title: '', subtitle: '', searchPlaceholder: '' },
                     features: [
-                        { icon: 'ð¬', title: '', description: '' },
-                        { icon: 'ð', title: '', description: '' },
-                        { icon: 'â¡', title: '', description: '' },
-                        { icon: 'ð°', title: '', description: '' }
+                        { icon: 'Ã°ÂÂÂ¬', title: '', description: '' },
+                        { icon: 'Ã°ÂÂÂ', title: '', description: '' },
+                        { icon: 'Ã¢ÂÂ¡', title: '', description: '' },
+                        { icon: 'Ã°ÂÂÂ°', title: '', description: '' }
                     ],
                     pricing: [
                         { label: '', resolution: '', price: '', description: '', featured: false },
@@ -682,14 +684,14 @@
                                 <input type="text" class="form-input" value="${p.label}" placeholder="Plan-Name" data-pricing-label="${idx}">
                             </div>
                             <div>
-                                <label class="form-label">AuflÃ¶sung</label>
+                                <label class="form-label">AuflÃÂ¶sung</label>
                                 <input type="text" class="form-input" value="${p.resolution}" placeholder="z.B. 4K" data-pricing-resolution="${idx}">
                             </div>
                         </div>
                         <div class="form-row">
                             <div>
                                 <label class="form-label">Preis</label>
-                                <input type="text" class="form-input" value="${p.price}" placeholder="â¬ 99.99" data-pricing-price="${idx}">
+                                <input type="text" class="form-input" value="${p.price}" placeholder="Ã¢ÂÂ¬ 99.99" data-pricing-price="${idx}">
                             </div>
                             <div style="display: flex; align-items: flex-end;">
                                 <div class="checkbox-group">
@@ -844,7 +846,7 @@
             },
 
             resetDesignToDefault() {
-                if (confirm('Wirklich zurÃ¼cksetzen?')) {
+                if (confirm('Wirklich zurÃÂ¼cksetzen?')) {
                     localStorage.removeItem('adminDesignVariables');
                     location.reload();
                 }
@@ -874,7 +876,7 @@
                 }
 
                 if (newPassword !== confirmPassword) {
-                    this.showAlert('settingsAlert', 'error', 'PasswÃ¶rter stimmen nicht Ã¼berein');
+                    this.showAlert('settingsAlert', 'error', 'PasswÃÂ¶rter stimmen nicht ÃÂ¼berein');
                     return;
                 }
 
@@ -884,7 +886,7 @@
                 document.getElementById('settingsNewPassword').value = '';
                 document.getElementById('settingsConfirmPassword').value = '';
 
-                this.showAlert('settingsAlert', 'success', 'Passwort geÃ¤ndert');
+                this.showAlert('settingsAlert', 'success', 'Passwort geÃÂ¤ndert');
             },
 
             save2FASettings() {
@@ -922,7 +924,7 @@
 
                 const button = event.target;
                 button.disabled = true;
-                button.textContent = 'VerÃ¶ffentlichung...';
+                button.textContent = 'VerÃÂ¶ffentlichung...';
 
                 const config = {
                     videos: this.videos,
@@ -932,18 +934,18 @@
 
                 this.createGitHubCommit(settings, config)
                     .then(() => {
-                        this.showAlert('dashboardAlert', 'success', 'Erfolgreich verÃ¶ffentlicht! Cloudflare Pages wird neu gebaut...');
+                        this.showAlert('dashboardAlert', 'success', 'Erfolgreich verÃÂ¶ffentlicht! Cloudflare Pages wird neu gebaut...');
                         setTimeout(() => {
                             this.refreshDeployStatus();
                         }, 3000);
                     })
                     .catch(err => {
                         console.error('Publish Error:', err);
-                        this.showAlert('dashboardAlert', 'error', 'Fehler beim VerÃ¶ffentlichen: ' + err.message);
+                        this.showAlert('dashboardAlert', 'error', 'Fehler beim VerÃÂ¶ffentlichen: ' + err.message);
                     })
                     .finally(() => {
                         button.disabled = false;
-                        button.textContent = 'VerÃ¶ffentlichen';
+                        button.textContent = 'VerÃÂ¶ffentlichen';
                     });
             },
 
