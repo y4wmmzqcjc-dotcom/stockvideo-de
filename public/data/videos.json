@@ -4,7 +4,7 @@
     "title": "Kuh 1",
     "slug": "kuh-1",
     "description": "Kuh 1",
-    "category": "",
+    "category": "tiere",
     "tags": [
       "Kuh Milch"
     ],
@@ -18,6 +18,9 @@
     },
     "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/kuh-1.jpg",
     "r2Key": "videos/kuh-1.mp4",
+    "r2Preview": "",
+    "r2Hover": "",
+    "videoId": "",
     "featured": false,
     "gradient": [
       {
@@ -35,7 +38,7 @@
     "title": "Kuh 2",
     "slug": "kuh-2",
     "description": "Kuh 2",
-    "category": "tiere",
+    "category": "essen",
     "tags": [
       "Kuh",
       "muh"
@@ -50,6 +53,9 @@
     },
     "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/kuh-2.jpg",
     "r2Key": "videos/kuh-2.mp4",
+    "r2Preview": "",
+    "r2Hover": "",
+    "videoId": "",
     "featured": false,
     "gradient": [
       {
