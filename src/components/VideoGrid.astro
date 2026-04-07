@@ -6,13 +6,13 @@ import videos from '../../public/data/videos.json';
   <div class="no-results" id="noResults">
     <div class="no-results-icon">&#x2315;</div>
     <h3>Keine Ergebnisse</h3>
-    <p>Versuch einen anderen Suchbegriff oder wähle eine Kategorie.</p>
+    <p>Versuch einen anderen Suchbegriff oder wÃ¤hle eine Kategorie.</p>
   </div>
 </section>
 
 <script define:vars={{ videos }}>
 const catLabels = {
-  all:"Alle Videos", natur:"Natur & Landschaft", business:"Business & Büro",
+  all:"Alle Videos", natur:"Natur & Landschaft", business:"Business & BÃ¼ro",
   tech:"Technologie", aerial:"Aerial & Drohne", urban:"Stadt & Architektur",
   menschen:"Menschen & Lifestyle", abstrakt:"Abstrakt & Motion", timelapse:"Timelapse"
 };
@@ -49,7 +49,7 @@ function render() {
   grid.innerHTML = list.map(v => `
     <a href="/video/${v.slug}/" style="text-decoration:none;color:inherit;display:block"><div class="video-card">
       <div class="video-thumb">
-        ${v.thumbnail ? '<img src="' + v.thumbnail + '" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;z-index:1;" >' : '<div class="thumb-bg" style="background:' + v.gradient + '"></div>'}${v.r2Hover ? '<video class="hov-prev" muted loop playsinline preload="none" data-src="https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/' + v.r2Hover + '" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;z-index:2;opacity:0;transition:opacity .25s;"></video>' : ''}
+        ${v.thumbnail ? '<img src="' + v.thumbnail + '" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;z-index:1;" >' : '<div class="thumb-bg" style="background:' + v.gradient + '"></div>'}${v.r2Hover ? '<video class="hov-prev" muted playsinline preload="none" style="visibility:hidden" data-src="https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/' + v.r2Hover + '" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;z-index:2;opacity:0;transition:opacity .25s;"></video>' : ''}
         <div class="thumb-texture" style="background:
           radial-gradient(circle at 25% 35%,rgba(255,255,255,0.06) 0%,transparent 45%),
           radial-gradient(circle at 75% 65%,rgba(255,255,255,0.04) 0%,transparent 35%),
@@ -87,7 +87,7 @@ document.getElementById("resFilterBtn")?.addEventListener("click", e => {
   const btn = e.target;
   const cycle = { all:"4k", "4k":"hd", hd:"all" };
   state.res = cycle[state.res];
-  btn.textContent = state.res === "all" ? "Auflösung" : state.res === "4k" ? "Nur 4K" : "Nur HD";
+  btn.textContent = state.res === "all" ? "AuflÃ¶sung" : state.res === "4k" ? "Nur 4K" : "Nur HD";
   btn.classList.toggle("active", state.res !== "all");
   render();
 });
@@ -98,9 +98,38 @@ document.getElementById("sortSelect")?.addEventListener("change", e => {
 });
 
 render();
-var _grid=document.getElementById('videoGrid');
+var _grid = document.getElementById('video-grid');
 if(_grid){
-  _grid.addEventListener('mouseover',function(e){var c=e.target.closest('.video-card');if(!c)return;var v=c.querySelector('video.hov-prev');if(!v)return;if(!v.src)v.src=v.dataset.src;v.style.opacity='1';try{(function(){if(!v._fb){v._fb=1;v.style.opacity='0';v.style.transition='opacity .12s linear';var show=function(){try{v.style.opacity='1';}catch(e){}};var fired=false;var doShow=function(){if(fired)return;fired=true;requestAnimationFrame(show);};if(v.requestVideoFrameCallback){var rvfc=function(){doShow();};v.requestVideoFrameCallback(rvfc);}else{v.addEventListener('timeupdate',function h(){if(v.currentTime>0.05){v.removeEventListener('timeupdate',h);doShow();}});}}try{if(v.currentTime<0.05)v.currentTime=0.1;}catch(e){}var _p=v.play();if(_p&&_p.catch)_p.catch(function(){});})()();}catch(e){}});
-  _grid.addEventListener('mouseout',function(e){var c=e.target.closest('.video-card');if(!c||c.contains(e.relatedTarget))return;var v=c.querySelector('video.hov-prev');if(!v)return;v.style.opacity='0';try{v.pause();v.currentTime=0;}catch(e){}});
+  var _bind=function(){
+    var cards=_grid.querySelectorAll('.video-card');
+    cards.forEach(function(card){
+      if(card._bnd)return;card._bnd=1;
+      var v=card.querySelector('video.hov-prev');
+      if(!v)return;
+      v.style.visibility='hidden';
+      v.muted=true;v.playsInline=true;
+      v.addEventListener('ended',function(){try{v.currentTime=0;}catch(e){}var p=v.play();if(p&&p.catch)p.catch(function(){});});
+      var armed=false;
+      var arm=function(){
+        if(armed)return;armed=true;
+        var show=function(){v.style.visibility='visible';};
+        if(v.requestVideoFrameCallback){v.requestVideoFrameCallback(function(){show();});}
+        else{var h=function(){if(v.currentTime>0.05){v.removeEventListener('timeupdate',h);show();}};v.addEventListener('timeupdate',h);}
+      };
+      card.addEventListener('mouseenter',function(){
+        if(!v.src&&v.dataset.src){v.src=v.dataset.src;try{v.load();}catch(e){}}
+        armed=false;arm();
+        var p=v.play();if(p&&p.catch)p.catch(function(){});
+      });
+      card.addEventListener('mouseleave',function(){
+        try{v.pause();}catch(e){}
+        try{v.currentTime=0;}catch(e){}
+        v.style.visibility='hidden';
+      });
+    });
+  };
+  _bind();
+  var _mo=new MutationObserver(_bind);
+  _mo.observe(_grid,{childList:true,subtree:true});
 }
 </script>
