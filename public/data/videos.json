@@ -38,5 +38,37 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1775584218635",
+    "title": "Kuh 2",
+    "slug": "kuh-2",
+    "description": "New Kuh",
+    "category": "",
+    "tags": [
+      "Kuh",
+      "Muh"
+    ],
+    "resolution": "4K",
+    "duration": 10,
+    "fps": 25,
+    "prices": {
+      "web": 25,
+      "standard": 25,
+      "premium": 25
+    },
+    "thumbnail": "",
+    "r2Key": "videos/kuh-2.mp4",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
