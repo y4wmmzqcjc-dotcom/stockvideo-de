@@ -8,14 +8,6 @@
     "order": 0
   },
   {
-    "id": "1775568182378",
-    "label": "Gebäude und Architektur",
-    "slug": "gebude-und-architektur",
-    "description": "Gebäude und Architektur",
-    "icon": "",
-    "order": 0
-  },
-  {
     "id": "1775568192110",
     "label": "Business",
     "slug": "business",
@@ -36,14 +28,6 @@
     "label": "Umwelt",
     "slug": "umwelt",
     "description": "Umwelt",
-    "icon": "",
-    "order": 0
-  },
-  {
-    "id": "1775568214052",
-    "label": "Gefühle, Emotionen und Geisteshaltung",
-    "slug": "gefhle-emotionen-und-geisteshaltung",
-    "description": "Gefühle, Emotionen und Geisteshaltung",
     "icon": "",
     "order": 0
   },
@@ -120,14 +104,6 @@
     "order": 0
   },
   {
-    "id": "1775568291044",
-    "label": "Soziale Themen",
-    "slug": "soziale-themen",
-    "description": "Soziale Themen",
-    "icon": "",
-    "order": 0
-  },
-  {
     "id": "1775568296694",
     "label": "Sport",
     "slug": "sport",
@@ -156,6 +132,14 @@
     "label": "Reisen",
     "slug": "reisen",
     "description": "Reisen",
+    "icon": "",
+    "order": 0
+  },
+  {
+    "id": "1775570709691",
+    "label": "Drohne und Arialshoots",
+    "slug": "drohne-und-arialshoots",
+    "description": "",
     "icon": "",
     "order": 0
   }
