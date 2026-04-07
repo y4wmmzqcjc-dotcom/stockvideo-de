@@ -6,13 +6,13 @@ import videos from '../../public/data/videos.json';
   <div class="no-results" id="noResults">
     <div class="no-results-icon">&#x2315;</div>
     <h3>Keine Ergebnisse</h3>
-    <p>Versuch einen anderen Suchbegriff oder wÃ¤hle eine Kategorie.</p>
+    <p>Versuch einen anderen Suchbegriff oder wÃÂ¤hle eine Kategorie.</p>
   </div>
 </section>
 
 <script define:vars={{ videos }}>
 const catLabels = {
-  all:"Alle Videos", natur:"Natur & Landschaft", business:"Business & BÃ¼ro",
+  all:"Alle Videos", natur:"Natur & Landschaft", business:"Business & BÃÂ¼ro",
   tech:"Technologie", aerial:"Aerial & Drohne", urban:"Stadt & Architektur",
   menschen:"Menschen & Lifestyle", abstrakt:"Abstrakt & Motion", timelapse:"Timelapse"
 };
@@ -87,7 +87,7 @@ document.getElementById("resFilterBtn")?.addEventListener("click", e => {
   const btn = e.target;
   const cycle = { all:"4k", "4k":"hd", hd:"all" };
   state.res = cycle[state.res];
-  btn.textContent = state.res === "all" ? "AuflÃ¶sung" : state.res === "4k" ? "Nur 4K" : "Nur HD";
+  btn.textContent = state.res === "all" ? "AuflÃÂ¶sung" : state.res === "4k" ? "Nur 4K" : "Nur HD";
   btn.classList.toggle("active", state.res !== "all");
   render();
 });
@@ -98,7 +98,7 @@ document.getElementById("sortSelect")?.addEventListener("change", e => {
 });
 
 render();
-var _grid = document.getElementById('video-grid');
+var _grid = document.getElementById('videoGrid');
 if(_grid){
   var _bind=function(){
     var cards=_grid.querySelectorAll('.video-card');
