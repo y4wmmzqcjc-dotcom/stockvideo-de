@@ -408,7 +408,7 @@
                 document.getElementById('videoModalFeatured').checked = video.featured;
 
                 this.updateCategoryDropdown();
-                document.getElementById('videoModalCategory').value = video.category;
+                const _setCat=()=>{const _d=document.getElementById('videoModalCategory');if(_d&&[..._d.options].some(o=>o.value===video.category)){_d.value=video.category;}else{setTimeout(_setCat,50);}};_setCat();
                 this.renderGradientInputs(video.gradient);
 
                 document.getElementById('videoModal').classList.add('active');
