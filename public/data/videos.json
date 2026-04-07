@@ -169,5 +169,39 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1775603142922",
+    "title": "pvc",
+    "slug": "pvc",
+    "description": "pvc",
+    "category": "",
+    "tags": [
+      "pvc"
+    ],
+    "resolution": "4K",
+    "duration": 14,
+    "fps": 25,
+    "prices": {
+      "web": 49,
+      "standard": 49,
+      "premium": 49
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/pvc.jpg",
+    "r2Key": "videos/pvc.mov",
+    "r2Preview": "previews/pvc.mp4",
+    "r2Hover": "previews/pvc-hover.mp4",
+    "videoId": "stockvideo.de-88X8OEO2",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
