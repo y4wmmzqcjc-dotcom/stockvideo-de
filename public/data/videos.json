@@ -4,7 +4,7 @@
     "title": "Braune Kuh auf der Weide - 4K Stock Video",
     "slug": "braune-kuh-auf-der-weide-4k-stock-video",
     "description": "Nahaufnahme einer braunen Kuh auf einer grünen Weide. Perfekt für Landwirtschaft, Natur und Tierfilme. 4K Ultra HD Auflösung, 25fps.",
-    "category": "",
+    "category": "tiere",
     "tags": [
       "Kuh",
       "Tier",
@@ -28,6 +28,39 @@
     "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbnails/kuhbraun.jpg",
     "r2Key": "videos/kuhbraun.mp4",
     "featured": true,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
+  },
+  {
+    "id": "1775582546218",
+    "title": "Kuh 2",
+    "slug": "kuh-2",
+    "description": "Kuh macht Muh",
+    "category": "",
+    "tags": [
+      "Kuh",
+      "Milch",
+      "Bauer"
+    ],
+    "resolution": "4K",
+    "duration": 10,
+    "fps": 25,
+    "prices": {
+      "web": 34,
+      "standard": 34,
+      "premium": 34
+    },
+    "thumbnail": "",
+    "r2Key": "videos/kuhbraun.mp4",
+    "featured": false,
     "gradient": [
       {
         "color": "#1473e6",
