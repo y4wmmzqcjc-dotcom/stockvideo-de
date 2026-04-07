@@ -12,7 +12,7 @@ export async function onRequest(context) {
     return new Response('Method Not Allowed', { status: 405, headers: cors });
   }
   const auth = request.headers.get('Authorization') || '';
-  const token = auth.replace(/^Bearer\\s+/i, '');
+  const token = auth.replace(/^Bearer\s+/i, '');
   if (!env.ADMIN_TOKEN || token !== env.ADMIN_TOKEN) {
     return new Response('Unauthorized', { status: 401, headers: cors });
   }
