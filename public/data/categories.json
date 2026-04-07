@@ -1,10 +1,102 @@
 [
   {
-    "id": "1775517468983",
-    "label": "Tiere",
     "slug": "tiere",
-    "description": "Tiere",
-    "icon": "",
-    "order": 0
+    "label": "Tiere",
+    "dataCat": "tiere"
+  },
+  {
+    "slug": "gebude-und-architektur",
+    "label": "Gebäude und Architektur",
+    "dataCat": "gebude-und-architektur"
+  },
+  {
+    "slug": "business",
+    "label": "Business",
+    "dataCat": "business"
+  },
+  {
+    "slug": "getrnke",
+    "label": "Getränke",
+    "dataCat": "getrnke"
+  },
+  {
+    "slug": "umwelt",
+    "label": "Umwelt",
+    "dataCat": "umwelt"
+  },
+  {
+    "slug": "gefhle-emotionen-und-geisteshaltung",
+    "label": "Gefühle, Emotionen und Geisteshaltung",
+    "dataCat": "gefhle-emotionen-und-geisteshaltung"
+  },
+  {
+    "slug": "essen",
+    "label": "Essen",
+    "dataCat": "essen"
+  },
+  {
+    "slug": "hobbys-und-freizeit",
+    "label": "Hobbys und Freizeit",
+    "dataCat": "hobbys-und-freizeit"
+  },
+  {
+    "slug": "industrie",
+    "label": "Industrie",
+    "dataCat": "industrie"
+  },
+  {
+    "slug": "landschaften",
+    "label": "Landschaften",
+    "dataCat": "landschaften"
+  },
+  {
+    "slug": "lifestyle",
+    "label": "Lifestyle",
+    "dataCat": "lifestyle"
+  },
+  {
+    "slug": "menschen",
+    "label": "Menschen",
+    "dataCat": "menschen"
+  },
+  {
+    "slug": "pflanzen-und-blumen",
+    "label": "Pflanzen und Blumen",
+    "dataCat": "pflanzen-und-blumen"
+  },
+  {
+    "slug": "religion-und-kultur",
+    "label": "Religion und Kultur",
+    "dataCat": "religion-und-kultur"
+  },
+  {
+    "slug": "wissenschaft",
+    "label": "Wissenschaft",
+    "dataCat": "wissenschaft"
+  },
+  {
+    "slug": "soziale-themen",
+    "label": "Soziale Themen",
+    "dataCat": "soziale-themen"
+  },
+  {
+    "slug": "sport",
+    "label": "Sport",
+    "dataCat": "sport"
+  },
+  {
+    "slug": "technologie",
+    "label": "Technologie",
+    "dataCat": "technologie"
+  },
+  {
+    "slug": "transport",
+    "label": "Transport",
+    "dataCat": "transport"
+  },
+  {
+    "slug": "reisen",
+    "label": "Reisen",
+    "dataCat": "reisen"
   }
 ]
