@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Topbar from '../../components/Topbar.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<BaseLayout title="Zahlung erfolgreich" description="Vielen Dank f\u00fcr Ihren Einkauf bei stockvideo.de">
+  <Topbar />
+  <div class="page-content" style="max-width:640px;text-align:center;padding:80px 20px;">
+    <div style="font-size:64px;margin-bottom:24px;">\u2705</div>
+    <h1 style="font-size:28px;margin-bottom:16px;">Zahlung erfolgreich!</h1>
+    <p style="color:#999;font-size:16px;margin-bottom:32px;">
+      Vielen Dank f\u00fcr Ihren Einkauf. Ihr Download wird vorbereitet.
+    </p>
+
+    <div id="statusBox" style="background:#1e1e1e;border-radius:12px;padding:24px;margin-bottom:32px;">
+      <div id="statusText" style="color:#ccc;">Zahlung wird \u00fcberpr\u00fcft...</div>
+      <div id="downloadSection" style="display:none;margin-top:20px;">
+        <a id="downloadLink" href="#" class="btn-primary" style="display:inline-block;padding:14px 32px;font-size:16px;text-decoration:none;border-radius:8px;">
+          Video herunterladen
+        </a>
+      </div>
+    </div>
+
+    <a href="/" style="color:var(--accent);font-size:14px;">\u2190 Zur\u00fcck zur \u00dcbersicht</a>
+  </div>
+
+  <script>
+    var CHECKOUT_WORKER = 'https://stockvideo-checkout.rende.workers.dev';
+    var R2_BASE = 'https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev';
+    var params = new URLSearchParams(window.location.search);
+    var paymentId = params.get('payment_id');
+    var slug = params.get('slug');
+
+    var statusText = document.getElementById('statusText');
+    var downloadSection = document.getElementById('downloadSection');
+    var downloadLink = document.getElementById('downloadLink');
+
+    async function checkPayment() {
+      if (!paymentId) {
+        statusText.textContent = 'Keine Zahlungs-ID gefunden.';
+        return;
+      }
+
+      try {
+        var res = await fetch(CHECKOUT_WORKER + '/payment-status?id=' + paymentId);
+        var data = await res.json();
+
+        if (data.status === 'paid') {
+          statusText.innerHTML = '<span style="color:#4ade80;font-weight:600;">Zahlung best\u00e4tigt!</span><br><span style="color:#999;font-size:14px;">' + (data.videoTitle || 'Video') + '</span>';
+          downloadSection.style.display = 'block';
+          // For now, link to the video page; actual download link would need a signed URL
+          downloadLink.href = '/video/' + (data.slug || slug) + '/';
+          downloadLink.textContent = 'Zum Video';
+        } else if (data.status === 'pending' || data.status === 'open') {
+          statusText.textContent = 'Zahlung wird noch verarbeitet... Bitte warten.';
+          setTimeout(checkPayment, 3000);
+        } else if (data.status === 'failed' || data.status === 'canceled' || data.status === 'expired') {
+          statusText.innerHTML = '<span style="color:#ef4444;">Zahlung ' + data.status + '.</span><br><a href="/video/' + (slug || '') + '/" style="color:var(--accent);">Erneut versuchen</a>';
+        } else {
+          statusText.textContent = 'Status: ' + data.status;
+          setTimeout(checkPayment, 3000);
+        }
+      } catch (err) {
+        statusText.textContent = 'Fehler beim Pr\u00fcfen der Zahlung. Bitte kontaktieren Sie uns.';
+      }
+    }
+
+    checkPayment();
+  </script>
+
+  <Footer />
+</BaseLayout>
