@@ -1,217 +1,189 @@
-
+/* upload.js — Canvas+MediaRecorder watermarked preview pipeline (no ffmpeg.wasm) */
 (function(){
-  function slugify(s){return (s||'').toString().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss').replace(/Ä/g,'ae').replace(/Ö/g,'oe').replace(/Ü/g,'ue').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,80);}
-  window.slugifyKey = slugify;
-
-  function genVideoId(){
-    const rand = Math.random().toString(36).slice(2,6).toUpperCase();
-    const t = Date.now().toString(36).slice(-3).toUpperCase();
-    return 'SV-'+t+rand;
-  }
-  window.genVideoId = genVideoId;
+  function slugify(s){return (s||'').toString().toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').substring(0,80)||'video';}
+  window.slugifyKey=slugify;
+  function genVideoId(){return 'SV-'+Date.now().toString(36).toUpperCase().slice(-5)+Math.random().toString(36).substring(2,5).toUpperCase();}
 
   function loadVideoMeta(file){
-    return new Promise((resolve,reject)=>{
+    return new Promise(function(resolve,reject){
+      const url=URL.createObjectURL(file);
       const v=document.createElement('video');
       v.preload='metadata'; v.muted=true; v.playsInline=true;
-      const url = (file instanceof Blob) ? URL.createObjectURL(file) : file;
-      v.src = url;
-      v.onloadedmetadata=()=>resolve({video:v, w:v.videoWidth, h:v.videoHeight, dur:v.duration||0, url});
-      v.onerror=()=>reject(new Error('video load error'));
+      v.onloadedmetadata=function(){resolve({w:v.videoWidth,h:v.videoHeight,dur:v.duration,url:url,el:v});};
+      v.onerror=function(){reject(new Error('video metadata load failed'));};
+      v.src=url;
     });
   }
 
   async function extractThumbnailBlob(file){
-    const meta = await loadVideoMeta(file);
-    const v = meta.video; const dur = meta.dur;
-    function snap(time){return new Promise(res=>{
-      const onSeek=()=>{v.removeEventListener('seeked',onSeek);
-        requestAnimationFrame(()=>requestAnimationFrame(()=>{
-          try{
-            const w=Math.min(1280, v.videoWidth||1280);
-            const h=Math.round((v.videoHeight||720)*(w/(v.videoWidth||1280)));
-            const c=document.createElement('canvas'); c.width=w; c.height=h;
-            c.getContext('2d').drawImage(v,0,0,w,h);
-            const sw=40,sh=22;
-            const sc=document.createElement('canvas'); sc.width=sw; sc.height=sh;
-            sc.getContext('2d').drawImage(c,0,0,sw,sh);
-            const d=sc.getContext('2d').getImageData(0,0,sw,sh).data;
-            let lum=0;
-            for(let i=0;i<d.length;i+=4) lum += (d[i]+d[i+1]+d[i+2])/3;
-            lum /= (d.length/4);
-            res({canvas:c,lum,time});
-          }catch(e){res({canvas:null,lum:0,time});}
-        }));
-      };
-      v.addEventListener('seeked',onSeek);
-      v.currentTime=time;
-    });}
-    const times=[dur*0.5,dur*0.25,dur*0.75,dur*0.1,Math.min(1,dur/2)].filter(t=>t>0&&isFinite(t));
-    const cands=[];
-    for(const t of times){const r=await snap(t); if(r.canvas){cands.push(r); if(r.lum>20) break;}}
+    const meta=await loadVideoMeta(file);
+    const v=meta.el;
+    const tries=[meta.dur*0.1, meta.dur*0.3, meta.dur*0.5, meta.dur*0.7, 1];
+    let best=null,bestScore=-1;
+    for(const t of tries){
+      try{
+        await new Promise((res,rej)=>{v.onseeked=res;v.onerror=rej;v.currentTime=Math.max(0.1,Math.min(meta.dur-0.1,t));});
+        const c=document.createElement('canvas');
+        const W=1280, H=Math.round(1280*meta.h/meta.w);
+        c.width=W;c.height=H;
+        const ctx=c.getContext('2d');
+        ctx.drawImage(v,0,0,W,H);
+        // brightness score
+        const data=ctx.getImageData(W/2-50,H/2-50,100,100).data;
+        let sum=0;for(let i=0;i<data.length;i+=4)sum+=data[i]+data[i+1]+data[i+2];
+        const score=sum/(data.length/4);
+        if(score>bestScore){bestScore=score;best=await new Promise(r=>c.toBlob(r,'image/jpeg',0.85));}
+        if(score>120) break;
+      }catch(e){}
+    }
     URL.revokeObjectURL(meta.url);
-    if(!cands.length) throw new Error('no frames');
-    cands.sort((a,b)=>b.lum-a.lum);
-    return new Promise((res,rej)=>cands[0].canvas.toBlob(b=>b?res(b):rej(new Error('blob fail')),'image/jpeg',0.85));
+    return best;
   }
 
-  function makeWatermarkPng(width, height, videoId){
-    const c=document.createElement('canvas'); c.width=width; c.height=height;
-    const x=c.getContext('2d'); x.clearRect(0,0,width,height);
-    x.save();
-    x.translate(width/2,height/2);
-    x.rotate(-22*Math.PI/180);
-    x.font='700 '+Math.round(height*0.10)+'px sans-serif';
-    x.textAlign='center'; x.textBaseline='middle';
-    x.fillStyle='rgba(255,255,255,0.28)';
-    x.shadowColor='rgba(0,0,0,0.65)'; x.shadowBlur=6;
-    x.fillText('stockvideo.de',0,0);
-    x.shadowBlur=0;
-    x.restore();
-    const tile = 'stockvideo.de  '+videoId;
-    x.save();
-    x.translate(width/2,height/2);
-    x.rotate(-22*Math.PI/180);
-    x.font='600 '+Math.round(height*0.028)+'px sans-serif';
-    x.textAlign='center'; x.textBaseline='middle';
-    x.fillStyle='rgba(255,255,255,0.18)';
-    const stepX=Math.round(width*0.34), stepY=Math.round(height*0.20);
-    for(let yy=-height; yy<=height; yy+=stepY){
-      for(let xx=-width; xx<=width; xx+=stepX){
-        x.fillText(tile, xx, yy);
+  async function makeWatermarkPng(W,H,videoId){
+    const c=document.createElement('canvas');c.width=W;c.height=H;
+    const ctx=c.getContext('2d');
+    ctx.clearRect(0,0,W,H);
+    // diagonal tiled text
+    ctx.save();
+    ctx.translate(W/2,H/2);
+    ctx.rotate(-Math.PI/8);
+    ctx.font='bold '+Math.round(H/22)+'px sans-serif';
+    ctx.fillStyle='rgba(255,255,255,0.18)';
+    ctx.textAlign='center';
+    const txt='stockvideo.de · '+videoId;
+    const step=Math.round(H/4);
+    for(let y=-H;y<=H;y+=step){
+      for(let x=-W;x<=W;x+=Math.round(W/2)){
+        ctx.fillText(txt,x,y);
       }
     }
-    x.restore();
-    x.save();
-    x.font='700 '+Math.round(height*0.04)+'px sans-serif';
-    x.textBaseline='top';
-    const txt = videoId;
-    const padX=Math.round(height*0.02), padY=Math.round(height*0.012);
-    const tw = x.measureText(txt).width;
-    const th = Math.round(height*0.04);
-    x.fillStyle='rgba(0,0,0,0.6)';
-    x.fillRect(width-tw-padX*2-12, 12, tw+padX*2, th+padY*2);
-    x.fillStyle='rgba(255,255,255,0.95)';
-    x.fillText(txt, width-tw-padX-12, 12+padY);
-    x.restore();
-    return new Promise(res=>c.toBlob(b=>res(b),'image/png'));
+    ctx.restore();
+    // big center logo
+    ctx.font='bold '+Math.round(H/8)+'px sans-serif';
+    ctx.fillStyle='rgba(255,255,255,0.28)';
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.fillText('stockvideo.de',W/2,H/2);
+    // ID badge bottom-right
+    ctx.font='bold '+Math.round(H/26)+'px monospace';
+    ctx.textAlign='right';
+    ctx.textBaseline='bottom';
+    const pad=Math.round(H/40);
+    const idTxt='ID '+videoId;
+    const m=ctx.measureText(idTxt);
+    ctx.fillStyle='rgba(0,0,0,0.55)';
+    ctx.fillRect(W-m.width-pad*2-pad, H-Math.round(H/22)-pad*2, m.width+pad*2, Math.round(H/22)+pad);
+    ctx.fillStyle='#fff';
+    ctx.fillText(idTxt,W-pad*2,H-pad*1.2);
+    return new Promise(r=>c.toBlob(r,'image/png'));
+  }
+  window.makeWatermarkPng=makeWatermarkPng;
+
+  function pickMime(){
+    const cands=['video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm'];
+    for(const m of cands) if(MediaRecorder.isTypeSupported(m)) return m;
+    return 'video/webm';
   }
 
-  let _ffmpegReady=null;
-  async function getFfmpeg(){
-    if(_ffmpegReady) return _ffmpegReady;
-    _ffmpegReady = (async()=>{
-      const ff = await import('https://esm.sh/@ffmpeg/ffmpeg@0.12.10');
-      const ut = await import('https://esm.sh/@ffmpeg/util@0.12.1');
-      const ffmpeg = new ff.FFmpeg();
-      ffmpeg.on('log', function(ev){ if(window._ffLog) window._ffLog(ev.message); });
-      ffmpeg.on('progress', function(ev){ if(window._ffProg) window._ffProg(ev.progress); });
-      const baseURL='https://esm.sh/@ffmpeg/core@0.12.6/dist/esm';
-      await ffmpeg.load({
-        coreURL: await ut.toBlobURL(baseURL+'/ffmpeg-core.js','text/javascript'),
-        wasmURL: await ut.toBlobURL(baseURL+'/ffmpeg-core.wasm','application/wasm'), classWorkerURL: await ut.toBlobURL('https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/esm/worker.js','text/javascript')
-      });
-      return {ffmpeg:ffmpeg, util:ut};
-    })();
-    return _ffmpegReady;
+  async function recordPreview(file, targetH, hoverDur, videoId, onStatus){
+    const meta=await loadVideoMeta(file);
+    const v=meta.el;
+    const iw=meta.w, ih=meta.h, dur=meta.dur;
+    const tw=Math.max(2, Math.round(targetH*iw/ih/2)*2);
+    const th=targetH;
+    const c=document.createElement('canvas');
+    c.width=tw; c.height=th;
+    const ctx=c.getContext('2d',{alpha:false});
+    const wmBlob=await makeWatermarkPng(tw,th,videoId);
+    const wmImg=new Image();
+    const wmUrl=URL.createObjectURL(wmBlob);
+    wmImg.src=wmUrl;
+    await new Promise(r=>{wmImg.onload=r;});
+
+    v.muted=true; v.playsInline=true;
+    v.currentTime=0;
+    await new Promise(r=>{v.onseeked=r;});
+
+    const stream=c.captureStream(24);
+    const mime=pickMime();
+    const bps = targetH===480 ? 1500000 : 700000;
+    const rec=new MediaRecorder(stream,{mimeType:mime, videoBitsPerSecond:bps});
+    const chunks=[];
+    rec.ondataavailable=function(e){if(e.data && e.data.size) chunks.push(e.data);};
+
+    const limit=hoverDur ? hoverDur*1000 : Math.min(dur*1000, 60000);
+    const stopP=new Promise(res=>{rec.onstop=function(){res(new Blob(chunks,{type:mime}));};});
+
+    rec.start(250);
+    await v.play().catch(()=>{});
+    const start=performance.now();
+    let lastPct=-1;
+    return new Promise((resolve)=>{
+      function tick(){
+        ctx.drawImage(v,0,0,tw,th);
+        ctx.drawImage(wmImg,0,0,tw,th);
+        const elapsed=performance.now()-start;
+        const pct=Math.round(elapsed/limit*100);
+        if(pct!==lastPct && onStatus){lastPct=pct; onStatus('Encoding '+targetH+'p... '+Math.min(99,pct)+'%');}
+        if(elapsed<limit && !v.ended){
+          requestAnimationFrame(tick);
+        }else{
+          try{v.pause();}catch(e){}
+          rec.stop();
+          stopP.then(b=>{URL.revokeObjectURL(wmUrl);URL.revokeObjectURL(meta.url);resolve({blob:b,mime:mime});});
+        }
+      }
+      requestAnimationFrame(tick);
+    });
   }
-  window.getFfmpeg = getFfmpeg;
 
   async function encodePreviews(file, videoId, onStatus){
-    const meta = await loadVideoMeta(file);
-    const iw = meta.w||1920, ih = meta.h||1080;
-    const dur = meta.dur||0;
-    URL.revokeObjectURL(meta.url);
-
-    const tw480 = Math.max(2, Math.round(480*iw/ih/2)*2);
-    const th480 = 480;
-    const tw360 = Math.max(2, Math.round(360*iw/ih/2)*2);
-    const th360 = 360;
-
-    onStatus && onStatus('ffmpeg.wasm wird geladen (einmalig ca. 30 MB)...');
-    const ffData = await getFfmpeg();
-    const ffmpeg = ffData.ffmpeg;
-
-    onStatus && onStatus('Wasserzeichen wird erzeugt...');
-    const wm480 = await makeWatermarkPng(tw480, th480, videoId);
-    const wm360 = await makeWatermarkPng(tw360, th360, videoId);
-
-    onStatus && onStatus('Datei wird in ffmpeg geladen...');
-    const buf = new Uint8Array(await file.arrayBuffer());
-    await ffmpeg.writeFile('in.mp4', buf);
-    await ffmpeg.writeFile('wm480.png', new Uint8Array(await wm480.arrayBuffer()));
-    await ffmpeg.writeFile('wm360.png', new Uint8Array(await wm360.arrayBuffer()));
-
-    window._ffProg = function(p){ onStatus && onStatus('Encoding 480p Preview... '+Math.round((p||0)*100)+'%'); };
     onStatus && onStatus('Encoding 480p Preview...');
-    await ffmpeg.exec([
-      '-i','in.mp4','-i','wm480.png',
-      '-filter_complex','[0:v]scale='+tw480+':'+th480+',setsar=1[v];[v][1:v]overlay=0:0',
-      '-c:v','libx264','-preset','veryfast','-crf','28','-pix_fmt','yuv420p',
-      '-an','-movflags','+faststart','out480.mp4'
-    ]);
-    const prev = await ffmpeg.readFile('out480.mp4');
-
-    window._ffProg = function(p){ onStatus && onStatus('Encoding 360p Hover... '+Math.round((p||0)*100)+'%'); };
+    const prev=await recordPreview(file, 480, 0, videoId, onStatus);
     onStatus && onStatus('Encoding 360p Hover-Loop...');
-    const hoverDur = Math.min(6, Math.max(2, dur||4));
-    await ffmpeg.exec([
-      '-i','in.mp4','-i','wm360.png','-t', String(hoverDur),
-      '-filter_complex','[0:v]scale='+tw360+':'+th360+',setsar=1,fps=24[v];[v][1:v]overlay=0:0',
-      '-c:v','libx264','-preset','veryfast','-crf','30','-pix_fmt','yuv420p',
-      '-an','-movflags','+faststart','out360.mp4'
-    ]);
-    const hover = await ffmpeg.readFile('out360.mp4');
-
-    try{ await ffmpeg.deleteFile('in.mp4'); }catch(e){}
-    try{ await ffmpeg.deleteFile('out480.mp4'); }catch(e){}
-    try{ await ffmpeg.deleteFile('out360.mp4'); }catch(e){}
-    try{ await ffmpeg.deleteFile('wm480.png'); }catch(e){}
-    try{ await ffmpeg.deleteFile('wm360.png'); }catch(e){}
-
-    return {
-      previewBlob: new Blob([prev.buffer], {type:'video/mp4'}),
-      hoverBlob: new Blob([hover.buffer], {type:'video/mp4'})
-    };
+    const hov=await recordPreview(file, 360, 6, videoId, onStatus);
+    return {previewBlob:prev.blob, hoverBlob:hov.blob, mime:prev.mime};
   }
-  window.encodePreviews = encodePreviews;
+  window.encodePreviews=encodePreviews;
 
   function putToR2(key, body, contentType, onProgress){
     return new Promise(function(resolve,reject){
       const xhr=new XMLHttpRequest();
       xhr.open('PUT','/admin/upload?key='+encodeURIComponent(key));
       xhr.setRequestHeader('Content-Type',contentType);
-      if(onProgress) xhr.upload.onprogress=function(e){ if(e.lengthComputable) onProgress(e.loaded/e.total); };
-      xhr.onload=function(){ if(xhr.status>=200&&xhr.status<300) resolve(JSON.parse(xhr.responseText||'{}')); else reject(new Error('HTTP '+xhr.status+': '+xhr.responseText)); };
-      xhr.onerror=function(){ reject(new Error('Network error')); };
+      if(onProgress) xhr.upload.onprogress=function(e){if(e.lengthComputable) onProgress(e.loaded/e.total);};
+      xhr.onload=function(){if(xhr.status>=200&&xhr.status<300) resolve(JSON.parse(xhr.responseText||'{}'));else reject(new Error('HTTP '+xhr.status+': '+xhr.responseText));};
+      xhr.onerror=function(){reject(new Error('Network error'));};
       xhr.send(body);
     });
   }
-  window.putToR2 = putToR2;
+  window.putToR2=putToR2;
 
-  window.uploadVideo = async function(file, opts){
-    opts = opts || {};
-    const baseSlug = slugify(opts.slug || file.name.replace(/\.[^.]+$/,''));
-    const ext = (file.name.match(/\.[a-z0-9]+$/i)||['.mp4'])[0].toLowerCase();
-    const videoId = opts.videoId || genVideoId();
-    const videoKey = 'videos/'+baseSlug+ext;
-    const thumbKey = 'thumbs/'+baseSlug+'.jpg';
-    const previewKey = 'previews/'+baseSlug+'.mp4';
-    const hoverKey = 'previews/'+baseSlug+'-hover.mp4';
-    const status = opts.onStatus || function(){};
+  window.uploadVideo=async function(file, opts){
+    opts=opts||{};
+    const baseSlug=slugify(opts.slug || file.name.replace(/\.[^.]+$/,''));
+    const ext=(file.name.match(/\.[a-z0-9]+$/i)||['.mp4'])[0].toLowerCase();
+    const videoId=opts.videoId || genVideoId();
+    const videoKey='videos/'+baseSlug+ext;
+    const thumbKey='thumbs/'+baseSlug+'.jpg';
+    const status=opts.onStatus||function(){};
 
     status('Thumbnail wird erzeugt...');
-    const thumbBlob = await extractThumbnailBlob(file);
+    const thumbBlob=await extractThumbnailBlob(file);
     status('Thumbnail wird hochgeladen...');
     await putToR2(thumbKey, thumbBlob, 'image/jpeg');
 
-    let previewOk=false;
+    let previewKey='', hoverKey='', previewOk=false;
     try{
-      const enc = await encodePreviews(file, videoId, status);
-      status('Preview (480p) wird hochgeladen...');
-      await putToR2(previewKey, enc.previewBlob, 'video/mp4');
-      status('Hover-Loop (360p) wird hochgeladen...');
-      await putToR2(hoverKey, enc.hoverBlob, 'video/mp4');
+      const enc=await encodePreviews(file, videoId, status);
+      const pext = enc.mime.indexOf('mp4')>=0 ? '.mp4' : '.webm';
+      previewKey='previews/'+baseSlug+pext;
+      hoverKey='previews/'+baseSlug+'-hover'+pext;
+      status('Preview wird hochgeladen...');
+      await putToR2(previewKey, enc.previewBlob, enc.mime.split(';')[0]);
+      status('Hover-Loop wird hochgeladen...');
+      await putToR2(hoverKey, enc.hoverBlob, enc.mime.split(';')[0]);
       previewOk=true;
     }catch(e){
       console.error('Preview encode failed', e);
@@ -224,13 +196,6 @@
     }
 
     status(previewOk ? 'Fertig (mit Preview).' : 'Fertig (ohne Preview).');
-    return {
-      videoKey: videoKey,
-      thumbKey: thumbKey,
-      previewKey: previewOk ? previewKey : '',
-      hoverKey: previewOk ? hoverKey : '',
-      slug: baseSlug,
-      videoId: videoId
-    };
+    return {videoKey:videoKey, thumbKey:thumbKey, previewKey:previewOk?previewKey:'', hoverKey:previewOk?hoverKey:'', slug:baseSlug, videoId:videoId};
   };
 })();
