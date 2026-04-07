@@ -507,7 +507,7 @@
       try {
         const res = await window.uploadVideo(f, { slug, onStatus: m => status.textContent = m, onProgress: p => prog.value = p });
         r2.value = res.videoKey;
-        if (thumbKey) thumbKey.value = res.thumbKey;
+        if (thumbKey) thumbKey.value = res.thumbKey; var tu=document.getElementById("videoModalThumbnail"); if(tu&&res.thumbKey){tu.value="https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/"+res.thumbKey;}
         status.textContent = "Upload fertig: " + res.videoKey;
       } catch (err) {
         status.textContent = "Fehler: " + err.message;
