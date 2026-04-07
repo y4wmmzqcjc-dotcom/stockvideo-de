@@ -1,20 +1,24 @@
-// ========== SYNC FROM LIVE SITE ==========
+// ========== SAFARI-SAFE ASYNC SYNC FROM LIVE SITE ==========
 (function(){
-  try {
-    var t = Date.now();
-    var x1 = new XMLHttpRequest();
-    x1.open('GET', '/data/videos.json?t=' + t, false);
-    x1.send(null);
-    if (x1.status === 200 && x1.responseText && x1.responseText.trim().startsWith('[')) {
-      localStorage.setItem('adminVideos', x1.responseText);
-    }
-    var x2 = new XMLHttpRequest();
-    x2.open('GET', '/data/categories.json?t=' + t, false);
-    x2.send(null);
-    if (x2.status === 200 && x2.responseText && x2.responseText.trim().startsWith('[')) {
-      localStorage.setItem('adminCategories', x2.responseText);
-    }
-  } catch(e) { console.error('sync from website failed', e); }
+  var hookInit = function(){
+    if (typeof admin === 'undefined') { setTimeout(hookInit, 50); return; }
+    if (admin._syncHooked) return;
+    admin._syncHooked = true;
+    var orig = admin.init.bind(admin);
+    admin.init = async function(){
+      try {
+        var t = Date.now();
+        var res = await Promise.all([
+          fetch('/data/videos.json?t=' + t, { cache: 'no-store' }).then(r => r.ok ? r.text() : null).catch(function(){ return null; }),
+          fetch('/data/categories.json?t=' + t, { cache: 'no-store' }).then(r => r.ok ? r.text() : null).catch(function(){ return null; }),
+        ]);
+        if (res[0] && res[0].trim().charAt(0) === '[') localStorage.setItem('adminVideos', res[0]);
+        if (res[1] && res[1].trim().charAt(0) === '[') localStorage.setItem('adminCategories', res[1]);
+      } catch(e) { console.error('live-site sync failed', e); }
+      return orig();
+    };
+  };
+  hookInit();
 })();
 
 // ========== AUTHENTICATION MODULE ==========
