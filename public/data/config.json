@@ -6,22 +6,22 @@
   },
   "features": [
     {
-      "icon": "🎬",
+      "icon": "ð¬",
       "title": "",
       "description": ""
     },
     {
-      "icon": "🔒",
+      "icon": "ð",
       "title": "",
       "description": ""
     },
     {
-      "icon": "⚡",
+      "icon": "â¡",
       "title": "",
       "description": ""
     },
     {
-      "icon": "💰",
+      "icon": "ð°",
       "title": "",
       "description": ""
     }
@@ -57,8 +57,17 @@
     }
   ],
   "nav": {
-    "links": [],
-    "ctaText": ""
+    "links": [
+      {
+        "label": "Kategorien",
+        "href": "/#kategorien"
+      },
+      {
+        "label": "Unternehmen",
+        "href": "/uber-uns"
+      }
+    ],
+    "ctaText": "Kontakt"
   },
   "footer": {
     "copyright": "",
