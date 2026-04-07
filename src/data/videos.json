@@ -19,12 +19,7 @@
     "resolution": "4K",
     "duration": "0:10",
     "fps": 25,
-    "price": 29.99,
-    "prices": {
-      "web": 29.99,
-      "standard": 79.99,
-      "premium": 149.99
-    },
+    "price": 5,
     "gradient": "linear-gradient(135deg,#1a5e1a,#3d8b3d,#0f2018)",
     "thumbnail": "thumbnails/kuhbraun.jpg",
     "r2Key": "videos/kuhbraun.mp4",
