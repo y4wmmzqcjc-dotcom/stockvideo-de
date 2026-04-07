@@ -169,5 +169,39 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1775601945907",
+    "title": "New Hover",
+    "slug": "new-hover",
+    "description": "New Hover",
+    "category": "gebude-und-architektur",
+    "tags": [
+      "Hover"
+    ],
+    "resolution": "4K",
+    "duration": 12,
+    "fps": 24,
+    "prices": {
+      "web": 30,
+      "standard": 30,
+      "premium": 30
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/new-hover.jpg",
+    "r2Key": "videos/new-hover.mov",
+    "r2Preview": "previews/new-hover.mp4",
+    "r2Hover": "previews/new-hover-hover.mp4",
+    "videoId": "stockvideo.de-7JDKJ2KP",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
