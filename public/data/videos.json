@@ -40,25 +40,22 @@
     ]
   },
   {
-    "id": "1775584218635",
-    "title": "Kuh 2",
-    "slug": "kuh-2",
-    "description": "New Kuh",
-    "category": "tiere",
-    "tags": [
-      "Kuh",
-      "Muh"
-    ],
+    "id": "1775585746054",
+    "title": "Kuh 3",
+    "slug": "kuh-3",
+    "description": "Kuh 3",
+    "category": "",
+    "tags": [],
     "resolution": "4K",
     "duration": 10,
     "fps": 25,
     "prices": {
-      "web": 25,
-      "standard": 25,
-      "premium": 25
+      "web": 222,
+      "standard": 222,
+      "premium": 222
     },
     "thumbnail": "",
-    "r2Key": "videos/kuh-2.mp4",
+    "r2Key": "",
     "featured": false,
     "gradient": [
       {
