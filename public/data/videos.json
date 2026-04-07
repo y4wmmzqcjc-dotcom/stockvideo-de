@@ -100,5 +100,40 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1775603018992",
+    "title": "gieskanne",
+    "slug": "gieskanne",
+    "description": "gieskanne",
+    "category": "",
+    "tags": [
+      "gieskanne",
+      "garten"
+    ],
+    "resolution": "4K",
+    "duration": 11,
+    "fps": 25,
+    "prices": {
+      "web": 67,
+      "standard": 67,
+      "premium": 67
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/gieskanne.jpg",
+    "r2Key": "videos/gieskanne.mov",
+    "r2Preview": "previews/gieskanne.mp4",
+    "r2Hover": "previews/gieskanne-hover.mp4",
+    "videoId": "stockvideo.de-86DOED8H",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
