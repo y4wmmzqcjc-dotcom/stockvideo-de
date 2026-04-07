@@ -61,7 +61,7 @@ function render() {
       </div>
       <div class="card-info">
         <span class="card-title">${v.title}</span>
-        <span class="card-price">${v.price} \u20ac</span>
+        <span class="card-price">${v.price || (v.prices && v.prices.web) || 0} \u20ac</span>
       </div>
     </div></a>
   `).join("");
