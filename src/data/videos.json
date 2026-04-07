@@ -2,8 +2,8 @@
   {
     "id": 13,
     "slug": "braune-kuh-auf-der-weide-4k-stock-video",
-    "title": "Braune Kuh auf der Weide Ã¢ÂÂ 4K Stock Video",
-    "description": "Nahaufnahme einer braunen Kuh auf einer grÃÂ¼nen Weide. Perfekt fÃÂ¼r Landwirtschaft, Natur und Tierfilme. 4K Ultra HD AuflÃÂ¶sung.",
+    "title": "Braune Kuh auf der Weide – 4K Stock Video",
+    "description": "Nahaufnahme einer braunen Kuh auf einer grünen Weide. Perfekt für Landwirtschaft, Natur und Tierfilme. 4K Ultra HD Auflösung.",
     "category": "natur",
     "tags": [
       "kuh",
@@ -26,7 +26,7 @@
       "premium": 149.99
     },
     "gradient": "linear-gradient(135deg,#1a5e1a,#3d8b3d,#0f2018)",
-    "thumbnail": "",
+    "thumbnail": "thumbnails/kuhbraun.jpg",
     "r2Key": "videos/kuhbraun.mp4",
     "featured": true,
     "r2Preview": "previews/kuhbraun-preview.mp4"
