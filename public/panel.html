@@ -516,46 +516,36 @@
   });
 })();
 </script>
-<!--admin-fresh-loader-patch--><script>
+<!--admin-fresh-loader-patch v2--><script>
 (function(){
   function once(){
     if(!window.admin||!admin.loadCategories)return setTimeout(once,30);
     var origLC=admin.loadCategories.bind(admin);
     var origLV=admin.loadVideos.bind(admin);
-    admin.loadCategories=async function(){
+    (async function bootstrap(){
       try{
-        var r=await fetch('/data/categories.json?cb='+Date.now(),{cache:'no-store'});
-        if(r.ok){
-          var j=await r.json();
-          if(Array.isArray(j)&&j.length){
-            this.categories=j;
-            try{localStorage.setItem('adminCategories',JSON.stringify(j));}catch(e){}
-            this.renderCategoriesList&&this.renderCategoriesList();
-            this.updateCategoryDropdown&&this.updateCategoryDropdown();
-            return;
-          }
-        }
-      }catch(e){console.warn('cat fetch failed',e);}
-      return origLC();
+        var rc=await fetch('/data/categories.json?cb='+Date.now(),{cache:'no-store'});
+        if(rc.ok){var jc=await rc.json();if(Array.isArray(jc)&&jc.length){try{localStorage.setItem('adminCategories',JSON.stringify(jc));}catch(e){}}}
+        var rv=await fetch('/data/videos.json?cb='+Date.now(),{cache:'no-store'});
+        if(rv.ok){var jv=await rv.json();if(Array.isArray(jv)){try{localStorage.setItem('adminVideos',JSON.stringify(jv));}catch(e){}}}
+      }catch(e){console.warn('bootstrap failed',e);}
+      origLC();origLV();
+    })();
+    var origEdit=admin.editVideo.bind(admin);
+    admin.editVideo=function(idx){
+      var v=this.videos[idx];
+      if(v&&!v.prices){v.prices={web:v.price||0,standard:v.price||0,premium:v.price||0};}
+      try{return origEdit(idx);}catch(e){console.error('editVideo',e);alert('Bearbeiten Fehler: '+e.message);}
     };
-    admin.loadVideos=async function(){
-      try{
-        var r=await fetch('/data/videos.json?cb='+Date.now(),{cache:'no-store'});
-        if(r.ok){
-          var j=await r.json();
-          if(Array.isArray(j)){
-            this.videos=j;
-            try{localStorage.setItem('adminVideos',JSON.stringify(j));}catch(e){}
-            this.renderVideosList&&this.renderVideosList();
-            this.updateDashboard&&this.updateDashboard();
-            return;
-          }
-        }
-      }catch(e){console.warn('vid fetch failed',e);}
-      return origLV();
+    var origDel=admin.deleteVideo.bind(admin);
+    admin.deleteVideo=function(idx){
+      if(!confirm('Wirklich löschen?'))return;
+      this.videos.splice(idx,1);
+      try{localStorage.setItem('adminVideos',JSON.stringify(this.videos));}catch(e){}
+      this.renderVideosList&&this.renderVideosList();
+      this.updateDashboard&&this.updateDashboard();
+      this.showAlert&&this.showAlert('videosAlert','success','Video gelöscht');
     };
-    admin.loadCategories();
-    admin.loadVideos();
   }
   once();
 })();
