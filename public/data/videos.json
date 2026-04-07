@@ -137,61 +137,25 @@
     ]
   },
   {
-    "id": "1775603084456",
-    "title": "Kuh",
-    "slug": "kuh",
-    "description": "Kuh",
+    "id": "1775604721527",
+    "title": "Kuh test",
+    "slug": "kuh-test",
+    "description": "Kuh test",
     "category": "tiere",
-    "tags": [
-      "Kuh"
-    ],
-    "resolution": "4K",
-    "duration": 10,
-    "fps": 25,
-    "prices": {
-      "web": 56,
-      "standard": 56,
-      "premium": 56
-    },
-    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/kuh.jpg",
-    "r2Key": "videos/kuh.mp4",
-    "r2Preview": "previews/kuh.mp4",
-    "r2Hover": "previews/kuh-hover.mp4",
-    "videoId": "stockvideo.de-87SOCXVX",
-    "featured": false,
-    "gradient": [
-      {
-        "color": "#1473e6",
-        "position": 0
-      },
-      {
-        "color": "#0d5fcf",
-        "position": 100
-      }
-    ]
-  },
-  {
-    "id": "1775604032009",
-    "title": "Test",
-    "slug": "test",
-    "description": "Test",
-    "category": "gefhle-emotionen-und-geisteshaltung",
-    "tags": [
-      "TEst"
-    ],
+    "tags": [],
     "resolution": "4K",
     "duration": 12,
     "fps": 25,
     "prices": {
-      "web": 99,
-      "standard": 99,
-      "premium": 99
+      "web": 49,
+      "standard": 49,
+      "premium": 49
     },
-    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/test.jpg",
-    "r2Key": "videos/test.mov",
-    "r2Preview": "previews/test.mp4",
-    "r2Hover": "previews/test-hover.mp4",
-    "videoId": "stockvideo.de-8RZ02I7U",
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/kuh-test.jpg",
+    "r2Key": "videos/kuh-test.mp4",
+    "r2Preview": "previews/kuh-test.mp4",
+    "r2Hover": "previews/kuh-test-hover.mp4",
+    "videoId": "stockvideo.de-96VOJYF2",
     "featured": false,
     "gradient": [
       {
