@@ -516,5 +516,49 @@
   });
 })();
 </script>
+<!--admin-fresh-loader-patch--><script>
+(function(){
+  function once(){
+    if(!window.admin||!admin.loadCategories)return setTimeout(once,30);
+    var origLC=admin.loadCategories.bind(admin);
+    var origLV=admin.loadVideos.bind(admin);
+    admin.loadCategories=async function(){
+      try{
+        var r=await fetch('/data/categories.json?cb='+Date.now(),{cache:'no-store'});
+        if(r.ok){
+          var j=await r.json();
+          if(Array.isArray(j)&&j.length){
+            this.categories=j;
+            try{localStorage.setItem('adminCategories',JSON.stringify(j));}catch(e){}
+            this.renderCategoriesList&&this.renderCategoriesList();
+            this.updateCategoryDropdown&&this.updateCategoryDropdown();
+            return;
+          }
+        }
+      }catch(e){console.warn('cat fetch failed',e);}
+      return origLC();
+    };
+    admin.loadVideos=async function(){
+      try{
+        var r=await fetch('/data/videos.json?cb='+Date.now(),{cache:'no-store'});
+        if(r.ok){
+          var j=await r.json();
+          if(Array.isArray(j)){
+            this.videos=j;
+            try{localStorage.setItem('adminVideos',JSON.stringify(j));}catch(e){}
+            this.renderVideosList&&this.renderVideosList();
+            this.updateDashboard&&this.updateDashboard();
+            return;
+          }
+        }
+      }catch(e){console.warn('vid fetch failed',e);}
+      return origLV();
+    };
+    admin.loadCategories();
+    admin.loadVideos();
+  }
+  once();
+})();
+</script>
 </body>
 </html>
