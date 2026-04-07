@@ -11,19 +11,58 @@
   function extractThumbnail(file){
     return new Promise((resolve, reject) => {
       const v = document.createElement('video');
-      v.preload = 'metadata'; v.muted = true; v.playsInline = true;
+      v.preload = 'auto';
+      v.muted = true;
+      v.playsInline = true;
       v.src = URL.createObjectURL(file);
-      v.onloadedmetadata = () => {
-        const t = Math.min(1, (v.duration || 2) / 2);
-        v.currentTime = t;
-      };
-      v.onseeked = () => {
+      const candidates = [];
+      let phase = 'meta';
+      let triedTimes = [];
+      function snapAt(time){
+        return new Promise(res=>{
+          const onSeek = () => {
+            v.removeEventListener('seeked', onSeek);
+            requestAnimationFrame(()=>requestAnimationFrame(()=>{
+              try {
+                const w = Math.min(1280, v.videoWidth || 1280);
+                const h = Math.round((v.videoHeight || 720) * (w / (v.videoWidth || 1280)));
+                const c = document.createElement('canvas');
+                c.width = w; c.height = h;
+                const ctx = c.getContext('2d');
+                ctx.drawImage(v, 0, 0, w, h);
+                // sample brightness
+                const sw=40, sh=22;
+                const sc = document.createElement('canvas');
+                sc.width=sw; sc.height=sh;
+                sc.getContext('2d').drawImage(c,0,0,sw,sh);
+                const d = sc.getContext('2d').getImageData(0,0,sw,sh).data;
+                let lum=0;
+                for(let i=0;i<d.length;i+=4) lum += (d[i]+d[i+1]+d[i+2])/3;
+                lum /= (d.length/4);
+                res({canvas:c, lum, time});
+              } catch(e){ res({canvas:null, lum:0, time, err:e}); }
+            }));
+          };
+          v.addEventListener('seeked', onSeek);
+          v.currentTime = time;
+        });
+      }
+      v.onloadedmetadata = async () => {
         try {
-          const w = Math.min(1280, v.videoWidth || 1280);
-          const h = Math.round((v.videoHeight || 720) * (w / (v.videoWidth || 1280)));
-          const c = document.createElement('canvas'); c.width = w; c.height = h;
-          c.getContext('2d').drawImage(v, 0, 0, w, h);
-          c.toBlob(b => { URL.revokeObjectURL(v.src); b ? resolve(b) : reject(new Error('blob fail')); }, 'image/jpeg', 0.85);
+          const dur = v.duration || 2;
+          const times = [dur*0.5, dur*0.25, dur*0.75, dur*0.1, Math.min(1, dur/2)];
+          for(const tm of times){
+            if(tm<=0||!isFinite(tm)) continue;
+            const r = await snapAt(tm);
+            if(r.canvas){ candidates.push(r); if(r.lum>20) break; }
+          }
+          if(!candidates.length) return reject(new Error('no frames'));
+          candidates.sort((a,b)=>b.lum-a.lum);
+          const best = candidates[0].canvas;
+          best.toBlob(b => {
+            URL.revokeObjectURL(v.src);
+            b ? resolve(b) : reject(new Error('blob fail'));
+          }, 'image/jpeg', 0.85);
         } catch(e){ reject(e); }
       };
       v.onerror = () => reject(new Error('video load error'));
