@@ -396,8 +396,15 @@
                 <input type="url" class="form-input" id="videoModalThumbnail" placeholder="https://...">
             </div>
             <div class="form-group">
-                <label class="form-label">R2 Key</label>
-                <input type="text" class="form-input" id="videoModalR2Key" placeholder="path/to/video.mp4">
+                <label class="form-label">Video-Datei (wird automatisch zu R2 hochgeladen)</label>
+                <input type="file" class="form-input" id="videoModalFile" accept="video/*">
+                <div id="videoModalUploadStatus" style="font-size:12px;opacity:0.8;margin-top:6px;"></div>
+                <progress id="videoModalUploadProgress" value="0" max="1" style="width:100%;display:none;margin-top:4px;"></progress>
+            </div>
+            <div class="form-group">
+                <label class="form-label">R2 Key (auto)</label>
+                <input type="text" class="form-input" id="videoModalR2Key" placeholder="videos/slug.mp4">
+                <input type="hidden" id="videoModalThumbKey">
             </div>
             <div class="form-group">
                 <div class="checkbox-group">
@@ -483,5 +490,31 @@
     </script>
     <script src="/admin.js?v=1775568086158"></script>
 <div id="__stat_stubs" style="display:none"><span id="statVideos"></span><span id="statCategories"></span><span id="statLastChange"></span><span id="statLastChangeTime"></span><span id="statDeployStatus"></span><span id="statDeployTime"></span></div>
+<script src="/upload.js"></script>
+<script>
+(function(){
+  document.addEventListener("change", async function(e){
+    if (e.target && e.target.id === "videoModalFile") {
+      const f = e.target.files[0]; if (!f) return;
+      const slugInput = document.getElementById("videoModalSlug");
+      const titleInput = document.getElementById("videoModalTitle_Input") || document.getElementById("videoModalTitle");
+      const status = document.getElementById("videoModalUploadStatus");
+      const prog = document.getElementById("videoModalUploadProgress");
+      const r2 = document.getElementById("videoModalR2Key");
+      const thumbKey = document.getElementById("videoModalThumbKey");
+      const slug = (slugInput && slugInput.value) || (titleInput && window.slugifyKey(titleInput.value)) || window.slugifyKey(f.name.replace(/\.[^.]+$/,""));
+      prog.style.display = "block"; prog.value = 0;
+      try {
+        const res = await window.uploadVideo(f, { slug, onStatus: m => status.textContent = m, onProgress: p => prog.value = p });
+        r2.value = res.videoKey;
+        if (thumbKey) thumbKey.value = res.thumbKey;
+        status.textContent = "Upload fertig: " + res.videoKey;
+      } catch (err) {
+        status.textContent = "Fehler: " + err.message;
+      }
+    }
+  });
+})();
+</script>
 </body>
 </html>
