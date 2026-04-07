@@ -32,5 +32,40 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1775594906064",
+    "title": "Muh New",
+    "slug": "muh-new",
+    "description": "Muh New",
+    "category": "business",
+    "tags": [
+      "Muh",
+      "New"
+    ],
+    "resolution": "4K",
+    "duration": 10,
+    "fps": 25,
+    "prices": {
+      "web": 44.5,
+      "standard": 44.5,
+      "premium": 44.5
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/muh-new.jpg",
+    "r2Key": "videos/muh-new.mp4",
+    "r2Preview": "previews/muh-new.mp4",
+    "r2Hover": "previews/muh-new-hover.mp4",
+    "videoId": "SV-3CJ524R2",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
