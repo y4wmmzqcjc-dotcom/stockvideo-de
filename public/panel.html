@@ -40,7 +40,7 @@
 
                 <div id="lockoutDisplay" style="display: none;">
                     <div class="lockout-display">
-                        <div style="font-size: 2rem; margin-bottom: 1rem;">ð</div>
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">🔒</div>
                         <p style="margin-bottom: 1rem;">Account gesperrt</p>
                         <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Zu viele fehlgeschlagene Versuche</p>
                         <div class="lockout-timer" id="lockoutTimer">15:00</div>
@@ -59,22 +59,22 @@
             </div>
             <nav class="sidebar-nav">
                 <div class="nav-item active" onclick="admin.switchPanel('dashboard')">
-                    <span>ð</span> Dashboard
+                    <span>📊</span> Dashboard
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('videos')">
-                    <span>ð¬</span> Videos verwalten
+                    <span>🎬</span> Videos verwalten
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('categories')">
-                    <span>ð</span> Kategorien
+                    <span>📁</span> Kategorien
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('content')">
-                    <span>ð</span> Seiteninhalte
+                    <span>📝</span> Seiteninhalte
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('design')">
-                    <span>ð¨</span> Design
+                    <span>🎨</span> Design
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('settings')">
-                    <span>âï¸</span> Einstellungen
+                    <span>⚙️</span> Einstellungen
                 </div>
             </nav>
             <div class="sidebar-footer">
@@ -87,7 +87,7 @@
             <div id="panel-dashboard" class="content-panel active">
                 <div class="content-header">
                     <h1 class="content-title">Dashboard</h1>
-                    <p class="content-subtitle">Ãberblick über Ihr System</p>
+                    <p class="content-subtitle">Überblick über Ihr System</p>
                 </div>
                 <div style="padding: 2rem;">
                     <div id="dashboardAlert"></div>
@@ -103,7 +103,7 @@
                             <div class="stat-meta">Erstellt</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-label">Letzte Ãnderung</div>
+                            <div class="stat-label">Letzte Änderung</div>
                             <div class="stat-value" id="statLastChange" style="font-size: 1.25rem;">-</div>
                             <div class="stat-meta" id="statLastChangeTime"></div>
                         </div>
@@ -214,7 +214,7 @@
                         <div class="form-row full">
                             <div>
                                 <label class="form-label">Copyright</label>
-                                <input type="text" class="form-input" id="contentFooterCopyright" placeholder="Â© 2026 stockvideo.de">
+                                <input type="text" class="form-input" id="contentFooterCopyright" placeholder="© 2026 stockvideo.de">
                             </div>
                         </div>
                         <div class="form-row full">
@@ -409,15 +409,15 @@
             <div class="form-section-title">Preise</div>
             <div class="form-row">
                 <div>
-                    <label class="form-label">Web (â¬)</label>
+                    <label class="form-label">Web (€)</label>
                     <input type="number" class="form-input" id="videoModalPriceWeb" placeholder="29.99" min="0" step="0.01">
                 </div>
                 <div>
-                    <label class="form-label">Standard (â¬)</label>
+                    <label class="form-label">Standard (€)</label>
                     <input type="number" class="form-input" id="videoModalPriceStandard" placeholder="79.99" min="0" step="0.01">
                 </div>
                 <div>
-                    <label class="form-label">Premium (â¬)</label>
+                    <label class="form-label">Premium (€)</label>
                     <input type="number" class="form-input" id="videoModalPricePremium" placeholder="149.99" min="0" step="0.01">
                 </div>
             </div>
@@ -465,7 +465,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Icon</label>
-                <input type="text" class="form-input" id="categoryModalIcon" placeholder="ð¬">
+                <input type="text" class="form-input" id="categoryModalIcon" placeholder="🎬">
             </div>
             <div class="form-group">
                 <label class="form-label">Reihenfolge</label>
@@ -511,6 +511,6 @@
         }
     };
     </script>
-    <script src="/admin.js?v=1775562908583"></script>
+    <script src="/admin.js?v=1775564375627"></script>
 </body>
 </html>
