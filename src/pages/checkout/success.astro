@@ -1,7 +1,7 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
-<Layout title="Zahlung erfolgreich — stockvideo.de">
+<BaseLayout title="Zahlung erfolgreich">
   <main style="max-width: 640px; margin: 4rem auto; padding: 2rem; text-align: center;">
     <div style="font-size: 4rem;">✅</div>
     <h1 style="color: #fff;">Zahlung erfolgreich!</h1>
@@ -20,7 +20,7 @@ import Layout from '../../layouts/Layout.astro';
 
     <p style="margin-top: 3rem;"><a href="/" style="color: #1473e6;">← Zurück zur Übersicht</a></p>
   </main>
-</Layout>
+</BaseLayout>
 
 <script is:inline>
 (function() {
@@ -59,7 +59,7 @@ import Layout from '../../layouts/Layout.astro';
           downloadBox.style.display = 'block';
           videoTitle.textContent = data.videoTitle || '';
           downloadBtn.href = data.downloadUrl;
-          setTimeout(function() { window.location.href = data.downloadUrl; }, 800);
+          setTimeout(function() { window.location.href = data.downloadUrl; }, 1500);
         } else if (data.status === 'open' || data.status === 'pending') {
           if (attempts < MAX_ATTEMPTS) {
             statusText.textContent = 'Warte auf Zahlungsbestätigung… (' + attempts + '/' + MAX_ATTEMPTS + ')';
