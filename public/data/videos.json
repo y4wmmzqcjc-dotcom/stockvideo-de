@@ -1,26 +1,26 @@
 [
   {
-    "id": "1775601945907",
-    "title": "New Hover",
-    "slug": "new-hover",
-    "description": "New Hover",
-    "category": "gebude-und-architektur",
+    "id": "1775602731602",
+    "title": "Hover Bagger",
+    "slug": "hover-bagger",
+    "description": "Hover Bagger",
+    "category": "industrie",
     "tags": [
-      "Hover"
+      "Bagger"
     ],
     "resolution": "4K",
     "duration": 12,
-    "fps": 24,
+    "fps": 25,
     "prices": {
-      "web": 30,
-      "standard": 30,
-      "premium": 30
+      "web": 45,
+      "standard": 45,
+      "premium": 45
     },
-    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/new-hover.jpg",
-    "r2Key": "videos/new-hover.mov",
-    "r2Preview": "previews/new-hover.mp4",
-    "r2Hover": "previews/new-hover-hover.mp4",
-    "videoId": "stockvideo.de-7JDKJ2KP",
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/hover-bagger.jpg",
+    "r2Key": "videos/hover-bagger.mov",
+    "r2Preview": "previews/hover-bagger.mp4",
+    "r2Hover": "previews/hover-bagger-hover.mp4",
+    "videoId": "stockvideo.de-801E2RC1",
     "featured": false,
     "gradient": [
       {
