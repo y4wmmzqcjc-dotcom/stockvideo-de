@@ -51,7 +51,7 @@ const price = video.price || (video.prices && video.prices.web) || 5;
 
     {video.r2Preview && (
     <div style="display:flex;gap:10px;align-items:center;margin:0 0 16px;flex-wrap:wrap;">
-      <button id="dlPreviewBtn" data-url={previewUrl} data-name={`stockvideo-${video.slug}-preview.mp4`} class="btn-primary" style="padding:12px 22px;border-radius:6px;font-size:14px;font-weight:700;color:#fff;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:10px;background:var(--accent,#2563eb);">⬇ Vorschau (480p) herunterladen</button>
+      <button id="dlPreviewBtn" data-key={video.r2Preview} data-name={`stockvideo-${video.slug}-preview${video.r2Preview && video.r2Preview.endsWith('.webm') ? '.webm' : '.mp4'}`} class="btn-primary" style="padding:12px 22px;border-radius:6px;font-size:14px;font-weight:700;color:#fff;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:10px;background:var(--accent,#2563eb);">⬇ Vorschau (480p) herunterladen</button>
       {video.videoId && <span style="font-family:monospace;background:#222;padding:6px 12px;border-radius:4px;color:#888;font-size:12px;letter-spacing:0.5px;">ID {video.videoId}</span>}
     </div>
   )}
@@ -110,20 +110,13 @@ const price = video.price || (video.prices && video.prices.web) || 5;
     }
     var dlBtn=document.getElementById('dlPreviewBtn');
     if(dlBtn){
-      dlBtn.addEventListener('click',async function(){
-        var url=dlBtn.dataset.url;var name=dlBtn.dataset.name||'preview.mp4';
-        var orig=dlBtn.innerHTML;
-        try{
-          dlBtn.disabled=true;dlBtn.innerHTML='⏳ Lade Vorschau...';
-          var r=await fetch(url,{cache:'no-store'});
-          if(!r.ok)throw new Error('HTTP '+r.status);
-          var b=await r.blob();
-          var u=URL.createObjectURL(b);
-          var a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();
-          setTimeout(function(){URL.revokeObjectURL(u);},2000);
-          dlBtn.innerHTML='✓ Download gestartet';
-          setTimeout(function(){dlBtn.innerHTML=orig;dlBtn.disabled=false;},2500);
-        }catch(e){dlBtn.innerHTML='Fehler: '+e.message;setTimeout(function(){dlBtn.innerHTML=orig;dlBtn.disabled=false;},3000);}
+      dlBtn.addEventListener('click',function(){
+        var key=dlBtn.dataset.key;var name=dlBtn.dataset.name||'preview.mp4';
+        if(!key)return;
+        var a=document.createElement('a');
+        a.href='/dl/'+key+'?name='+encodeURIComponent(name);
+        a.download=name;
+        document.body.appendChild(a);a.click();a.remove();
       });
     }
 
