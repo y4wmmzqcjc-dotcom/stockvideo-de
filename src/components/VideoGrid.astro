@@ -47,7 +47,7 @@ function render() {
   grid.innerHTML = list.map(v => `
     <a href="/video/${v.slug}/" style="text-decoration:none;color:inherit;display:block"><div class="video-card">
       <div class="video-thumb">
-        ${v.thumbnail ? '<img src="' + v.thumbnail + '" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;" >' : '<div class="thumb-bg" style="background:' + v.gradient + '"></div>'}
+        ${v.thumbnail ? '<img src="' + v.thumbnail + '" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;z-index:1;" >' : '<div class="thumb-bg" style="background:' + v.gradient + '"></div>'}${v.r2Hover ? '<video class="hov-prev" muted loop playsinline preload="none" data-src="https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/' + v.r2Hover + '" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;z-index:2;opacity:0;transition:opacity .25s;"></video>' : ''}
         <div class="thumb-texture" style="background:
           radial-gradient(circle at 25% 35%,rgba(255,255,255,0.06) 0%,transparent 45%),
           radial-gradient(circle at 75% 65%,rgba(255,255,255,0.04) 0%,transparent 35%),
@@ -96,4 +96,9 @@ document.getElementById("sortSelect")?.addEventListener("change", e => {
 });
 
 render();
+var _grid=document.getElementById('videoGrid');
+if(_grid){
+  _grid.addEventListener('mouseover',function(e){var c=e.target.closest('.video-card');if(!c)return;var v=c.querySelector('video.hov-prev');if(!v)return;if(!v.src)v.src=v.dataset.src;v.style.opacity='1';try{v.play();}catch(e){}});
+  _grid.addEventListener('mouseout',function(e){var c=e.target.closest('.video-card');if(!c||c.contains(e.relatedTarget))return;var v=c.querySelector('video.hov-prev');if(!v)return;v.style.opacity='0';try{v.pause();v.currentTime=0;}catch(e){}});
+}
 </script>
