@@ -315,7 +315,7 @@
             renderVideosList() {
                 const container = document.getElementById('videosList');
                 if (this.videos.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🎬</div><div class="empty-state-title">Keine Videos</div><p>Erstellen Sie Ihr erstes Video</p></div>';
+                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon"><</div><div class="empty-state-title">Keine Videos</div><p>Erstellen Sie Ihr erstes Video</p></div>';
                     return;
                 }
 
@@ -545,7 +545,7 @@
             renderCategoriesList() {
                 const container = document.getElementById('categoriesList');
                 if (this.categories.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📁</div><div class="empty-state-title">Keine Kategorien</div><p>Erstellen Sie Ihre erste Kategorie</p></div>';
+                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">=</div><div class="empty-state-title">Keine Kategorien</div><p>Erstellen Sie Ihre erste Kategorie</p></div>';
                     return;
                 }
 
@@ -640,10 +640,10 @@
                 this.content = stored ? JSON.parse(stored) : {
                     hero: { title: '', subtitle: '', searchPlaceholder: '' },
                     features: [
-                        { icon: '🎬', title: '', description: '' },
-                        { icon: '🔒', title: '', description: '' },
+                        { icon: '<', title: '', description: '' },
+                        { icon: '=', title: '', description: '' },
                         { icon: '⚡', title: '', description: '' },
-                        { icon: '💰', title: '', description: '' }
+                        { icon: '=', title: '', description: '' }
                     ],
                     pricing: [
                         { label: '', resolution: '', price: '', description: '', featured: false },
