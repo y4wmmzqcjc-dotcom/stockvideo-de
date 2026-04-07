@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "id": "1775598332690",
+    "title": "Kuh",
+    "slug": "kuh",
+    "description": "Kuh frisst Gras",
+    "category": "tiere",
+    "tags": [
+      "Kuh",
+      "Muh",
+      "grass"
+    ],
+    "resolution": "4K",
+    "duration": 10,
+    "fps": 25,
+    "prices": {
+      "web": 45.9,
+      "standard": 45.9,
+      "premium": 45.9
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/kuh.jpg",
+    "r2Key": "videos/kuh.mp4",
+    "r2Preview": "previews/kuh.mp4",
+    "r2Hover": "previews/kuh-hover.mp4",
+    "videoId": "stockvideo.de-5DXXMY9J",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
+  }
+]
