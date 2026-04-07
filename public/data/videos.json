@@ -98,5 +98,75 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1775596909416",
+    "title": "Gieskanne",
+    "slug": "gieskanne",
+    "description": "Gieskanne",
+    "category": "pflanzen-und-blumen",
+    "tags": [
+      "Garten",
+      "Pflanzen"
+    ],
+    "resolution": "4K",
+    "duration": 11,
+    "fps": 25,
+    "prices": {
+      "web": 11.33,
+      "standard": 11.33,
+      "premium": 11.33
+    },
+    "thumbnail": "",
+    "r2Key": "",
+    "r2Preview": "",
+    "r2Hover": "",
+    "videoId": "",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
+  },
+  {
+    "id": "1775596910487",
+    "title": "Gieskanne",
+    "slug": "gieskanne",
+    "description": "Gieskanne",
+    "category": "pflanzen-und-blumen",
+    "tags": [
+      "Garten",
+      "Pflanzen"
+    ],
+    "resolution": "4K",
+    "duration": 11,
+    "fps": 25,
+    "prices": {
+      "web": 11.33,
+      "standard": 11.33,
+      "premium": 11.33
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/gieskanne.jpg",
+    "r2Key": "videos/gieskanne.mov",
+    "r2Preview": "previews/gieskanne.mp4",
+    "r2Hover": "previews/gieskanne-hover.mp4",
+    "videoId": "SV-4JGJWC4X",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
