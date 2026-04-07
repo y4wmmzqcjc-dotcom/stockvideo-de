@@ -167,5 +167,39 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1775604815382",
+    "title": "PVC TEST",
+    "slug": "pvc-test",
+    "description": "PVC TEST",
+    "category": "business",
+    "tags": [
+      "PVC TEST"
+    ],
+    "resolution": "4K",
+    "duration": 12,
+    "fps": 25,
+    "prices": {
+      "web": 55,
+      "standard": 55,
+      "premium": 55
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/pvc-test.jpg",
+    "r2Key": "videos/pvc-test.mov",
+    "r2Preview": "previews/pvc-test.mp4",
+    "r2Hover": "previews/pvc-test-hover.mp4",
+    "videoId": "stockvideo.de-98RQH2SA",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
