@@ -137,12 +137,12 @@
   },
   {
     "id": "1775604815382",
-    "title": "PVC TEST",
+    "title": "PVC",
     "slug": "pvc-test",
-    "description": "PVC TEST",
-    "category": "business",
+    "description": "PVC ",
+    "category": "",
     "tags": [
-      "PVC TEST"
+      "PVC"
     ],
     "resolution": "4K",
     "duration": 12,
