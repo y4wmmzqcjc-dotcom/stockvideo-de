@@ -54,12 +54,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       .then(function(r) { return r.json(); })
       .then(function(data) {
         if (data.error) { showError('Fehler: ' + data.error); return; }
-        if (data.status === 'paid' && data.downloadUrl) {
+        if (data.status === 'paid' && (CHECKOUT_WORKER + '/download?id=' + encodeURIComponent(paymentId))) {
           statusText.style.display = 'none';
           downloadBox.style.display = 'block';
           videoTitle.textContent = data.videoTitle || '';
-          downloadBtn.href = data.downloadUrl;
-          setTimeout(function() { window.location.href = data.downloadUrl; }, 1500);
+          downloadBtn.href = (CHECKOUT_WORKER + '/download?id=' + encodeURIComponent(paymentId));
+          setTimeout(function() { window.location.href = (CHECKOUT_WORKER + '/download?id=' + encodeURIComponent(paymentId)); }, 1500);
         } else if (data.status === 'open' || data.status === 'pending') {
           if (attempts < MAX_ATTEMPTS) {
             statusText.textContent = 'Warte auf Zahlungsbestätigung… (' + attempts + '/' + MAX_ATTEMPTS + ')';
