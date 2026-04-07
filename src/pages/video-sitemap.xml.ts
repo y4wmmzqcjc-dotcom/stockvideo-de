@@ -8,7 +8,7 @@ export async function GET() {
       <video:thumbnail_loc>https://stockvideo.de/thumbnails/${v.slug}.jpg</video:thumbnail_loc>
       <video:title>${v.title}</video:title>
       <video:description>${v.description}</video:description>
-      <video:duration>${parseInt(v.duration.split(':')[1])}</video:duration>
+      <video:duration>${(typeof v.duration==='number'?v.duration:parseInt(String(v.duration).split(':')[1]))}</video:duration>
     </video:video>
   </url>`).join('');
 
