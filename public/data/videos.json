@@ -66,5 +66,39 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1775602959533",
+    "title": "getreide",
+    "slug": "getreide",
+    "description": "getreide",
+    "category": "essen",
+    "tags": [
+      "getreide"
+    ],
+    "resolution": "4K",
+    "duration": 7,
+    "fps": 25,
+    "prices": {
+      "web": 56,
+      "standard": 56,
+      "premium": 56
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/getreide.jpg",
+    "r2Key": "videos/getreide.mov",
+    "r2Preview": "previews/getreide.mp4",
+    "r2Hover": "previews/getreide-hover.mp4",
+    "videoId": "stockvideo.de-858GZ7NK",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
