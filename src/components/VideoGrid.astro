@@ -6,13 +6,13 @@ import videos from '../../public/data/videos.json';
   <div class="no-results" id="noResults">
     <div class="no-results-icon">&#x2315;</div>
     <h3>Keine Ergebnisse</h3>
-    <p>Versuch einen anderen Suchbegriff oder wÃÂ¤hle eine Kategorie.</p>
+    <p>Versuch einen anderen Suchbegriff oder wÃÂÃÂ¤hle eine Kategorie.</p>
   </div>
 </section>
 
 <script define:vars={{ videos }}>
 const catLabels = {
-  all:"Alle Videos", natur:"Natur & Landschaft", business:"Business & BÃÂ¼ro",
+  all:"Alle Videos", natur:"Natur & Landschaft", business:"Business & BÃÂÃÂ¼ro",
   tech:"Technologie", aerial:"Aerial & Drohne", urban:"Stadt & Architektur",
   menschen:"Menschen & Lifestyle", abstrakt:"Abstrakt & Motion", timelapse:"Timelapse"
 };
@@ -87,7 +87,7 @@ document.getElementById("resFilterBtn")?.addEventListener("click", e => {
   const btn = e.target;
   const cycle = { all:"4k", "4k":"hd", hd:"all" };
   state.res = cycle[state.res];
-  btn.textContent = state.res === "all" ? "AuflÃÂ¶sung" : state.res === "4k" ? "Nur 4K" : "Nur HD";
+  btn.textContent = state.res === "all" ? "AuflÃÂÃÂ¶sung" : state.res === "4k" ? "Nur 4K" : "Nur HD";
   btn.classList.toggle("active", state.res !== "all");
   render();
 });
@@ -100,36 +100,38 @@ document.getElementById("sortSelect")?.addEventListener("change", e => {
 render();
 var _grid = document.getElementById('videoGrid');
 if(_grid){
-  var _bind=function(){
-    var cards=_grid.querySelectorAll('.video-card');
-    cards.forEach(function(card){
-      if(card._bnd)return;card._bnd=1;
-      var v=card.querySelector('video.hov-prev');
-      if(!v)return;
-      v.style.visibility='hidden';
-      v.muted=true;v.playsInline=true;
-      v.addEventListener('ended',function(){try{v.currentTime=0;}catch(e){}var p=v.play();if(p&&p.catch)p.catch(function(){});});
-      var armed=false;
-      var arm=function(){
-        if(armed)return;armed=true;
-        var show=function(){v.style.visibility='visible';};
-        if(v.requestVideoFrameCallback){v.requestVideoFrameCallback(function(){show();});}
-        else{var h=function(){if(v.currentTime>0.05){v.removeEventListener('timeupdate',h);show();}};v.addEventListener('timeupdate',h);}
-      };
-      card.addEventListener('mouseenter',function(){
-        if(!v.src&&v.dataset.src){v.src=v.dataset.src;try{v.load();}catch(e){}}
-        armed=false;arm();
-        var p=v.play();if(p&&p.catch)p.catch(function(){});
-      });
-      card.addEventListener('mouseleave',function(){
-        try{v.pause();}catch(e){}
-        try{v.currentTime=0;}catch(e){}
-        v.style.visibility='hidden';
-      });
-    });
+  var _setupVideo=function(v){
+    if(v._setup)return;v._setup=1;
+    v.style.visibility='hidden';
+    v.muted=true;v.playsInline=true;v.removeAttribute('loop');
+    v.addEventListener('ended',function(){try{v.currentTime=0;}catch(e){}var p=v.play();if(p&&p.catch)p.catch(function(){});});
   };
-  _bind();
-  var _mo=new MutationObserver(_bind);
-  _mo.observe(_grid,{childList:true,subtree:true});
+  var _showOnFrame=function(v){
+    if(v._armed)return;v._armed=1;
+    var done=false;var show=function(){if(done)return;done=true;v.style.visibility='visible';};
+    if(v.requestVideoFrameCallback){v.requestVideoFrameCallback(function(){show();});}
+    var th=function(){if(v.currentTime>0.04){v.removeEventListener('timeupdate',th);show();}};
+    v.addEventListener('timeupdate',th);
+    setTimeout(show,400);
+  };
+  var _enter=function(card){
+    var v=card.querySelector('video.hov-prev');if(!v)return;
+    _setupVideo(v);
+    if(!v.src&&v.dataset.src){v.src=v.dataset.src;try{v.load();}catch(e){}}
+    _showOnFrame(v);
+    var p=v.play();if(p&&p.catch)p.catch(function(){});
+  };
+  var _leave=function(card){
+    var v=card.querySelector('video.hov-prev');if(!v)return;
+    try{v.pause();}catch(e){}
+    try{v.currentTime=0;}catch(e){}
+    v._armed=0;
+    v.style.visibility='hidden';
+  };
+  _grid.addEventListener('mouseover',function(e){var c=e.target.closest&&e.target.closest('.video-card');if(!c)return;if(c._hovering)return;c._hovering=1;_enter(c);});
+  _grid.addEventListener('mouseout',function(e){var c=e.target.closest&&e.target.closest('.video-card');if(!c)return;var to=e.relatedTarget;if(to&&c.contains(to))return;c._hovering=0;_leave(c);});
+  var _all=function(){_grid.querySelectorAll('video.hov-prev').forEach(_setupVideo);};
+  _all();
+  new MutationObserver(_all).observe(_grid,{childList:true,subtree:true});
 }
 </script>
