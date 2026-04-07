@@ -1,57 +1,64 @@
-// Schlanker Upload-Helper: Auto-Thumbnail + Direkt-Upload zu R2 via /admin/upload
 (function(){
-  const slugify = s => (s||'').toString().toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,80) || ('video-'+Date.now());
+  function slugify(s){
+    return (s||'').toString()
+      .normalize('NFKD').replace(/[\u0300-\u036f]/g,'')
+      .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss')
+      .replace(/Ä/g,'ae').replace(/Ö/g,'oe').replace(/Ü/g,'ue')
+      .toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,80);
+  }
+  window.slugifyKey = slugify;
 
   function extractThumbnail(file){
-    return new Promise((resolve,reject)=>{
+    return new Promise((resolve, reject) => {
       const v = document.createElement('video');
       v.preload = 'metadata'; v.muted = true; v.playsInline = true;
       v.src = URL.createObjectURL(file);
-      v.onloadedmetadata = () => { v.currentTime = Math.min(1, (v.duration||2)/2); };
-      v.onseeked = () => {
-        const c = document.createElement('canvas');
-        const w = Math.min(1280, v.videoWidth||1280);
-        c.width = w; c.height = Math.round((v.videoHeight||720) * (w/(v.videoWidth||1280)));
-        c.getContext('2d').drawImage(v,0,0,c.width,c.height);
-        c.toBlob(b => { URL.revokeObjectURL(v.src); b ? resolve(b) : reject(new Error('thumb')); }, 'image/jpeg', 0.85);
+      v.onloadedmetadata = () => {
+        const t = Math.min(1, (v.duration || 2) / 2);
+        v.currentTime = t;
       };
-      v.onerror = () => reject(new Error('video load'));
+      v.onseeked = () => {
+        try {
+          const w = Math.min(1280, v.videoWidth || 1280);
+          const h = Math.round((v.videoHeight || 720) * (w / (v.videoWidth || 1280)));
+          const c = document.createElement('canvas'); c.width = w; c.height = h;
+          c.getContext('2d').drawImage(v, 0, 0, w, h);
+          c.toBlob(b => { URL.revokeObjectURL(v.src); b ? resolve(b) : reject(new Error('blob fail')); }, 'image/jpeg', 0.85);
+        } catch(e){ reject(e); }
+      };
+      v.onerror = () => reject(new Error('video load error'));
     });
   }
 
-  async function putToR2(blob, key, contentType, token, onProgress){
-    return new Promise((resolve,reject)=>{
+  function putToR2(key, body, contentType, onProgress){
+    return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open('PUT', '/admin/upload?key=' + encodeURIComponent(key));
-      xhr.setRequestHeader('Authorization', 'Bearer ' + token);
       xhr.setRequestHeader('Content-Type', contentType);
-      xhr.upload.onprogress = e => { if (e.lengthComputable && onProgress) onProgress(e.loaded/e.total); };
-      xhr.onload = () => xhr.status>=200 && xhr.status<300 ? resolve(JSON.parse(xhr.responseText||'{}')) : reject(new Error('HTTP '+xhr.status+': '+xhr.responseText));
+      if (onProgress) xhr.upload.onprogress = e => { if (e.lengthComputable) onProgress(e.loaded / e.total); };
+      xhr.onload = () => { if (xhr.status >= 200 && xhr.status < 300) resolve(JSON.parse(xhr.responseText || '{}')); else reject(new Error('HTTP ' + xhr.status + ': ' + xhr.responseText)); };
       xhr.onerror = () => reject(new Error('Network error'));
-      xhr.send(blob);
+      xhr.send(body);
     });
   }
 
-  async function uploadVideo(file, opts){
+  window.uploadVideo = async function(file, opts){
     opts = opts || {};
-    const token = opts.token || window.__adminUploadToken || localStorage.getItem('adminUploadToken') || prompt('Upload-Token (ADMIN_TOKEN aus Cloudflare):');
-    if (token) localStorage.setItem('adminUploadToken', token);
-    if (!token) throw new Error('Kein Upload-Token');
-    window.__adminUploadToken = token;
-    const baseSlug = slugify(opts.slug || file.name.replace(/\.[^.]+$/,''));
-    const ext = (file.name.match(/\.[^.]+$/)||['.mp4'])[0].toLowerCase();
+    const baseSlug = slugify(opts.slug || file.name.replace(/\.[^.]+$/, ''));
+    const ext = (file.name.match(/\.[a-z0-9]+$/i) || ['.mp4'])[0].toLowerCase();
     const videoKey = 'videos/' + baseSlug + ext;
     const thumbKey = 'thumbs/' + baseSlug + '.jpg';
-    opts.onStatus && opts.onStatus('Thumbnail erzeugen…');
-    const thumb = await extractThumbnail(file);
-    opts.onStatus && opts.onStatus('Thumbnail hochladen…');
-    await putToR2(thumb, thumbKey, 'image/jpeg', token);
-    opts.onStatus && opts.onStatus('Video hochladen…');
-    await putToR2(file, videoKey, file.type||'video/mp4', token, p => opts.onProgress && opts.onProgress(p));
-    opts.onStatus && opts.onStatus('Fertig.');
-    return { videoKey, thumbKey, slug: baseSlug };
-  }
 
-  window.uploadVideo = uploadVideo;
-  window.slugifyKey = slugify;
+    if (opts.onStatus) opts.onStatus('Thumbnail wird erzeugt...');
+    const thumbBlob = await extractThumbnail(file);
+
+    if (opts.onStatus) opts.onStatus('Thumbnail wird hochgeladen...');
+    await putToR2(thumbKey, thumbBlob, 'image/jpeg');
+
+    if (opts.onStatus) opts.onStatus('Video wird hochgeladen...');
+    await putToR2(videoKey, file, file.type || 'video/mp4', opts.onProgress);
+
+    if (opts.onStatus) opts.onStatus('Fertig.');
+    return { videoKey, thumbKey, slug: baseSlug };
+  };
 })();
