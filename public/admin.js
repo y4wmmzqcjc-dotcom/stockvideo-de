@@ -129,7 +129,7 @@
                 document.getElementById('otpEmail').textContent = email;
 
                 if (typeof emailjs === 'undefined') {
-                    // EmailJS not loaded Ã¢ÂÂ show OTP in console for dev/testing
+                    // EmailJS not loaded ÃÂ¢ÃÂÃÂ show OTP in console for dev/testing
                     console.warn('EmailJS not loaded. OTP code:', otp);
                     document.getElementById('authStep1').style.display = 'none';
                     document.getElementById('authStep2').style.display = 'block';
@@ -186,7 +186,7 @@
                         this.showLockout();
                         this.startLockoutTimer();
                     } else {
-                        alert.innerHTML = '<div class="alert alert-error">UngÃÂ¼ltiger Code. Bitte versuchen Sie es erneut.</div>';
+                        alert.innerHTML = '<div class="alert alert-error">UngÃÂÃÂ¼ltiger Code. Bitte versuchen Sie es erneut.</div>';
                     }
                 }
             },
@@ -297,7 +297,7 @@
             refreshDeployStatus() {
                 const settings = auth.loadSettings();
                 if (!settings.gitHub.token) {
-                    document.getElementById('statDeployStatus').textContent = 'Ã¢ÂÂ Ã¯Â¸Â';
+                    document.getElementById('statDeployStatus').textContent = 'ÃÂ¢ÃÂÃÂ ÃÂ¯ÃÂ¸ÃÂ';
                     document.getElementById('statDeployTime').textContent = 'GitHub nicht konfiguriert';
                     return;
                 }
@@ -313,7 +313,7 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.commit) {
-                        document.getElementById('statDeployStatus').textContent = 'Ã¢ÂÂ';
+                        document.getElementById('statDeployStatus').textContent = 'ÃÂ¢ÃÂÃÂ';
                         const date = new Date(data.commit.author.date);
                         document.getElementById('statDeployTime').textContent = date.toLocaleTimeString('de-DE');
                     } else {
@@ -322,7 +322,7 @@
                 })
                 .catch(err => {
                     console.error('GitHub Error:', err);
-                    document.getElementById('statDeployStatus').textContent = 'Ã¢ÂÂ';
+                    document.getElementById('statDeployStatus').textContent = 'ÃÂ¢ÃÂÃÂ';
                     document.getElementById('statDeployTime').textContent = 'Fehler beim Abrufen';
                 });
             },
@@ -337,7 +337,7 @@
             renderVideosList() {
                 const container = document.getElementById('videosList');
                 if (this.videos.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">Ã°ÂÂÂ¬</div><div class="empty-state-title">Keine Videos</div><p>Erstellen Sie Ihr erstes Video</p></div>';
+                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">ÃÂ°ÃÂÃÂÃÂ¬</div><div class="empty-state-title">Keine Videos</div><p>Erstellen Sie Ihr erstes Video</p></div>';
                     return;
                 }
 
@@ -346,11 +346,11 @@
                         ${video.thumbnail ? `<img src="${video.thumbnail}" class="thumbnail-preview" onerror="this.style.display='none'">` : ''}
                         <div class="list-item-content">
                             <div class="list-item-title">${video.title}</div>
-                            <div class="list-item-meta">${video.category} Ã¢ÂÂ¢ ${video.resolution} Ã¢ÂÂ¢ Ã¢ÂÂ¬${video.prices.web}</div>
+                            <div class="list-item-meta">${video.category} ÃÂ¢ÃÂÃÂ¢ ${video.resolution} ÃÂ¢ÃÂÃÂ¢ ÃÂ¢ÃÂÃÂ¬${video.prices.web}</div>
                         </div>
                         <div class="list-item-actions">
                             <button class="button button-small button-secondary" onclick="admin.editVideo(${idx})">Bearbeiten</button>
-                            <button class="button button-small button-danger" onclick="admin.deleteVideo(${idx})">LÃÂ¶schen</button>
+                            <button class="button button-small button-danger" onclick="admin.deleteVideo(${idx})">LÃÂÃÂ¶schen</button>
                         </div>
                     </div>
                 `).join('');
@@ -414,7 +414,7 @@
 
             updateCategoryDropdown() {
                 const dropdown = document.getElementById('videoModalCategory');
-                dropdown.innerHTML = '<option value="">-- WÃÂ¤hlen Sie eine Kategorie --</option>' +
+                dropdown.innerHTML = '<option value="">-- WÃÂÃÂ¤hlen Sie eine Kategorie --</option>' +
                     this.categories.map(cat => `<option value="${cat.slug}">${cat.label}</option>`).join('');
             },
 
@@ -504,12 +504,12 @@
             },
 
             deleteVideo(idx) {
-                if (confirm('Wirklich lÃÂ¶schen?')) {
+                if (confirm('Wirklich lÃÂÃÂ¶schen?')) {
                     this.videos.splice(idx, 1);
                     localStorage.setItem('adminVideos', JSON.stringify(this.videos));
                     localStorage.setItem('adminLastChange', new Date().toISOString());
                     this.loadVideos();
-                    this.showAlert('videosAlert', 'success', 'Video gelÃÂ¶scht');
+                    this.showAlert('videosAlert', 'success', 'Video gelÃÂÃÂ¶scht');
                 }
             },
 
@@ -527,7 +527,7 @@
             renderCategoriesList() {
                 const container = document.getElementById('categoriesList');
                 if (this.categories.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">Ã°ÂÂÂ</div><div class="empty-state-title">Keine Kategorien</div><p>Erstellen Sie Ihre erste Kategorie</p></div>';
+                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">ÃÂ°ÃÂÃÂÃÂ</div><div class="empty-state-title">Keine Kategorien</div><p>Erstellen Sie Ihre erste Kategorie</p></div>';
                     return;
                 }
 
@@ -540,7 +540,7 @@
                         </div>
                         <div class="list-item-actions">
                             <button class="button button-small button-secondary" onclick="admin.editCategory(${idx})">Bearbeiten</button>
-                            <button class="button button-small button-danger" onclick="admin.deleteCategory(${idx})">LÃÂ¶schen</button>
+                            <button class="button button-small button-danger" onclick="admin.deleteCategory(${idx})">LÃÂÃÂ¶schen</button>
                         </div>
                     </div>
                 `).join('');
@@ -607,12 +607,12 @@
             },
 
             deleteCategory(idx) {
-                if (confirm('Wirklich lÃÂ¶schen?')) {
+                if (confirm('Wirklich lÃÂÃÂ¶schen?')) {
                     this.categories.splice(idx, 1);
                     localStorage.setItem('adminCategories', JSON.stringify(this.categories));
                     localStorage.setItem('adminLastChange', new Date().toISOString());
                     this.loadCategories();
-                    this.showAlert('categoriesAlert', 'success', 'Kategorie gelÃÂ¶scht');
+                    this.showAlert('categoriesAlert', 'success', 'Kategorie gelÃÂÃÂ¶scht');
                 }
             },
 
@@ -622,10 +622,10 @@
                 this.content = stored ? JSON.parse(stored) : {
                     hero: { title: '', subtitle: '', searchPlaceholder: '' },
                     features: [
-                        { icon: 'Ã°ÂÂÂ¬', title: '', description: '' },
-                        { icon: 'Ã°ÂÂÂ', title: '', description: '' },
-                        { icon: 'Ã¢ÂÂ¡', title: '', description: '' },
-                        { icon: 'Ã°ÂÂÂ°', title: '', description: '' }
+                        { icon: 'ÃÂ°ÃÂÃÂÃÂ¬', title: '', description: '' },
+                        { icon: 'ÃÂ°ÃÂÃÂÃÂ', title: '', description: '' },
+                        { icon: 'ÃÂ¢ÃÂÃÂ¡', title: '', description: '' },
+                        { icon: 'ÃÂ°ÃÂÃÂÃÂ°', title: '', description: '' }
                     ],
                     pricing: [
                         { label: '', resolution: '', price: '', description: '', featured: false },
@@ -684,14 +684,14 @@
                                 <input type="text" class="form-input" value="${p.label}" placeholder="Plan-Name" data-pricing-label="${idx}">
                             </div>
                             <div>
-                                <label class="form-label">AuflÃÂ¶sung</label>
+                                <label class="form-label">AuflÃÂÃÂ¶sung</label>
                                 <input type="text" class="form-input" value="${p.resolution}" placeholder="z.B. 4K" data-pricing-resolution="${idx}">
                             </div>
                         </div>
                         <div class="form-row">
                             <div>
                                 <label class="form-label">Preis</label>
-                                <input type="text" class="form-input" value="${p.price}" placeholder="Ã¢ÂÂ¬ 99.99" data-pricing-price="${idx}">
+                                <input type="text" class="form-input" value="${p.price}" placeholder="ÃÂ¢ÃÂÃÂ¬ 99.99" data-pricing-price="${idx}">
                             </div>
                             <div style="display: flex; align-items: flex-end;">
                                 <div class="checkbox-group">
@@ -846,7 +846,7 @@
             },
 
             resetDesignToDefault() {
-                if (confirm('Wirklich zurÃÂ¼cksetzen?')) {
+                if (confirm('Wirklich zurÃÂÃÂ¼cksetzen?')) {
                     localStorage.removeItem('adminDesignVariables');
                     location.reload();
                 }
@@ -876,7 +876,7 @@
                 }
 
                 if (newPassword !== confirmPassword) {
-                    this.showAlert('settingsAlert', 'error', 'PasswÃÂ¶rter stimmen nicht ÃÂ¼berein');
+                    this.showAlert('settingsAlert', 'error', 'PasswÃÂÃÂ¶rter stimmen nicht ÃÂÃÂ¼berein');
                     return;
                 }
 
@@ -886,7 +886,7 @@
                 document.getElementById('settingsNewPassword').value = '';
                 document.getElementById('settingsConfirmPassword').value = '';
 
-                this.showAlert('settingsAlert', 'success', 'Passwort geÃÂ¤ndert');
+                this.showAlert('settingsAlert', 'success', 'Passwort geÃÂÃÂ¤ndert');
             },
 
             save2FASettings() {
@@ -924,7 +924,7 @@
 
                 const button = event.target;
                 button.disabled = true;
-                button.textContent = 'VerÃÂ¶ffentlichung...';
+                button.textContent = 'VerÃÂÃÂ¶ffentlichung...';
 
                 const config = {
                     videos: this.videos,
@@ -934,18 +934,18 @@
 
                 this.createGitHubCommit(settings, config)
                     .then(() => {
-                        this.showAlert('dashboardAlert', 'success', 'Erfolgreich verÃÂ¶ffentlicht! Cloudflare Pages wird neu gebaut...');
+                        this.showAlert('dashboardAlert', 'success', 'Erfolgreich verÃÂÃÂ¶ffentlicht! Cloudflare Pages wird neu gebaut...');
                         setTimeout(() => {
                             this.refreshDeployStatus();
                         }, 3000);
                     })
                     .catch(err => {
                         console.error('Publish Error:', err);
-                        this.showAlert('dashboardAlert', 'error', 'Fehler beim VerÃÂ¶ffentlichen: ' + err.message);
+                        this.showAlert('dashboardAlert', 'error', 'Fehler beim VerÃÂÃÂ¶ffentlichen: ' + err.message);
                     })
                     .finally(() => {
                         button.disabled = false;
-                        button.textContent = 'VerÃÂ¶ffentlichen';
+                        button.textContent = 'VerÃÂÃÂ¶ffentlichen';
                     });
             },
 
@@ -1094,3 +1094,39 @@
             }
         });
     
+
+// ========== WORKER-BACKED PUBLISH (no client token needed) ==========
+(function(){
+  var WORKER = 'https://stockvideo-checkout.rende.workers.dev';
+  var ensure = function(){
+    if (typeof admin === 'undefined') { setTimeout(ensure, 50); return; }
+    // Override publishToGitHub to use worker instead of client-side GH token
+    admin.publishToGitHub = async function() {
+      try {
+        var pw = prompt('Admin-Passwort zum Veröffentlichen:', 'admin123');
+        if (!pw) return;
+        var videos = JSON.parse(localStorage.getItem('adminVideos') || '[]');
+        var cats = JSON.parse(localStorage.getItem('adminCategories') || '[]');
+        var hdr = { 'Content-Type':'application/json', 'X-Admin-Password': pw };
+        var r1 = await fetch(WORKER + '/admin/data', { method:'POST', headers: hdr, body: JSON.stringify({kind:'videos', items: videos}) });
+        var j1 = await r1.json();
+        if (!r1.ok) { alert('Videos Fehler: ' + (j1.error || r1.status)); return; }
+        var r2 = await fetch(WORKER + '/admin/data', { method:'POST', headers: hdr, body: JSON.stringify({kind:'categories', items: cats}) });
+        var j2 = await r2.json();
+        if (!r2.ok) { alert('Categories Fehler: ' + (j2.error || r2.status)); return; }
+        alert('✓ Veröffentlicht!\nVideos: ' + (j1.commit||'').slice(0,7) + '\nCategories: ' + (j2.commit||'').slice(0,7) + '\n\nSeite wird in 60-90s neu deployed.');
+      } catch(e) { alert('Fehler: ' + e.message); }
+    };
+    // Load latest data from worker on panel enter (cross-browser sync)
+    admin.loadFromWorker = async function(pw) {
+      try {
+        var hdr = { 'X-Admin-Password': pw || 'admin123' };
+        var r1 = await fetch(WORKER + '/admin/data?kind=videos', { headers: hdr });
+        if (r1.ok) { var j1 = await r1.json(); localStorage.setItem('adminVideos', JSON.stringify(j1.items || [])); }
+        var r2 = await fetch(WORKER + '/admin/data?kind=categories', { headers: hdr });
+        if (r2.ok) { var j2 = await r2.json(); localStorage.setItem('adminCategories', JSON.stringify(j2.items || [])); }
+      } catch(e) { console.error('loadFromWorker', e); }
+    };
+  };
+  ensure();
+})();
