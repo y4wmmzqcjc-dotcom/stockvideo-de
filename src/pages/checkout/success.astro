@@ -1,84 +1,79 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+const CHECKOUT_WORKER = 'https://stockvideo-checkout.rende.workers.dev';
 ---
 <BaseLayout title="Zahlung erfolgreich">
-  <main style="max-width: 640px; margin: 4rem auto; padding: 2rem; text-align: center;">
-    <div style="font-size: 4rem;">✅</div>
-    <h1 style="color: #fff;">Zahlung erfolgreich!</h1>
-    <p id="statusText" style="color: #aaa;">Vielen Dank für Ihren Einkauf. Ihr Download wird vorbereitet…</p>
+  <main class="container" style="max-width:720px;margin:4rem auto;padding:2rem;text-align:center;">
+    <h1 style="font-size:2rem;margin-bottom:1rem;">Zahlung erfolgreich</h1>
+    <p id="statusText" style="margin-bottom:2rem;color:#666;">Ihr Download wird vorbereitet…</p>
 
-    <div id="downloadBox" style="display:none; margin-top: 2rem; padding: 2rem; background: rgba(20,115,230,0.1); border: 1px solid rgba(20,115,230,0.3); border-radius: 12px;">
-      <h2 style="color: #22c55e; margin: 0 0 0.5rem 0;">Zahlung bestätigt!</h2>
-      <p id="videoTitle" style="color: #ccc; margin: 0 0 1.5rem 0;"></p>
-      <a id="downloadBtn" href="#" download style="display:inline-block; background: #1473e6; color:#fff; padding: 1rem 2rem; border-radius: 8px; text-decoration:none; font-weight:600;">⬇ Video herunterladen</a>
-      <p style="color:#888; font-size: 0.9rem; margin-top: 1rem;">Der Download startet automatisch. Falls nicht, klicken Sie den Button erneut.</p>
+    <div id="downloadBox" style="display:none;padding:2rem;background:#f7fff7;border:1px solid #c4e9c4;border-radius:12px;margin-bottom:2rem;">
+      <p style="font-weight:600;margin-bottom:1rem;">✓ <span id="videoTitle">Ihr Video</span> ist bereit</p>
+      <a id="downloadBtn" href="#" download
+         style="display:inline-block;padding:1rem 2rem;background:#16a34a;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;">
+        Video herunterladen
+      </a>
+      <p style="margin-top:1rem;font-size:.85rem;color:#666;">Der Download startet automatisch. Falls nicht, klicken Sie auf den Button.</p>
     </div>
 
-    <div id="errorBox" style="display:none; margin-top: 2rem; padding: 1.5rem; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 12px; color:#ef4444;">
-      <p id="errorText"></p>
+    <div id="errorBox" style="display:none;padding:1.5rem;background:#fff4f4;border:1px solid #f5c2c2;border-radius:12px;margin-bottom:2rem;">
+      <p id="errorText" style="color:#c62828;"></p>
     </div>
 
-    <p style="margin-top: 3rem;"><a href="/" style="color: #1473e6;">← Zurück zur Übersicht</a></p>
+    <a href="/" style="color:#666;text-decoration:underline;">← Zurück zur Startseite</a>
   </main>
-</BaseLayout>
 
-<script is:inline>
-(function() {
-  var CHECKOUT_WORKER = 'https://stockvideo-checkout.rende.workers.dev';
-  var params = new URLSearchParams(location.search);
-  var paymentId = params.get('payment_id');
-  var statusText = document.getElementById('statusText');
-  var downloadBox = document.getElementById('downloadBox');
-  var downloadBtn = document.getElementById('downloadBtn');
-  var videoTitle = document.getElementById('videoTitle');
-  var errorBox = document.getElementById('errorBox');
-  var errorText = document.getElementById('errorText');
+  <script define:vars={{ CHECKOUT_WORKER }}>
+    const params = new URLSearchParams(window.location.search);
+    const paymentId = params.get('payment_id');
+    const slug = params.get('slug') || '';
 
-  function showError(msg) {
-    statusText.style.display = 'none';
-    errorBox.style.display = 'block';
-    errorText.textContent = msg;
-  }
+    const statusText = document.getElementById('statusText');
+    const downloadBox = document.getElementById('downloadBox');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const videoTitle  = document.getElementById('videoTitle');
+    const errorBox    = document.getElementById('errorBox');
+    const errorText   = document.getElementById('errorText');
 
-  if (!paymentId || paymentId === '{id}' || paymentId === '%7Bid%7D') {
-    showError('Fehlende Zahlungs-ID. Bitte kontaktieren Sie den Support.');
-    return;
-  }
+    function showError(msg) {
+      statusText.style.display = 'none';
+      errorBox.style.display = 'block';
+      errorText.textContent = msg;
+    }
 
-  var attempts = 0;
-  var MAX_ATTEMPTS = 20;
-
-  function poll() {
-    attempts++;
-    fetch(CHECKOUT_WORKER + '/payment-status?id=' + encodeURIComponent(paymentId))
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        if (data.error) { showError('Fehler: ' + data.error); return; }
-        if (data.status === 'paid' && (CHECKOUT_WORKER + '/download?id=' + encodeURIComponent(paymentId))) {
-          statusText.style.display = 'none';
-          downloadBox.style.display = 'block';
-          videoTitle.textContent = data.videoTitle || '';
-          downloadBtn.href = (CHECKOUT_WORKER + '/download?id=' + encodeURIComponent(paymentId));
-          setTimeout(function() { window.location.href = (CHECKOUT_WORKER + '/download?id=' + encodeURIComponent(paymentId)); }, 1500);
-        } else if (data.status === 'open' || data.status === 'pending') {
-          if (attempts < MAX_ATTEMPTS) {
-            statusText.textContent = 'Warte auf Zahlungsbestätigung… (' + attempts + '/' + MAX_ATTEMPTS + ')';
-            setTimeout(poll, 2000);
-          } else {
-            showError('Zeitüberschreitung. Bitte laden Sie die Seite neu.');
+    if (!paymentId || paymentId === '{id}' || paymentId === '%7Bid%7D') {
+      showError('Fehlende Zahlungs-ID. Bitte kontaktieren Sie den Support.');
+    } else {
+      let attempts = 0;
+      const maxAttempts = 20;
+      async function poll() {
+        attempts++;
+        try {
+          const r = await fetch(CHECKOUT_WORKER + '/payment-status?id=' + encodeURIComponent(paymentId));
+          const data = await r.json();
+          if (data.videoTitle) videoTitle.textContent = data.videoTitle;
+          if (data.status === 'paid') {
+            const dl = CHECKOUT_WORKER + '/download?id=' + encodeURIComponent(paymentId);
+            downloadBtn.href = dl;
+            statusText.textContent = '✓ Zahlung bestätigt – Ihr Download ist bereit.';
+            downloadBox.style.display = 'block';
+            setTimeout(() => { window.location.href = dl; }, 1200);
+            return;
           }
-        } else if (data.status === 'canceled' || data.status === 'expired' || data.status === 'failed') {
-          showError('Zahlung ' + data.status + '. Bitte versuchen Sie es erneut.');
-        } else {
-          showError('Unbekannter Status: ' + (data.status || 'keine Antwort'));
+          if (['canceled','expired','failed'].includes(data.status)) {
+            showError('Die Zahlung wurde nicht abgeschlossen (' + data.status + '). Bitte versuchen Sie es erneut.');
+            return;
+          }
+          if (attempts >= maxAttempts) {
+            showError('Zeitüberschreitung beim Warten auf die Zahlungsbestätigung. Bitte prüfen Sie Ihre E-Mail oder kontaktieren Sie den Support.');
+            return;
+          }
+          setTimeout(poll, 2000);
+        } catch (e) {
+          showError('Fehler beim Abrufen des Zahlungsstatus: ' + e.message);
         }
-      })
-      .catch(function(err) {
-        if (attempts < MAX_ATTEMPTS) { setTimeout(poll, 2000); }
-        else { showError('Netzwerkfehler: ' + err.message); }
-      });
-  }
-
-  poll();
-})();
-</script>
+      }
+      poll();
+    }
+  </script>
+</BaseLayout>
