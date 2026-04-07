@@ -6,13 +6,13 @@ import videos from '../../public/data/videos.json';
   <div class="no-results" id="noResults">
     <div class="no-results-icon">&#x2315;</div>
     <h3>Keine Ergebnisse</h3>
-    <p>Versuch einen anderen Suchbegriff oder wÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤hle eine Kategorie.</p>
+    <p>Versuch einen anderen Suchbegriff oder wÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤hle eine Kategorie.</p>
   </div>
 </section>
 
 <script define:vars={{ videos }}>
 const catLabels = {
-  all:"Alle Videos", natur:"Natur & Landschaft", business:"Business & BÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¼ro",
+  all:"Alle Videos", natur:"Natur & Landschaft", business:"Business & BÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¼ro",
   tech:"Technologie", aerial:"Aerial & Drohne", urban:"Stadt & Architektur",
   menschen:"Menschen & Lifestyle", abstrakt:"Abstrakt & Motion", timelapse:"Timelapse"
 };
@@ -87,7 +87,7 @@ document.getElementById("resFilterBtn")?.addEventListener("click", e => {
   const btn = e.target;
   const cycle = { all:"4k", "4k":"hd", hd:"all" };
   state.res = cycle[state.res];
-  btn.textContent = state.res === "all" ? "AuflÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¶sung" : state.res === "4k" ? "Nur 4K" : "Nur HD";
+  btn.textContent = state.res === "all" ? "AuflÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¶sung" : state.res === "4k" ? "Nur 4K" : "Nur HD";
   btn.classList.toggle("active", state.res !== "all");
   render();
 });
@@ -100,12 +100,16 @@ document.getElementById("sortSelect")?.addEventListener("change", e => {
 render();
 var _grid = document.getElementById('videoGrid');
 if(_grid){
-  var SAFE_T=0.15;
+  // Hidden canvas for brightness sampling
+  var _bcanv=document.createElement('canvas');_bcanv.width=32;_bcanv.height=18;var _bctx=_bcanv.getContext('2d',{willReadFrequently:true});
+  var BRIGHTNESS_MIN=40; // average channel value (0-255). black watermark frames score very low
+  var sampleBright=function(v){try{_bctx.drawImage(v,0,0,32,18);var d=_bctx.getImageData(0,0,32,18).data;var s=0;for(var i=0;i<d.length;i+=4)s+=d[i]+d[i+1]+d[i+2];return s/(d.length/4*3);}catch(e){return 999;}};
   var _setupVideo=function(v){
     if(v._setup)return;v._setup=1;
     v.style.visibility='hidden';
     v.muted=true;v.playsInline=true;v.removeAttribute('loop');
-    v.addEventListener('ended',function(){try{v.currentTime=SAFE_T;}catch(e){}var p=v.play();if(p&&p.catch)p.catch(function(){});});
+    v.crossOrigin='anonymous';
+    v.addEventListener('ended',function(){try{v.currentTime=0.05;}catch(e){}var p=v.play();if(p&&p.catch)p.catch(function(){});});
   };
   var _enter=function(card){
     var v=card.querySelector('video.hov-prev');if(!v)return;
@@ -113,42 +117,44 @@ if(_grid){
     var token=(card._tk=(card._tk||0)+1);
     v.style.visibility='hidden';
     if(!v.src&&v.dataset.src){v.src=v.dataset.src;try{v.load();}catch(e){}}
-    var startPlayback=function(){
+    var begin=function(){
       if(card._tk!==token)return;
-      // Seek past the black intro frame, wait for 'seeked', then play and reveal on next painted frame
-      var afterSeek=function(){
+      var p=v.play();if(p&&p.catch)p.catch(function(){});
+      var revealed=false;var lastT=-1;var stallCount=0;var rafId=null;
+      var reveal=function(){if(revealed||card._tk!==token)return;revealed=true;v.style.visibility='visible';};
+      var tick=function(){
         if(card._tk!==token)return;
-        var p=v.play();if(p&&p.catch)p.catch(function(){});
-        var revealed=false;
-        var reveal=function(){if(revealed||card._tk!==token)return;revealed=true;v.style.visibility='visible';};
-        if(v.requestVideoFrameCallback){
-          // skip the very first painted frame (often the seek-target keyframe still showing intro residue), reveal on the second
-          v.requestVideoFrameCallback(function(){
-            if(card._tk!==token)return;
-            v.requestVideoFrameCallback(function(){reveal();});
-          });
+        // Stall detection: if currentTime hasn't advanced and not paused, kick play
+        if(!v.paused){
+          if(v.currentTime===lastT){stallCount++;if(stallCount>10){stallCount=0;try{v.currentTime+=0.05;}catch(e){}var pp=v.play();if(pp&&pp.catch)pp.catch(function(){});}}else{stallCount=0;lastT=v.currentTime;}
         }
-        // Fallback: reveal once playback time has clearly advanced
-        var th=function(){if(v.currentTime>SAFE_T+0.05){v.removeEventListener('timeupdate',th);reveal();}};
-        v.addEventListener('timeupdate',th);
-        setTimeout(reveal,500);
+        if(!revealed){
+          if(v.readyState>=2){
+            var b=sampleBright(v);
+            if(b>=BRIGHTNESS_MIN){reveal();}
+            else if(v.currentTime< (v.duration||9)-0.2){
+              // Skip past dark frame
+              try{v.currentTime=Math.min((v.duration||9)-0.2,v.currentTime+0.2);}catch(e){}
+            }
+          }
+        }
+        rafId=requestAnimationFrame(tick);
       };
-      var seekDone=false;
-      var onSeeked=function(){if(seekDone)return;seekDone=true;v.removeEventListener('seeked',onSeeked);afterSeek();};
-      v.addEventListener('seeked',onSeeked);
-      try{v.currentTime=SAFE_T;}catch(e){afterSeek();}
-      // Safety net if seeked never fires
-      setTimeout(function(){if(!seekDone){onSeeked();}},700);
+      rafId=requestAnimationFrame(tick);
+      card._stop=function(){if(rafId)cancelAnimationFrame(rafId);rafId=null;};
+      // Hard fallback: reveal after 1.2s no matter what so user is never stuck on hidden
+      setTimeout(function(){if(card._tk===token)reveal();},1200);
     };
-    if(v.readyState>=1)startPlayback();
-    else v.addEventListener('loadedmetadata',startPlayback,{once:true});
+    if(v.readyState>=1)begin();
+    else v.addEventListener('loadedmetadata',begin,{once:true});
   };
   var _leave=function(card){
     var v=card.querySelector('video.hov-prev');if(!v)return;
     card._tk=(card._tk||0)+1;
+    if(card._stop){card._stop();card._stop=null;}
     try{v.pause();}catch(e){}
     v.style.visibility='hidden';
-    try{v.currentTime=SAFE_T;}catch(e){}
+    try{v.currentTime=0.05;}catch(e){}
   };
   _grid.addEventListener('mouseover',function(e){var c=e.target.closest&&e.target.closest('.video-card');if(!c)return;if(c._hovering)return;c._hovering=1;_enter(c);});
   _grid.addEventListener('mouseout',function(e){var c=e.target.closest&&e.target.closest('.video-card');if(!c)return;var to=e.relatedTarget;if(to&&c.contains(to))return;c._hovering=0;_leave(c);});
