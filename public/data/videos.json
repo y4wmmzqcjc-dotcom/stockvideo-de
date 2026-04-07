@@ -1,1 +1,65 @@
-[]
+[
+  {
+    "id": "1775591901893",
+    "title": "Kuh 1",
+    "slug": "kuh-1",
+    "description": "Kuh 1",
+    "category": "",
+    "tags": [
+      "Kuh Milch"
+    ],
+    "resolution": "4K",
+    "duration": 10,
+    "fps": 25,
+    "prices": {
+      "web": 11.11,
+      "standard": 11.11,
+      "premium": 11.11
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/kuh-1.jpg",
+    "r2Key": "videos/kuh-1.mp4",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
+  },
+  {
+    "id": "1775591947877",
+    "title": "Kuh 2",
+    "slug": "kuh-2",
+    "description": "Kuh 2",
+    "category": "tiere",
+    "tags": [
+      "Kuh",
+      "muh"
+    ],
+    "resolution": "4K",
+    "duration": 10,
+    "fps": 25,
+    "prices": {
+      "web": 12.22,
+      "standard": 12.22,
+      "premium": 12.22
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/kuh-2.jpg",
+    "r2Key": "videos/kuh-2.mp4",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
+  }
+]
