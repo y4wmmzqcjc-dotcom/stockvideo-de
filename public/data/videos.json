@@ -135,5 +135,39 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1775603084456",
+    "title": "Kuh",
+    "slug": "kuh",
+    "description": "Kuh",
+    "category": "tiere",
+    "tags": [
+      "Kuh"
+    ],
+    "resolution": "4K",
+    "duration": 10,
+    "fps": 25,
+    "prices": {
+      "web": 56,
+      "standard": 56,
+      "premium": 56
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/kuh.jpg",
+    "r2Key": "videos/kuh.mp4",
+    "r2Preview": "previews/kuh.mp4",
+    "r2Hover": "previews/kuh-hover.mp4",
+    "videoId": "stockvideo.de-87SOCXVX",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
