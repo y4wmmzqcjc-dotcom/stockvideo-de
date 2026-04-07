@@ -13,7 +13,7 @@ import categories from '../data/categories.json';
         <div class="footer-col-title">{col.title}</div>
         {col.title === 'Kategorien'
           ? categories.map(cat => (
-              <a class="footer-link" href={`/#${cat.slug}`}>{cat.label}</a>
+              <a class="footer-link" href={`/kategorie/${cat.slug}/`}>{cat.label}</a>
             ))
           : col.links.map(link => (
               <a class="footer-link" href={link.href}>{link.label}</a>
