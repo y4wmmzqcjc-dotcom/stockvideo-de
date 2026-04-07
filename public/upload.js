@@ -1,4 +1,4 @@
-/* upload.js â Canvas+MediaRecorder watermarked preview pipeline (no ffmpeg.wasm) */
+/* upload.js — Canvas+MediaRecorder watermarked preview pipeline (no ffmpeg.wasm) */
 (function(){
   function slugify(s){return (s||'').toString().toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').substring(0,80)||'video';}
   window.slugifyKey=slugify;
@@ -51,7 +51,7 @@
     ctx.font='bold '+Math.round(H/22)+'px sans-serif';
     ctx.fillStyle='rgba(255,255,255,0.18)';
     ctx.textAlign='center';
-    const txt='stockvideo.de Â· '+videoId;
+    const txt='stockvideo.de · '+videoId;
     const step=Math.round(H/4);
     for(let y=-H;y<=H;y+=step){
       for(let x=-W;x<=W;x+=Math.round(W/2)){
