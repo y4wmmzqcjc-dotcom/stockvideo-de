@@ -40,24 +40,24 @@
     ]
   },
   {
-    "id": "1775589784590",
-    "title": "Ku 112",
-    "slug": "ku-112",
-    "description": "Ku 112",
+    "id": "1775589912436",
+    "title": "Ku 222",
+    "slug": "ku-222",
+    "description": "Ku 222",
     "category": "essen",
     "tags": [
-      "Ku 112"
+      "ku"
     ],
     "resolution": "4K",
     "duration": 10,
     "fps": 25,
     "prices": {
-      "web": 112,
-      "standard": 112,
-      "premium": 112
+      "web": 1111,
+      "standard": 1111,
+      "premium": 1111
     },
-    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/ku-112.jpg",
-    "r2Key": "videos/ku-112.mp4",
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/ku-222.jpg",
+    "r2Key": "videos/ku-222.mp4",
     "featured": false,
     "gradient": [
       {
