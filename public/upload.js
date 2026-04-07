@@ -115,7 +115,7 @@
     const limit=hoverDur ? hoverDur*1000 : Math.min(dur*1000, 60000);
     const stopP=new Promise(res=>{rec.onstop=function(){res(new Blob(chunks,{type:mime}));};});
 
-    rec.start(250);
+    await new Promise((R)=>{var t=Math.min(0.08,Math.max(0,(v.duration||1)-0.05));if(Math.abs(v.currentTime-t)<0.01){R();return;}var done=false;v.onseeked=function(){if(done)return;done=true;v.onseeked=null;R();};try{v.currentTime=t;}catch(e){R();}setTimeout(function(){if(!done){done=true;R();}},800);});try{ctx.drawImage(v,0,0,c.width,c.height);}catch(e){}rec.start(250);
     await v.play().catch(()=>{});
     const start=performance.now();
     let lastPct=-1;
