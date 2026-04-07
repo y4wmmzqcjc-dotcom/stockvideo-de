@@ -334,7 +334,30 @@
                 `).join('');
             },
 
-            openVideoModal() {
+            
+        async syncFromLive() {
+          try {
+            const [cr, vr] = await Promise.all([
+              fetch('/data/categories.json?_='+Date.now(), { cache: 'no-store' }),
+              fetch('/data/videos.json?_='+Date.now(), { cache: 'no-store' })
+            ]);
+            if (cr.ok) {
+              const cats = await cr.json();
+              if (Array.isArray(cats) && cats.length > this.categories.length) {
+                this.categories = cats;
+                if (this.renderCategories) this.renderCategories();
+              }
+            }
+            if (vr.ok) {
+              const vids = await vr.json();
+              if (Array.isArray(vids) && vids.length > this.videos.length) {
+                this.videos = vids;
+                if (this.renderVideos) this.renderVideos();
+              }
+            }
+          } catch(e) { console.warn('syncFromLive failed', e); }
+        },
+        openVideoModal() {
                 this.editingVideoId = null;
                 document.getElementById('videoModalTitle').textContent = 'Neues Video';
                 document.getElementById('videoModalTitle_Input').value = '';
@@ -965,7 +988,8 @@
                             type: 'blob',
                             content: JSON.stringify(config.videos, null, 2)
                         },
-                        {
+                        { path: 'src/data/videos.json', mode: '100644', type: 'blob', content: JSON.stringify((config.videos||[]), null, 2) },
+            {
                             path: 'public/data/categories.json',
                             mode: '100644',
                             type: 'blob',
@@ -1109,3 +1133,5 @@
 (function(){try{var v=JSON.parse(localStorage.getItem("adminVideos")||"[]");var c=JSON.parse(localStorage.getItem("adminCategories")||"[]");if(v.length>0&&c.length>0)return;Promise.all([fetch("/data/videos.json").then(r=>r.ok?r.json():[]).catch(()=>[]),fetch("/data/categories.json").then(r=>r.ok?r.json():[]).catch(()=>[])]).then(function(a){if(a[0]&&a[0].length)localStorage.setItem("adminVideos",JSON.stringify(a[0]));if(a[1]&&a[1].length)localStorage.setItem("adminCategories",JSON.stringify(a[1]));try{window.admin&&window.admin.loadVideos&&window.admin.loadVideos();window.admin&&window.admin.loadCategories&&window.admin.loadCategories();}catch(e){}});}catch(e){}})();
 
 ;(function(){function tryRender(n){if(window.admin&&typeof window.admin.updateDashboard==="function"){try{window.admin.updateDashboard()}catch(e){}}if(n>0)setTimeout(function(){tryRender(n-1)},500)}setTimeout(function(){tryRender(20)},500)})();/*ROBUST_RERENDER*/
+
+if (typeof admin !== "undefined" && admin.syncFromLive) { setTimeout(()=>admin.syncFromLive(), 500); }
