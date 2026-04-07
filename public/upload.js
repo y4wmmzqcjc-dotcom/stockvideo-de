@@ -1,4 +1,4 @@
-/* upload.js — Canvas+MediaRecorder watermarked preview pipeline (no ffmpeg.wasm) */
+/* upload.js â Canvas+MediaRecorder watermarked preview pipeline (no ffmpeg.wasm) */
 (function(){
   function slugify(s){return (s||'').toString().toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').substring(0,80)||'video';}
   window.slugifyKey=slugify;
@@ -51,7 +51,7 @@
     ctx.font='bold '+Math.round(H/22)+'px sans-serif';
     ctx.fillStyle='rgba(255,255,255,0.18)';
     ctx.textAlign='center';
-    const txt='stockvideo.de · '+videoId;
+    const txt='stockvideo.de Â· '+videoId;
     const step=Math.round(H/4);
     for(let y=-H;y<=H;y+=step){
       for(let x=-W;x<=W;x+=Math.round(W/2)){
@@ -115,7 +115,33 @@
     const limit=hoverDur ? hoverDur*1000 : Math.min(dur*1000, 60000);
     const stopP=new Promise(res=>{rec.onstop=function(){res(new Blob(chunks,{type:mime}));};});
 
-    await new Promise((R)=>{var t=Math.min(0.08,Math.max(0,(v.duration||1)-0.05));if(Math.abs(v.currentTime-t)<0.01){R();return;}var done=false;v.onseeked=function(){if(done)return;done=true;v.onseeked=null;R();};try{v.currentTime=t;}catch(e){R();}setTimeout(function(){if(!done){done=true;R();}},800);});try{ctx.drawImage(v,0,0,c.width,c.height);}catch(e){}rec.start(250);
+    // SKIP BLACK INTRO: scan source for first non-dark frame, seek there before recording
+    await new Promise((R)=>{
+      var dur=v.duration||1;
+      var samples=[0.05,0.2,0.4,0.7,1.0,1.4,1.8,2.3,2.8,3.4,4.0,4.8,5.6,6.5,7.5,8.5];
+      var probe=document.createElement("canvas");probe.width=32;probe.height=18;
+      var pctx=probe.getContext("2d",{willReadFrequently:true});
+      var idx=0;var found=-1;
+      var next=function(){
+        if(found>=0||idx>=samples.length||samples[idx]>=dur-0.1){
+          var target=found>=0?found:Math.min(0.05,Math.max(0,dur-0.05));
+          var done=false;v.onseeked=function(){if(done)return;done=true;v.onseeked=null;R();};
+          try{v.currentTime=target;}catch(e){R();}
+          setTimeout(function(){if(!done){done=true;R();}},800);
+          return;
+        }
+        var ts=samples[idx++];
+        var seekDone=false;
+        v.onseeked=function(){if(seekDone)return;seekDone=true;v.onseeked=null;
+          try{pctx.drawImage(v,0,0,32,18);var d=pctx.getImageData(0,0,32,18).data;var sum=0;for(var i=0;i<d.length;i+=4)sum+=d[i]+d[i+1]+d[i+2];var b=sum/(d.length/4*3);if(b>=45){found=ts;}}catch(e){}
+          next();
+        };
+        try{v.currentTime=ts;}catch(e){next();}
+        setTimeout(function(){if(!seekDone){seekDone=true;next();}},600);
+      };
+      next();
+    });
+    try{ctx.drawImage(v,0,0,c.width,c.height);}catch(e){}rec.start(250);
     await v.play().catch(()=>{});
     const start=performance.now();
     let lastPct=-1;
