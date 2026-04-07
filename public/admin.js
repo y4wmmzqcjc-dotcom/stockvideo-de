@@ -391,7 +391,7 @@
             },
 
             updateCategoryDropdown() {
-                const dropdown = document.getElementById('videoCategory');
+                const dropdown = document.getElementById('videoModalCategory');
                 if (!dropdown) return;
                 fetch('/data/categories.json?_=' + Date.now(), { cache: 'no-store' })
                     .then(r => r.ok ? r.json() : [])
