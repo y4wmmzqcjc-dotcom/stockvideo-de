@@ -32,7 +32,7 @@
                         <input type="text" id="otpInput" class="form-input" placeholder="000000" maxlength="6" inputmode="numeric">
                     </div>
                     <button class="button button-primary" onclick="auth.verifyOTP()">Anmelden</button>
-                    <button class="button button-secondary" style="width: 100%;" onclick="auth.backToPassword()">Zurück</button>
+                    <button class="button button-secondary" style="width: 100%;" onclick="auth.backToPassword()">ZurÃ¼ck</button>
                     <p style="color: var(--text-secondary); font-size: 0.75rem; text-align: center; margin-top: 1rem;">
                         Versuche: <span id="otpAttempts">0</span>/3
                     </p>
@@ -40,7 +40,7 @@
 
                 <div id="lockoutDisplay" style="display: none;">
                     <div class="lockout-display">
-                        <div style="font-size: 2rem; margin-bottom: 1rem;">🔒</div>
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">ð</div>
                         <p style="margin-bottom: 1rem;">Account gesperrt</p>
                         <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Zu viele fehlgeschlagene Versuche</p>
                         <div class="lockout-timer" id="lockoutTimer">15:00</div>
@@ -59,22 +59,22 @@
             </div>
             <nav class="sidebar-nav">
                 <div class="nav-item active" onclick="admin.switchPanel('dashboard')">
-                    <span>📊</span> Dashboard
+                    <span>ð</span> Dashboard
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('videos')">
-                    <span>🎬</span> Videos verwalten
+                    <span>ð¬</span> Videos verwalten
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('categories')">
-                    <span>📁</span> Kategorien
+                    <span>ð</span> Kategorien
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('content')">
-                    <span>📝</span> Seiteninhalte
+                    <span>ð</span> Seiteninhalte
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('design')">
-                    <span>🎨</span> Design
+                    <span>ð¨</span> Design
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('settings')">
-                    <span>⚙️</span> Einstellungen
+                    <span>âï¸</span> Einstellungen
                 </div>
             </nav>
             <div class="sidebar-footer">
@@ -87,7 +87,7 @@
             <div id="panel-dashboard" class="content-panel active">
                 <div class="content-header">
                     <h1 class="content-title">Dashboard</h1>
-                    <p class="content-subtitle">Überblick über Ihr System</p>
+                    <p class="content-subtitle">Ãberblick Ã¼ber Ihr System</p>
                 </div>
                 <div style="padding: 2rem;">
                     <div id="dashboardAlert"></div>
@@ -95,7 +95,7 @@
                         <div class="stat-card">
                             <div class="stat-label">Videos</div>
                             <div class="stat-value" id="statVideos">0</div>
-                            <div class="stat-meta">Insgesamt verfügbar</div>
+                            <div class="stat-meta">Insgesamt verfÃ¼gbar</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-label">Kategorien</div>
@@ -103,7 +103,7 @@
                             <div class="stat-meta">Erstellt</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-label">Letzte Änderung</div>
+                            <div class="stat-label">Letzte Ãnderung</div>
                             <div class="stat-value" id="statLastChange" style="font-size: 1.25rem;">-</div>
                             <div class="stat-meta" id="statLastChangeTime"></div>
                         </div>
@@ -116,7 +116,7 @@
                     <div class="action-buttons">
                         <button class="button button-primary" onclick="admin.loadVideos(); admin.switchPanel('videos')">Videos bearbeiten</button>
                         <button class="button button-primary" onclick="admin.loadCategories(); admin.switchPanel('categories')">Kategorien bearbeiten</button>
-                        <button class="button button-primary" onclick="admin.publishToGitHub()">Veröffentlichen</button>
+                        <button class="button button-primary" onclick="admin.publishToGitHub()">VerÃ¶ffentlichen</button>
                         <button class="button button-secondary" onclick="admin.refreshDeployStatus()">Status aktualisieren</button>
                     </div>
                 </div>
@@ -126,7 +126,7 @@
             <div id="panel-videos" class="content-panel">
                 <div class="content-header">
                     <h1 class="content-title">Videos verwalten</h1>
-                    <p class="content-subtitle">Erstellen, bearbeiten und löschen Sie Videos</p>
+                    <p class="content-subtitle">Erstellen, bearbeiten und lÃ¶schen Sie Videos</p>
                 </div>
                 <div style="padding: 2rem;">
                     <div id="videosAlert"></div>
@@ -214,7 +214,7 @@
                         <div class="form-row full">
                             <div>
                                 <label class="form-label">Copyright</label>
-                                <input type="text" class="form-input" id="contentFooterCopyright" placeholder="© 2026 stockvideo.de">
+                                <input type="text" class="form-input" id="contentFooterCopyright" placeholder="Â© 2026 stockvideo.de">
                             </div>
                         </div>
                         <div class="form-row full">
@@ -236,14 +236,14 @@
                         <div class="form-row full">
                             <div>
                                 <label class="form-label">Meta-Beschreibung</label>
-                                <textarea class="textarea" id="contentSEODescription" placeholder="Hochwertige Stock Videos für kommerzielle Projekte..."></textarea>
+                                <textarea class="textarea" id="contentSEODescription" placeholder="Hochwertige Stock Videos fÃ¼r kommerzielle Projekte..."></textarea>
                             </div>
                         </div>
                     </div>
 
                     <div style="display: flex; gap: 1rem;">
                         <button class="button button-primary" onclick="admin.savePageContent()">Speichern</button>
-                        <button class="button button-secondary" onclick="admin.loadPageContent()">Zurücksetzen</button>
+                        <button class="button button-secondary" onclick="admin.loadPageContent()">ZurÃ¼cksetzen</button>
                     </div>
                 </div>
             </div>
@@ -264,14 +264,14 @@
 
                     <div class="form-section">
                         <div class="form-section-title">Komplettes Design importieren</div>
-                        <label class="form-label">CSS-Code einfügen (ersetzen Sie alle Variablen)</label>
-                        <textarea class="textarea" id="designImportCSS" placeholder="Komplettes CSS-Variablen-Set hier einfügen..."></textarea>
+                        <label class="form-label">CSS-Code einfÃ¼gen (ersetzen Sie alle Variablen)</label>
+                        <textarea class="textarea" id="designImportCSS" placeholder="Komplettes CSS-Variablen-Set hier einfÃ¼gen..."></textarea>
                     </div>
 
                     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                         <button class="button button-primary" onclick="admin.saveDesignVariables()">Variablen speichern</button>
                         <button class="button button-primary" onclick="admin.importDesignCSS()">CSS importieren</button>
-                        <button class="button button-secondary" onclick="admin.resetDesignToDefault()">Zurücksetzen</button>
+                        <button class="button button-secondary" onclick="admin.resetDesignToDefault()">ZurÃ¼cksetzen</button>
                     </div>
                 </div>
             </div>
@@ -294,11 +294,11 @@
                                 <input type="password" class="form-input" id="settingsNewPassword" placeholder="Neues Passwort">
                             </div>
                             <div>
-                                <label class="form-label">Bestätigen</label>
+                                <label class="form-label">BestÃ¤tigen</label>
                                 <input type="password" class="form-input" id="settingsConfirmPassword" placeholder="Passwort wiederholen">
                             </div>
                         </div>
-                        <button class="button button-primary" onclick="admin.changePassword()">Passwort ändern</button>
+                        <button class="button button-primary" onclick="admin.changePassword()">Passwort Ã¤ndern</button>
                     </div>
 
                     <div class="form-section">
@@ -321,7 +321,7 @@
                         </div>
                         <div class="form-row full">
                             <div>
-                                <label class="form-label">Admin-Email (für OTP)</label>
+                                <label class="form-label">Admin-Email (fÃ¼r OTP)</label>
                                 <input type="email" class="form-input" id="settings2faEmail" placeholder="admin@example.com">
                             </div>
                         </div>
@@ -382,7 +382,7 @@
             <div class="form-group">
                 <label class="form-label">Kategorie</label>
                 <select class="select" id="videoModalCategory">
-                    <option value="">-- Wählen Sie eine Kategorie --</option>
+                    <option value="">-- WÃ¤hlen Sie eine Kategorie --</option>
                 </select>
             </div>
             <div class="form-group">
@@ -391,7 +391,7 @@
             </div>
             <div class="form-row">
                 <div>
-                    <label class="form-label">Auflösung</label>
+                    <label class="form-label">AuflÃ¶sung</label>
                     <select class="select" id="videoModalResolution">
                         <option value="4K">4K</option>
                         <option value="HD">HD</option>
@@ -409,15 +409,15 @@
             <div class="form-section-title">Preise</div>
             <div class="form-row">
                 <div>
-                    <label class="form-label">Web (€)</label>
+                    <label class="form-label">Web (â¬)</label>
                     <input type="number" class="form-input" id="videoModalPriceWeb" placeholder="29.99" min="0" step="0.01">
                 </div>
                 <div>
-                    <label class="form-label">Standard (€)</label>
+                    <label class="form-label">Standard (â¬)</label>
                     <input type="number" class="form-input" id="videoModalPriceStandard" placeholder="79.99" min="0" step="0.01">
                 </div>
                 <div>
-                    <label class="form-label">Premium (€)</label>
+                    <label class="form-label">Premium (â¬)</label>
                     <input type="number" class="form-input" id="videoModalPricePremium" placeholder="149.99" min="0" step="0.01">
                 </div>
             </div>
@@ -465,7 +465,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Icon</label>
-                <input type="text" class="form-input" id="categoryModalIcon" placeholder="🎬">
+                <input type="text" class="form-input" id="categoryModalIcon" placeholder="ð¬">
             </div>
             <div class="form-group">
                 <label class="form-label">Reihenfolge</label>
@@ -511,6 +511,6 @@
         }
     };
     </script>
-    <script src="/admin.js"></script>
+    <script src="/admin.js?v=1775562908583"></script>
 </body>
 </html>
