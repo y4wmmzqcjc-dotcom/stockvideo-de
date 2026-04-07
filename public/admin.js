@@ -345,9 +345,9 @@
                 document.getElementById('videoModalResolution').value = '4K';
                 document.getElementById('videoModalDuration').value = '';
                 document.getElementById('videoModalFPS').value = '';
-                document.getElementById('videoModalPriceWeb').value = '';
-                document.getElementById('videoModalPriceStandard').value = '';
-                document.getElementById('videoModalPricePremium').value = '';
+                document.getElementById('videoModalPrice').value = '';
+                document.getElementById('videoModalPrice').value = '';
+                document.getElementById('videoModalPrice').value = '';
                 document.getElementById('videoModalThumbnail').value = '';
                 document.getElementById('videoModalR2Key').value = '';
                 document.getElementById('videoModalFeatured').checked = false;
@@ -371,9 +371,9 @@
                 document.getElementById('videoModalResolution').value = video.resolution;
                 document.getElementById('videoModalDuration').value = video.duration;
                 document.getElementById('videoModalFPS').value = video.fps;
-                document.getElementById('videoModalPriceWeb').value = video.prices.web;
-                document.getElementById('videoModalPriceStandard').value = video.prices.standard;
-                document.getElementById('videoModalPricePremium').value = video.prices.premium;
+                document.getElementById('videoModalPrice').value = video.prices.web;
+                document.getElementById('videoModalPrice').value = video.prices.standard;
+                document.getElementById('videoModalPrice').value = video.prices.premium;
                 document.getElementById('videoModalThumbnail').value = video.thumbnail;
                 document.getElementById('videoModalR2Key').value = video.r2Key;
                 document.getElementById('videoModalFeatured').checked = video.featured;
@@ -391,9 +391,17 @@
             },
 
             updateCategoryDropdown() {
-                const dropdown = document.getElementById('videoModalCategory');
-                dropdown.innerHTML = '<option value="">-- Wählen Sie eine Kategorie --</option>' +
-                    this.categories.map(cat => `<option value="${cat.slug}">${cat.label}</option>`).join('');
+                const dropdown = document.getElementById('videoCategory');
+                if (!dropdown) return;
+                fetch('/data/categories.json?_=' + Date.now(), { cache: 'no-store' })
+                    .then(r => r.ok ? r.json() : [])
+                    .catch(() => [])
+                    .then(list => {
+                        const cats = (Array.isArray(list) && list.length) ? list : (this.categories || []);
+                        dropdown.innerHTML = '<option value="">-- Wählen Sie eine Kategorie --</option>' +
+                            cats.map(c => '<option value="' + (c.slug || c.id) + '">' + (c.label || c.name || c.slug) + '</option>').join('');
+                        if (this.currentVideo && this.currentVideo.category) dropdown.value = this.currentVideo.category;
+                    });
             },
 
             renderGradientInputs(gradient) {
@@ -458,9 +466,9 @@
                     duration: parseInt(document.getElementById('videoModalDuration').value) || 0,
                     fps: parseInt(document.getElementById('videoModalFPS').value) || 0,
                     prices: {
-                        web: parseFloat(document.getElementById('videoModalPriceWeb').value) || 0,
-                        standard: parseFloat(document.getElementById('videoModalPriceStandard').value) || 0,
-                        premium: parseFloat(document.getElementById('videoModalPricePremium').value) || 0
+                        web: parseFloat(document.getElementById('videoModalPrice').value) || 0,
+                        standard: parseFloat(document.getElementById('videoModalPrice').value) || 0,
+                        premium: parseFloat(document.getElementById('videoModalPrice').value) || 0
                     },
                     thumbnail: document.getElementById('videoModalThumbnail').value,
                     r2Key: document.getElementById('videoModalR2Key').value,
