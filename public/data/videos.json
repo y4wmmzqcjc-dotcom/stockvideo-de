@@ -12,9 +12,9 @@
     "duration": 10,
     "fps": 25,
     "prices": {
-      "web": 1,
-      "standard": 1,
-      "premium": 1
+      "web": 1.19,
+      "standard": 1.19,
+      "premium": 1.19
     },
     "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/muh1.jpg",
     "r2Key": "videos/muh1.mp4",
@@ -46,9 +46,9 @@
     "duration": 10,
     "fps": 25,
     "prices": {
-      "web": 2,
-      "standard": 2,
-      "premium": 2
+      "web": 2.38,
+      "standard": 2.38,
+      "premium": 2.38
     },
     "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/drohne-shoot.jpg",
     "r2Key": "videos/drohne-shoot.mov",
@@ -78,9 +78,9 @@
     "duration": 14,
     "fps": 25,
     "prices": {
-      "web": 1,
-      "standard": 1,
-      "premium": 1
+      "web": 1.19,
+      "standard": 1.19,
+      "premium": 1.19
     },
     "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/pvc.jpg",
     "r2Key": "videos/pvc.mov",
@@ -113,9 +113,9 @@
     "duration": 11,
     "fps": 25,
     "prices": {
-      "web": 1,
-      "standard": 1,
-      "premium": 1
+      "web": 1.19,
+      "standard": 1.19,
+      "premium": 1.19
     },
     "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/gieskanne.jpg",
     "r2Key": "videos/gieskanne.mov",
@@ -147,9 +147,9 @@
     "duration": 7,
     "fps": 25,
     "prices": {
-      "web": 1,
-      "standard": 1,
-      "premium": 1
+      "web": 1.19,
+      "standard": 1.19,
+      "premium": 1.19
     },
     "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/getreide.jpg",
     "r2Key": "videos/getreide.mov",
@@ -181,9 +181,9 @@
     "duration": 16,
     "fps": 25,
     "prices": {
-      "web": 1,
-      "standard": 1,
-      "premium": 1
+      "web": 2.38,
+      "standard": 2.38,
+      "premium": 2.38
     },
     "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/bagger.jpg",
     "r2Key": "videos/bagger.mov",
