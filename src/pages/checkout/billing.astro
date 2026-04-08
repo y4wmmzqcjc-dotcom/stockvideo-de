@@ -2,58 +2,61 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 const CHECKOUT_WORKER = 'https://stockvideo-checkout.rende.workers.dev';
 ---
-<BaseLayout title="Kasse - stockvideo.de">
-  <main class="max-w-3xl mx-auto px-4 py-12">
-    <h1 class="text-3xl font-bold mb-2">Rechnungsdaten</h1>
-    <p class="text-gray-600 mb-8">Bitte gib deine Rechnungsdaten ein. Mit diesen Daten erstellen wir deine Lizenzurkunde.</p>
+<BaseLayout title="Kasse – stockvideo.de">
+  <main class="checkout-wrap">
+    <div class="checkout-header">
+      <h1>Rechnungsdaten</h1>
+      <p>Bitte gib deine Rechnungsdaten ein. Mit diesen Daten erstellen wir deine Lizenzurkunde.</p>
+    </div>
 
-    <div id="orderSummary" class="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-      <div class="flex items-center justify-between">
-        <div>
-          <div class="text-sm text-gray-500">Video</div>
-          <div id="sumTitle" class="font-semibold">-</div>
-        </div>
-        <div class="text-right">
-          <div class="text-sm text-gray-500">Preis</div>
-          <div id="sumPrice" class="font-semibold text-lg">-</div>
-        </div>
+    <div class="order-summary">
+      <div class="os-label">Video</div>
+      <div class="os-title" id="sumTitle">–</div>
+      <div class="os-divider"></div>
+      <div class="os-price-row">
+        <span class="os-label">Gesamtbetrag</span>
+        <span class="os-price" id="sumPrice">–</span>
       </div>
     </div>
 
-    <form id="billingForm" class="space-y-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium mb-1">Vorname *</label>
-          <input name="firstName" required class="w-full border border-gray-300 rounded px-3 py-2" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1">Nachname *</label>
-          <input name="lastName" required class="w-full border border-gray-300 rounded px-3 py-2" />
-        </div>
+    <form id="billingForm" class="billing-form" autocomplete="on">
+      <div class="row row-2">
+        <label>
+          <span>Vorname <em>*</em></span>
+          <input name="firstName" required autocomplete="given-name" />
+        </label>
+        <label>
+          <span>Nachname <em>*</em></span>
+          <input name="lastName" required autocomplete="family-name" />
+        </label>
       </div>
-      <div>
-        <label class="block text-sm font-medium mb-1">Firma (optional)</label>
-        <input name="company" class="w-full border border-gray-300 rounded px-3 py-2" />
+
+      <label>
+        <span>Firma <small>(optional)</small></span>
+        <input name="company" autocomplete="organization" />
+      </label>
+
+      <label>
+        <span>Straße und Hausnummer <em>*</em></span>
+        <input name="street" required autocomplete="street-address" />
+      </label>
+
+      <div class="row row-3">
+        <label>
+          <span>PLZ <em>*</em></span>
+          <input name="zip" required autocomplete="postal-code" />
+        </label>
+        <label class="col-span-2">
+          <span>Ort <em>*</em></span>
+          <input name="city" required autocomplete="address-level2" />
+        </label>
       </div>
-      <div>
-        <label class="block text-sm font-medium mb-1">Strasse und Hausnummer *</label>
-        <input name="street" required class="w-full border border-gray-300 rounded px-3 py-2" />
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <label class="block text-sm font-medium mb-1">PLZ *</label>
-          <input name="zip" required class="w-full border border-gray-300 rounded px-3 py-2" />
-        </div>
-        <div class="md:col-span-2">
-          <label class="block text-sm font-medium mb-1">Ort *</label>
-          <input name="city" required class="w-full border border-gray-300 rounded px-3 py-2" />
-        </div>
-      </div>
-      <div>
-        <label class="block text-sm font-medium mb-1">Land *</label>
-        <select name="country" required class="w-full border border-gray-300 rounded px-3 py-2">
+
+      <label>
+        <span>Land <em>*</em></span>
+        <select name="country" required>
           <option value="DE">Deutschland</option>
-          <option value="AT">Oesterreich</option>
+          <option value="AT">Österreich</option>
           <option value="CH">Schweiz</option>
           <option value="LI">Liechtenstein</option>
           <option value="LU">Luxemburg</option>
@@ -64,30 +67,188 @@ const CHECKOUT_WORKER = 'https://stockvideo-checkout.rende.workers.dev';
           <option value="ES">Spanien</option>
           <option value="OTHER">Anderes Land</option>
         </select>
-      </div>
-      <div>
-        <label class="block text-sm font-medium mb-1">USt-IdNr. (optional)</label>
-        <input name="vatId" class="w-full border border-gray-300 rounded px-3 py-2" />
-      </div>
-      <div>
-        <label class="block text-sm font-medium mb-1">E-Mail *</label>
-        <input type="email" name="email" required class="w-full border border-gray-300 rounded px-3 py-2" />
-        <p class="text-xs text-gray-500 mt-1">Wir senden dir den Download-Link an diese Adresse.</p>
-      </div>
-      <div>
-        <label class="block text-sm font-medium mb-1">Projektname / Verwendungszweck (optional)</label>
-        <input name="projectName" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="z.B. Imagefilm Mustermann GmbH" />
-        <p class="text-xs text-gray-500 mt-1">Erscheint auf der Lizenzurkunde.</p>
-      </div>
+      </label>
 
-      <div id="errBox" class="hidden p-3 bg-red-50 border border-red-200 text-red-700 rounded"></div>
+      <label>
+        <span>USt-IdNr. <small>(optional)</small></span>
+        <input name="vatId" placeholder="DE123456789" />
+      </label>
 
-      <button type="submit" id="payBtn" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded">
-        Weiter zur Bezahlung
-      </button>
-      <p class="text-xs text-gray-500 text-center">Du wirst zu Mollie weitergeleitet. Sichere Zahlung per Kreditkarte, PayPal, SOFORT.</p>
+      <label>
+        <span>E-Mail <em>*</em></span>
+        <input type="email" name="email" required autocomplete="email" />
+        <small class="hint">Wir senden dir den Download-Link an diese Adresse.</small>
+      </label>
+
+      <label>
+        <span>Projektname / Verwendungszweck <small>(optional)</small></span>
+        <input name="projectName" placeholder="z. B. Imagefilm Mustermann GmbH" />
+        <small class="hint">Erscheint auf der Lizenzurkunde.</small>
+      </label>
+
+      <div id="errBox" class="err-box" hidden></div>
+
+      <button type="submit" id="payBtn" class="pay-btn">Weiter zur Bezahlung</button>
+      <p class="trust-note">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Sichere Zahlung via Mollie · Kreditkarte, PayPal, SOFORT, Klarna
+      </p>
     </form>
   </main>
+
+  <style>
+    .checkout-wrap {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 48px 20px 80px;
+    }
+    .checkout-header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    .checkout-header p {
+      color: #9a9a9a;
+      font-size: 15px;
+      margin-bottom: 32px;
+    }
+    .order-summary {
+      background: #222;
+      border: 1px solid #3a3a3a;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 28px;
+    }
+    .os-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #8a8a8a;
+      font-weight: 600;
+    }
+    .os-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+      margin-top: 4px;
+    }
+    .os-divider {
+      height: 1px;
+      background: #3a3a3a;
+      margin: 16px 0;
+    }
+    .os-price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .os-price {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1473e6;
+    }
+    .billing-form {
+      background: #222;
+      border: 1px solid #3a3a3a;
+      border-radius: 12px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .billing-form label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .billing-form label > span {
+      font-size: 13px;
+      font-weight: 600;
+      color: #c8c8c8;
+    }
+    .billing-form label > span em {
+      color: #1473e6;
+      font-style: normal;
+    }
+    .billing-form label > span small {
+      color: #8a8a8a;
+      font-weight: 400;
+    }
+    .billing-form input,
+    .billing-form select {
+      background: #1b1b1b;
+      border: 1px solid #3a3a3a;
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 15px;
+      color: #fff;
+      font-family: inherit;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .billing-form input:hover,
+    .billing-form select:hover {
+      border-color: #4a4a4a;
+    }
+    .billing-form input:focus,
+    .billing-form select:focus {
+      outline: none;
+      border-color: #1473e6;
+      background: #232323;
+    }
+    .billing-form input::placeholder {
+      color: #5a5a5a;
+    }
+    .billing-form .hint {
+      font-size: 12px;
+      color: #7a7a7a;
+    }
+    .row {
+      display: grid;
+      gap: 14px;
+    }
+    .row-2 { grid-template-columns: 1fr 1fr; }
+    .row-3 { grid-template-columns: 1fr 2fr; gap: 14px; }
+    .col-span-2 { grid-column: span 1; }
+    @media (max-width: 520px) {
+      .row-2, .row-3 { grid-template-columns: 1fr; }
+    }
+    .err-box {
+      background: rgba(220, 38, 38, 0.12);
+      border: 1px solid rgba(220, 38, 38, 0.35);
+      color: #fca5a5;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .pay-btn {
+      background: #1473e6;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 14px 20px;
+      border-radius: 10px;
+      margin-top: 6px;
+      transition: background 0.15s, transform 0.05s;
+    }
+    .pay-btn:hover { background: #0d66d0; }
+    .pay-btn:active { transform: translateY(1px); }
+    .pay-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .trust-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #7a7a7a;
+      margin-top: 2px;
+    }
+  </style>
 
   <script is:inline define:vars={{ CHECKOUT_WORKER }}>
     const params = new URLSearchParams(window.location.search);
@@ -101,7 +262,7 @@ const CHECKOUT_WORKER = 'https://stockvideo-checkout.rende.workers.dev';
     }
 
     document.getElementById('sumTitle').textContent = videoTitle;
-    document.getElementById('sumPrice').textContent = price.toFixed(2) + ' EUR';
+    document.getElementById('sumPrice').textContent = price.toFixed(2).replace('.', ',') + ' €';
 
     const form = document.getElementById('billingForm');
     const errBox = document.getElementById('errBox');
@@ -109,9 +270,9 @@ const CHECKOUT_WORKER = 'https://stockvideo-checkout.rende.workers.dev';
 
     form.addEventListener('submit', async function(e) {
       e.preventDefault();
-      errBox.classList.add('hidden');
+      errBox.hidden = true;
       payBtn.disabled = true;
-      payBtn.textContent = 'Erstelle Bestellung...';
+      payBtn.textContent = 'Bestellung wird erstellt …';
 
       const fd = new FormData(form);
       const billing = {};
@@ -123,23 +284,14 @@ const CHECKOUT_WORKER = 'https://stockvideo-checkout.rende.workers.dev';
         const r = await fetch(CHECKOUT_WORKER + '/create-order', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-            videoId,
-            videoTitle,
-            videoUrl: '',
-            price,
-            billing,
-            projectName
-          })
+          body: JSON.stringify({ videoId, videoTitle, videoUrl: '', price, billing, projectName })
         });
         const data = await r.json();
-        if (!r.ok || !data.checkoutUrl) {
-          throw new Error(data.error || 'Bestellung konnte nicht erstellt werden');
-        }
+        if (!r.ok || !data.checkoutUrl) throw new Error(data.error || 'Bestellung konnte nicht erstellt werden');
         window.location.href = data.checkoutUrl;
       } catch(err) {
         errBox.textContent = 'Fehler: ' + err.message;
-        errBox.classList.remove('hidden');
+        errBox.hidden = false;
         payBtn.disabled = false;
         payBtn.textContent = 'Weiter zur Bezahlung';
       }
