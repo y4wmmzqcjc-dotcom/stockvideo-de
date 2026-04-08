@@ -1,0 +1,148 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const CHECKOUT_WORKER = 'https://stockvideo-checkout.rende.workers.dev';
+---
+<BaseLayout title="Kasse - stockvideo.de">
+  <main class="max-w-3xl mx-auto px-4 py-12">
+    <h1 class="text-3xl font-bold mb-2">Rechnungsdaten</h1>
+    <p class="text-gray-600 mb-8">Bitte gib deine Rechnungsdaten ein. Mit diesen Daten erstellen wir deine Lizenzurkunde.</p>
+
+    <div id="orderSummary" class="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-sm text-gray-500">Video</div>
+          <div id="sumTitle" class="font-semibold">-</div>
+        </div>
+        <div class="text-right">
+          <div class="text-sm text-gray-500">Preis</div>
+          <div id="sumPrice" class="font-semibold text-lg">-</div>
+        </div>
+      </div>
+    </div>
+
+    <form id="billingForm" class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Vorname *</label>
+          <input name="firstName" required class="w-full border border-gray-300 rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Nachname *</label>
+          <input name="lastName" required class="w-full border border-gray-300 rounded px-3 py-2" />
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">Firma (optional)</label>
+        <input name="company" class="w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">Strasse und Hausnummer *</label>
+        <input name="street" required class="w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">PLZ *</label>
+          <input name="zip" required class="w-full border border-gray-300 rounded px-3 py-2" />
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium mb-1">Ort *</label>
+          <input name="city" required class="w-full border border-gray-300 rounded px-3 py-2" />
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">Land *</label>
+        <select name="country" required class="w-full border border-gray-300 rounded px-3 py-2">
+          <option value="DE">Deutschland</option>
+          <option value="AT">Oesterreich</option>
+          <option value="CH">Schweiz</option>
+          <option value="LI">Liechtenstein</option>
+          <option value="LU">Luxemburg</option>
+          <option value="NL">Niederlande</option>
+          <option value="BE">Belgien</option>
+          <option value="FR">Frankreich</option>
+          <option value="IT">Italien</option>
+          <option value="ES">Spanien</option>
+          <option value="OTHER">Anderes Land</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">USt-IdNr. (optional)</label>
+        <input name="vatId" class="w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">E-Mail *</label>
+        <input type="email" name="email" required class="w-full border border-gray-300 rounded px-3 py-2" />
+        <p class="text-xs text-gray-500 mt-1">Wir senden dir den Download-Link an diese Adresse.</p>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">Projektname / Verwendungszweck (optional)</label>
+        <input name="projectName" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="z.B. Imagefilm Mustermann GmbH" />
+        <p class="text-xs text-gray-500 mt-1">Erscheint auf der Lizenzurkunde.</p>
+      </div>
+
+      <div id="errBox" class="hidden p-3 bg-red-50 border border-red-200 text-red-700 rounded"></div>
+
+      <button type="submit" id="payBtn" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded">
+        Weiter zur Bezahlung
+      </button>
+      <p class="text-xs text-gray-500 text-center">Du wirst zu Mollie weitergeleitet. Sichere Zahlung per Kreditkarte, PayPal, SOFORT.</p>
+    </form>
+  </main>
+
+  <script is:inline define:vars={{ CHECKOUT_WORKER }}>
+    const params = new URLSearchParams(window.location.search);
+    const videoId = params.get('id') || '';
+    const videoTitle = params.get('title') || '';
+    const price = parseFloat(params.get('price') || '0');
+    const slug = params.get('slug') || '';
+
+    if (!videoId || !videoTitle || !price) {
+      window.location.href = '/';
+    }
+
+    document.getElementById('sumTitle').textContent = videoTitle;
+    document.getElementById('sumPrice').textContent = price.toFixed(2) + ' EUR';
+
+    const form = document.getElementById('billingForm');
+    const errBox = document.getElementById('errBox');
+    const payBtn = document.getElementById('payBtn');
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      errBox.classList.add('hidden');
+      payBtn.disabled = true;
+      payBtn.textContent = 'Erstelle Bestellung...';
+
+      const fd = new FormData(form);
+      const billing = {};
+      for (const [k,v] of fd.entries()) billing[k] = v;
+      const projectName = billing.projectName || '';
+      delete billing.projectName;
+
+      try {
+        const r = await fetch(CHECKOUT_WORKER + '/create-order', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            videoId,
+            videoTitle,
+            videoUrl: '',
+            price,
+            billing,
+            projectName
+          })
+        });
+        const data = await r.json();
+        if (!r.ok || !data.checkoutUrl) {
+          throw new Error(data.error || 'Bestellung konnte nicht erstellt werden');
+        }
+        window.location.href = data.checkoutUrl;
+      } catch(err) {
+        errBox.textContent = 'Fehler: ' + err.message;
+        errBox.classList.remove('hidden');
+        payBtn.disabled = false;
+        payBtn.textContent = 'Weiter zur Bezahlung';
+      }
+    });
+  </script>
+</BaseLayout>
