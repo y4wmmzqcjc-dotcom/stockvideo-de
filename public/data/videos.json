@@ -1,27 +1,26 @@
 [
   {
-    "id": "1775602731602",
-    "title": "Bagger",
-    "slug": "hover-bagger",
-    "description": "Bagger",
-    "category": "",
+    "id": "1775594369945",
+    "title": "Muh1",
+    "slug": "muh1",
+    "description": "Muh1",
+    "category": "tiere",
     "tags": [
-      "Bagger",
-      "Bau"
+      "Muh1"
     ],
     "resolution": "4K",
-    "duration": 12,
+    "duration": 10,
     "fps": 25,
     "prices": {
-      "web": 45,
-      "standard": 45,
-      "premium": 45
+      "web": 0.01,
+      "standard": 0.01,
+      "premium": 0.01
     },
-    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/hover-bagger.jpg",
-    "r2Key": "videos/hover-bagger.mov",
-    "r2Preview": "previews/hover-bagger.mp4",
-    "r2Hover": "previews/hover-bagger-hover.mp4",
-    "videoId": "stockvideo.de-801E2RC1",
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/muh1.jpg",
+    "r2Key": "videos/muh1.mp4",
+    "r2Preview": "previews/muh1.mp4",
+    "r2Hover": "previews/muh1-hover.mp4",
+    "videoId": "SV-310NDC1K",
     "featured": false,
     "gradient": [
       {
@@ -35,27 +34,27 @@
     ]
   },
   {
-    "id": "1775602911632",
-    "title": "drohne-shoot",
+    "id": "1775595866789",
+    "title": "Drohne Shoot",
     "slug": "drohne-shoot",
-    "description": "drohne-shoot",
-    "category": "landschaften",
+    "description": "Drohne Shoot",
+    "category": "",
     "tags": [
-      "dröhne"
+      "Drohne"
     ],
     "resolution": "4K",
-    "duration": 13,
+    "duration": 10,
     "fps": 25,
     "prices": {
-      "web": 67,
-      "standard": 67,
-      "premium": 67
+      "web": 0.01,
+      "standard": 0.01,
+      "premium": 0.01
     },
     "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/drohne-shoot.jpg",
     "r2Key": "videos/drohne-shoot.mov",
     "r2Preview": "previews/drohne-shoot.mp4",
     "r2Hover": "previews/drohne-shoot-hover.mp4",
-    "videoId": "stockvideo.de-84088HPW",
+    "videoId": "SV-3X1FOICK",
     "featured": false,
     "gradient": [
       {
@@ -69,28 +68,60 @@
     ]
   },
   {
-    "id": "1775603018992",
-    "title": "gieskanne",
+    "id": "1775595974245",
+    "title": "PVC",
+    "slug": "pvc",
+    "description": "PVC",
+    "category": "",
+    "tags": [],
+    "resolution": "4K",
+    "duration": 14,
+    "fps": 25,
+    "prices": {
+      "web": 0.01,
+      "standard": 0.01,
+      "premium": 0.01
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/pvc.jpg",
+    "r2Key": "videos/pvc.mov",
+    "r2Preview": "previews/pvc.mp4",
+    "r2Hover": "previews/pvc-hover.mp4",
+    "videoId": "SV-3ZB8QCYL",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
+  },
+  {
+    "id": "1775596910487",
+    "title": "Gieskanne",
     "slug": "gieskanne",
-    "description": "gieskanne",
-    "category": "pflanzen-und-blumen",
+    "description": "Gieskanne",
+    "category": "",
     "tags": [
-      "gieskanne",
-      "garten"
+      "Garten",
+      "Pflanzen"
     ],
     "resolution": "4K",
     "duration": 11,
     "fps": 25,
     "prices": {
-      "web": 67,
-      "standard": 67,
-      "premium": 67
+      "web": 0.01,
+      "standard": 0.01,
+      "premium": 0.01
     },
     "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/gieskanne.jpg",
     "r2Key": "videos/gieskanne.mov",
     "r2Preview": "previews/gieskanne.mp4",
     "r2Hover": "previews/gieskanne-hover.mp4",
-    "videoId": "stockvideo.de-86DOED8H",
+    "videoId": "SV-4JGJWC4X",
     "featured": false,
     "gradient": [
       {
@@ -104,93 +135,61 @@
     ]
   },
   {
-    "id": "1775604721527",
-    "title": "Kuh test",
-    "slug": "kuh-test",
-    "description": "Kuh test",
-    "category": "tiere",
-    "tags": [],
-    "resolution": "4K",
-    "duration": 12,
-    "fps": 25,
-    "prices": {
-      "web": 49,
-      "standard": 49,
-      "premium": 49
-    },
-    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/kuh-test.jpg",
-    "r2Key": "videos/kuh-test.mp4",
-    "r2Preview": "previews/kuh-test.mp4",
-    "r2Hover": "previews/kuh-test-hover.mp4",
-    "videoId": "stockvideo.de-96VOJYF2",
-    "featured": false,
-    "gradient": [
-      {
-        "color": "#1473e6",
-        "position": 0
-      },
-      {
-        "color": "#0d5fcf",
-        "position": 100
-      }
-    ]
-  },
-  {
-    "id": "1775604815382",
-    "title": "PVC",
-    "slug": "pvc-test",
-    "description": "PVC ",
-    "category": "",
-    "tags": [
-      "PVC"
-    ],
-    "resolution": "4K",
-    "duration": 12,
-    "fps": 25,
-    "prices": {
-      "web": 55,
-      "standard": 55,
-      "premium": 55
-    },
-    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/pvc-test.jpg",
-    "r2Key": "videos/pvc-test.mov",
-    "r2Preview": "previews/pvc-test.mp4",
-    "r2Hover": "previews/pvc-test-hover.mp4",
-    "videoId": "stockvideo.de-98RQH2SA",
-    "featured": false,
-    "gradient": [
-      {
-        "color": "#1473e6",
-        "position": 0
-      },
-      {
-        "color": "#0d5fcf",
-        "position": 100
-      }
-    ]
-  },
-  {
-    "id": "1775605075247",
+    "id": "1775597001311",
     "title": "Getreide",
-    "slug": "new-test",
+    "slug": "getreide",
     "description": "Getreide",
-    "category": "essen",
+    "category": "",
     "tags": [
       "Getreide"
     ],
     "resolution": "4K",
-    "duration": 12,
+    "duration": 7,
     "fps": 25,
     "prices": {
-      "web": 45,
-      "standard": 45,
-      "premium": 45
+      "web": 0.01,
+      "standard": 0.01,
+      "premium": 0.01
     },
-    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/new-test.jpg",
-    "r2Key": "videos/new-test.mov",
-    "r2Preview": "previews/new-test.mp4",
-    "r2Hover": "previews/new-test-hover.mp4",
-    "videoId": "stockvideo.de-9EZ5T3PE",
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/getreide.jpg",
+    "r2Key": "videos/getreide.mov",
+    "r2Preview": "previews/getreide.mp4",
+    "r2Hover": "previews/getreide-hover.mp4",
+    "videoId": "SV-4LJ7YGD9",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
+  },
+  {
+    "id": "1775597331592",
+    "title": "Bagger",
+    "slug": "bagger",
+    "description": "Bagger",
+    "category": "",
+    "tags": [
+      "Bagger"
+    ],
+    "resolution": "4K",
+    "duration": 16,
+    "fps": 25,
+    "prices": {
+      "web": 0.01,
+      "standard": 0.01,
+      "premium": 0.01
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/bagger.jpg",
+    "r2Key": "videos/bagger.mov",
+    "r2Preview": "previews/bagger.mp4",
+    "r2Hover": "previews/bagger-hover.mp4",
+    "videoId": "SV-4T02VOR6",
     "featured": false,
     "gradient": [
       {
