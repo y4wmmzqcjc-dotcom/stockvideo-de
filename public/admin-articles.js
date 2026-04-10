@@ -3,7 +3,7 @@
    Version 2.0 â Listenansicht, Publish/Draft, Planungskalender
    ============================================================ */
 
-var adminArticles = {
+window.adminArticles = {
   articles: [],
   currentEditId: null,
   calendarMonth: new Date().getMonth(),
