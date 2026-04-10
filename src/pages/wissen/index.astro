@@ -3,18 +3,19 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Topbar from '../../components/Topbar.astro';
 import Footer from '../../components/Footer.astro';
 import articles from '../../data/articles.json';
+const visibleArticles = articles.filter((a: any) => a.status !== 'draft');
 
-const categories = [...new Set(articles.map(a => a.category))].sort();
+const categories = [...new Set(visibleArticles.map(a => a.category))].sort();
 
 const categoryEmojis = {
-  'Grundlagen': '🎬',
-  'Produktion': '🎥',
-  'Lizenzierung': '⚖️',
-  'Marketing': '💡',
-  'Technik': '📐',
-  'Social Media': '📱',
-  'Business': '💰',
-  'Trends': '🔮'
+  'Grundlagen': 'ð¬',
+  'Produktion': 'ð¥',
+  'Lizenzierung': 'âï¸',
+  'Marketing': 'ð¡',
+  'Technik': 'ð',
+  'Social Media': 'ð±',
+  'Business': 'ð°',
+  'Trends': 'ð®'
 };
 
 const categoryColors = {
@@ -38,20 +39,20 @@ interface Article {
   featured?: boolean;
 }
 
-const enrichedArticles = articles.map((article: Article) => ({
+const enrichedArticles = visibleArticles.map((article: Article) => ({
   ...article,
   categoryColor: article.categoryColor || categoryColors[article.category as keyof typeof categoryColors] || '#666666'
 }));
 ---
 
-<BaseLayout title="Wissen — Alles rund um Stockvideo" description="Expertenwissen, Praxistipps und Brancheneinblicke rund um Stockvideos. Von der Produktion bis zur Lizenzierung.">
+<BaseLayout title="Wissen â Alles rund um Stockvideo" description="Expertenwissen, Praxistipps und Brancheneinblicke rund um Stockvideos. Von der Produktion bis zur Lizenzierung.">
   <Topbar />
 
   <!-- Hero Section -->
   <section class="hero-section">
     <div class="hero-content">
       <h1 class="hero-title">Alles rund um <span class="accent-text">Stockvideo</span></h1>
-      <p class="hero-subtitle">Expertenwissen, Praxistipps und Brancheneinblicke — von der Produktion bis zur Lizenzierung. Ihr umfassendes Nachschlagewerk für lizenzfreie Videos.</p>
+      <p class="hero-subtitle">Expertenwissen, Praxistipps und Brancheneinblicke â von der Produktion bis zur Lizenzierung. Ihr umfassendes Nachschlagewerk fÃ¼r lizenzfreie Videos.</p>
 
       <!-- Search Bar -->
       <div class="search-wrap">
@@ -88,7 +89,7 @@ const enrichedArticles = articles.map((article: Article) => ({
             class="article-image"
             style={`background: linear-gradient(135deg, ${article.categoryColor}40, ${article.categoryColor}10);`}
           >
-            <span class="article-emoji">{categoryEmojis[article.category as keyof typeof categoryEmojis] || '📄'}</span>
+            <span class="article-emoji">{categoryEmojis[article.category as keyof typeof categoryEmojis] || 'ð'}</span>
           </div>
 
           <!-- Card Content -->
@@ -101,7 +102,7 @@ const enrichedArticles = articles.map((article: Article) => ({
 
             <p class="article-description">{article.description}</p>
 
-            <span class="article-read-time">📖 {article.readTime} Min. Lesezeit</span>
+            <span class="article-read-time">ð {article.readTime} Min. Lesezeit</span>
           </div>
         </a>
       ))}
@@ -114,7 +115,7 @@ const enrichedArticles = articles.map((article: Article) => ({
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": "Wissen — Alles rund um Stockvideo",
+    "name": "Wissen â Alles rund um Stockvideo",
     "description": "Expertenwissen, Praxistipps und Brancheneinblicke rund um Stockvideos. Von der Produktion bis zur Lizenzierung.",
     "url": "https://stockvideo.de/wissen/",
     "mainEntity": {
