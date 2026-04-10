@@ -1,0 +1,654 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Topbar from '../../components/Topbar.astro';
+import Footer from '../../components/Footer.astro';
+import articles from '../../data/articles.json';
+import videos from '../../data/videos.json';
+
+export function getStaticPaths() {
+  return articles.map(article => ({
+    params: { slug: article.slug },
+    props: { article }
+  }));
+}
+
+const { article } = Astro.props;
+const relatedArticles = articles.filter(a => article.internalLinks.includes(a.id)).slice(0, 3);
+const relatedVideos = videos.slice(0, 3);
+
+// Generate table of contents from article content
+const headings = article.content?.match(/<h2[^>]*>.*?<\/h2>/gi)?.map((h: string) => {
+  const text = h.replace(/<[^>]*>/g, '');
+  const id = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+  return { text, id };
+}) || [];
+
+// Structured data - JSON-LD
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: article.seoTitle,
+  description: article.metaDescription,
+  image: article.imageUrl,
+  datePublished: article.datePublished || new Date().toISOString(),
+  dateModified: new Date().toISOString(),
+  author: {
+    '@type': 'Organization',
+    name: 'stockvideo.de'
+  }
+};
+---
+
+<BaseLayout title={article.seoTitle} description={article.metaDescription}>
+  <div class="page-wrapper">
+    <Topbar />
+
+    <main class="container">
+      <div class="breadcrumb">
+        <a href="/wissen">Wissen</a>
+        <span class="separator">/</span>
+        <a href={`/wissen?category=${article.category}`}>{article.category}</a>
+        <span class="separator">/</span>
+        <span class="current">{article.title}</span>
+      </div>
+
+      <div class="article-header">
+        <div class="category-badge" style={`background-color: ${article.categoryColor}20; color: ${article.categoryColor}`}>
+          {article.category}
+        </div>
+
+        <h1 class="article-title">{article.title}</h1>
+
+        <div class="article-meta">
+          <span class="read-time">📖 {article.readTime} Min. Lesezeit</span>
+          <span class="separator">·</span>
+          <span class="update-date">Zuletzt aktualisiert: 10. April 2026</span>
+        </div>
+
+        <div class="hero-gradient" style={`background: linear-gradient(135deg, ${article.categoryColor}40, ${article.categoryColor}20)`}>
+          <div class="hero-emoji">{article.categoryEmoji}</div>
+        </div>
+
+        {article.imageAlt && (
+          <p class="image-caption">{article.imageAlt}</p>
+        )}
+      </div>
+
+      <div class="content-wrapper">
+        <article class="article-content">
+          {article.intro && (
+            <p class="intro-paragraph">{article.intro}</p>
+          )}
+
+          <div class="article-body" set:html={article.content} />
+
+          {article.conclusion && (
+            <p class="conclusion-paragraph">{article.conclusion}</p>
+          )}
+
+          {relatedArticles.length > 0 && (
+            <section class="internal-links-section">
+              <h2>Weiterführende Artikel</h2>
+              <ul class="internal-links-list">
+                {relatedArticles.map(related => (
+                  <li>
+                    <a href={`/wissen/${related.slug}`}>{related.title}</a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </article>
+
+        <aside class="sidebar">
+          {headings.length > 0 && (
+            <div class="sidebar-card">
+              <h3 class="sidebar-title">Inhaltsverzeichnis</h3>
+              <nav class="toc-list">
+                {headings.map((heading: any) => (
+                  <a href={`#${heading.id}`} class="toc-link">{heading.text}</a>
+                ))}
+              </nav>
+            </div>
+          )}
+
+          <div class="sidebar-card">
+            <h3 class="sidebar-title">Passende Videos</h3>
+            <div class="video-cards">
+              {relatedVideos.map(video => (
+                <a href={`/video/${video.slug}`} class="video-card">
+                  <div class="video-thumbnail" style={`background: linear-gradient(135deg, ${article.categoryColor}40, ${article.categoryColor}20)`}>
+                    <svg class="play-icon" width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                  <h4 class="video-title">{video.title}</h4>
+                  <p class="video-price">ab 29 €</p>
+                  <span class="view-button">Ansehen</span>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div class="cta-card">
+            <h3 class="cta-title">Videos entdecken</h3>
+            <p class="cta-text">Finden Sie das perfekte Stockvideo</p>
+            <a href="/" class="cta-button">Jetzt durchstöbern →</a>
+          </div>
+        </aside>
+      </div>
+
+      {relatedArticles.length > 0 && (
+        <section class="related-articles-section">
+          <h2>Verwandte Artikel</h2>
+          <div class="articles-grid">
+            {relatedArticles.map(related => (
+              <article class="article-card">
+                <div class="card-header" style={`background: linear-gradient(135deg, ${related.categoryColor}40, ${related.categoryColor}20)`}>
+                  <span class="card-emoji">{related.categoryEmoji}</span>
+                </div>
+                <div class="card-body">
+                  <span class="card-category" style={`background-color: ${related.categoryColor}20; color: ${related.categoryColor}`}>
+                    {related.category}
+                  </span>
+                  <h3 class="card-title">{related.title}</h3>
+                  <p class="card-description">{related.metaDescription}</p>
+                  <div class="card-meta">
+                    <span class="read-time">{related.readTime} min</span>
+                  </div>
+                  <a href={`/wissen/${related.slug}`} class="card-link">Artikel lesen →</a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+    </main>
+
+    <Footer />
+  </div>
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+</BaseLayout>
+
+<style>
+  :root {
+    --bg-primary: #1b1b1b;
+    --bg-elevated: #2c2c2c;
+    --bg-card: #222222;
+    --bg-hover: #333333;
+    --border: #3a3a3a;
+    --accent: #1473e6;
+    --text-primary: #ffffff;
+    --text-secondary: #e1e1e1;
+    --text-muted: #999999;
+    --max-w: 1440px;
+  }
+
+  .page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Source Sans 3', sans-serif;
+  }
+
+  main {
+    flex: 1;
+    padding: 60px 20px;
+    max-width: var(--max-w);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .container {
+    width: 100%;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 40px;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--text-secondary);
+  }
+
+  .breadcrumb .separator {
+    color: var(--border);
+  }
+
+  .breadcrumb .current {
+    color: var(--text-secondary);
+  }
+
+  .article-header {
+    margin-bottom: 50px;
+  }
+
+  .category-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .article-title {
+    font-size: clamp(24px, 5vw, 36px);
+    font-weight: 700;
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+  }
+
+  .article-meta .separator {
+    color: var(--border);
+  }
+
+  .hero-gradient {
+    width: 100%;
+    aspect-ratio: 21/9;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .hero-emoji {
+    font-size: 80px;
+    line-height: 1;
+  }
+
+  .image-caption {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: 32px;
+  }
+
+  .content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 40px;
+    margin-bottom: 80px;
+  }
+
+  .article-content {
+    grid-column: 1;
+  }
+
+  .intro-paragraph {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 24px;
+  }
+
+  .article-body {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+  }
+
+  .article-body :global(h2) {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .article-body :global(p) {
+    margin-bottom: 16px;
+  }
+
+  .article-body :global(a) {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .article-body :global(a:hover) {
+    border-bottom-color: var(--accent);
+  }
+
+  .conclusion-paragraph {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .internal-links-section {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  .internal-links-section h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+
+  .internal-links-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .internal-links-list li {
+    margin-bottom: 12px;
+  }
+
+  .internal-links-list a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 15px;
+    transition: color 0.2s;
+  }
+
+  .internal-links-list a:hover {
+    color: var(--text-secondary);
+  }
+
+  .sidebar {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: fit-content;
+    position: sticky;
+    top: 80px;
+  }
+
+  .sidebar-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .sidebar-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .toc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .toc-link {
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .toc-link:hover {
+    color: var(--accent);
+  }
+
+  .video-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .video-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-decoration: none;
+    transition: transform 0.2s;
+  }
+
+  .video-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .video-thumbnail {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .play-icon {
+    color: var(--text-primary);
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+
+  .video-card:hover .play-icon {
+    opacity: 1;
+  }
+
+  .video-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .video-price {
+    font-size: 12px;
+    color: var(--accent);
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .view-button {
+    font-size: 12px;
+    color: var(--accent);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .cta-card {
+    background: linear-gradient(135deg, var(--accent), #0d5fc1);
+    border-radius: 10px;
+    padding: 24px 20px;
+    text-align: center;
+  }
+
+  .cta-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 8px 0;
+  }
+
+  .cta-text {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 16px 0;
+  }
+
+  .cta-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--text-primary);
+    color: var(--accent);
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+
+  .cta-button:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+
+  .related-articles-section {
+    margin-bottom: 80px;
+  }
+
+  .related-articles-section h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 32px;
+    color: var(--text-primary);
+  }
+
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+  }
+
+  .article-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .article-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+  }
+
+  .card-header {
+    width: 100%;
+    aspect-ratio: 16/9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .card-emoji {
+    font-size: 48px;
+    line-height: 1;
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  .card-category {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 8px 0 12px 0;
+    line-height: 1.4;
+    color: var(--text-primary);
+  }
+
+  .card-description {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0 0 16px 0;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .card-link {
+    display: inline-block;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: color 0.2s;
+  }
+
+  .card-link:hover {
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 1024px) {
+    .content-wrapper {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .sidebar {
+      grid-column: 1;
+      position: static;
+    }
+
+    main {
+      padding: 40px 20px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .articles-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .article-title {
+      font-size: clamp(20px, 5vw, 28px);
+    }
+
+    .article-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
+    main {
+      padding: 30px 16px;
+    }
+  }
+</style>
