@@ -235,13 +235,19 @@
                 this.updateDashboard();
 
                 // Update nav items
-                document.querySelectorAll('.nav-item').forEach(item => {
-                    item.addEventListener('click', () => {
-                        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                        item.classList.add('active');
-                    });
-                });
-            },
+                const panelMap = ['dashboard','videos','categories','content','articles','design','settings'];
+      document.querySelectorAll('.nav-item').forEach((item, idx) => {
+        item.addEventListener('click', () => {
+          document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+          const panelName = panelMap[idx];
+          if (panelName) {
+            document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById('panel-' + panelName);
+            if (target) target.classList.add('active');
+          }
+        });
+      });            },
 
             switchPanel(panel) {
                 document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
