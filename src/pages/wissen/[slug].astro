@@ -148,7 +148,7 @@ const tags = article.tags || [article.category];
           <div class="related-grid">
             {relatedArticles.map(related => (
               <a href={`/wissen/${related.slug}`} class="related-card">
-                <div class="img-placeholder" style={`background: linear-gradient(135deg, ${related.categoryColor || '#2563eb'~40, ${related.categoryColor || '#2563eb'}20)`}>
+                <div class="img-placeholder" style={`background: linear-gradient(135deg, ${related.categoryColor || '#2563eb'}40, ${related.categoryColor || '#2563eb'}20)`}>
                   <span>{related.categoryEmoji || '📄'}</span>
                 </div>
                 <div class="related-card-body">
