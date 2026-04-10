@@ -38,6 +38,60 @@ const catColors: Record<string, string> = {
 };
 const catColor = article.categoryColor || catColors[article.category] || '#1473e6';
 
+// Resolve internal links from IDs to article objects
+const resolvedLinks = (article.internalLinks || [])
+  .map(id => articles.find(a => String(a.id) === String(id)))
+  .filter(Boolean)
+  .slice(0, 3);
+
+// Build enriched sections with inline links
+const enrichedSections = JSON.parse(JSON.stringify(article.sections || []));
+
+// Inject 3 internal links distributed across sections
+const linkPhrases = [
+  (a) => ` Vertiefende Einblicke bietet unser Beitrag <a href="/wissen/${a.slug}/">${a.title}</a>.`,
+  (a) => ` Lesen Sie hierzu auch <a href="/wissen/${a.slug}/">${a.title}</a>.`,
+  (a) => ` Weitere Informationen finden Sie unter <a href="/wissen/${a.slug}/">${a.title}</a>.`
+];
+resolvedLinks.forEach((linked, idx) => {
+  const si = Math.min(idx + 1, enrichedSections.length - 1);
+  const sec = enrichedSections[si];
+  if (sec && sec.paragraphs && sec.paragraphs.length > 0) {
+    const pi = Math.min(idx, sec.paragraphs.length - 1);
+    sec.paragraphs[pi] += linkPhrases[idx](linked);
+  }
+});
+
+// Inject Wikipedia link on NON-SEO anchor text
+if (article.wikipediaUrl && enrichedSections.length > 0) {
+  const wSec = enrichedSections[Math.max(0, enrichedSections.length - 2)];
+  if (wSec && wSec.paragraphs && wSec.paragraphs.length > 0) {
+    const wp = wSec.paragraphs.length - 1;
+    wSec.paragraphs[wp] += ` Einen weiterf\u00fchrenden \u00dcberblick bietet <a href="${article.wikipediaUrl}" target="_blank" rel="noopener">dieser Lexikoneintrag</a>.`;
+  }
+}
+
+// Stock video suggestions for sidebar
+const videoCategories = [
+  { name: 'Natur & Landschaft', slug: 'natur-landschaft', icon: '\ud83c\udf3f' },
+  { name: 'Business & B\u00fcro', slug: 'business-buero', icon: '\ud83d\udcbc' },
+  { name: 'Technologie', slug: 'technologie', icon: '\ud83d\udcbb' },
+  { name: 'Menschen & Lifestyle', slug: 'menschen-lifestyle', icon: '\ud83c\udfac' },
+  { name: 'Luftaufnahmen', slug: 'luftaufnahmen', icon: '\ud83d\ude81' },
+  { name: 'Architektur', slug: 'architektur', icon: '\ud83c\udfd7\ufe0f' }
+];
+const catToVideos: Record<string, string[]> = {
+  'Grundlagen': ['natur-landschaft', 'business-buero', 'technologie'],
+  'Produktion': ['luftaufnahmen', 'natur-landschaft', 'menschen-lifestyle'],
+  'Marketing': ['business-buero', 'menschen-lifestyle', 'technologie'],
+  'Recht': ['business-buero', 'architektur', 'technologie'],
+  'Technologie': ['technologie', 'luftaufnahmen', 'architektur'],
+  'Business': ['business-buero', 'menschen-lifestyle', 'architektur'],
+  'Branche': ['natur-landschaft', 'luftaufnahmen', 'menschen-lifestyle']
+};
+const suggestedSlugs = catToVideos[article.category] || ['natur-landschaft', 'business-buero', 'technologie'];
+const suggestedVideos = suggestedSlugs.map(s => videoCategories.find(v => v.slug === s)).filter(Boolean);
+
 const dateStr = article.publishDate || article.scheduledDate || new Date().toISOString().split('T')[0];
 const formattedDate = new Date(dateStr + 'T00:00:00').toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -82,7 +136,7 @@ const faqSchema = faqItems.length > 0 ? {
         <span class="article-cat-badge" style={`background:${catColor}`}>{article.category.toUpperCase()}</span>
         <h1>{article.title}</h1>
         <div class="article-meta">
-          <span>📖 {article.readTime} Min. Lesezeit</span><span>·</span>
+          <span>ð {article.readTime} Min. Lesezeit</span><span>Â·</span>
           <span>Zuletzt aktualisiert: {formattedDate}</span>
         </div>
         <figure class="article-hero">
@@ -91,7 +145,7 @@ const faqSchema = faqItems.length > 0 ? {
         </figure>
         <div class="article-intro"><p set:html={article.intro} /></div>
 
-        {(article.sections || []).map((section, i) => (
+        {(enrichedSections || []).map((section, i) => (
           <section class="article-section" id={`section-${i}`}>
             <h2>{section.heading}</h2>
             {(section.paragraphs || []).map(para => (
@@ -106,29 +160,13 @@ const faqSchema = faqItems.length > 0 ? {
 
         <div class="article-cta-box">
           <h3>Jetzt passende Stock Videos entdecken</h3>
-          <p>Finden Sie hochwertige, lizenzfreie 4K-Videoclips für Ihr nächstes Projekt auf stockvideo.de</p>
-          <a href="/" class="article-cta-btn">Stock Videos durchsuchen →</a>
+          <p>Finden Sie hochwertige, lizenzfreie 4K-Videoclips fÃ¼r Ihr nÃ¤chstes Projekt auf stockvideo.de</p>
+          <a href="/" class="article-cta-btn">Stock Videos durchsuchen â</a>
         </div>
 
-        {(article.internalLinks || []).length > 0 && (
-          <section class="article-sources">
-            <h2>Weiterführende Artikel</h2>
-            <ul>
-              {article.internalLinks.map(link => {
-                const url = typeof link === 'string' ? link : link.url;
-                const label = typeof link === 'string' ? link : (link.label || link.url);
-                return <li><a href={url}>{label}</a></li>;
-              })}
-            </ul>
-          </section>
-        )}
+        
 
-        {article.wikipediaUrl && (
-          <section class="article-sources">
-            <h2>Quellen</h2>
-            <ul><li><a href={article.wikipediaUrl} target="_blank" rel="noopener">{article.wikipediaAnchor || 'Wikipedia'}</a></li></ul>
-          </section>
-        )}
+        
 
         {related.length > 0 && (
           <section class="article-related">
@@ -163,9 +201,19 @@ const faqSchema = faqItems.length > 0 ? {
             </nav>
           </div>
         )}
-        <div class="sidebar-cta">
+        <div class="sidebar-videos">
+<h4>Passende Stock Videos</h4>
+{suggestedVideos.map(v => (
+<a href={`/?kategorie=${v.slug}`} class="sidebar-video-link">
+<span class="sidebar-video-icon">{v.icon}</span>
+<span>{v.name}</span>
+</a>
+))}
+<a href="/" class="sidebar-video-all">Alle Kategorien ansehen \u2192</a>
+</div>
+<div class="sidebar-cta">
           <h4>Stock Videos kaufen</h4>
-          <p>Lizenzfreie 4K-Videos ab 1,19 €</p>
+          <p>Lizenzfreie 4K-Videos ab 1,19 â¬</p>
           <a href="/" class="sidebar-cta-btn">Jetzt entdecken</a>
         </div>
       </aside>
@@ -231,4 +279,12 @@ const faqSchema = faqItems.length > 0 ? {
   .sidebar-cta p { font-size: 13px; color: #888; margin: 0 0 12px; }
   .sidebar-cta-btn { display: inline-block; background: #1473e6; color: #fff; padding: 10px 24px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600; transition: background .2s; }
   .sidebar-cta-btn:hover { background: #0d5fcf; }
+.sidebar-videos { background: #1a1a1a; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+.sidebar-videos h4 { color: #fff; font-size: 15px; margin: 0 0 12px; font-family: "Source Sans 3", sans-serif; }
+.sidebar-video-link { display: flex; align-items: center; gap: 10px; padding: 8px 0; color: #ccc; text-decoration: none; font-size: 14px; border-bottom: 1px solid #333; transition: color 0.2s; }
+.sidebar-video-link:last-of-type { border-bottom: none; }
+.sidebar-video-link:hover { color: #1473e6; }
+.sidebar-video-icon { font-size: 18px; width: 24px; text-align: center; }
+.sidebar-video-all { display: block; margin-top: 12px; color: #1473e6; text-decoration: none; font-size: 13px; font-weight: 600; }
+.sidebar-video-all:hover { text-decoration: underline; }
 </style>
