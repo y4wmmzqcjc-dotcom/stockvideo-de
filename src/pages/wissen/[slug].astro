@@ -42,57 +42,57 @@ const dateStr = article.publishDate || article.scheduledDate || new Date().toISO
 const formattedDate = new Date(dateStr + 'T00:00:00').toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' });
 
 const schema = {
-  \"@context\": \"https://schema.org\",
-  \"@type\": \"Article\",
-  \"headline\": article.seoTitle || article.title,
-  \"description\": article.metaDescription,
-  \"datePublished\": dateStr,
-  \"dateModified\": dateStr,
-  \"author\": { \"@type\": \"Organization\", \"name\": \"stockvideo.de\", \"url\": \"https://stockvideo.de\" },
-  \"publisher\": { \"@type\": \"Organization\", \"name\": \"stockvideo.de\", \"logo\": { \"@type\": \"ImageObject\", \"url\": \"https://stockvideo.de/favicon.svg\" } },
-  \"mainEntityOfPage\": { \"@type\": \"WebPage\", \"@id\": `https://stockvideo.de/wissen/${article.slug}/` }
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": article.seoTitle || article.title,
+  "description": article.metaDescription,
+  "datePublished": dateStr,
+  "dateModified": dateStr,
+  "author": { "@type": "Organization", "name": "stockvideo.de", "url": "https://stockvideo.de" },
+  "publisher": { "@type": "Organization", "name": "stockvideo.de", "logo": { "@type": "ImageObject", "url": "https://stockvideo.de/favicon.svg" } },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": `https://stockvideo.de/wissen/${article.slug}/` }
 };
 
 const faqItems = (article.sections || []).filter(s => s.heading && s.heading.includes('?'));
 const faqSchema = faqItems.length > 0 ? {
-  \"@context\": \"https://schema.org\",
-  \"@type\": \"FAQPage\",
-  \"mainEntity\": faqItems.map(s => ({
-    \"@type\": \"Question\",
-    \"name\": s.heading,
-    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": (s.paragraphs || []).join(' ').substring(0, 300) }
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqItems.map(s => ({
+    "@type": "Question",
+    "name": s.heading,
+    "acceptedAnswer": { "@type": "Answer", "text": (s.paragraphs || []).join(' ').substring(0, 300) }
   }))
 } : null;
 ---
 
 <BaseLayout title={article.seoTitle || article.title} description={article.metaDescription}>
   <Topbar />
-  <script type=\"application/ld+json\" set:html={JSON.stringify(schema)} />
-  {faqSchema && <script type=\"application/ld+json\" set:html={JSON.stringify(faqSchema)} />}
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
 
-  <main class=\"article-page\">
-    <nav class=\"breadcrumbs\">
-      <a href=\"/wissen/\">Wissen</a><span>/</span>
+  <main class="article-page">
+    <nav class="breadcrumbs">
+      <a href="/wissen/">Wissen</a><span>/</span>
       <a href={`/wissen/?cat=${encodeURIComponent(article.category)}`}>{article.category}</a><span>/</span>
       <span>{article.title}</span>
     </nav>
 
-    <div class=\"article-layout\">
-      <article class=\"article-main\">
-        <span class=\"article-cat-badge\" style={`background:${catColor}`}>{article.category.toUpperCase()}</span>
+    <div class="article-layout">
+      <article class="article-main">
+        <span class="article-cat-badge" style={`background:${catColor}`}>{article.category.toUpperCase()}</span>
         <h1>{article.title}</h1>
-        <div class=\"article-meta\">
-          <span>📖 {article.readTime} Min. Lesezeit</span><span>·</span>
+        <div class="article-meta">
+          <span>ð {article.readTime} Min. Lesezeit</span><span>Â·</span>
           <span>Zuletzt aktualisiert: {formattedDate}</span>
         </div>
-        <figure class=\"article-hero\">
-          <div class=\"article-hero-img\" style={`background: linear-gradient(135deg, ${catColor}44, ${catColor}22); aspect-ratio: 16/9; border-radius: 12px;`}></div>
+        <figure class="article-hero">
+          <div class="article-hero-img" style={`background: linear-gradient(135deg, ${catColor}44, ${catColor}22); aspect-ratio: 16/9; border-radius: 12px;`}></div>
           {article.imageAlt && <figcaption>{article.imageAlt}</figcaption>}
         </figure>
-        <div class=\"article-intro\"><p set:html={article.intro} /></div>
+        <div class="article-intro"><p set:html={article.intro} /></div>
 
         {(article.sections || []).map((section, i) => (
-          <section class=\"article-section\" id={`section-${i}`}>
+          <section class="article-section" id={`section-${i}`}>
             <h2>{section.heading}</h2>
             {(section.paragraphs || []).map(para => (
               <p set:html={para} />
@@ -101,18 +101,18 @@ const faqSchema = faqItems.length > 0 ? {
         ))}
 
         {article.conclusion && (
-          <div class=\"article-conclusion\"><p set:html={article.conclusion} /></div>
+          <div class="article-conclusion"><p set:html={article.conclusion} /></div>
         )}
 
-        <div class=\"article-cta-box\">
+        <div class="article-cta-box">
           <h3>Jetzt passende Stock Videos entdecken</h3>
-          <p>Finden Sie hochwertige, lizenzfreie 4K-Videoclips für Ihr nächstes Projekt auf stockvideo.de</p>
-          <a href=\"/\" class=\"article-cta-btn\">Stock Videos durchsuchen →</a>
+          <p>Finden Sie hochwertige, lizenzfreie 4K-Videoclips fÃ¼r Ihr nÃ¤chstes Projekt auf stockvideo.de</p>
+          <a href="/" class="article-cta-btn">Stock Videos durchsuchen â</a>
         </div>
 
         {(article.internalLinks || []).length > 0 && (
-          <section class=\"article-sources\">
-            <h2>Weiterführende Artikel</h2>
+          <section class="article-sources">
+            <h2>WeiterfÃ¼hrende Artikel</h2>
             <ul>
               {article.internalLinks.map(link => {
                 const url = typeof link === 'string' ? link : link.url;
@@ -124,25 +124,25 @@ const faqSchema = faqItems.length > 0 ? {
         )}
 
         {article.wikipediaUrl && (
-          <section class=\"article-sources\">
+          <section class="article-sources">
             <h2>Quellen</h2>
-            <ul><li><a href={article.wikipediaUrl} target=\"_blank\" rel=\"noopener\">{article.wikipediaAnchor || 'Wikipedia'}</a></li></ul>
+            <ul><li><a href={article.wikipediaUrl} target="_blank" rel="noopener">{article.wikipediaAnchor || 'Wikipedia'}</a></li></ul>
           </section>
         )}
 
         {related.length > 0 && (
-          <section class=\"article-related\">
+          <section class="article-related">
             <h2>Verwandte Artikel</h2>
-            <div class=\"related-grid\">
+            <div class="related-grid">
               {related.map(r => {
                 const rColor = r.categoryColor || catColors[r.category] || '#1473e6';
                 return (
-                  <a href={`/wissen/${r.slug}/`} class=\"related-card\">
-                    <div class=\"related-card-img\" style={`background: linear-gradient(135deg, ${rColor}66, ${rColor}22);`}></div>
-                    <div class=\"related-card-body\">
-                      <span class=\"related-cat\" style={`color:${rColor}`}>{r.category}</span>
+                  <a href={`/wissen/${r.slug}/`} class="related-card">
+                    <div class="related-card-img" style={`background: linear-gradient(135deg, ${rColor}66, ${rColor}22);`}></div>
+                    <div class="related-card-body">
+                      <span class="related-cat" style={`color:${rColor}`}>{r.category}</span>
                       <h3>{r.title}</h3>
-                      <span class=\"related-meta\">{r.readTime} Min. Lesezeit</span>
+                      <span class="related-meta">{r.readTime} Min. Lesezeit</span>
                     </div>
                   </a>
                 );
@@ -152,21 +152,21 @@ const faqSchema = faqItems.length > 0 ? {
         )}
       </article>
 
-      <aside class=\"article-sidebar\">
+      <aside class="article-sidebar">
         {toc.length > 0 && (
-          <div class=\"sidebar-toc\">
+          <div class="sidebar-toc">
             <h4>Inhaltsverzeichnis</h4>
             <nav>
               {toc.map(item => (
-                <a href={`#${item.id}`} class=\"toc-link\">{item.text}</a>
+                <a href={`#${item.id}`} class="toc-link">{item.text}</a>
               ))}
             </nav>
           </div>
         )}
-        <div class=\"sidebar-cta\">
+        <div class="sidebar-cta">
           <h4>Stock Videos kaufen</h4>
-          <p>Lizenzfreie 4K-Videos ab 1,19 €</p>
-          <a href=\"/\" class=\"sidebar-cta-btn\">Jetzt entdecken</a>
+          <p>Lizenzfreie 4K-Videos ab 1,19 â¬</p>
+          <a href="/" class="sidebar-cta-btn">Jetzt entdecken</a>
         </div>
       </aside>
     </div>
