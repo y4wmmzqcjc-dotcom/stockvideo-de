@@ -17,11 +17,11 @@ const relatedArticles = articles.filter(a => article.internalLinks.includes(a.id
 const relatedVideos = videos.slice(0, 3);
 
 // Generate table of contents from article content
-const headings = article.content?.match(/<h2[^>]*>.*?<\/h2>/gi)?.map((h: string) => {
-  const text = h.replace(/<[^>]*>/g, '');
+const headings = (article.sections || []).map((s: any) => {
+  const text = s.heading;
   const id = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
   return { text, id };
-}) || [];
+});
 
 // Structured data - JSON-LD
 const jsonLd = {
@@ -52,7 +52,7 @@ const tags = article.tags || [article.category];
 
     <!-- Fullwidth Hero -->
     <div class="article-hero" style={`background: linear-gradient(135deg, ${article.categoryColor || '#1a1a2e'}cc, ${article.categoryColor || '#16213e'}88, #0f3460)`}>
-      <div class="hero-emoji">{article.categoryEmoji || '📄'}</div>
+      <div class="hero-emoji">{article.categoryEmoji || 'ð'}</div>
     </div>
 
     <!-- Content overlapping hero -->
@@ -66,15 +66,24 @@ const tags = article.tags || [article.category];
               <div class="author-avatar">TR</div>
               <span>Timo Rende</span>
             </div>
-            <span>📖 {article.readTime} Min. Lesezeit</span>
-            <span>📅 10. April 2026</span>
+            <span>ð {article.readTime} Min. Lesezeit</span>
+            <span>ð 10. April 2026</span>
           </div>
 
           {article.intro && (
             <p class="intro-paragraph">{article.intro}</p>
           )}
 
-          <div class="article-body" set:html={article.content} />
+          <div class="article-body">
+          {(article.sections || []).map((section: any) => (
+            <section>
+              <h2 id={section.heading.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')}>{section.heading}</h2>
+              {section.paragraphs.map((p: string) => (
+                <p set:html={p} />
+              ))}
+            </section>
+          ))}
+        </div>
 
           {article.conclusion && (
             <p class="conclusion-paragraph">{article.conclusion}</p>
@@ -82,7 +91,7 @@ const tags = article.tags || [article.category];
 
           {relatedArticles.length > 0 && (
             <section class="internal-links-section">
-              <h2>Weiterführende Artikel</h2>
+              <h2>WeiterfÃ¼hrende Artikel</h2>
               <ul class="internal-links-list">
                 {relatedArticles.map(related => (
                   <li>
@@ -100,10 +109,10 @@ const tags = article.tags || [article.category];
           </div>
 
           <div class="share-row">
-            <button class="share-btn" data-action="copy">🔗 Link kopieren</button>
-            <button class="share-btn" data-action="email">📧 Per E-Mail teilen</button>
-            <button class="share-btn" data-action="twitter">𝕏 Twitter</button>
-            <button class="share-btn" data-action="linkedin">💼 LinkedIn</button>
+            <button class="share-btn" data-action="copy">ð Link kopieren</button>
+            <button class="share-btn" data-action="email">ð§ Per E-Mail teilen</button>
+            <button class="share-btn" data-action="twitter">ð Twitter</button>
+            <button class="share-btn" data-action="linkedin">ð¼ LinkedIn</button>
           </div>
         </div>
 
@@ -124,10 +133,10 @@ const tags = article.tags || [article.category];
             <h3 class="sidebar-title">Passende Videos</h3>
             {relatedVideos.map(video => (
               <a href={`/video/${video.slug}`} class="video-card-sm">
-                <div class="video-thumb-placeholder" style={`background: linear-gradient(135deg, ${article.categoryColor || '#2563eb'}40, ${article.categoryColor || '#2563eb'}20)`}>▶</div>
+                <div class="video-thumb-placeholder" style={`background: linear-gradient(135deg, ${article.categoryColor || '#2563eb'}40, ${article.categoryColor || '#2563eb'}20)`}>â¶</div>
                 <div class="video-card-info">
                   <div class="video-card-title">{video.title}</div>
-                  <div class="video-card-price">ab 29 €</div>
+                  <div class="video-card-price">ab 29 â¬</div>
                 </div>
               </a>
             ))}
@@ -135,8 +144,8 @@ const tags = article.tags || [article.category];
 
           <div class="cta-box">
             <h3>Videos entdecken</h3>
-            <p>Finden Sie das perfekte Stockvideo für Ihr Projekt.</p>
-            <a href="/" class="cta-btn">Jetzt durchstöbern →</a>
+            <p>Finden Sie das perfekte Stockvideo fÃ¼r Ihr Projekt.</p>
+            <a href="/" class="cta-btn">Jetzt durchstÃ¶bern â</a>
           </div>
         </aside>
       </div>
@@ -149,7 +158,7 @@ const tags = article.tags || [article.category];
             {relatedArticles.map(related => (
               <a href={`/wissen/${related.slug}`} class="related-card">
                 <div class="img-placeholder" style={`background: linear-gradient(135deg, ${related.categoryColor || '#2563eb'}40, ${related.categoryColor || '#2563eb'}20)`}>
-                  <span>{related.categoryEmoji || '📄'}</span>
+                  <span>{related.categoryEmoji || 'ð'}</span>
                 </div>
                 <div class="related-card-body">
                   <div class="related-card-cat">{related.category}</div>
@@ -176,8 +185,8 @@ const tags = article.tags || [article.category];
         const title = document.title;
         if (action === 'copy') {
           navigator.clipboard.writeText(url).then(() => {
-            (btn as HTMLElement).textContent = '✓ Kopiert!';
-            setTimeout(() => { (btn as HTMLElement).textContent = '🔗 Link kopieren'; }, 2000);
+            (btn as HTMLElement).textContent = 'â Kopiert!';
+            setTimeout(() => { (btn as HTMLElement).textContent = 'ð Link kopieren'; }, 2000);
           });
         } else if (action === 'email') {
           window.open(`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`);
