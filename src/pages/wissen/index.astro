@@ -1,0 +1,452 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Topbar from '../../components/Topbar.astro';
+import Footer from '../../components/Footer.astro';
+import articles from '../../data/articles.json';
+
+const categories = [...new Set(articles.map(a => a.category))].sort();
+
+const categoryEmojis = {
+  'Grundlagen': '🎬',
+  'Produktion': '🎥',
+  'Lizenzierung': '⚖️',
+  'Marketing': '💡',
+  'Technik': '📐',
+  'Social Media': '📱',
+  'Business': '💰',
+  'Trends': '🔮'
+};
+
+const categoryColors = {
+  'Grundlagen': '#FF6B6B',
+  'Produktion': '#4ECDC4',
+  'Lizenzierung': '#FFE66D',
+  'Marketing': '#A8E6CF',
+  'Technik': '#95E1D3',
+  'Social Media': '#FF8C94',
+  'Business': '#C7CEEA',
+  'Trends': '#B4A7D6'
+};
+
+interface Article {
+  slug: string;
+  title: string;
+  description: string;
+  category: string;
+  categoryColor?: string;
+  readTime: number;
+  featured?: boolean;
+}
+
+const enrichedArticles = articles.map((article: Article) => ({
+  ...article,
+  categoryColor: article.categoryColor || categoryColors[article.category as keyof typeof categoryColors] || '#666666'
+}));
+---
+
+<BaseLayout title="Wissen — Alles rund um Stockvideo" description="Expertenwissen, Praxistipps und Brancheneinblicke rund um Stockvideos. Von der Produktion bis zur Lizenzierung.">
+  <Topbar />
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">Alles rund um <span class="accent-text">Stockvideo</span></h1>
+      <p class="hero-subtitle">Expertenwissen, Praxistipps und Brancheneinblicke — von der Produktion bis zur Lizenzierung. Ihr umfassendes Nachschlagewerk für lizenzfreie Videos.</p>
+
+      <!-- Search Bar -->
+      <div class="search-wrap">
+        <input
+          type="text"
+          class="search-bar"
+          id="searchInput"
+          placeholder="Artikel durchsuchen..."
+          aria-label="Artikel durchsuchen"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Category Filter Strip -->
+  <section class="filter-section">
+    <div class="cat-strip" id="categoryFilter">
+      <button class="cat-chip active" data-category="all">Alle Themen</button>
+      {categories.map((category) => (
+        <button class="cat-chip" data-category={category}>
+          {category}
+        </button>
+      ))}
+    </div>
+  </section>
+
+  <!-- Article Grid -->
+  <section class="articles-section">
+    <div class="articles-grid" id="articlesGrid">
+      {enrichedArticles.map((article) => (
+        <a href={`/wissen/${article.slug}/`} class="article-card" data-category={article.category} data-title={article.title.toLowerCase()}>
+          <!-- Image Area with Gradient and Emoji -->
+          <div
+            class="article-image"
+            style={`background: linear-gradient(135deg, ${article.categoryColor}40, ${article.categoryColor}10);`}
+          >
+            <span class="article-emoji">{categoryEmojis[article.category as keyof typeof categoryEmojis] || '📄'}</span>
+          </div>
+
+          <!-- Card Content -->
+          <div class="article-content">
+            <span class="category-badge" style={`background-color: ${article.categoryColor}20; color: ${article.categoryColor};`}>
+              {article.category}
+            </span>
+
+            <h3 class="article-title">{article.title}</h3>
+
+            <p class="article-description">{article.description}</p>
+
+            <span class="article-read-time">📖 {article.readTime} Min. Lesezeit</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <Footer />
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Wissen — Alles rund um Stockvideo",
+    "description": "Expertenwissen, Praxistipps und Brancheneinblicke rund um Stockvideos. Von der Produktion bis zur Lizenzierung.",
+    "url": "https://stockvideo.de/wissen/",
+    "mainEntity": {
+      "@type": "ItemList",
+      "itemListElement": enrichedArticles.map((article, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "name": article.title,
+        "description": article.description,
+        "url": `https://stockvideo.de/wissen/${article.slug}/`,
+        "articleCategory": article.category,
+        "timeRequired": `PT${article.readTime}M`
+      }))
+    }
+  })}>
+  </script>
+
+  <!-- Client-side Filtering & Search JavaScript -->
+  <script>
+    // DOM Elements
+    const searchInput = document.getElementById('searchInput');
+    const categoryChips = document.querySelectorAll('.cat-chip');
+    const articleCards = document.querySelectorAll('.article-card');
+    const articlesGrid = document.getElementById('articlesGrid');
+
+    let activeCategory = 'all';
+    let activeSearch = '';
+
+    // Category Filter Handler
+    categoryChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        // Remove active class from all chips
+        categoryChips.forEach(c => c.classList.remove('active'));
+        // Add active class to clicked chip
+        chip.classList.add('active');
+
+        activeCategory = chip.getAttribute('data-category') || 'all';
+        filterArticles();
+      });
+    });
+
+    // Search Handler
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        activeSearch = (e.target as HTMLInputElement).value.toLowerCase();
+        filterArticles();
+      });
+    }
+
+    // Filter Articles Function
+    function filterArticles() {
+      let visibleCount = 0;
+
+      articleCards.forEach(card => {
+        const cardCategory = card.getAttribute('data-category');
+        const cardTitle = card.getAttribute('data-title') || '';
+
+        // Category filter
+        const matchesCategory = activeCategory === 'all' || cardCategory === activeCategory;
+
+        // Search filter
+        const matchesSearch = activeSearch === '' || cardTitle.includes(activeSearch);
+
+        // Show/hide card
+        const shouldShow = matchesCategory && matchesSearch;
+
+        if (shouldShow) {
+          card.style.opacity = '1';
+          card.style.pointerEvents = 'auto';
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.style.opacity = '0.3';
+          card.style.pointerEvents = 'none';
+          card.classList.add('hidden');
+        }
+      });
+
+      // Optional: Add "no results" message if needed
+      if (visibleCount === 0) {
+        console.log('No articles match the current filters');
+      }
+    }
+  </script>
+</BaseLayout>
+
+<style>
+  /* Hero Section */
+  .hero-section {
+    padding: 52px 24px 36px;
+    text-align: center;
+    background-color: var(--bg-primary);
+  }
+
+  .hero-content {
+    max-width: var(--max-w);
+    margin: 0 auto;
+  }
+
+  .hero-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+
+  .accent-text {
+    color: var(--accent);
+  }
+
+  .hero-subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    line-height: 1.6;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+
+  /* Search Bar */
+  .search-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+  }
+
+  .search-bar {
+    width: 100%;
+    max-width: 500px;
+    padding: 12px 16px;
+    font-size: 14px;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: 'Source Sans 3', sans-serif;
+    transition: all 0.2s ease;
+  }
+
+  .search-bar:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(20, 115, 230, 0.1);
+  }
+
+  .search-bar::placeholder {
+    color: var(--text-muted);
+  }
+
+  /* Filter Section */
+  .filter-section {
+    padding: 24px;
+    background-color: var(--bg-primary);
+    display: flex;
+    justify-content: center;
+  }
+
+  .cat-strip {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: var(--max-w);
+  }
+
+  .cat-chip {
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+
+  .cat-chip:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .cat-chip.active {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  /* Articles Section */
+  .articles-section {
+    padding: 24px;
+    background-color: var(--bg-primary);
+    display: flex;
+    justify-content: center;
+  }
+
+  .articles-grid {
+    width: 100%;
+    max-width: var(--max-w);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+  }
+
+  /* Article Card */
+  .article-card {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .article-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: 0 0 20px rgba(20, 115, 230, 0.2);
+  }
+
+  .article-card.hidden {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  /* Article Image Area */
+  .article-image {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.25), rgba(255, 107, 107, 0.05));
+  }
+
+  .article-emoji {
+    font-size: 64px;
+    line-height: 1;
+  }
+
+  /* Article Content */
+  .article-content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Category Badge */
+  .category-badge {
+    align-self: flex-start;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Article Title */
+  .article-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+
+  /* Article Description */
+  .article-description {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+
+  /* Article Read Time */
+  .article-read-time {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: auto;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .articles-grid {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .hero-title {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+    }
+
+    .hero-subtitle {
+      font-size: 15px;
+    }
+
+    .cat-strip {
+      gap: 10px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .articles-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .search-bar {
+      font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    .cat-chip {
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+  }
+</style>
