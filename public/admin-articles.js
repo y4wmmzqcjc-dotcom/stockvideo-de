@@ -1,6 +1,6 @@
 /* ============================================================
-   admin-articles.js Ã¢Â€Â” Wissen/Artikel-Verwaltung fÃƒÂ¼r stockvideo.de
-   Version 2.0 Ã¢Â€Â” Listenansicht, Publish/Draft, Planungskalender
+   admin-articles.js -- Wissen/Artikel-Verwaltung fuer stockvideo.de
+   Version 3.0 -- UTF-8 fix, Grosser Redaktionskalender-Tab
    ============================================================ */
 
 const adminArticles = {
@@ -8,17 +8,17 @@ const adminArticles = {
   currentEditId: null,
   calendarMonth: new Date().getMonth(),
   calendarYear: new Date().getFullYear(),
+  activeView: 'list', // 'list' or 'calendar'
 
   /* ---------- INIT ---------- */
   init() {
     const container = document.getElementById('panel-articles');
     if (!container) return;
-    // Load from localStorage or fetch
     const stored = localStorage.getItem('adminArticles');
     if (stored) {
       try { this.articles = JSON.parse(stored); } catch(e) { this.articles = []; }
       this._ensureStatusFields();
-      this.renderList();
+      this.render();
     } else {
       fetch('/data/articles.json')
         .then(r => r.json())
@@ -26,7 +26,7 @@ const adminArticles = {
         .then(data => {
           this.articles = data || [];
           this._ensureStatusFields();
-          this.renderList();
+          this.render();
         });
     }
   },
@@ -35,629 +35,11 @@ const adminArticles = {
     this.articles.forEach(a => {
       if (!a.status) a.status = 'published';
       if (!a.scheduledDate) a.scheduledDate = null;
+      if (!a.articleId) a.articleId = a.id ? a.id.replace('art_','A') : 'A' + Math.random().toString(36).substr(2,5).toUpperCase();
     });
   },
 
   _save() {
     localStorage.setItem('adminArticles', JSON.stringify(this.articles));
   },
-
-  /* ---------- LIST VIEW ---------- */
-  renderList() {
-    const c = document.getElementById('panel-articles');
-    if (!c) return;
-
-    const published = this.articles.filter(a => a.status === 'published').length;
-    const drafts = this.articles.filter(a => a.status === 'draft').length;
-    const scheduled = this.articles.filter(a => a.status === 'scheduled').length;
-
-    c.innerHTML = `
-      <div class="aa-header">
-        <div class="aa-header-top">
-          <h2>Wissen / Artikel</h2>
-          <button class="aa-btn aa-btn-primary" onclick="adminArticles.newArticle()">+ Neuer Artikel</button>
-        </div>
-        <div class="aa-stats">
-          <div class="aa-stat"><span class="aa-stat-num">${this.articles.length}</span><span class="aa-stat-label">Gesamt</span></div>
-          <div class="aa-stat aa-stat-green"><span class="aa-stat-num">${published}</span><span class="aa-stat-label">ÃƒÂ–ffentlich</span></div>
-          <div class="aa-stat aa-stat-yellow"><span class="aa-stat-num">${scheduled}</span><span class="aa-stat-label">Geplant</span></div>
-          <div class="aa-stat aa-stat-gray"><span class="aa-stat-num">${drafts}</span><span class="aa-stat-label">Entwurf</span></div>
-        </div>
-      </div>
-
-      <div class="aa-layout">
-        <div class="aa-list-section">
-          <div class="aa-filter-bar">
-            <button class="aa-filter active" data-filter="all" onclick="adminArticles.filterList('all',this)">Alle</button>
-            <button class="aa-filter" data-filter="published" onclick="adminArticles.filterList('published',this)">ÃƒÂ–ffentlich</button>
-            <button class="aa-filter" data-filter="scheduled" onclick="adminArticles.filterList('scheduled',this)">Geplant</button>
-            <button class="aa-filter" data-filter="draft" onclick="adminArticles.filterList('draft',this)">Entwurf</button>
-          </div>
-          <div class="aa-article-list" id="aa-article-list">
-            ${this._renderArticleRows('all')}
-          </div>
-        </div>
-
-        <div class="aa-calendar-section">
-          <h3>Redaktionskalender</h3>
-          <div class="aa-cal-nav">
-            <button onclick="adminArticles.calPrev()">&laquo;</button>
-            <span id="aa-cal-title">${this._monthName(this.calendarMonth)} ${this.calendarYear}</span>
-            <button onclick="adminArticles.calNext()">&raquo;</button>
-          </div>
-          <div class="aa-calendar" id="aa-calendar">
-            ${this._renderCalendar()}
-          </div>
-          <div class="aa-cal-legend">
-            <span class="aa-cal-dot aa-dot-green"></span> ÃƒÂ–ffentlich
-            <span class="aa-cal-dot aa-dot-yellow"></span> Geplant
-          </div>
-          <div class="aa-upcoming" id="aa-upcoming">
-            ${this._renderUpcoming()}
-          </div>
-        </div>
-      </div>
-
-      <div class="aa-actions-bottom">
-        <button class="aa-btn aa-btn-save" onclick="adminArticles.publishToGitHub()">Alle ÃƒÂ„nderungen verÃƒÂ¶ffentlichen</button>
-      </div>
-    `;
-  },
-
-  _renderArticleRows(filter) {
-    let list = this.articles;
-    if (filter !== 'all') list = list.filter(a => a.status === filter);
-    if (!list.length) return '<div class="aa-empty">Keine Artikel in dieser Kategorie</div>';
-
-    return list.map(a => {
-      const statusClass = a.status === 'published' ? 'aa-status-published' : a.status === 'scheduled' ? 'aa-status-scheduled' : 'aa-status-draft';
-      const statusLabel = a.status === 'published' ? 'ÃƒÂ–ffentlich' : a.status === 'scheduled' ? 'Geplant' : 'Entwurf';
-      const statusIcon = a.status === 'published' ? 'Ã¢Â—Â' : a.status === 'scheduled' ? 'Ã¢Â—Â' : 'Ã¢Â—Â‹';
-      const schedInfo = a.status === 'scheduled' && a.scheduledDate ? `<span class="aa-sched-date">${this._formatDate(a.scheduledDate)}</span>` : '';
-      const catColor = a.categoryColor || '#1473e6';
-
-      return `
-        <div class="aa-row" data-status="${a.status}" data-id="${a.id}">
-          <div class="aa-row-status">
-            <span class="${statusClass}" title="${statusLabel}">${statusIcon}</span>
-          </div>
-          <div class="aa-row-info">
-            <div class="aa-row-title">${a.title || a.seoTitle || 'Ohne Titel'}</div>
-            <div class="aa-row-meta">
-              <span class="aa-cat-badge" style="background:${catColor}">${a.category}</span>
-              <span>${a.readTime || '?'} Min.</span>
-              ${schedInfo}
-            </div>
-          </div>
-          <div class="aa-row-actions">
-            <label class="aa-toggle" title="ÃƒÂ–ffentlich / Entwurf">
-              <input type="checkbox" ${a.status === 'published' ? 'checked' : ''} onchange="adminArticles.toggleStatus('${a.id}', this.checked)">
-              <span class="aa-toggle-slider"></span>
-            </label>
-            <button class="aa-btn-icon" title="Planen" onclick="adminArticles.openScheduler('${a.id}')">Ã°ÂŸÂ“Â…</button>
-            <button class="aa-btn-icon" title="Bearbeiten" onclick="adminArticles.openEditor('${a.id}')">Ã¢ÂœÂÃ¯Â¸Â</button>
-            <button class="aa-btn-icon aa-btn-danger" title="LÃƒÂ¶schen" onclick="adminArticles.deleteArticle('${a.id}')">Ã°ÂŸÂ—Â‘Ã¯Â¸Â</button>
-          </div>
-        </div>`;
-    }).join('');
-  },
-
-  filterList(filter, btn) {
-    document.querySelectorAll('.aa-filter').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-    document.getElementById('aa-article-list').innerHTML = this._renderArticleRows(filter);
-  },
-
-  /* ---------- STATUS TOGGLE ---------- */
-  toggleStatus(id, isPublished) {
-    const a = this.articles.find(x => x.id === id);
-    if (!a) return;
-    a.status = isPublished ? 'published' : 'draft';
-    if (isPublished) a.scheduledDate = null;
-    this._save();
-    this.renderList();
-  },
-
-  /* ---------- SCHEDULER ---------- */
-  openScheduler(id) {
-    const a = this.articles.find(x => x.id === id);
-    if (!a) return;
-    const current = a.scheduledDate || '';
-    const overlay = document.createElement('div');
-    overlay.className = 'aa-overlay';
-    overlay.innerHTML = `
-      <div class="aa-modal">
-        <h3>VerÃƒÂ¶ffentlichung planen</h3>
-        <p class="aa-modal-title">${a.title || a.seoTitle}</p>
-        <div class="aa-modal-field">
-          <label>VerÃƒÂ¶ffentlichungsdatum:</label>
-          <input type="date" id="aa-sched-input" value="${current}" min="${new Date().toISOString().split('T')[0]}">
-        </div>
-        <div class="aa-modal-field">
-          <label>Uhrzeit:</label>
-          <input type="time" id="aa-sched-time" value="09:00">
-        </div>
-        <div class="aa-modal-actions">
-          <button class="aa-btn" onclick="this.closest('.aa-overlay').remove()">Abbrechen</button>
-          <button class="aa-btn aa-btn-primary" onclick="adminArticles.setSchedule('${id}')">Planen</button>
-          ${a.status === 'scheduled' ? '<button class="aa-btn aa-btn-danger" onclick="adminArticles.removeSchedule(\'' + id + '\')">Planung entfernen</button>' : ''}
-        </div>
-      </div>`;
-    document.body.appendChild(overlay);
-  },
-
-  setSchedule(id) {
-    const a = this.articles.find(x => x.id === id);
-    if (!a) return;
-    const dateVal = document.getElementById('aa-sched-input').value;
-    if (!dateVal) { alert('Bitte Datum wÃƒÂ¤hlen'); return; }
-    a.scheduledDate = dateVal;
-    a.status = 'scheduled';
-    this._save();
-    document.querySelector('.aa-overlay')?.remove();
-    this.renderList();
-  },
-
-  removeSchedule(id) {
-    const a = this.articles.find(x => x.id === id);
-    if (!a) return;
-    a.scheduledDate = null;
-    a.status = 'draft';
-    this._save();
-    document.querySelector('.aa-overlay')?.remove();
-    this.renderList();
-  },
-
-  /* ---------- CALENDAR ---------- */
-  _monthName(m) {
-    return ['Januar','Februar','MÃƒÂ¤rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'][m];
-  },
-
-  _formatDate(d) {
-    if (!d) return '';
-    const dt = new Date(d + 'T00:00:00');
-    return dt.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  },
-
-  _renderCalendar() {
-    const y = this.calendarYear, m = this.calendarMonth;
-    const first = new Date(y, m, 1);
-    const last = new Date(y, m + 1, 0);
-    let startDay = first.getDay() || 7; // Monday = 1
-    const days = last.getDate();
-    const today = new Date().toISOString().split('T')[0];
-
-    // Get articles with dates in this month
-    const monthArticles = {};
-    this.articles.forEach(a => {
-      const d = a.scheduledDate || (a.status === 'published' ? (a.publishDate || null) : null);
-      if (d && d.startsWith(y + '-' + String(m+1).padStart(2,'0'))) {
-        const day = parseInt(d.split('-')[2]);
-        if (!monthArticles[day]) monthArticles[day] = [];
-        monthArticles[day].push(a);
-      }
-    });
-
-    let html = '<div class="aa-cal-grid">';
-    html += ['Mo','Di','Mi','Do','Fr','Sa','So'].map(d => `<div class="aa-cal-head">${d}</div>`).join('');
-
-    // Empty cells before first day
-    for (let i = 1; i < startDay; i++) html += '<div class="aa-cal-cell aa-cal-empty"></div>';
-
-    for (let d = 1; d <= days; d++) {
-      const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      const isToday = dateStr === today;
-      const arts = monthArticles[d];
-      let dots = '';
-      if (arts) {
-        dots = arts.map(a => `<span class="aa-cal-dot ${a.status === 'published' ? 'aa-dot-green' : 'aa-dot-yellow'}" title="${a.title || a.seoTitle}"></span>`).join('');
-      }
-      html += `<div class="aa-cal-cell${isToday ? ' aa-cal-today' : ''}${arts ? ' aa-cal-has-art' : ''}" data-date="${dateStr}">
-        <span class="aa-cal-day">${d}</span>
-        <div class="aa-cal-dots">${dots}</div>
-      </div>`;
-    }
-    html += '</div>';
-    return html;
-  },
-
-  _renderUpcoming() {
-    const now = new Date().toISOString().split('T')[0];
-    const upcoming = this.articles
-      .filter(a => a.status === 'scheduled' && a.scheduledDate && a.scheduledDate >= now)
-      .sort((a, b) => a.scheduledDate.localeCompare(b.scheduledDate))
-      .slice(0, 5);
-    if (!upcoming.length) return '<div class="aa-upcoming-empty">Keine geplanten Artikel</div>';
-    return '<h4>NÃƒÂ¤chste geplante Artikel</h4>' + upcoming.map(a => `
-      <div class="aa-upcoming-item">
-        <span class="aa-upcoming-date">${this._formatDate(a.scheduledDate)}</span>
-        <span class="aa-upcoming-title">${a.title || a.seoTitle}</span>
-      </div>`).join('');
-  },
-
-  calPrev() {
-    this.calendarMonth--;
-    if (this.calendarMonth < 0) { this.calendarMonth = 11; this.calendarYear--; }
-    document.getElementById('aa-cal-title').textContent = this._monthName(this.calendarMonth) + ' ' + this.calendarYear;
-    document.getElementById('aa-calendar').innerHTML = this._renderCalendar();
-  },
-
-  calNext() {
-    this.calendarMonth++;
-    if (this.calendarMonth > 11) { this.calendarMonth = 0; this.calendarYear++; }
-    document.getElementById('aa-cal-title').textContent = this._monthName(this.calendarMonth) + ' ' + this.calendarYear;
-    document.getElementById('aa-calendar').innerHTML = this._renderCalendar();
-  },
-
-  /* ---------- NEW / DELETE ---------- */
-  newArticle() {
-    const id = 'art_' + Date.now();
-    this.articles.unshift({
-      id, slug: '', title: '', seoTitle: '', metaDescription: '',
-      keyphrase: '', category: 'Grundlagen', categoryColor: '#1473e6',
-      readTime: 8, imageAlt: '', intro: '', sections: [],
-      conclusion: '', internalLinks: [], wikipediaUrl: '', wikipediaAnchor: '',
-      imageGeoLat: '', imageGeoLng: '', imageGeoCity: '',
-      status: 'draft', scheduledDate: null, publishDate: null
-    });
-    this._save();
-    this.openEditor(id);
-  },
-
-  deleteArticle(id) {
-    const a = this.articles.find(x => x.id === id);
-    if (!a) return;
-    if (!confirm('Artikel "' + (a.title || a.seoTitle) + '" wirklich lÃƒÂ¶schen?')) return;
-    this.articles = this.articles.filter(x => x.id !== id);
-    this._save();
-    this.renderList();
-  },
-
-  /* ---------- EDITOR ---------- */
-  openEditor(id) {
-    const a = this.articles.find(x => x.id === id);
-    if (!a) return;
-    this.currentEditId = id;
-    const c = document.getElementById('panel-articles');
-
-    c.innerHTML = `
-      <div class="aa-editor">
-        <div class="aa-editor-header">
-          <button class="aa-btn" onclick="adminArticles.closeEditor()">Ã¢Â†Â ZurÃƒÂ¼ck zur Liste</button>
-          <h2>Artikel bearbeiten</h2>
-          <button class="aa-btn aa-btn-primary" onclick="adminArticles.saveArticle()">Speichern</button>
-        </div>
-        <div class="aa-editor-tabs">
-          <button class="aa-tab active" onclick="adminArticles.switchTab('content',this)">Inhalt</button>
-          <button class="aa-tab" onclick="adminArticles.switchTab('sections',this)">Abschnitte</button>
-          <button class="aa-tab" onclick="adminArticles.switchTab('seo',this)">SEO</button>
-          <button class="aa-tab" onclick="adminArticles.switchTab('settings',this)">Einstellungen</button>
-        </div>
-        <div class="aa-tab-content" id="aa-tab-content">${this._renderContentTab(a)}</div>
-        <div class="aa-tab-content" id="aa-tab-sections" style="display:none">${this._renderSectionsTab(a)}</div>
-        <div class="aa-tab-content" id="aa-tab-seo" style="display:none">${this._renderSeoTab(a)}</div>
-        <div class="aa-tab-content" id="aa-tab-settings" style="display:none">${this._renderSettingsTab(a)}</div>
-      </div>`;
-  },
-
-  switchTab(tab, btn) {
-    document.querySelectorAll('.aa-tab').forEach(t => t.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-    ['content','sections','seo','settings'].forEach(t => {
-      const el = document.getElementById('aa-tab-' + t);
-      if (el) el.style.display = t === tab ? 'block' : 'none';
-    });
-  },
-
-  _renderContentTab(a) {
-    return `
-      <div class="aa-form">
-        <div class="aa-field">
-          <label>Titel</label>
-          <input type="text" id="aa-title" value="${this._esc(a.title)}" placeholder="Artikel-Titel" oninput="adminArticles._autoSlug()">
-        </div>
-        <div class="aa-field-row">
-          <div class="aa-field">
-            <label>Slug</label>
-            <input type="text" id="aa-slug" value="${this._esc(a.slug)}" placeholder="url-slug">
-          </div>
-          <div class="aa-field">
-            <label>Kategorie</label>
-            <select id="aa-category">
-              ${['Grundlagen','Produktion','Marketing','Recht','Technologie','Business','Branche'].map(c => `<option${a.category===c?' selected':''}>${c}</option>`).join('')}
-            </select>
-          </div>
-        </div>
-        <div class="aa-field">
-          <label>Einleitung</label>
-          <textarea id="aa-intro" rows="4" placeholder="Einleitungstext...">${this._esc(a.intro)}</textarea>
-        </div>
-        <div class="aa-field">
-          <label>Fazit / Abschluss</label>
-          <textarea id="aa-conclusion" rows="3" placeholder="Fazit...">${this._esc(a.conclusion || '')}</textarea>
-        </div>
-      </div>`;
-  },
-
-  _renderSectionsTab(a) {
-    const sections = (a.sections || []).map((s, i) => `
-      <div class="aa-section-card" data-idx="${i}">
-        <div class="aa-section-head">
-          <span class="aa-section-num">H2 #${i+1}</span>
-          <input type="text" class="aa-section-heading" value="${this._esc(s.heading)}" placeholder="ÃƒÂœberschrift">
-          <button class="aa-btn-icon aa-btn-danger" onclick="adminArticles.removeSection(${i})">Ã¢ÂœÂ•</button>
-        </div>
-        <div class="aa-section-body">
-          ${(s.paragraphs || []).map((p, pi) => `
-            <div class="aa-para-wrap">
-              <textarea class="aa-section-para" rows="4" data-si="${i}" data-pi="${pi}" placeholder="Absatz ${pi+1}...">${this._esc(p)}</textarea>
-              <button class="aa-btn-icon aa-btn-danger" onclick="adminArticles.removeParagraph(${i},${pi})">Ã¢ÂœÂ•</button>
-            </div>`).join('')}
-          <button class="aa-btn aa-btn-sm" onclick="adminArticles.addParagraph(${i})">+ Absatz</button>
-        </div>
-      </div>`).join('');
-    return `
-      <div class="aa-sections">
-        ${sections || '<div class="aa-empty">Noch keine Abschnitte</div>'}
-        <button class="aa-btn aa-btn-primary" onclick="adminArticles.addSection()">+ Neuer Abschnitt (H2)</button>
-      </div>`;
-  },
-
-  _renderSeoTab(a) {
-    return `
-      <div class="aa-form">
-        <div class="aa-field">
-          <label>Keyphrase</label>
-          <input type="text" id="aa-keyphrase" value="${this._esc(a.keyphrase || '')}" placeholder="Haupt-Keyphrase">
-        </div>
-        <div class="aa-field">
-          <label>SEO-Titel <span class="aa-char-count" id="aa-seo-title-count"></span></label>
-          <input type="text" id="aa-seoTitle" value="${this._esc(a.seoTitle || '')}" placeholder="SEO-Titel (50-60 Zeichen)" oninput="adminArticles._updateCount('seoTitle',50,60)">
-        </div>
-        <div class="aa-field">
-          <label>Meta-Description <span class="aa-char-count" id="aa-meta-count"></span></label>
-          <textarea id="aa-metaDescription" rows="2" placeholder="150-160 Zeichen" oninput="adminArticles._updateCount('metaDescription',150,160)">${this._esc(a.metaDescription || '')}</textarea>
-        </div>
-        <div class="aa-field">
-          <label>Interne Links (URLs, je Zeile eine)</label>
-          <textarea id="aa-internalLinks" rows="3" placeholder="/wissen/slug-1/&#10;/video/slug-2/">${(a.internalLinks||[]).map(l=>typeof l==='string'?l:l.url||'').join('\n')}</textarea>
-        </div>
-        <div class="aa-field">
-          <label>Wikipedia-Quelle</label>
-          <input type="text" id="aa-wikiUrl" value="${this._esc(a.wikipediaUrl || '')}" placeholder="https://de.wikipedia.org/wiki/...">
-        </div>
-      </div>`;
-  },
-
-  _renderSettingsTab(a) {
-    return `
-      <div class="aa-form">
-        <div class="aa-field-row">
-          <div class="aa-field">
-            <label>Lesezeit (Min.)</label>
-            <input type="number" id="aa-readTime" value="${a.readTime || 8}" min="1" max="60">
-          </div>
-          <div class="aa-field">
-            <label>Kategorie-Farbe</label>
-            <input type="color" id="aa-catColor" value="${a.categoryColor || '#1473e6'}">
-          </div>
-        </div>
-        <div class="aa-field">
-          <label>Hero-Bild Alt-Text</label>
-          <input type="text" id="aa-imageAlt" value="${this._esc(a.imageAlt || '')}" placeholder="Bildbeschreibung">
-        </div>
-        <div class="aa-field-row">
-          <div class="aa-field"><label>Geo-Lat</label><input type="text" id="aa-geoLat" value="${a.imageGeoLat||''}"></div>
-          <div class="aa-field"><label>Geo-Lng</label><input type="text" id="aa-geoLng" value="${a.imageGeoLng||''}"></div>
-          <div class="aa-field"><label>Geo-Stadt</label><input type="text" id="aa-geoCity" value="${this._esc(a.imageGeoCity||'')}"></div>
-        </div>
-        <div class="aa-field">
-          <label>Wikipedia Ankertext</label>
-          <input type="text" id="aa-wikiAnchor" value="${this._esc(a.wikipediaAnchor||'')}">
-        </div>
-      </div>`;
-  },
-
-  _autoSlug() {
-    const title = document.getElementById('aa-title')?.value || '';
-    const slug = title.toLowerCase()
-      .normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
-      .replace(/[ÃƒÂ¤ÃƒÂ„]/g,'ae').replace(/[ÃƒÂ¶ÃƒÂ–]/g,'oe').replace(/[ÃƒÂ¼ÃƒÂœ]/g,'ue').replace(/ÃƒÂŸ/g,'ss')
-      .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    const el = document.getElementById('aa-slug');
-    if (el && !el.dataset.manual) el.value = slug;
-  },
-
-  _updateCount(field, min, max) {
-    const el = document.getElementById('aa-' + field);
-    const countEl = document.getElementById(field === 'seoTitle' ? 'aa-seo-title-count' : 'aa-meta-count');
-    if (!el || !countEl) return;
-    const len = el.value.length;
-    const color = len >= min && len <= max ? '#10b981' : len > 0 ? '#ef4444' : '#888';
-    countEl.textContent = `${len}/${min}-${max}`;
-    countEl.style.color = color;
-  },
-
-  /* ---------- SECTION MANAGEMENT ---------- */
-  addSection() {
-    this._collectEditorData();
-    const a = this.articles.find(x => x.id === this.currentEditId);
-    if (!a) return;
-    a.sections.push({ heading: '', paragraphs: [''] });
-    this._save();
-    document.getElementById('aa-tab-sections').innerHTML = this._renderSectionsTab(a);
-  },
-
-  removeSection(idx) {
-    this._collectEditorData();
-    const a = this.articles.find(x => x.id === this.currentEditId);
-    if (!a) return;
-    a.sections.splice(idx, 1);
-    this._save();
-    document.getElementById('aa-tab-sections').innerHTML = this._renderSectionsTab(a);
-  },
-
-  addParagraph(sIdx) {
-    this._collectEditorData();
-    const a = this.articles.find(x => x.id === this.currentEditId);
-    if (!a) return;
-    a.sections[sIdx].paragraphs.push('');
-    this._save();
-    document.getElementById('aa-tab-sections').innerHTML = this._renderSectionsTab(a);
-  },
-
-  removeParagraph(sIdx, pIdx) {
-    this._collectEditorData();
-    const a = this.articles.find(x => x.id === this.currentEditId);
-    if (!a) return;
-    a.sections[sIdx].paragraphs.splice(pIdx, 1);
-    this._save();
-    document.getElementById('aa-tab-sections').innerHTML = this._renderSectionsTab(a);
-  },
-
-  /* ---------- SAVE ---------- */
-  _collectEditorData() {
-    const a = this.articles.find(x => x.id === this.currentEditId);
-    if (!a) return;
-    const v = id => document.getElementById(id)?.value || '';
-    a.title = v('aa-title');
-    a.slug = v('aa-slug');
-    a.category = v('aa-category');
-    a.intro = v('aa-intro');
-    a.conclusion = v('aa-conclusion');
-    a.keyphrase = v('aa-keyphrase');
-    a.seoTitle = v('aa-seoTitle');
-    a.metaDescription = v('aa-metaDescription');
-    a.readTime = parseInt(v('aa-readTime')) || 8;
-    a.categoryColor = v('aa-catColor');
-    a.imageAlt = v('aa-imageAlt');
-    a.imageGeoLat = v('aa-geoLat');
-    a.imageGeoLng = v('aa-geoLng');
-    a.imageGeoCity = v('aa-geoCity');
-    a.wikipediaUrl = v('aa-wikiUrl');
-    a.wikipediaAnchor = v('aa-wikiAnchor');
-    const linksRaw = v('aa-internalLinks');
-    a.internalLinks = linksRaw.split('\n').map(l => l.trim()).filter(Boolean);
-    // Collect sections from DOM
-    document.querySelectorAll('.aa-section-card').forEach((card, i) => {
-      if (!a.sections[i]) a.sections[i] = { heading: '', paragraphs: [] };
-      a.sections[i].heading = card.querySelector('.aa-section-heading')?.value || '';
-      const paras = card.querySelectorAll('.aa-section-para');
-      a.sections[i].paragraphs = Array.from(paras).map(t => t.value);
-    });
-  },
-
-  saveArticle() {
-    this._collectEditorData();
-    this._save();
-    const toast = document.createElement('div');
-    toast.className = 'aa-toast';
-    toast.textContent = 'Artikel gespeichert!';
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
-  },
-
-  closeEditor() {
-    if (this.currentEditId) this._collectEditorData();
-    this._save();
-    this.currentEditId = null;
-    this.renderList();
-  },
-
-  /* ---------- PUBLISH TO GITHUB ---------- */
-  async publishToGitHub() {
-    const btn = document.querySelector('.aa-btn-save');
-    if (btn) { btn.textContent = 'Wird verÃƒÂ¶ffentlicht...'; btn.disabled = true; }
-    try {
-      const json = JSON.stringify(this.articles, null, 2);
-      const b64 = btoa(unescape(encodeURIComponent(json)));
-      const TOKEN = 'ghp_J3gxhc9f' + 'cRa7yxB0AUlp' + 'ERkScyIZjt19LfDh';
-      const REPO = 'y4wmmzqcjc-dotcom/stockvideo-de';
-      const h = { Authorization: 'token ' + TOKEN, 'Content-Type': 'application/json' };
-      const api = 'https://api.github.com/repos/' + REPO;
-      const [srcRes, pubRes] = await Promise.all([
-        fetch(api + '/contents/src/data/articles.json', { headers: h }).then(r=>r.json()),
-        fetch(api + '/contents/public/data/articles.json', { headers: h }).then(r=>r.json())
-      ]);
-      await Promise.all([
-        fetch(api + '/contents/src/data/articles.json', {
-          method: 'PUT', headers: h,
-          body: JSON.stringify({ message: 'Update articles.json (src)', content: b64, sha: srcRes.sha, branch: 'main' })
-        }),
-        fetch(api + '/contents/public/data/articles.json', {
-          method: 'PUT', headers: h,
-          body: JSON.stringify({ message: 'Update articles.json (public)', content: b64, sha: pubRes.sha, branch: 'main' })
-        })
-      ]);
-      if (btn) { btn.textContent = 'Ã¢ÂœÂ“ VerÃƒÂ¶ffentlicht!'; btn.style.background = '#10b981'; }
-      setTimeout(() => { if (btn) { btn.textContent = 'Alle ÃƒÂ„nderungen verÃƒÂ¶ffentlichen'; btn.disabled = false; btn.style.background = ''; } }, 3000);
-    } catch (e) {
-      alert('Fehler beim VerÃƒÂ¶ffentlichen: ' + e.message);
-      if (btn) { btn.textContent = 'Alle ÃƒÂ„nderungen verÃƒÂ¶ffentlichen'; btn.disabled = false; }
-    }
-  },
-
-  /* ---------- HELPERS ---------- */
-  _esc(s) {
-    if (!s) return '';
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;');
-  }
-};
-
-// Auto-init when panel becomes visible
-(function() {
-  if (typeof window.admin === 'undefined') {
-    // admin.js not loaded yet, retry
-    setTimeout(arguments.callee, 200);
-    return;
-  }
-
-  // Create panel-articles div if missing
-  const panelsContainer = document.querySelector('[id^="panel-"]')?.parentElement;
-  if (panelsContainer && !document.getElementById('panel-articles')) {
-    const div = document.createElement('div');
-    div.id = 'panel-articles';
-    div.className = 'admin-panel';
-    div.style.display = 'none';
-    panelsContainer.appendChild(div);
-  }
-
-  // Patch switchPanel - don't delegate to original for 'articles'
-  const origSwitch = window.admin.switchPanel.bind(window.admin);
-  window.admin.switchPanel = function(nameOrEvent) {
-    // Extract panel name - could be string or event
-    let name;
-    if (typeof nameOrEvent === 'string') {
-      name = nameOrEvent;
-    } else if (nameOrEvent && nameOrEvent.currentTarget) {
-      const el = nameOrEvent.currentTarget;
-      name = el.getAttribute('data-panel') || el.textContent.trim().toLowerCase();
-    } else {
-      name = nameOrEvent;
-    }
-
-    if (name === 'articles') {
-      // Handle articles panel ourselves
-      document.querySelectorAll('[id^="panel-"]').forEach(p => {
-        p.style.display = p.id === 'panel-articles' ? 'block' : 'none';
-      });
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(n => {
-        if (n.textContent.includes('Wissen') || n.textContent.includes('Artikel')) {
-          n.classList.add('active');
-        }
-      });
-      adminArticles.init();
-    } else {
-      // For other panels, call original but pass the event/name properly
-      try {
-        origSwitch(nameOrEvent);
-      } catch(e) {
-        // Fallback: handle panel switch manually
-        document.querySelectorAll('[id^="panel-"]').forEach(p => {
-          p.style.display = p.id === 'panel-' + name ? 'block' : 'none';
-        });
-      }
-    }
-  };
-})();
+çE7F'Bƒ"Âsr’²rÒr²7G&–ær‡FöF’ævWDFFR‚’’çE7F'Bƒ"Âsr“° ¢òò'V–ÆBÖ¢F’çVÖ&W"Óâ'F–6ÆW0¢6öç7BF”'F–6ÆW2Ò·Ó°¢F†—2æ'F–6ÆW2æf÷$V6‚†Óâ°¢ÆWBBÒçVÆÃ°¢–b†ç7FGW2ÓÓÒw66†VGVÆVBrbbç66†VGVÆVDFFR’BÒç66†VGVÆVDFFS°¢VÇ6R–b†ç7FGW2ÓÓÒwV&Æ—6†VBrbbçV&Æ—6„FFR’BÒçV&Æ—6„FFS°¢–b†B’°¢6öç7B'G2ÒBç7Æ—B‚rÒr“°¢–b‡'6T–çB‡'G5³Ò’ÓÓÒ’bb'6T–çB‡'G5³Ò’ÓÓÒÒ³’°¢6öç7BF’Ò'6T–çB‡'G5³%Ò“°¢–b‚F”'F–6ÆW5¶F•Ò’F”'F–6ÆW5¶F•ÒÒµÓ°¢F”'F–6ÆW5¶F•ÒçW6‚†“°¢Ð¢Ð¢Ò“° ¢òòVç66†VGVÆVB'F–6ÆW2f÷"G&÷F÷và¢6öç7BVç66†VGVÆVBÒF†—2æ'F–6ÆW2æf–ÇFW"†Óâç7FGW2ÓÓÒvG&gBrÇÂ†ç7FGW2ÓÒwV&Æ—6†VBrbbç7FGW2ÓÒw66†VGVÆVBr’“° ¢òò†VFW"&÷p¢ÆWB‡FÖÂÒsÆF—b6Æ73Ò&Ö6Â×vVV¶F—2#âs°¢6öç7BF”æÖW2Ò²tÖòrÂtF’rÂtÖ’rÂtFòrÂtg"rÂu6rÂu6òuÓ°¢F”æÖW2æf÷$V6‚†BÓâ²‡FÖÂ³ÒsÆF—b6Æ73Ò&Ö6Â×vVV¶F’#âr²B²sÂöF—câs²Ò“°¢‡FÖÂ³ÒsÂöF—cãÆF—b6Æ73Ò&Ö6ÂÖF—2#âs° ¢òòV×G’6VÆÇ2&Vf÷&Rf—'7BF¢f÷"†ÆWB’Ò²’Â7F'DF“²’²²’°¢‡FÖÂ³ÒsÆF—b6Æ73Ò&Ö6ÂÖ6VÆÂÖ6ÂÖV×G’#ãÂöF—câs°¢Ð ¢òòF’6VÆÇ0¢f÷"†ÆWBBÒ²BÃÒF—3²B²²’°¢6öç7BFFU7G"Ò’²rÒr²7G&–ær†Ò³’çE7F'Bƒ"Âsr’²rÒr²7G&–ær†B’çE7F'Bƒ"Âsr“°¢6öç7B—5FöF’ÒFFU7G"ÓÓÒFöF•7G#°¢6öç7B—57BÒæWrFFR†FFU7G"’ÂæWrFFR‡FöF•7G"“°¢6öç7B'G2ÒF”'F–6ÆW5¶EÒÇÂµÓ° ¢‡FÖÂ³ÒsÆF—b6Æ73Ò&Ö6ÂÖ6VÆÂr²†—5FöF’òrÖ6Â×FöF’r¢rr’²†—57BòrÖ6Â×7Br¢rr’²r"FFÖFFSÒ"r²FFU7G"²r#âs°¢‡FÖÂ³ÒsÆF—b6Æ73Ò&Ö6ÂÖF’ÖçVÒ#âr²B²sÂöF—câs° ¢òò6†÷r66†VGVÆVB÷V&Æ—6†VB'F–6ÆW2f÷"F†—2F¢–b†'G2æÆVæwF‚’°¢‡FÖÂ³ÒsÆF—b6Æ73Ò&Ö6ÂÖF’Ö'F–6ÆW2#âs°¢'G2æf÷$V6‚†Óâ°¢6öç7B6Ç2Òç7FGW2ÓÓÒwV&Æ—6†VBròvÖ6ÂÖ'B×V"r¢vÖ6ÂÖ'B×66†VBs°¢6öç7B6†÷'EF—FÆRÒ†çF—FÆRÇÂtö†æRF—FVÂr’ç7V'7G&–ærƒÃ#R“°¢‡FÖÂ³ÒsÆF—b6Æ73Ò&Ö6ÂÖ'BÖ6†—r²6Ç2²r"F—FÆSÒ"r²†çF—FÆRÇÂrr’²r²r²†æ'F–6ÆT–BÇÂæ–B’²uÒ#âs°¢‡FÖÂ³ÒsÇ7â6Æ73Ò&Ö6ÂÖ'BÖ–B#âr²†æ'F–6ÆT–BÇÂæ–B’²sÂ÷7ãâs°¢‡FÖÂ³Ò6†÷'EF—FÆS°¢‡FÖÂ³ÒsÆ'WGFöâ6Æ73Ò&Ö6ÂÖ'B×&VÖ÷fR"öæ6Æ–6³Ò&WfVçBç7F÷&÷vF–öâ‚“¶FÖ–ä'F–6ÆW2ç&VÖ÷fTg&öÔF’…Ârr²æ–B²uÂr’"F—FÆSÒ$VçFfW&æVâ#åÇSCsÂö'WGFöãâs°¢‡FÖÂ³ÒsÂöF—câs°¢Ò“°¢‡FÖÂ³ÒsÂöF—câs°¢Ð ¢òòG&÷F÷vâFòFB'F–6ÆRFòF†—2F’†öæÇ’f÷"FöF’÷"gWGW&R¢–b‚—57BbbVç66†VGVÆVBæÆVæwF‚â’°¢‡FÖÂ³ÒsÆF—b6Æ73Ò&Ö6ÂÖFB×w&#âs°¢‡FÖÂ³ÒsÇ6VÆV7B6Æ73Ò&Ö6ÂÖFB×6VÆV7B"öæ6†ævSÒ&FÖ–ä'F–6ÆW2ç66†VGVÆUFôF’‡F†—2çfÇVRÅÂrr²FFU7G"²uÂr“·F†—2çfÇVSÕÂuÂs²#âs°¢‡FÖÂ³ÒsÆ÷F–öâfÇVSÒ"#â²'F–¶VÂÆæVãÂö÷F–öãâs°¢Vç66†VGVÆVBæf÷$V6‚†Óâ°¢6öç7BÆ&VÂÒ†æ'F–6ÆT–BÇÂæ–B’²rÒr²†çF—FÆRÇÂtö†æRF—FVÂr’ç7V'7G&–ærƒÃ3“°¢‡FÖÂ³ÒsÆ÷F–öâfÇVSÒ"r²æ–B²r#âr²Æ&VÂ²sÂö÷F–öãâs°¢Ò“°¢‡FÖÂ³ÒsÂ÷6VÆV7Câs°¢‡FÖÂ³ÒsÂöF—câs°¢Ð ¢‡FÖÂ³ÒsÂöF—câs°¢Ð ¢òòf–ÆÂ&VÖ–æ–ær6VÆÇ0¢6öç7BF÷FÄ6VÆÇ2Ò‡7F'DF’Ò’²F—3°¢6öç7B&VÖ–æ–ærÒF÷FÄ6VÆÇ2RrÓÓÒò¢rÒ‡F÷FÄ6VÆÇ2Rr“°¢f÷"†ÆWB’Ò²’Â&VÖ–æ–æs²’²²’°¢‡FÖÂ³ÒsÆF—b6Æ73Ò&Ö6ÂÖ6VÆÂÖ6ÂÖV×G’#ãÂöF—câs°¢Ð ¢‡FÖÂ³ÒsÂöF—câs°¢&WGW&â‡FÖÃ°¢ÒÀ ¢66†VGVÆUFôF’†'F–6ÆT–BÂFFU7G"’°¢–b‚'F–6ÆT–B’&WGW&ã°¢6öç7BÒF†—2æ'F–6ÆW2æf–æB‡‚Óâ‚æ–BÓÓÒ'F–6ÆT–B“°¢–b‚’&WGW&ã°¢ç66†VGVÆVDFFRÒFFU7G#°¢ç7FGW2Òw66†VGVÆVBs°¢F†—2å÷6fR‚“°¢F†—2ç&VæFW"‚“°¢ÒÀ ¢&VÖ÷fTg&öÔF’†'F–6ÆT–B’°¢6öç7BÒF†—2æ'F–6ÆW2æf–æB‡‚Óâ‚æ–BÓÓÒ'F–6ÆT–B“°¢–b‚’&WGW&ã°¢–b†ç7FGW2ÓÓÒw66†VGVÆVBr’°¢ç66†VGVÆVDFFRÒçVÆÃ°¢ç7FGW2ÒvG&gBs°¢F†—2å÷6fR‚“°¢F†—2ç&VæFW"‚“°¢Ð¢ÒÀ ¢6Å&Wb‚’°¢F†—2æ6ÆVæF$ÖöçF‚ÒÓ°¢–b‡F†—2æ6ÆVæF$ÖöçF‚Â’²F†—2æ6ÆVæF$ÖöçF‚Ò²F†—2æ6ÆVæF%–V"ÒÓ²Ð¢F†—2ç&VæFW"‚“°¢ÒÀ ¢6ÄæW‡B‚’°¢F†—2æ6ÆVæF$ÖöçF‚²³°¢–b‡F†—2æ6ÆVæF$ÖöçF‚â’²F†—2æ6ÆVæF$ÖöçF‚Ò²F†—2æ6ÆVæF%–V"²³²Ð¢F†—2ç&VæFW"‚“°¢ÒÀ ¢öÖöçF„æÖR†Ò’°¢&WGW&â²t¦çV"rÂtfV''V"rÂtÕÇSSG'¢rÂt&–ÂrÂtÖ’rÂt§Væ’rÂt§VÆ’rÂtVwW7BrÂu6WFVÖ&W"rÂtö·Fö&W"rÂtæ÷fVÖ&W"rÂtFW¦VÖ&W"uÕ¶ÕÓ°¢ÒÀ ¢öf÷&ÖDFFR†B’°¢–b‚B’&WGW&ârs°¢6öç7BGBÒæWrFFR†B²uC££r“°¢&WGW&âGBçFôÆö6ÆTFFU7G&–ær‚vFRÔDRrÂ²F“¢s"ÖF–v—BrÂÖöçFƒ¢s"ÖF–v—BrÂ–V#¢vçVÖW&–2rÒ“°¢ÒÀ ¢ò¢ÒÒÒÒÒÒÒÒÒÒTD•Dõ"ÒÒÒÒÒÒÒÒÒÒ¢ð¢æWt'F–6ÆR‚’°¢6öç7B–BÒv'Eòr²FFRææ÷r‚“°¢6öç7B'D–BÒtr²ÖF‚ç&æFöÒ‚’çFõ7G&–ærƒ3b’ç7V'7G"ƒ"ÃR’çFõWW$66R‚“°¢F†—2æ'F–6ÆW2çW6‚‡°¢–C¢–BÀ¢'F–6ÆT–C¢'D–BÀ¢6ÇVs¢rrÀ¢F—FÆS¢tæWVW"'F–¶VÂrÀ¢ÖWFF—FÆS¢rrÀ¢ÖWFFW67&—F–öã¢rrÀ¢W†6W'C¢rrÀ¢6FVv÷'“¢vw'VæFÆvVârÀ¢6FVv÷'”6öÆ÷#¢r3Cs6SbrÀ¢Fw3¢µÒÀ¢&VEF–ÖS¢RÀ¢&VF–æuF–ÖS¢RÀ¢V&Æ—6„FFS¢æWrFFR‚’çFô•4õ7G&–ær‚’ç7Æ—B‚uBr•³ÒÀ¢Æ7DÖöF–f–VC¢æWrFFR‚’çFô•4õ7G&–ær‚’ç7Æ—B‚uBr•³ÒÀ¢WF†÷#¢²æÖS¢w7Fö6·f–FVòæFR&VF·F–öârÂ&öÆS¢u&VF·F–öç7FVÒrÒÀ¢†W&ô–ÖvS¢rrÀ¢6V7F–öç3¢·²†VF–æs¢tV–æÆV—GVærrÂ&w&‡3¢²ruÒÕÒÀ¢6öçFVçC¢²6V7F–öç3¢·²G—S¢v–çG&òrÂFW‡C¢rrÕÒÒÀ¢6Vó¢²&–Ö'”¶W—v÷&C¢rrÂ6V6öæF'”¶W—v÷&G3¢µÒÂ¶W—‡&6T–åF—FÆS¢fÇ6RÒÀ¢vVó¢²6—FF–öç3¢µÒÂf66†VÖ¢µÒÒÀ¢&VÆFVD'F–6ÆW3¢µÒÀ¢7F¢²FW‡C¢t¦WG§B7Fö6²f–FV÷2VçFFV6¶VârÂW&Ã¢ròrÂ7G–ÆS¢w&–Ö'’rÒÀ¢7FGW3¢vG&gBrÀ¢66†VGVÆVDFFS¢çVÆÀ¢Ò“°¢F†—2å÷6fR‚“°¢F†—2æ÷VäVF—F÷"†–B“°¢ÒÀ¡¹Ðˆøð½Íµ…±°øð½‘¥Øøœ€¬(€€€€€€€€œñ‘¥Ø±…ÍÌô‰…„µ™¥•±ˆøñ±…‰•°ùAÉ¥µqÔÀÁÑÉ•Ì-•åÝ½Éð½±…‰•°øñ¥¹ÁÕÐÑåÁ”ô‰Ñ•áÐˆ¥ô‰…„µ•µ­•åÝ½ÉˆÙ…±Õ”ôˆœ€¬Ñ¡¥Ì¹}•ÍŒ ¡„¹Í•¼€˜˜„¹Í•¼¹ÁÉ¥µ…Éå-•åÝ½É¤ñð€œœ¤€¬€œˆøð½‘¥Øøœ€¬(€€€€€€€€œñ‘¥Ø±…ÍÌô‰…„µ™¥•±ˆøñ±…‰•°ùQ…Ì€¡­½µµ…•ÑÉ•¹¹Ð¤ð½±…‰•°øñ¥¹ÁÕÐÑåÁ”ô‰Ñ•áÐˆ¥ô‰…„µ•µÑ…ÌˆÙ…±Õ”ôˆœ€¬Ñ¡¥Ì¹}•ÍŒ ¡„¹Ñ…Ìñðmt¤¹©½¥¸ œ°€œ¤¤€¬€œˆøð½‘¥Øøœ€¬(€€€€€€œð½‘¥Øøœ€¬((€€€€€€œñ‘¥Ø±…ÍÌô‰…„µ•Ñ…ˆµ½¹Ñ•¹Ðˆ¥ô‰…„µÑ…ˆµÍ•ÑÑ¥¹ÌˆÍÑå±”ô‰‘¥ÍÁ±…äé¹½¹”ˆøœ€¬(€€€€€€€€œñ‘¥Ø±…ÍÌô‰…„µ™¥•±ˆøñ±…‰•°ùMÑ…ÑÕÌð½±…‰•°øñÍ•±•Ð¥ô‰…„µ•µÍÑ…ÑÕÌˆøœ€¬(€€€€€€€€€€œñ½ÁÑ¥½¸Ù…±Õ”ô‰‘É…™Ðˆ€œ€¬€¡„¹ÍÑ…ÑÕÌ€ôôô€‘É…™Ðœ€ü€Í•±•Ñ•œ€è€œœ¤€¬€œù¹ÑÝÕÉ˜ð½½ÁÑ¥½¸øœ€¬(€€€€€€€€€€œñ½ÁÑ¥½¸Ù…±Õ”ô‰Í¡•‘Õ±•ˆ€œ€¬€¡„¹ÍÑ…ÑÕÌ€ôôô€Í¡•‘Õ±•œ€ü€Í•±•Ñ•œ€è€œœ¤€¬€œù•Á±…¹Ðð½½ÁÑ¥½¸øœ€¬(€€€€€€€€€€œñ½ÁÑ¥½¸Ù…±Õ”ô‰ÁÕ‰±¥Í¡•ˆ€œ€¬€¡„¹ÍÑ…ÑÕÌ€ôôô€ÁÕ‰±¥Í¡•œ€ü€Í•±•Ñ•œ€è€œœ¤€¬€œùqÔÀÁÙ™™•¹Ñ±¥ ð½½ÁÑ¥½¸øœ€¬(€€€€€€€€œð½Í•±•Ðøð½‘¥Øøœ€¬(€€€€€€€€œñ‘¥Ø±…ÍÌô‰…„µ™¥•±ˆøñ±…‰•°ù•Á±…¹Ñ•Ì…ÑÕ´ð½±…‰•°øñ¥¹ÁÕÐÑåÁ”ô‰‘…Ñ”ˆ¥ô‰…„µ•µÍ¡•‘‘…Ñ”ˆÙ…±Õ”ôˆœ€¬€¡„¹Í¡•‘Õ±•‘…Ñ”ñð€œœ¤€¬€œˆøð½‘¥Øøœ€¬(€€€€€€€€œñ‘¥Ø±…ÍÌô‰…„µ™¥•±ˆøñ±…‰•°ùY•ÉqÔÀÁÙ™™•¹Ñ±¥¡Õ¹Í‘…ÑÕ´ð½±…‰•°øñ¥¹ÁÕÐÑåÁ”ô‰‘…Ñ”ˆ¥ô‰…„µ•µÁÕ‰‘…Ñ”ˆÙ…±Õ”ôˆœ€¬€¡„¹ÁÕ‰±¥Í¡…Ñ”ñð€œœ¤€¬€œˆøð½‘¥Øøœ€¬(€€€€€€€€œñ‘¥Ø±…ÍÌô‰…„µ™¥•±ˆøñ±…‰•°ùY•ÉÝ…¹‘Ñ”ÉÑ¥­•°€¡M±ÕÌ°­½µµ…•ÑÉ•¹¹Ð¤ð½±…‰•°øñ¥¹ÁÕÐÑåÁ”ô‰Ñ•áÐˆ¥ô‰…„µ•µÉ•±…Ñ•ˆÙ…±Õ”ôˆœ€¬Ñ¡¥Ì¹}•ÍŒ ¡„¹É•±…Ñ•‘ÉÑ¥±•Ìñðmt¤¹©½¥¸ œ°€œ¤¤€¬€œˆøð½‘¥Øøœ€¬(€€€€€€€€œñ‘¥Ø±…ÍÌô‰…„µ™¥•±ˆøñ±…‰•°ùQQ•áÐð½±…‰•°øñ¥¹ÁÕÐÑåÁ”ô‰Ñ•áÐˆ¥ô‰…„µ•µÑ„ˆÙ…±Õ”ôˆœ€¬Ñ¡¥Ì¹}•ÍŒ ¡„¹Ñ„€˜˜„¹Ñ„¹Ñ•áÐ¤ñð€œœ¤€¬€œˆøð½‘¥Øøœ€¬(€€€€€€€€œñ‘¥Ø±…ÍÌô‰…„µ™¥•±ˆøñ±…‰•°ùQUI0ð½±…‰•°øñ¥¹ÁÕÐÑåÁ”ô‰Ñ•áÐˆ¥ô‰…„µ•µÑ…ÕÉ°ˆÙ…±Õ”ôˆœ€¬Ñ¡¥Ì¹}•ÍŒ ¡„¹Ñ„€˜˜„¹Ñ„¹ÕÉ°¤ñð€œ¼œ¤€¬€œˆøð½‘¥Øøœ€¬(€€€€€€œð½‘¥Øøœ€¬(€€€€œð½‘¥Øøœì(€ô°((€}É•¹‘•ÉM•Ñ¥½¹‘¥Ñ½È¡Ì°¤¤ì(€€€É•ÑÕÉ¸€œñ‘¥Ø±…ÍÌô‰…„µÍ•Ñ¥½¸µ‰±½¬ˆ‘…Ñ„µ¥‘àôˆœ€¬¤€¬€œˆøœ€¬(€€€€€€œñ‘¥Ø±…ÍÌô‰…„µÍ•Ñ¥½¸µ¡•…‘•Èˆøœ€¬(€€€€€€€€œñÍÁ…¸±…ÍÌô‰…„µÍ•Ñ¥½¸µ¹Õ´ˆù‰Í¡¹¥ÑÐ€œ€¬€¡¤¬Ä¤€¬€œð½ÍÁ…¸øœ€¬(€€€€€€€€œñ‰ÕÑÑ½¸±…ÍÌô‰…„µ‰Ñ¸µ¥½¸…„µ‰Ñ¸µ‘…¹•Èˆ½¹±¥¬ô‰…‘µ¥¹ÉÑ¥±•Ì¹É•µ½Ù•M•Ñ¥½¸ œ€¬¤€¬€œ¤ˆÑ¥Ñ±”ô‰¹Ñ™•É¹•¸ˆùqÔÀÁÜð½‰ÕÑÑ½¸øœ€¬(€€€€€€œð½‘¥Øøœ€¬(€€€€€€œñ‘¥Ø±…ÍÌô‰…„µ™¥•±ˆøñ±…‰•°ùqÔÀÁ‰•ÉÍ¡É¥™Ð€¡ È¤ð½±…‰•°øñ¥¹ÁÕÐÑåÁ”ô‰Ñ•áÐˆ±…ÍÌô‰…„µÍ•Œµ¡•…‘¥¹œˆÙ…±Õ”ôˆœ€¬Ñ¡¥Ì¹}•ÍŒ¡Ì¹¡•…‘¥¹œñð€œœ¤€¬€œˆøð½‘¥Øøœ€¬(€€€€€€œñ‘¥Ø±…ÍÌô‰…„µ™¥•±ˆøñ±…‰•°ùQ•áÐ€¡!Q50•É±…Õ‰Ð¤ð½±…‰•°øñÑ•áÑ…É•„±…ÍÌô‰…„µÍ•ŒµÁ…É„ˆÉ½ÝÌôˆÔˆøœ€¬Ñ¡¥Ì¹}•ÍŒ ¡Ì¹Á…É…É…Á¡Ìñðmt¤¹©½¥¸ q¹q¸œ¤¤€¬€œð½Ñ•áÑ…É•„øð½‘¥Øøœ€¬(€€€€œð½‘¥Øøœì(€ô°((€ÍÝ¥Ñ¡‘¥Ñ½ÉQ…ˆ¡¹…µ”°‰Ñ¸¤ì(€€€‘½Õµ•¹Ð¹ÅÕ•ÉåM•±•Ñ½É±° œ¹…„µ•Ñ…ˆœ¤¹™½É… ¡ˆ€ôøˆ¹±…ÍÍ1¥ÍÐ¹É•µ½Ù” …Ñ¥Ù”œ¤¤ì(€€€‘½Õµ•¹Ð¹ÅÕ•ÉåM•±•Ñ½É±° œ¹…„µ•Ñ…ˆµ½¹Ñ•¹Ðœ¤¹™½É… ¡Œ€ôøŒ¹ÍÑå±”¹‘¥ÍÁ±…ä€ô€¹½¹”œ¤ì(€€€¥˜€¡‰Ñ¸¤‰Ñ¸¹±…ÍÍ1¥ÍÐ¹…‘ …Ñ¥Ù”œ¤ì(€€€½¹ÍÐ•°€ô‘½Õµ•¹Ð¹•Ñ±•µ•¹Ñ	å% …„µÑ…ˆ´œ€¬¹…µ”¤ì(€€€¥˜€¡•°¤•°¹ÍÑå±”¹‘¥ÍÁ±…ä€ô€‰±½¬œì(€ô°((€…‘‘M•Ñ¥½¸ ¤ì(€€€½¹ÍÐ„€ôÑ¡¥Ì¹…ÉÑ¥±•Ì¹™¥¹¡à€ôøà¹¥€ôôôÑ¡¥Ì¹ÕÉÉ•¹Ñ‘¥Ñ%¤ì(€€€¥˜€ …„¤É•ÑÕÉ¸ì(€€€¥˜€ …„¹Í•Ñ¥½¹Ì¤„¹Í•Ñ¥½¹Ì€ômtì(€€€€¼¼M…Ù”ÕÉÉ•¹ÐÍÑ…Ñ”™¥ÉÍÐ(€€€Ñ¡¥Ì¹}½±±•ÑM•Ñ¥½¹Ì¡„¤ì(€€€„¹Í•Ñ¥½¹Ì¹ÁÕÍ ¡ì¡•…‘¥¹œè€œœ°Á…É…É…Á¡Ìèlœtô¤ì(€€€Ñ¡¥Ì¹}Í…Ù” ¤ì(€€€€¼¼I”µÉ•¹‘•ÈÍ•Ñ¥½¹Ì(€€€½¹ÍÐ±¥ÍÐ€ô‘½Õµ•¹Ð¹•Ñ±•µ•¹Ñ	å% …„µÍ•Ñ¥½¹Ìµ±¥ÍÐœ¤ì(€€€¥˜€¡±¥ÍÐ¤±¥ÍÐ¹¥¹¹•É!Q50€ô„¹Í•Ñ¥½¹Ì¹µ…À ¡Ì±¤¤€ôøÑ¡¥Ì¹}É•¹‘•ÉM•Ñ¥½¹‘¥Ñ½È¡Ì±¤¤¤¹©½¥¸ œœ¤ì(€ô°((€É•µ½Ù•M•Ñ¥½¸¡¥‘à¤ì(€€€½¹ÍÐ„€ôÑ¡¥Ì¹…ÉÑ¥±•Ì¹™¥¹¡à€ôøà¹¥€ôôôÑ¡¥Ì¹ÕÉÉ•¹Ñ‘¥Ñ%¤ì(€€€¥˜€ …„ñð€…„¹Í•Ñ¥½¹Ì¤É•ÑÕÉ¸ì(€€€Ñ¡¥Ì¹}½±±•ÑM•Ñ¥½¹Ì¡„¤ì(€€€„¹Í•Ñ¥½¹Ì¹ÍÁ±¥”¡¥‘à°€Ä¤ì(€€€Ñ¡¥Ì¹}Í…Ù” ¤ì(€€€½¹ÍÐ±¥ÍÐ€ô‘½Õµ•¹Ð¹•Ñ±•µ•¹Ñ	å% …„µÍ•Ñ¥½¹Ìµ±¥ÍÐœ¤ì(€€€¥˜€¡±¥ÍÐ¤±¥ÍÐ¹¥¹¹•É!Q50€ô„¹Í•Ñ¥½¹Ì¹µ…À ¡Ì±¤¤€ôøÑ¡¥Ì¹}É•¹‘•ÉM•Ñ¥½¹‘¥Ñ½È¡Ì±¤¤¤¹©½¥¸ œœ¤ì(€ô°((€}½±±•ÑM•Ñ¥½¹Ì¡„¤ì(€€€½¹ÍÐ¡•…‘¥¹Ì€ô‘½Õµ•¹Ð¹ÅÕ•ÉåM•±•Ñ½É±° œ¹…„µÍ•Œµ¡•…‘¥¹œœ¤ì(€€€½¹ÍÐÁ…É…Ì€ô‘½Õµ•¹Ð¹ÅÕ•ÉåM•±•Ñ½É±° œ¹…„µÍ•ŒµÁ…É„œ¤ì(€€€¥˜€¡¡•…‘¥¹Ì¹±•¹Ñ ¤ì(€€€€€„¹Í•Ñ¥½¹Ì€ômtì(€€€€€¡•…‘¥¹Ì¹™½É…  ¡ °¤¤€ôøì(€€€€€€€„¹Í•Ñ¥½¹Ì¹ÁÕÍ ¡ì(€€€€€€€€€¡•…‘¥¹œè ¹Ù…±Õ”°(€€€€€€€€€Á…É…É…Á¡ÌèÁ…É…Ím¥t€üÁ…É…Ím¥t¹Ù…±Õ”¹ÍÁ±¥Ð q¹q¸œ¤¹™¥±Ñ•È¡À€ôøÀ¹ÑÉ¥´ ¤¤€èlœt(€€€€€€€ô¤ì(€€€€€ô¤ì(€€€ô(€ô°((€Í…Ù•ÉÑ¥±” ¤ì(€€€½¹ÍÐ„€ôÑ¡¥Ì¹…ÉÑ¥±•Ì¹™¥¹¡à€ôøà¹¥€ôôôÑ¡¥Ì¹ÕÉÉ•¹Ñ‘¥Ñ%¤ì(€€€¥˜€ …„¤É•ÑÕÉ¸ì((€€€€¼¼½±±•Ð…±°™¥•±‘Ì(€€€½¹ÍÐØ€ô€¡¥¤€ôøì½¹ÍÐ•°€ô‘½Õµ•¹Ð¹•Ñ±•µ•¹Ñ	å%¡¥¤ìÉ•ÑÕÉ¸•°€ü•°¹Ù…±Õ”€è€œœìôì(€€€„¹Ñ¥Ñ±”€ôØ …„µ•µÑ¥Ñ±”œ¤ì(€€€„¹Í±Õœ€ôØ …„µ•µÍ±Õœœ¤ñð„¹Ñ¥Ñ±”¹Ñ½1½Ý•É…Í” ¤¹É•Á±…” ½my„µèÀ´åt¬½œ°œ´œ¤¹É•Á±…” ¼´¬¼°œœ¤ì(€€€„¹•á•ÉÁÐ€ôØ …„µ•µ•á•ÉÁÐœ¤ì(€€€„¹…Ñ•½Éä€ôØ …„µ•µ…Ðœ¤ì(€€€„¹É•…‘Q¥µ”€ôÁ…ÉÍ•%¹Ð¡Ø …„µ•µÉ•…‘Ñ¥µ”œ¤¤ñð€Ôì(€€€„¹É•…‘¥¹Q¥µ”€ô„¹É•…‘Q¥µ”ì(€€€„¹¡•É½%µ…”€ôØ …„µ•µ¡•É¼œ¤ì(€€€„¹µ•Ñ…Q¥Ñ±”€ôØ …„µ•µµ•Ñ…Ñ¥Ñ±”œ¤ì(€€€„¹µ•Ñ…•ÍÉ¥ÁÑ¥½¸€ôØ …„µ•µµ•Ñ…‘•ÍŒœ¤ì(€€€¥˜€¡„¹Í•¼¤„¹Í•¼¹ÁÉ¥µ…Éå-•åÝ½É€ôØ …„µ•µ­•åÝ½Éœ¤ì(€€€„¹Ñ…Ì€ôØ …„µ•µÑ…Ìœ¤¹ÍÁ±¥Ð œ°œ¤¹µ…À¡Ð€ôøÐ¹ÑÉ¥´ ¤¤¹™¥±Ñ•È¡Ð€ôøÐ¤ì(€€€„¹ÍÑ…ÑÕÌ€ôØ …„µ•µÍÑ…ÑÕÌœ¤ì(€€€„¹Í¡•‘Õ±•‘…Ñ”€ôØ …„µ•µÍ¡•‘‘…Ñ”œ¤ñð¹Õ±°ì(€€€„¹ÁÕ‰±¥Í¡…Ñ”€ôØ …„µ•µÁÕ‰‘…Ñ”œ¤ñð¹Õ±°ì(€€€„¹É•±…Ñ•‘ÉÑ¥±•Ì€ôØ …„µ•µÉ•±…Ñ•œ¤¹ÍÁ±¥Ð œ°œ¤¹µ…À¡Ð€ôøÐ¹ÑÉ¥´ ¤¤¹™¥±Ñ•È¡Ð€ôøÐ¤ì(€€€¥˜€¡„¹Ñ„¤ì(€€€€€„¹Ñ„¹Ñ•áÐ€ôØ …„µ•µÑ„œ¤ì(€€€€€„¹Ñ„¹ÕÉ°€ôØ …„µ•µÑ…ÕÉ°œ¤ì(€€€ô(€€€„¹±…ÍÑ5½‘¥™¥•€ô¹•Ü…Ñ” ¤¹Ñ½%M=MÑÉ¥¹œ ¤¹ÍÁ±¥Ð Pœ¥lÁtì((€€€€¼¼½±±•ÐÍ•Ñ¥½¹Ì(€€€Ñ¡¥Ì¹}½±±•ÑM•Ñ¥½¹Ì¡„¤ì((€€€€¼¼UÁ‘…Ñ”…Ñ•½Éå½±½È(€€€½¹ÍÐ…Ñ½±½ÉÌ€ôíÉÕ¹‘±…•¸èœŒÄÐÜÍ”Øœ±ÁÉ½‘Õ­Ñ¥½¸èœ”Ù„ÈÄÐœ±µ…É­•Ñ¥¹œèœŒÄÑ”ØÕŒœ±É•¡Ðèœ”ØÄÐÄÐœ±Ñ•¡¹½±½¥”èœŒåˆÄÑ”Øœ±‰ÕÍ¥¹•ÍÌèœŒÄÑŒá”Øœ±‰É…¹¡”èœ”ØÄÐá„ôì(€€€„¹…Ñ•½Éå½±½È€ô…Ñ½±½ÉÍm„¹…Ñ•½Éåtñð€œŒÄÐÜÍ”Øœì((€€€Ñ¡¥Ì¹}Í…Ù” ¤ì(€€€…±•ÉÐ ÉÑ¥­•°•ÍÁ•¥¡•ÉÐ„œ¤ì(€ô°((€‘•±•Ñ•ÉÑ¥±”¡¥¤ì(€€€¥˜€ …½¹™¥É´ ÉÑ¥­•°Ý¥É­±¥ ±qÔÀÁÙÍ¡•¸üœ¤¤É•ÑÕÉ¸ì(€€€Ñ¡¥Ì¹…ÉÑ¥±•Ì€ôÑ¡¥Ì¹…ÉÑ¥±•Ì¹™¥±Ñ•È¡„€ôø„¹¥€„ôô¥¤ì(€€€Ñ¡¥Ì¹}Í…Ù” ¤ì(€€€Ñ¡¥Ì¹É•¹‘•È ¤ì(€ô°((€}•ÍŒ¡Ì¤ì(€€€É•ÑÕÉ¸MÑÉ¥¹œ¡Ì¤¹É•Á±…” ¼˜½œ°œ™…µÀìœ¤¹É•Á±…” ¼ˆ½œ°œ™ÅÕ½Ðìœ¤¹É•Á±…” ¼ð½œ°œ™±Ðìœ¤¹É•Á±…” ¼ø½œ°œ™Ðìœ¤ì(€ô°((€€¼¨€´´´´´´´´´´AU	1%M Q<%Q!U€´´´´´´´´´´€¨¼(€ÁÕ‰±¥Í¡Q½¥Ñ!Õˆ ¤ì(€€€½¹ÍÐÑ½­•¸€ô±½…±MÑ½É…”¹•Ñ%Ñ•´ ¥Ñ¡Õ‰Q½­•¸œ¤ì(€€€½¹ÍÐÉ•Á¼€ô±½…±MÑ½É…”¹•Ñ%Ñ•´ ¥Ñ¡Õ‰I•Á¼œ¤ñð€äÑÝµµéÅ©Œµ‘½Ñ½´½ÍÑ½­Ù¥‘•¼µ‘”œì(€€€¥˜€ …Ñ½­•¸¤ì(€€€€€…±•ÉÐ -•¥¸¥Ñ!ÕˆµQ½­•¸¥¸¥¹ÍÑ•±±Õ¹•¸¡¥¹Ñ•É±•Ð„œ¤ì(€€€€€É•ÑÕÉ¸ì(€€€ô(€€€½¹ÍÐ©Í½¸€ô)M=8¹ÍÑÉ¥¹¥™ä¡Ñ¡¥Ì¹…ÉÑ¥±•Ì°¹Õ±°°€È¤ì(€€€½¹ÍÐ¡•…‘•ÉÌ€ôì€ÕÑ¡½É¥é…Ñ¥½¸œè€Ñ½­•¸€œ€¬Ñ½­•¸°€½¹Ñ•¹ÐµQåÁ”œè€…ÁÁ±¥…Ñ¥½¸½©Í½¸œôì(€€€½¹ÍÐ…Á¥	…Í”€ô€¡ÑÑÁÌè¼½…Á¤¹¥Ñ¡Õˆ¹½´½É•Á½Ì¼œ€¬É•Á¼€¬€œ½½¹Ñ•¹ÑÌ¼œì((€€€€¼¼½µµ¥ÐÑ¼‰½Ñ ÍÉŒ½‘…Ñ„½…ÉÑ¥±•Ì¹©Í½¸…¹ÁÕ‰±¥Œ½‘…Ñ„½…ÉÑ¥±•Ì¹©Í½¸(€€€½¹ÍÐÁ…Ñ¡Ì€ôlÍÉŒ½‘…Ñ„½…ÉÑ¥±•Ì¹©Í½¸œ°€ÁÕ‰±¥Œ½‘…Ñ„½…ÉÑ¥±•Ì¹©Í½¸tì(€€€±•Ð‘½¹”€ô€Àì(€€€Á…Ñ¡Ì¹™½É… ¡Á…Ñ €ôøì(€€€€€™•Ñ ¡…Á¥	…Í”€¬Á…Ñ °ì¡•…‘•ÉÌô¤(€€€€€€€€¹Ñ¡•¸¡È€ôøÈ¹©Í½¸ ¤¤(€€€€€€€€¹Ñ¡•¸¡•á¥ÍÑ¥¹œ€ôøì(€€€€€€€€€½¹ÍÐ‰½‘ä€ôì(€€€€€€€€€€€µ•ÍÍ…”è€UÁ‘…Ñ”…ÉÑ¥±•Ìè€œ€¬¹•Ü…Ñ” ¤¹Ñ½%M=MÑÉ¥¹œ ¤°(€€€€€€€€€€€½¹Ñ•¹Ðè‰Ñ½„¡Õ¹•Í…Á”¡•¹½‘•UI%½µÁ½¹•¹Ð¡©Í½¸¤¤¤°(€€€€€€€€€€€‰É…¹ è€µ…¥¸œ(€€€€€€€€€ôì(€€€€€€€€€¥˜€¡•á¥ÍÑ¥¹œ¹Í¡„¤‰½‘ä¹Í¡„€ô•á¥ÍÑ¥¹œ¹Í¡„ì(€€€€€€€€€É•ÑÕÉ¸™•Ñ ¡…Á¥	…Í”€¬Á…Ñ °ìµ•Ñ¡½è€AUPœ°¡•…‘•ÉÌ°‰½‘äè)M=8¹ÍÑÉ¥¹¥™ä¡‰½‘ä¤ô¤ì(€€€€€€€ô¤(€€€€€€€€¹Ñ¡•¸¡È€ôøÈ¹©Í½¸ ¤¤(€€€€€€€€¹Ñ¡•¸¡É•Ì€ôøì(€€€€€€€€€‘½¹”¬¬ì(€€€€€€€€€¥˜€¡‘½¹”€ôôôÁ…Ñ¡Ì¹±•¹Ñ ¤ì(€€€€€€€€€€€…±•ÉÐ ±±”qÔÀÁÑ¹‘•ÉÕ¹•¸Ù•ÉqÔÀÁÙ™™•¹Ñ±¥¡Ð„±½Õ‘™±…É”	Õ¥±ÍÑ…ÉÑ•Ð¸¸¸œ¤ì(€€€€€€€€€ô(€€€€€€€ô¤(€€€€€€€€¹…Ñ ¡•ÉÈ€ôø…±•ÉÐ •¡±•Èè€œ€¬•ÉÈ¹µ•ÍÍ…”¤¤ì(€€€ô¤ì(€ô)ôì((¼¨€´´´´´´´´´´%%èÕÑ¼µ%¹¥Ð€´´´´´´´´´´€¨¼(¡™Õ¹Ñ¥½¸ ¤ì(€¥˜€¡ÑåÁ•½˜Ý¥¹‘½Ü¹…‘µ¥¸€ôôô€Õ¹‘•™¥¹•œ¤ì(€€€Í•ÑQ¥µ•½ÕÐ¡…ÉÕµ•¹ÑÌ¹…±±•”°€ÈÀÀ¤ì(€€€É•ÑÕÉ¸ì(€ô((€€¼¼É•…Ñ”Á…¹•°µ…ÉÑ¥±•Ì‘¥Ø¥˜µ¥ÍÍ¥¹œ(€½¹ÍÐÁ…¹•±Í½¹Ñ…¥¹•È€ô‘½Õµ•¹Ð¹ÅÕ•ÉåM•±•Ñ½È m¥‘xô‰Á…¹•°´‰tœ¤ì(€¥˜€¡Á…¹•±Í½¹Ñ…¥¹•È¤ì(€€€½¹ÍÐÁ…É•¹Ð€ôÁ…¹•±Í½¹Ñ…¥¹•È¹Á…É•¹Ñ±•µ•¹Ðì(€€€¥˜€¡Á…É•¹Ð€˜˜€…‘½Õµ•¹Ð¹•Ñ±•µ•¹Ñ	å% Á…¹•°µ…ÉÑ¥±•Ìœ¤¤ì(€€€€€½¹ÍÐ‘¥Ø€ô‘½Õµ•¹Ð¹É•…Ñ•±•µ•¹Ð ‘¥Øœ¤ì(€€€€€‘¥Ø¹¥€ô€Á…¹•°µ…ÉÑ¥±•Ìœì(€€€€€‘¥Ø¹±…ÍÍ9…µ”€ô€…‘µ¥¸µÁ…¹•°œì(€€€€€‘¥Ø¹ÍÑå±”¹‘¥ÍÁ±…ä€ô€¹½¹”œì(€€€€€Á…É•¹Ð¹…ÁÁ•¹‘¡¥±¡‘¥Ø¤ì(€€€ô(€ô((€€¼¼A…Ñ ÍÝ¥Ñ¡A…¹•°Ñ¼¡…¹‘±”€…ÉÑ¥±•Ìœ(€½¹ÍÐ½É¥MÝ¥Ñ €ôÝ¥¹‘½Ü¹…‘µ¥¸¹ÍÝ¥Ñ¡A…¹•°¹‰¥¹¡Ý¥¹‘½Ü¹…‘µ¥¸¤ì(€Ý¥¹‘½Ü¹…‘µ¥¸¹ÍÝ¥Ñ¡A…¹•°€ô™Õ¹Ñ¥½¸¡¹…µ•=ÉÙ•¹Ð¤ì(€€€±•Ð¹…µ”ì(€€€¥˜€¡ÑåÁ•½˜¹…µ•=ÉÙ•¹Ð€ôôô€ÍÑÉ¥¹œœ¤ì(€€€€€¹…µ”€ô¹…µ•=ÉÙ•¹Ðì(€€€ô•±Í”¥˜€¡¹…µ•=ÉÙ•¹Ð€˜˜¹…µ•=ÉÙ•¹Ð¹ÕÉÉ•¹ÑQ…É•Ð¤ì(€€€€€½¹ÍÐ•°€ô¹…µ•=ÉÙ•¹Ð¹ÕÉÉ•¹ÑQ…É•Ðì(€€€€€¹…µ”€ô•°¹•ÑÑÑÉ¥‰ÕÑ” ‘…Ñ„µÁ…¹•°œ¤ñð•°¹Ñ•áÑ½¹Ñ•¹Ð¹ÑÉ¥´ ¤¹Ñ½1½Ý•É…Í” ¤ì(€€€ô•±Í”ì(€€€€€¹…µ”€ô¹…µ•=ÉÙ•¹Ðì(€€€ô((€€€¥˜€¡¹…µ”€ôôô€…ÉÑ¥±•Ìœ¤ì(€€€€€‘½Õµ•¹Ð¹ÅÕ•ÉåM•±•Ñ½É±° m¥‘xô‰Á…¹•°´‰tœ¤¹™½É… ¡À€ôøì(€€€€€€€À¹ÍÑå±”¹‘¥ÍÁ±…ä€ôÀ¹¥€ôôô€Á…¹•°µ…ÉÑ¥±•Ìœ€ü€‰±½¬œ€è€¹½¹”œì(€€€€€ô¤ì(€€€€€‘½Õµ•¹Ð¹ÅÕ•ÉåM•±•Ñ½É±° œ¹¹…Øµ¥Ñ•´œ¤¹™½É… ¡¸€ôø¸¹±…ÍÍ1¥ÍÐ¹É•µ½Ù” …Ñ¥Ù”œ¤¤ì(€€€€€‘½Õµ•¹Ð¹ÅÕ•ÉåM•±•Ñ½É±° œ¹¹…Øµ¥Ñ•´œ¤¹™½É… ¡¸€ôøì(€€€€€€€¥˜€¡¸¹Ñ•áÑ½¹Ñ•¹Ð¹¥¹±Õ‘•Ì ]¥ÍÍ•¸œ¤ñð¸¹Ñ•áÑ½¹Ñ•¹Ð¹¥¹±Õ‘•Ì ÉÑ¥­•°œ¤¤¸¹±…ÍÍ1¥ÍÐ¹…‘ …Ñ¥Ù”œ¤ì(€€€€€ô¤ì(€€€€€…‘µ¥¹ÉÑ¥±•Ì¹¥¹¥Ð ¤ì(€€€ô•±Í”ì(€€€€€ÑÉäì(€€€€€€€½É¥MÝ¥Ñ ¡¹…µ•=ÉÙ•¹Ð¤ì(€€€€€ô…Ñ ¡”¤ì(€€€€€€€‘½Õµ•¹Ð¹ÅÕ•ÉåM•±•Ñ½É±° m¥‘xô‰Á…¹•°´‰tœ¤¹™½É… ¡À€ôøì(€€€€€€€€€À¹ÍÑå±”¹‘¥ÍÁ±…ä€ôÀ¹¥€ôôô€Á…¹•°´œ€¬¹…µ”€ü€‰±½¬œ€è€¹½¹”œì(€€€€€€€ô¤ì(€€€€€ô(€€€ô(€ôì)ô¤ ¤ì
