@@ -8,14 +8,14 @@ const visibleArticles = articles.filter((a: any) => a.status !== 'draft');
 const categories = [...new Set(visibleArticles.map(a => a.category))].sort();
 
 const categoryEmojis = {
-  'Grundlagen': '&#127916;',
-  'Produktion': '&#127909;',
-  'Lizenzierung': '&#9878;',
-  'Marketing': '&#128161;',
-  'Technik': '&#128208;',
-  'Social Media': '&#128241;',
-  'Business': '&#128176;',
-  'Trends': '&#128302;'
+  'Grundlagen': '🎬',
+  'Produktion': '🎥',
+  'Lizenzierung': '⚖',
+  'Marketing': '💡',
+  'Technik': '📐',
+  'Social Media': '📱',
+  'Business': '💰',
+  'Trends': '🔮'
 };
 
 const categoryColors = {
@@ -89,7 +89,7 @@ const enrichedArticles = visibleArticles.map((article: Article) => ({
             class="article-image"
             style={`background: linear-gradient(135deg, ${article.categoryColor}40, ${article.categoryColor}10);`}
           >
-            <span class="article-emoji">{categoryEmojis[article.category as keyof typeof categoryEmojis] || '&#128196;'}</span>
+            <span class="article-emoji">{categoryEmojis[article.category as keyof typeof categoryEmojis] || '📄'}</span>
           </div>
 
           <!-- Card Content -->
@@ -102,7 +102,7 @@ const enrichedArticles = visibleArticles.map((article: Article) => ({
 
             <p class="article-description">{article.description}</p>
 
-            <span class="article-read-time">&#128214; {article.readTime} Min. Lesezeit</span>
+            <span class="article-read-time">📖 {article.readTime} Min. Lesezeit</span>
           </div>
         </a>
       ))}
