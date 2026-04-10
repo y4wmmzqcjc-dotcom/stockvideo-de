@@ -1,6 +1,6 @@
 /* ============================================================
-   admin-articles.js — Wissen/Artikel-Verwaltung für stockvideo.de
-   Version 3.0 — Zwei-Tab-Layout, Vollbild-Kalender, UTF-8 Fix
+   admin-articles.js â Wissen/Artikel-Verwaltung fÃ¼r stockvideo.de
+   Version 3.0 â Zwei-Tab-Layout, Vollbild-Kalender, UTF-8 Fix
    ============================================================ */
 
 const adminArticles = {
@@ -609,3 +609,7 @@ const adminArticles = {
       });
   }
 };
+
+
+// Auto-initialize when DOM is ready
+adminArticles.init();
