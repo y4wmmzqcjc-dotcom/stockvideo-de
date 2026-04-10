@@ -1,6 +1,6 @@
 /* ============================================================
-   admin-articles.js — Wissen/Artikel-Verwaltung für stockvideo.de
-   Version 2.0 — Listenansicht, Publish/Draft, Planungskalender
+   admin-articles.js â Wissen/Artikel-Verwaltung fÃ¼r stockvideo.de
+   Version 2.0 â Listenansicht, Publish/Draft, Planungskalender
    ============================================================ */
 
 const adminArticles = {
@@ -59,7 +59,7 @@ const adminArticles = {
         </div>
         <div class="aa-stats">
           <div class="aa-stat"><span class="aa-stat-num">${this.articles.length}</span><span class="aa-stat-label">Gesamt</span></div>
-          <div class="aa-stat aa-stat-green"><span class="aa-stat-num">${published}</span><span class="aa-stat-label">Öffentlich</span></div>
+          <div class="aa-stat aa-stat-green"><span class="aa-stat-num">${published}</span><span class="aa-stat-label">Ãffentlich</span></div>
           <div class="aa-stat aa-stat-yellow"><span class="aa-stat-num">${scheduled}</span><span class="aa-stat-label">Geplant</span></div>
           <div class="aa-stat aa-stat-gray"><span class="aa-stat-num">${drafts}</span><span class="aa-stat-label">Entwurf</span></div>
         </div>
@@ -69,7 +69,7 @@ const adminArticles = {
         <div class="aa-list-section">
           <div class="aa-filter-bar">
             <button class="aa-filter active" data-filter="all" onclick="adminArticles.filterList('all',this)">Alle</button>
-            <button class="aa-filter" data-filter="published" onclick="adminArticles.filterList('published',this)">Öffentlich</button>
+            <button class="aa-filter" data-filter="published" onclick="adminArticles.filterList('published',this)">Ãffentlich</button>
             <button class="aa-filter" data-filter="scheduled" onclick="adminArticles.filterList('scheduled',this)">Geplant</button>
             <button class="aa-filter" data-filter="draft" onclick="adminArticles.filterList('draft',this)">Entwurf</button>
           </div>
@@ -89,7 +89,7 @@ const adminArticles = {
             ${this._renderCalendar()}
           </div>
           <div class="aa-cal-legend">
-            <span class="aa-cal-dot aa-dot-green"></span> Öffentlich
+            <span class="aa-cal-dot aa-dot-green"></span> Ãffentlich
             <span class="aa-cal-dot aa-dot-yellow"></span> Geplant
           </div>
           <div class="aa-upcoming" id="aa-upcoming">
@@ -99,7 +99,7 @@ const adminArticles = {
       </div>
 
       <div class="aa-actions-bottom">
-        <button class="aa-btn aa-btn-save" onclick="adminArticles.publishToGitHub()">Alle Änderungen veröffentlichen</button>
+        <button class="aa-btn aa-btn-save" onclick="adminArticles.publishToGitHub()">Alle Ãnderungen verÃ¶ffentlichen</button>
       </div>
     `;
   },
@@ -111,8 +111,8 @@ const adminArticles = {
 
     return list.map(a => {
       const statusClass = a.status === 'published' ? 'aa-status-published' : a.status === 'scheduled' ? 'aa-status-scheduled' : 'aa-status-draft';
-      const statusLabel = a.status === 'published' ? 'Öffentlich' : a.status === 'scheduled' ? 'Geplant' : 'Entwurf';
-      const statusIcon = a.status === 'published' ? '●' : a.status === 'scheduled' ? '◐' : '○';
+      const statusLabel = a.status === 'published' ? 'Ãffentlich' : a.status === 'scheduled' ? 'Geplant' : 'Entwurf';
+      const statusIcon = a.status === 'published' ? 'â' : a.status === 'scheduled' ? 'â' : 'â';
       const schedInfo = a.status === 'scheduled' && a.scheduledDate ? `<span class="aa-sched-date">${this._formatDate(a.scheduledDate)}</span>` : '';
       const catColor = a.categoryColor || '#1473e6';
 
@@ -130,13 +130,13 @@ const adminArticles = {
             </div>
           </div>
           <div class="aa-row-actions">
-            <label class="aa-toggle" title="Öffentlich / Entwurf">
+            <label class="aa-toggle" title="Ãffentlich / Entwurf">
               <input type="checkbox" ${a.status === 'published' ? 'checked' : ''} onchange="adminArticles.toggleStatus('${a.id}', this.checked)">
               <span class="aa-toggle-slider"></span>
             </label>
-            <button class="aa-btn-icon" title="Planen" onclick="adminArticles.openScheduler('${a.id}')">📅</button>
-            <button class="aa-btn-icon" title="Bearbeiten" onclick="adminArticles.openEditor('${a.id}')">✏️</button>
-            <button class="aa-btn-icon aa-btn-danger" title="Löschen" onclick="adminArticles.deleteArticle('${a.id}')">🗑️</button>
+            <button class="aa-btn-icon" title="Planen" onclick="adminArticles.openScheduler('${a.id}')">ð</button>
+            <button class="aa-btn-icon" title="Bearbeiten" onclick="adminArticles.openEditor('${a.id}')">âï¸</button>
+            <button class="aa-btn-icon aa-btn-danger" title="LÃ¶schen" onclick="adminArticles.deleteArticle('${a.id}')">ðï¸</button>
           </div>
         </div>`;
     }).join('');
@@ -167,10 +167,10 @@ const adminArticles = {
     overlay.className = 'aa-overlay';
     overlay.innerHTML = `
       <div class="aa-modal">
-        <h3>Veröffentlichung planen</h3>
+        <h3>VerÃ¶ffentlichung planen</h3>
         <p class="aa-modal-title">${a.title || a.seoTitle}</p>
         <div class="aa-modal-field">
-          <label>Veröffentlichungsdatum:</label>
+          <label>VerÃ¶ffentlichungsdatum:</label>
           <input type="date" id="aa-sched-input" value="${current}" min="${new Date().toISOString().split('T')[0]}">
         </div>
         <div class="aa-modal-field">
@@ -190,7 +190,7 @@ const adminArticles = {
     const a = this.articles.find(x => x.id === id);
     if (!a) return;
     const dateVal = document.getElementById('aa-sched-input').value;
-    if (!dateVal) { alert('Bitte Datum wählen'); return; }
+    if (!dateVal) { alert('Bitte Datum wÃ¤hlen'); return; }
     a.scheduledDate = dateVal;
     a.status = 'scheduled';
     this._save();
@@ -210,7 +210,7 @@ const adminArticles = {
 
   /* ---------- CALENDAR ---------- */
   _monthName(m) {
-    return ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'][m];
+    return ['Januar','Februar','MÃ¤rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'][m];
   },
 
   _formatDate(d) {
@@ -268,7 +268,7 @@ const adminArticles = {
       .sort((a, b) => a.scheduledDate.localeCompare(b.scheduledDate))
       .slice(0, 5);
     if (!upcoming.length) return '<div class="aa-upcoming-empty">Keine geplanten Artikel</div>';
-    return '<h4>Nächste geplante Artikel</h4>' + upcoming.map(a => `
+    return '<h4>NÃ¤chste geplante Artikel</h4>' + upcoming.map(a => `
       <div class="aa-upcoming-item">
         <span class="aa-upcoming-date">${this._formatDate(a.scheduledDate)}</span>
         <span class="aa-upcoming-title">${a.title || a.seoTitle}</span>
@@ -307,7 +307,7 @@ const adminArticles = {
   deleteArticle(id) {
     const a = this.articles.find(x => x.id === id);
     if (!a) return;
-    if (!confirm('Artikel "' + (a.title || a.seoTitle) + '" wirklich löschen?')) return;
+    if (!confirm('Artikel "' + (a.title || a.seoTitle) + '" wirklich lÃ¶schen?')) return;
     this.articles = this.articles.filter(x => x.id !== id);
     this._save();
     this.renderList();
@@ -323,7 +323,7 @@ const adminArticles = {
     c.innerHTML = `
       <div class="aa-editor">
         <div class="aa-editor-header">
-          <button class="aa-btn" onclick="adminArticles.closeEditor()">← Zurück zur Liste</button>
+          <button class="aa-btn" onclick="adminArticles.closeEditor()">â ZurÃ¼ck zur Liste</button>
           <h2>Artikel bearbeiten</h2>
           <button class="aa-btn aa-btn-primary" onclick="adminArticles.saveArticle()">Speichern</button>
         </div>
@@ -384,14 +384,14 @@ const adminArticles = {
       <div class="aa-section-card" data-idx="${i}">
         <div class="aa-section-head">
           <span class="aa-section-num">H2 #${i+1}</span>
-          <input type="text" class="aa-section-heading" value="${this._esc(s.heading)}" placeholder="Überschrift">
-          <button class="aa-btn-icon aa-btn-danger" onclick="adminArticles.removeSection(${i})">✕</button>
+          <input type="text" class="aa-section-heading" value="${this._esc(s.heading)}" placeholder="Ãberschrift">
+          <button class="aa-btn-icon aa-btn-danger" onclick="adminArticles.removeSection(${i})">â</button>
         </div>
         <div class="aa-section-body">
           ${(s.paragraphs || []).map((p, pi) => `
             <div class="aa-para-wrap">
               <textarea class="aa-section-para" rows="4" data-si="${i}" data-pi="${pi}" placeholder="Absatz ${pi+1}...">${this._esc(p)}</textarea>
-              <button class="aa-btn-icon aa-btn-danger" onclick="adminArticles.removeParagraph(${i},${pi})">✕</button>
+              <button class="aa-btn-icon aa-btn-danger" onclick="adminArticles.removeParagraph(${i},${pi})">â</button>
             </div>`).join('')}
           <button class="aa-btn aa-btn-sm" onclick="adminArticles.addParagraph(${i})">+ Absatz</button>
         </div>
@@ -462,7 +462,7 @@ const adminArticles = {
     const title = document.getElementById('aa-title')?.value || '';
     const slug = title.toLowerCase()
       .normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
-      .replace(/[äÄ]/g,'ae').replace(/[öÖ]/g,'oe').replace(/[üÜ]/g,'ue').replace(/ß/g,'ss')
+      .replace(/[Ã¤Ã]/g,'ae').replace(/[Ã¶Ã]/g,'oe').replace(/[Ã¼Ã]/g,'ue').replace(/Ã/g,'ss')
       .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     const el = document.getElementById('aa-slug');
     if (el && !el.dataset.manual) el.value = slug;
@@ -567,7 +567,7 @@ const adminArticles = {
   /* ---------- PUBLISH TO GITHUB ---------- */
   async publishToGitHub() {
     const btn = document.querySelector('.aa-btn-save');
-    if (btn) { btn.textContent = 'Wird veröffentlicht...'; btn.disabled = true; }
+    if (btn) { btn.textContent = 'Wird verÃ¶ffentlicht...'; btn.disabled = true; }
     try {
       const json = JSON.stringify(this.articles, null, 2);
       const b64 = btoa(unescape(encodeURIComponent(json)));
@@ -589,11 +589,11 @@ const adminArticles = {
           body: JSON.stringify({ message: 'Update articles.json (public)', content: b64, sha: pubRes.sha, branch: 'main' })
         })
       ]);
-      if (btn) { btn.textContent = '✓ Veröffentlicht!'; btn.style.background = '#10b981'; }
-      setTimeout(() => { if (btn) { btn.textContent = 'Alle Änderungen veröffentlichen'; btn.disabled = false; btn.style.background = ''; } }, 3000);
+      if (btn) { btn.textContent = 'â VerÃ¶ffentlicht!'; btn.style.background = '#10b981'; }
+      setTimeout(() => { if (btn) { btn.textContent = 'Alle Ãnderungen verÃ¶ffentlichen'; btn.disabled = false; btn.style.background = ''; } }, 3000);
     } catch (e) {
-      alert('Fehler beim Veröffentlichen: ' + e.message);
-      if (btn) { btn.textContent = 'Alle Änderungen veröffentlichen'; btn.disabled = false; }
+      alert('Fehler beim VerÃ¶ffentlichen: ' + e.message);
+      if (btn) { btn.textContent = 'Alle Ãnderungen verÃ¶ffentlichen'; btn.disabled = false; }
     }
   },
 
@@ -606,29 +606,58 @@ const adminArticles = {
 
 // Auto-init when panel becomes visible
 (function() {
-  const origSwitch = window.admin?.switchPanel;
-  if (origSwitch) {
-    const _orig = origSwitch.bind(window.admin);
-    window.admin.switchPanel = function(name) {
-      _orig(name);
-      if (name === 'articles') {
-        if (!document.getElementById('panel-articles')) {
-          const container = document.querySelector('.content') || document.querySelector('.main-content') || document.querySelector('main');
-          if (container) {
-            const div = document.createElement('div');
-            div.id = 'panel-articles';
-            div.className = 'panel';
-            div.style.display = 'block';
-            container.appendChild(div);
-          }
-        }
-        const p = document.getElementById('panel-articles');
-        if (p) {
-          document.querySelectorAll('.panel, [id^="panel-"]').forEach(el => { el.style.display = 'none'; });
-          p.style.display = 'block';
-        }
-        adminArticles.init();
-      }
-    };
+  if (typeof window.admin === 'undefined') {
+    // admin.js not loaded yet, retry
+    setTimeout(arguments.callee, 200);
+    return;
   }
+
+  // Create panel-articles div if missing
+  const panelsContainer = document.querySelector('[id^="panel-"]')?.parentElement;
+  if (panelsContainer && !document.getElementById('panel-articles')) {
+    const div = document.createElement('div');
+    div.id = 'panel-articles';
+    div.className = 'admin-panel';
+    div.style.display = 'none';
+    panelsContainer.appendChild(div);
+  }
+
+  // Patch switchPanel - don't delegate to original for 'articles'
+  const origSwitch = window.admin.switchPanel.bind(window.admin);
+  window.admin.switchPanel = function(nameOrEvent) {
+    // Extract panel name - could be string or event
+    let name;
+    if (typeof nameOrEvent === 'string') {
+      name = nameOrEvent;
+    } else if (nameOrEvent && nameOrEvent.currentTarget) {
+      const el = nameOrEvent.currentTarget;
+      name = el.getAttribute('data-panel') || el.textContent.trim().toLowerCase();
+    } else {
+      name = nameOrEvent;
+    }
+
+    if (name === 'articles') {
+      // Handle articles panel ourselves
+      document.querySelectorAll('[id^="panel-"]').forEach(p => {
+        p.style.display = p.id === 'panel-articles' ? 'block' : 'none';
+      });
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => {
+        if (n.textContent.includes('Wissen') || n.textContent.includes('Artikel')) {
+          n.classList.add('active');
+        }
+      });
+      adminArticles.init();
+    } else {
+      // For other panels, call original but pass the event/name properly
+      try {
+        origSwitch(nameOrEvent);
+      } catch(e) {
+        // Fallback: handle panel switch manually
+        document.querySelectorAll('[id^="panel-"]').forEach(p => {
+          p.style.display = p.id === 'panel-' + name ? 'block' : 'none';
+        });
+      }
+    }
+  };
 })();
