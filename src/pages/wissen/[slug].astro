@@ -44,43 +44,50 @@ const resolvedLinks = (article.internalLinks || [])
   .filter(Boolean)
   .slice(0, 3);
 
-// Build enriched sections with inline links
-const enrichedSections = JSON.parse(JSON.stringify(article.sections || []));
-
-// Inject 3 internal links distributed across sections
-const linkPhrases = [
-  (a) => ` Vertiefende Einblicke bietet unser Beitrag <a href="/wissen/${a.slug}/">${a.title}</a>.`,
-  (a) => ` Lesen Sie hierzu auch <a href="/wissen/${a.slug}/">${a.title}</a>.`,
-  (a) => ` Weitere Informationen finden Sie unter <a href="/wissen/${a.slug}/">${a.title}</a>.`
-];
-resolvedLinks.forEach((linked, idx) => {
-  const si = Math.min(idx + 1, enrichedSections.length - 1);
-  const sec = enrichedSections[si];
-  if (sec && sec.paragraphs && sec.paragraphs.length > 0) {
-    const pi = Math.min(idx, sec.paragraphs.length - 1);
-    sec.paragraphs[pi] += linkPhrases[idx](linked);
-  }
+// Build enriched sections with inline links injected into paragraph text
+const enrichedSections = (article.sections || []).map((s, idx) => {
+  const newParas = [...(s.paragraphs || [])];
+  return { heading: s.heading, paragraphs: newParas };
 });
 
-// Inject Wikipedia link on NON-SEO anchor text
+// Inject up to 3 internal links into section paragraphs as inline text
+if (resolvedLinks.length > 0 && enrichedSections.length > 1) {
+  const phrases = [
+    'Vertiefende Einblicke bietet unser Beitrag',
+    'Lesen Sie hierzu auch',
+    'Weitere Informationen finden Sie unter'
+  ];
+  resolvedLinks.forEach((linked, idx) => {
+    const si = Math.min(idx + 1, enrichedSections.length - 1);
+    const sec = enrichedSections[si];
+    if (sec && sec.paragraphs && sec.paragraphs.length > 0) {
+      const pi = Math.min(idx, sec.paragraphs.length - 1);
+      const linkHtml = ' ' + phrases[idx] + ' <a href="/wissen/' + linked.slug + '/">' + linked.title + '</a>.';
+      sec.paragraphs[pi] = sec.paragraphs[pi] + linkHtml;
+    }
+  });
+}
+
+// Inject Wikipedia link on non-SEO anchor text
 if (article.wikipediaUrl && enrichedSections.length > 0) {
-  const wSec = enrichedSections[Math.max(0, enrichedSections.length - 2)];
+  const wIdx = Math.max(0, enrichedSections.length - 2);
+  const wSec = enrichedSections[wIdx];
   if (wSec && wSec.paragraphs && wSec.paragraphs.length > 0) {
-    const wp = wSec.paragraphs.length - 1;
-    wSec.paragraphs[wp] += ` Einen weiterf\u00fchrenden \u00dcberblick bietet <a href="${article.wikipediaUrl}" target="_blank" rel="noopener">dieser Lexikoneintrag</a>.`;
+    const lastP = wSec.paragraphs.length - 1;
+    wSec.paragraphs[lastP] = wSec.paragraphs[lastP] + ' Einen weitergehenden Hintergrund bietet <a href="' + article.wikipediaUrl + '" target="_blank" rel="noopener">dieser Lexikoneintrag</a>.';
   }
 }
 
 // Stock video suggestions for sidebar
 const videoCategories = [
-  { name: 'Natur & Landschaft', slug: 'natur-landschaft', icon: '\ud83c\udf3f' },
-  { name: 'Business & B\u00fcro', slug: 'business-buero', icon: '\ud83d\udcbc' },
-  { name: 'Technologie', slug: 'technologie', icon: '\ud83d\udcbb' },
-  { name: 'Menschen & Lifestyle', slug: 'menschen-lifestyle', icon: '\ud83c\udfac' },
-  { name: 'Luftaufnahmen', slug: 'luftaufnahmen', icon: '\ud83d\ude81' },
-  { name: 'Architektur', slug: 'architektur', icon: '\ud83c\udfd7\ufe0f' }
+  { name: 'Natur & Landschaft', slug: 'natur-landschaft', icon: 'leaf' },
+  { name: 'Business & Office', slug: 'business-buero', icon: 'briefcase' },
+  { name: 'Technologie', slug: 'technologie', icon: 'laptop' },
+  { name: 'Menschen & Lifestyle', slug: 'menschen-lifestyle', icon: 'film' },
+  { name: 'Luftaufnahmen', slug: 'luftaufnahmen', icon: 'plane' },
+  { name: 'Architektur', slug: 'architektur', icon: 'building' }
 ];
-const catToVideos: Record<string, string[]> = {
+const catVideoMap = {
   'Grundlagen': ['natur-landschaft', 'business-buero', 'technologie'],
   'Produktion': ['luftaufnahmen', 'natur-landschaft', 'menschen-lifestyle'],
   'Marketing': ['business-buero', 'menschen-lifestyle', 'technologie'],
@@ -89,7 +96,7 @@ const catToVideos: Record<string, string[]> = {
   'Business': ['business-buero', 'menschen-lifestyle', 'architektur'],
   'Branche': ['natur-landschaft', 'luftaufnahmen', 'menschen-lifestyle']
 };
-const suggestedSlugs = catToVideos[article.category] || ['natur-landschaft', 'business-buero', 'technologie'];
+const suggestedSlugs = catVideoMap[article.category] || ['natur-landschaft', 'business-buero', 'technologie'];
 const suggestedVideos = suggestedSlugs.map(s => videoCategories.find(v => v.slug === s)).filter(Boolean);
 
 const dateStr = article.publishDate || article.scheduledDate || new Date().toISOString().split('T')[0];
@@ -164,9 +171,7 @@ const faqSchema = faqItems.length > 0 ? {
           <a href="/" class="article-cta-btn">Stock Videos durchsuchen â</a>
         </div>
 
-        
 
-        
 
         {related.length > 0 && (
           <section class="article-related">
@@ -191,6 +196,15 @@ const faqSchema = faqItems.length > 0 ? {
       </article>
 
       <aside class="article-sidebar">
+        <div class="sidebar-videos">
+          <h4>Passende Stock Videos</h4>
+          {suggestedVideos.map(v => (
+            <a href={`/?kategorie=${v.slug}`} class="sidebar-video-link">
+              <span>{v.name}</span>
+            </a>
+          ))}
+          <a href="/" class="sidebar-video-all">Alle Kategorien ansehen</a>
+        </div>
         {toc.length > 0 && (
           <div class="sidebar-toc">
             <h4>Inhaltsverzeichnis</h4>
@@ -201,17 +215,7 @@ const faqSchema = faqItems.length > 0 ? {
             </nav>
           </div>
         )}
-        <div class="sidebar-videos">
-<h4>Passende Stock Videos</h4>
-{suggestedVideos.map(v => (
-<a href={`/?kategorie=${v.slug}`} class="sidebar-video-link">
-<span class="sidebar-video-icon">{v.icon}</span>
-<span>{v.name}</span>
-</a>
-))}
-<a href="/" class="sidebar-video-all">Alle Kategorien ansehen \u2192</a>
-</div>
-<div class="sidebar-cta">
+        <div class="sidebar-cta">
           <h4>Stock Videos kaufen</h4>
           <p>Lizenzfreie 4K-Videos ab 1,19 â¬</p>
           <a href="/" class="sidebar-cta-btn">Jetzt entdecken</a>
@@ -279,12 +283,12 @@ const faqSchema = faqItems.length > 0 ? {
   .sidebar-cta p { font-size: 13px; color: #888; margin: 0 0 12px; }
   .sidebar-cta-btn { display: inline-block; background: #1473e6; color: #fff; padding: 10px 24px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600; transition: background .2s; }
   .sidebar-cta-btn:hover { background: #0d5fcf; }
-.sidebar-videos { background: #1a1a1a; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-.sidebar-videos h4 { color: #fff; font-size: 15px; margin: 0 0 12px; font-family: "Source Sans 3", sans-serif; }
-.sidebar-video-link { display: flex; align-items: center; gap: 10px; padding: 8px 0; color: #ccc; text-decoration: none; font-size: 14px; border-bottom: 1px solid #333; transition: color 0.2s; }
-.sidebar-video-link:last-of-type { border-bottom: none; }
-.sidebar-video-link:hover { color: #1473e6; }
-.sidebar-video-icon { font-size: 18px; width: 24px; text-align: center; }
-.sidebar-video-all { display: block; margin-top: 12px; color: #1473e6; text-decoration: none; font-size: 13px; font-weight: 600; }
-.sidebar-video-all:hover { text-decoration: underline; }
+
+    .sidebar-videos { background: #1a1a1a; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+    .sidebar-videos h4 { color: #fff; font-size: 15px; margin: 0 0 12px; }
+    .sidebar-video-link { display: flex; align-items: center; gap: 10px; padding: 8px 0; color: #ccc; text-decoration: none; font-size: 14px; border-bottom: 1px solid #333; transition: color 0.2s; }
+    .sidebar-video-link:last-of-type { border-bottom: none; }
+    .sidebar-video-link:hover { color: #1473e6; }
+    .sidebar-video-all { display: block; margin-top: 12px; color: #1473e6; text-decoration: none; font-size: 13px; font-weight: 600; }
+    .sidebar-video-all:hover { text-decoration: underline; }
 </style>
