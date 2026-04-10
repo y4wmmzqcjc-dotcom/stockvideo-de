@@ -82,7 +82,7 @@ const faqSchema = faqItems.length > 0 ? {
         <span class="article-cat-badge" style={`background:${catColor}`}>{article.category.toUpperCase()}</span>
         <h1>{article.title}</h1>
         <div class="article-meta">
-          <span>ð {article.readTime} Min. Lesezeit</span><span>Â·</span>
+          <span>ð {article.readTime} Min. Lesezeit</span><span>·</span>
           <span>Zuletzt aktualisiert: {formattedDate}</span>
         </div>
         <figure class="article-hero">
@@ -106,13 +106,13 @@ const faqSchema = faqItems.length > 0 ? {
 
         <div class="article-cta-box">
           <h3>Jetzt passende Stock Videos entdecken</h3>
-          <p>Finden Sie hochwertige, lizenzfreie 4K-Videoclips fÃ¼r Ihr nÃ¤chstes Projekt auf stockvideo.de</p>
+          <p>Finden Sie hochwertige, lizenzfreie 4K-Videoclips für Ihr nächstes Projekt auf stockvideo.de</p>
           <a href="/" class="article-cta-btn">Stock Videos durchsuchen â</a>
         </div>
 
         {(article.internalLinks || []).length > 0 && (
           <section class="article-sources">
-            <h2>WeiterfÃ¼hrende Artikel</h2>
+            <h2>Weiterführende Artikel</h2>
             <ul>
               {article.internalLinks.map(link => {
                 const url = typeof link === 'string' ? link : link.url;
