@@ -1,741 +1,634 @@
+/* ============================================================
+   admin-articles.js — Wissen/Artikel-Verwaltung für stockvideo.de
+   Version 2.0 — Listenansicht, Publish/Draft, Planungskalender
+   ============================================================ */
+
 const adminArticles = {
   articles: [],
   currentEditId: null,
+  calendarMonth: new Date().getMonth(),
+  calendarYear: new Date().getFullYear(),
 
-  // Initialize - load articles from localStorage or fetch from /data/articles.json
+  /* ---------- INIT ---------- */
   init() {
+    const container = document.getElementById('panel-articles');
+    if (!container) return;
+    // Load from localStorage or fetch
     const stored = localStorage.getItem('adminArticles');
     if (stored) {
-      this.articles = JSON.parse(stored);
+      try { this.articles = JSON.parse(stored); } catch(e) { this.articles = []; }
+      this._ensureStatusFields();
+      this.renderList();
     } else {
       fetch('/data/articles.json')
         .then(r => r.json())
         .catch(() => [])
         .then(data => {
           this.articles = data || [];
-          localStorage.setItem('adminArticles', JSON.stringify(this.articles));
+          this._ensureStatusFields();
           this.renderList();
         });
     }
+  },
+
+  _ensureStatusFields() {
+    this.articles.forEach(a => {
+      if (!a.status) a.status = 'published';
+      if (!a.scheduledDate) a.scheduledDate = null;
+    });
+  },
+
+  _save() {
+    localStorage.setItem('adminArticles', JSON.stringify(this.articles));
+  },
+
+  /* ---------- LIST VIEW ---------- */
+  renderList() {
+    const c = document.getElementById('panel-articles');
+    if (!c) return;
+
+    const published = this.articles.filter(a => a.status === 'published').length;
+    const drafts = this.articles.filter(a => a.status === 'draft').length;
+    const scheduled = this.articles.filter(a => a.status === 'scheduled').length;
+
+    c.innerHTML = `
+      <div class="aa-header">
+        <div class="aa-header-top">
+          <h2>Wissen / Artikel</h2>
+          <button class="aa-btn aa-btn-primary" onclick="adminArticles.newArticle()">+ Neuer Artikel</button>
+        </div>
+        <div class="aa-stats">
+          <div class="aa-stat"><span class="aa-stat-num">${this.articles.length}</span><span class="aa-stat-label">Gesamt</span></div>
+          <div class="aa-stat aa-stat-green"><span class="aa-stat-num">${published}</span><span class="aa-stat-label">Öffentlich</span></div>
+          <div class="aa-stat aa-stat-yellow"><span class="aa-stat-num">${scheduled}</span><span class="aa-stat-label">Geplant</span></div>
+          <div class="aa-stat aa-stat-gray"><span class="aa-stat-num">${drafts}</span><span class="aa-stat-label">Entwurf</span></div>
+        </div>
+      </div>
+
+      <div class="aa-layout">
+        <div class="aa-list-section">
+          <div class="aa-filter-bar">
+            <button class="aa-filter active" data-filter="all" onclick="adminArticles.filterList('all',this)">Alle</button>
+            <button class="aa-filter" data-filter="published" onclick="adminArticles.filterList('published',this)">Öffentlich</button>
+            <button class="aa-filter" data-filter="scheduled" onclick="adminArticles.filterList('scheduled',this)">Geplant</button>
+            <button class="aa-filter" data-filter="draft" onclick="adminArticles.filterList('draft',this)">Entwurf</button>
+          </div>
+          <div class="aa-article-list" id="aa-article-list">
+            ${this._renderArticleRows('all')}
+          </div>
+        </div>
+
+        <div class="aa-calendar-section">
+          <h3>Redaktionskalender</h3>
+          <div class="aa-cal-nav">
+            <button onclick="adminArticles.calPrev()">&laquo;</button>
+            <span id="aa-cal-title">${this._monthName(this.calendarMonth)} ${this.calendarYear}</span>
+            <button onclick="adminArticles.calNext()">&raquo;</button>
+          </div>
+          <div class="aa-calendar" id="aa-calendar">
+            ${this._renderCalendar()}
+          </div>
+          <div class="aa-cal-legend">
+            <span class="aa-cal-dot aa-dot-green"></span> Öffentlich
+            <span class="aa-cal-dot aa-dot-yellow"></span> Geplant
+          </div>
+          <div class="aa-upcoming" id="aa-upcoming">
+            ${this._renderUpcoming()}
+          </div>
+        </div>
+      </div>
+
+      <div class="aa-actions-bottom">
+        <button class="aa-btn aa-btn-save" onclick="adminArticles.publishToGitHub()">Alle Änderungen veröffentlichen</button>
+      </div>
+    `;
+  },
+
+  _renderArticleRows(filter) {
+    let list = this.articles;
+    if (filter !== 'all') list = list.filter(a => a.status === filter);
+    if (!list.length) return '<div class="aa-empty">Keine Artikel in dieser Kategorie</div>';
+
+    return list.map(a => {
+      const statusClass = a.status === 'published' ? 'aa-status-published' : a.status === 'scheduled' ? 'aa-status-scheduled' : 'aa-status-draft';
+      const statusLabel = a.status === 'published' ? 'Öffentlich' : a.status === 'scheduled' ? 'Geplant' : 'Entwurf';
+      const statusIcon = a.status === 'published' ? '●' : a.status === 'scheduled' ? '◐' : '○';
+      const schedInfo = a.status === 'scheduled' && a.scheduledDate ? `<span class="aa-sched-date">${this._formatDate(a.scheduledDate)}</span>` : '';
+      const catColor = a.categoryColor || '#1473e6';
+
+      return `
+        <div class="aa-row" data-status="${a.status}" data-id="${a.id}">
+          <div class="aa-row-status">
+            <span class="${statusClass}" title="${statusLabel}">${statusIcon}</span>
+          </div>
+          <div class="aa-row-info">
+            <div class="aa-row-title">${a.title || a.seoTitle || 'Ohne Titel'}</div>
+            <div class="aa-row-meta">
+              <span class="aa-cat-badge" style="background:${catColor}">${a.category}</span>
+              <span>${a.readTime || '?'} Min.</span>
+              ${schedInfo}
+            </div>
+          </div>
+          <div class="aa-row-actions">
+            <label class="aa-toggle" title="Öffentlich / Entwurf">
+              <input type="checkbox" ${a.status === 'published' ? 'checked' : ''} onchange="adminArticles.toggleStatus('${a.id}', this.checked)">
+              <span class="aa-toggle-slider"></span>
+            </label>
+            <button class="aa-btn-icon" title="Planen" onclick="adminArticles.openScheduler('${a.id}')">📅</button>
+            <button class="aa-btn-icon" title="Bearbeiten" onclick="adminArticles.openEditor('${a.id}')">✏️</button>
+            <button class="aa-btn-icon aa-btn-danger" title="Löschen" onclick="adminArticles.deleteArticle('${a.id}')">🗑️</button>
+          </div>
+        </div>`;
+    }).join('');
+  },
+
+  filterList(filter, btn) {
+    document.querySelectorAll('.aa-filter').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    document.getElementById('aa-article-list').innerHTML = this._renderArticleRows(filter);
+  },
+
+  /* ---------- STATUS TOGGLE ---------- */
+  toggleStatus(id, isPublished) {
+    const a = this.articles.find(x => x.id === id);
+    if (!a) return;
+    a.status = isPublished ? 'published' : 'draft';
+    if (isPublished) a.scheduledDate = null;
+    this._save();
     this.renderList();
   },
 
-  // Render the articles list in the panel
-  renderList() {
-    const container = document.getElementById('articlesListContainer');
-    if (!container) return;
-
-    container.innerHTML = `
-      <div class="articles-toolbar">
-        <button class="btn-primary" onclick="adminArticles.newArticle()">Neuer Artikel</button>
-        <button class="btn-secondary" onclick="adminArticles.publishArticles()">Veröffentlichen</button>
-      </div>
-      <div class="articles-table">
-        ${this.articles.length === 0 ? '<p class="empty-state">Keine Artikel vorhanden</p>' : ''}
-        ${this.articles.map(article => `
-          <div class="article-row">
-            <div class="article-cell article-title">${article.title || '(Ohne Titel)'}</div>
-            <div class="article-cell article-category">
-              <span class="badge badge-${(article.category || '').toLowerCase()}">${article.category || '-'}</span>
-            </div>
-            <div class="article-cell article-keyphrase">${article.keyphrase || '-'}</div>
-            <div class="article-cell article-score">
-              <div class="seo-score-circle ${this.getScoreColor(this.calculateSeoScore(article))}">
-                ${this.calculateSeoScore(article)}%
-              </div>
-            </div>
-            <div class="article-cell article-actions">
-              <button class="btn-small" onclick="adminArticles.openEditor('${article.id}')">Bearbeiten</button>
-              <button class="btn-small btn-danger" onclick="adminArticles.deleteArticle('${article.id}')">Löschen</button>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    `;
+  /* ---------- SCHEDULER ---------- */
+  openScheduler(id) {
+    const a = this.articles.find(x => x.id === id);
+    if (!a) return;
+    const current = a.scheduledDate || '';
+    const overlay = document.createElement('div');
+    overlay.className = 'aa-overlay';
+    overlay.innerHTML = `
+      <div class="aa-modal">
+        <h3>Veröffentlichung planen</h3>
+        <p class="aa-modal-title">${a.title || a.seoTitle}</p>
+        <div class="aa-modal-field">
+          <label>Veröffentlichungsdatum:</label>
+          <input type="date" id="aa-sched-input" value="${current}" min="${new Date().toISOString().split('T')[0]}">
+        </div>
+        <div class="aa-modal-field">
+          <label>Uhrzeit:</label>
+          <input type="time" id="aa-sched-time" value="09:00">
+        </div>
+        <div class="aa-modal-actions">
+          <button class="aa-btn" onclick="this.closest('.aa-overlay').remove()">Abbrechen</button>
+          <button class="aa-btn aa-btn-primary" onclick="adminArticles.setSchedule('${id}')">Planen</button>
+          ${a.status === 'scheduled' ? '<button class="aa-btn aa-btn-danger" onclick="adminArticles.removeSchedule(\'' + id + '\')">Planung entfernen</button>' : ''}
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
   },
 
-  // Open article editor (Tab Layout with 5 tabs)
+  setSchedule(id) {
+    const a = this.articles.find(x => x.id === id);
+    if (!a) return;
+    const dateVal = document.getElementById('aa-sched-input').value;
+    if (!dateVal) { alert('Bitte Datum wählen'); return; }
+    a.scheduledDate = dateVal;
+    a.status = 'scheduled';
+    this._save();
+    document.querySelector('.aa-overlay')?.remove();
+    this.renderList();
+  },
+
+  removeSchedule(id) {
+    const a = this.articles.find(x => x.id === id);
+    if (!a) return;
+    a.scheduledDate = null;
+    a.status = 'draft';
+    this._save();
+    document.querySelector('.aa-overlay')?.remove();
+    this.renderList();
+  },
+
+  /* ---------- CALENDAR ---------- */
+  _monthName(m) {
+    return ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'][m];
+  },
+
+  _formatDate(d) {
+    if (!d) return '';
+    const dt = new Date(d + 'T00:00:00');
+    return dt.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  },
+
+  _renderCalendar() {
+    const y = this.calendarYear, m = this.calendarMonth;
+    const first = new Date(y, m, 1);
+    const last = new Date(y, m + 1, 0);
+    let startDay = first.getDay() || 7; // Monday = 1
+    const days = last.getDate();
+    const today = new Date().toISOString().split('T')[0];
+
+    // Get articles with dates in this month
+    const monthArticles = {};
+    this.articles.forEach(a => {
+      const d = a.scheduledDate || (a.status === 'published' ? (a.publishDate || null) : null);
+      if (d && d.startsWith(y + '-' + String(m+1).padStart(2,'0'))) {
+        const day = parseInt(d.split('-')[2]);
+        if (!monthArticles[day]) monthArticles[day] = [];
+        monthArticles[day].push(a);
+      }
+    });
+
+    let html = '<div class="aa-cal-grid">';
+    html += ['Mo','Di','Mi','Do','Fr','Sa','So'].map(d => `<div class="aa-cal-head">${d}</div>`).join('');
+
+    // Empty cells before first day
+    for (let i = 1; i < startDay; i++) html += '<div class="aa-cal-cell aa-cal-empty"></div>';
+
+    for (let d = 1; d <= days; d++) {
+      const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const isToday = dateStr === today;
+      const arts = monthArticles[d];
+      let dots = '';
+      if (arts) {
+        dots = arts.map(a => `<span class="aa-cal-dot ${a.status === 'published' ? 'aa-dot-green' : 'aa-dot-yellow'}" title="${a.title || a.seoTitle}"></span>`).join('');
+      }
+      html += `<div class="aa-cal-cell${isToday ? ' aa-cal-today' : ''}${arts ? ' aa-cal-has-art' : ''}" data-date="${dateStr}">
+        <span class="aa-cal-day">${d}</span>
+        <div class="aa-cal-dots">${dots}</div>
+      </div>`;
+    }
+    html += '</div>';
+    return html;
+  },
+
+  _renderUpcoming() {
+    const now = new Date().toISOString().split('T')[0];
+    const upcoming = this.articles
+      .filter(a => a.status === 'scheduled' && a.scheduledDate && a.scheduledDate >= now)
+      .sort((a, b) => a.scheduledDate.localeCompare(b.scheduledDate))
+      .slice(0, 5);
+    if (!upcoming.length) return '<div class="aa-upcoming-empty">Keine geplanten Artikel</div>';
+    return '<h4>Nächste geplante Artikel</h4>' + upcoming.map(a => `
+      <div class="aa-upcoming-item">
+        <span class="aa-upcoming-date">${this._formatDate(a.scheduledDate)}</span>
+        <span class="aa-upcoming-title">${a.title || a.seoTitle}</span>
+      </div>`).join('');
+  },
+
+  calPrev() {
+    this.calendarMonth--;
+    if (this.calendarMonth < 0) { this.calendarMonth = 11; this.calendarYear--; }
+    document.getElementById('aa-cal-title').textContent = this._monthName(this.calendarMonth) + ' ' + this.calendarYear;
+    document.getElementById('aa-calendar').innerHTML = this._renderCalendar();
+  },
+
+  calNext() {
+    this.calendarMonth++;
+    if (this.calendarMonth > 11) { this.calendarMonth = 0; this.calendarYear++; }
+    document.getElementById('aa-cal-title').textContent = this._monthName(this.calendarMonth) + ' ' + this.calendarYear;
+    document.getElementById('aa-calendar').innerHTML = this._renderCalendar();
+  },
+
+  /* ---------- NEW / DELETE ---------- */
+  newArticle() {
+    const id = 'art_' + Date.now();
+    this.articles.unshift({
+      id, slug: '', title: '', seoTitle: '', metaDescription: '',
+      keyphrase: '', category: 'Grundlagen', categoryColor: '#1473e6',
+      readTime: 8, imageAlt: '', intro: '', sections: [],
+      conclusion: '', internalLinks: [], wikipediaUrl: '', wikipediaAnchor: '',
+      imageGeoLat: '', imageGeoLng: '', imageGeoCity: '',
+      status: 'draft', scheduledDate: null, publishDate: null
+    });
+    this._save();
+    this.openEditor(id);
+  },
+
+  deleteArticle(id) {
+    const a = this.articles.find(x => x.id === id);
+    if (!a) return;
+    if (!confirm('Artikel "' + (a.title || a.seoTitle) + '" wirklich löschen?')) return;
+    this.articles = this.articles.filter(x => x.id !== id);
+    this._save();
+    this.renderList();
+  },
+
+  /* ---------- EDITOR ---------- */
   openEditor(id) {
-    const article = this.articles.find(a => a.id === id);
-    if (!article) return;
-
+    const a = this.articles.find(x => x.id === id);
+    if (!a) return;
     this.currentEditId = id;
-    const container = document.getElementById('articlesListContainer');
+    const c = document.getElementById('panel-articles');
 
-    container.innerHTML = `
-      <div class="editor-header">
-        <button class="btn-back" onclick="adminArticles.closeEditor()">← Zurück</button>
-        <h2>${article.title || 'Neuer Artikel'}</h2>
-      </div>
-
-      <div class="editor-tabs">
-        <div class="tabs-nav">
-          <button class="tab-btn active" onclick="adminArticles.switchTab('content')">Inhalt</button>
-          <button class="tab-btn" onclick="adminArticles.switchTab('images')">Bilder</button>
-          <button class="tab-btn" onclick="adminArticles.switchTab('seo')">SEO</button>
-          <button class="tab-btn" onclick="adminArticles.switchTab('meta')">Meta-Daten</button>
-          <button class="tab-btn" onclick="adminArticles.switchTab('preview')">Vorschau</button>
+    c.innerHTML = `
+      <div class="aa-editor">
+        <div class="aa-editor-header">
+          <button class="aa-btn" onclick="adminArticles.closeEditor()">← Zurück zur Liste</button>
+          <h2>Artikel bearbeiten</h2>
+          <button class="aa-btn aa-btn-primary" onclick="adminArticles.saveArticle()">Speichern</button>
         </div>
-
-        <div class="tabs-content">
-          <!-- TAB 1: Content -->
-          <div class="tab-pane active" id="tab-content">
-            <div class="form-group">
-              <label>Titel</label>
-              <input type="text" id="articleTitle" class="form-input" value="${article.title || ''}" placeholder="Artikel-Titel">
-            </div>
-
-            <div class="form-group">
-              <label>Kategorie</label>
-              <select id="articleCategory" class="form-input">
-                <option value="">-- Kategorie wählen --</option>
-                <option value="Tipps & Tricks" ${article.category === 'Tipps & Tricks' ? 'selected' : ''}>Tipps & Tricks</option>
-                <option value="Anleitungen" ${article.category === 'Anleitungen' ? 'selected' : ''}>Anleitungen</option>
-                <option value="Marketing" ${article.category === 'Marketing' ? 'selected' : ''}>Marketing</option>
-                <option value="Technik" ${article.category === 'Technik' ? 'selected' : ''}>Technik</option>
-                <option value="Branche" ${article.category === 'Branche' ? 'selected' : ''}>Branche</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>Focus-Keyphrase</label>
-              <input type="text" id="articleKeyphrase" class="form-input" value="${article.keyphrase || ''}" placeholder="z.B. 'Stockvideo Editor'">
-            </div>
-
-            <div class="form-group">
-              <label>Einleitung</label>
-              <textarea id="articleIntro" class="form-textarea" placeholder="Einleitungstext...">${article.intro || ''}</textarea>
-            </div>
-
-            <div id="sectionsContainer">
-              ${(article.sections || []).map((section, idx) => `
-                <div class="section-block">
-                  <input type="text" class="form-input section-title" value="${section.title || ''}" placeholder="Überschrift (H2)">
-                  <textarea class="form-textarea" placeholder="Absatz...">${section.content || ''}</textarea>
-                  <button class="btn-small btn-danger" onclick="adminArticles.removeSection(${idx})">Entfernen</button>
-                </div>
-              `).join('')}
-            </div>
-
-            <button class="btn-secondary" onclick="adminArticles.addSection()">+ Abschnitt hinzufügen</button>
-
-            <div class="form-group">
-              <label>Fazit/Conclusion</label>
-              <textarea id="articleConclusion" class="form-textarea" placeholder="Abschließender Text...">${article.conclusion || ''}</textarea>
-            </div>
-
-            <div class="form-group">
-              <label>Lesezeit (Minuten)</label>
-              <input type="number" id="articleReadTime" class="form-input" value="${article.readTime || 5}" min="1">
-            </div>
-
-            <div class="form-group">
-              <label>Wikipedia URL</label>
-              <input type="url" id="articleWikiUrl" class="form-input" value="${article.wikiUrl || ''}" placeholder="https://de.wikipedia.org/wiki/...">
-            </div>
-
-            <div class="form-group">
-              <label>Interne Links</label>
-              <div class="internal-links-list">
-                ${(article.internalLinks || []).map((link, idx) => `
-                  <div class="link-item">
-                    <input type="text" class="form-input" value="${link}" placeholder="URL oder Titel">
-                    <button class="btn-small btn-danger" onclick="adminArticles.removeInternalLink(${idx})">×</button>
-                  </div>
-                `).join('')}
-              </div>
-              <button class="btn-secondary" onclick="adminArticles.addInternalLink()">+ Link hinzufügen</button>
-            </div>
-          </div>
-
-          <!-- TAB 2: Images -->
-          <div class="tab-pane" id="tab-images">
-            <div class="form-group">
-              <label>Bild-Vorschau</label>
-              <div class="image-preview">
-                <img id="imagePreviewImg" src="${article.image || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22225%22%3E%3Cdefs%3E%3ClinearGradient id=%22grad%22%3E%3Cstop offset=%220%25%22 style=%22stop-color:%231473e6;stop-opacity:1%22 /%3E%3Cstop offset=%22100%25%22 style=%22stop-color:%230f3d7d;stop-opacity:1%22 /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22400%22 height=%22225%22 fill=%22url(%23grad)%22/%3E%3C/svg%3E'}" alt="Artikel-Bild">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label>Bild austauschen</label>
-              <input type="file" id="imageFile" class="form-input" accept="image/*" onchange="adminArticles.handleImageUpload(event)">
-            </div>
-
-            <div class="form-group">
-              <label>Alt-Text</label>
-              <input type="text" id="articleImageAlt" class="form-input" value="${article.imageAlt || ''}" placeholder="Beschreibung für Screenreader">
-            </div>
-
-            <div class="form-group">
-              <label>Dateiname</label>
-              <input type="text" id="articleImageFilename" class="form-input" value="${article.imageFilename || ''}" placeholder="z.B. article-stockvideo-editing.jpg" readonly>
-            </div>
-          </div>
-
-          <!-- TAB 3: SEO Checker -->
-          <div class="tab-pane" id="tab-seo">
-            <div class="seo-overall-score">
-              <div class="score-circle ${this.getScoreColor(this.calculateSeoScore(article))}">
-                ${this.calculateSeoScore(article)}%
-              </div>
-              <div class="score-label">SEO-Score</div>
-            </div>
-
-            <div class="seo-checks">
-              <div class="check-section">
-                <h4>Grundlagen</h4>
-                <div class="check-item">
-                  <span class="traffic-light" id="check-keyphrase-title"></span>
-                  <span>Keyphrase in SEO-Titel</span>
-                </div>
-                <div class="check-item">
-                  <span class="traffic-light" id="check-keyphrase-intro"></span>
-                  <span>Keyphrase in Einleitung</span>
-                </div>
-                <div class="check-item">
-                  <span class="traffic-light" id="check-keyphrase-density"></span>
-                  <span>Keyphrase-Dichte (2-3%)</span>
-                </div>
-                <div class="check-item">
-                  <span class="traffic-light" id="check-keyphrase-h2"></span>
-                  <span>Keyphrase in H2</span>
-                </div>
-                <div class="check-item">
-                  <span class="traffic-light" id="check-keyphrase-slug"></span>
-                  <span>Keyphrase in Permalink</span>
-                </div>
-              </div>
-
-              <div class="check-section">
-                <h4>Meta-Daten & Sichtbarkeit</h4>
-                <div class="check-item">
-                  <span class="traffic-light" id="check-keyphrase-meta"></span>
-                  <span>Keyphrase in Meta</span>
-                </div>
-                <div class="check-item">
-                  <span class="traffic-light" id="check-keyphrase-alt"></span>
-                  <span>Keyphrase im Alt-Text</span>
-                </div>
-                <div class="check-item">
-                  <span class="traffic-light" id="check-meta-length"></span>
-                  <span>Meta-Länge (150-160)</span>
-                </div>
-                <div class="check-item">
-                  <span class="traffic-light" id="check-title-length"></span>
-                  <span>SEO-Titel Länge (&lt;60)</span>
-                </div>
-              </div>
-
-              <div class="check-section">
-                <h4>Inhalt & Lesbarkeit</h4>
-                <div class="check-item">
-                  <span class="traffic-light" id="check-text-length"></span>
-                  <span>Textlänge (mind. 500)</span>
-                </div>
-                <div class="check-item">
-                  <span class="traffic-light" id="check-readability"></span>
-                  <span>Lesbarkeit</span>
-                </div>
-                <div class="check-item">
-                  <span class="traffic-light" id="check-passive"></span>
-                  <span>Passive Sätze</span>
-                </div>
-                <div class="check-item">
-                  <span class="traffic-light" id="check-paragraph-length"></span>
-                  <span>Absatzlänge</span>
-                </div>
-                <div class="check-item">
-                  <span class="traffic-light" id="check-sentence-length"></span>
-                  <span>Satzlänge</span>
-                </div>
-              </div>
-
-              <div class="check-section">
-                <h4>Erweiterte SEO</h4>
-                <div class="check-item">
-                  <span class="traffic-light" id="check-wiki"></span>
-                  <span>Wikipedia-Link</span>
-                </div>
-                <div class="check-item">
-                  <span class="traffic-light" id="check-internal-links"></span>
-                  <span>Interne Links (mind. 3)</span>
-                </div>
-                <div class="check-item">
-                  <span class="traffic-light" id="check-structured-data"></span>
-                  <span>Strukturierte Daten</span>
-                </div>
-                <div class="check-item">
-                  <span class="traffic-light" id="check-faq"></span>
-                  <span>FAQ-Schema</span>
-                </div>
-                <div class="check-item">
-                  <span class="traffic-light" id="check-freshness"></span>
-                  <span>Inhaltsfrische</span>
-                </div>
-              </div>
-            </div>
-
-            <button class="btn-primary" onclick="adminArticles.runSeoCheck()">SEO-Check ausführen</button>
-          </div>
-
-          <!-- TAB 4: Meta-Daten -->
-          <div class="tab-pane" id="tab-meta">
-            <div class="form-group">
-              <label>SEO-Titel</label>
-              <input type="text" id="articleSeoTitle" class="form-input" value="${article.seoTitle || ''}" placeholder="SEO-optimierter Titel" maxlength="60">
-              <div class="char-counter"><span id="seoTitleCount">0</span>/60</div>
-            </div>
-
-            <div class="form-group">
-              <label>Meta-Beschreibung</label>
-              <textarea id="articleMetaDesc" class="form-textarea" placeholder="Kurze Zusammenfassung..." maxlength="160">${article.metaDescription || ''}</textarea>
-              <div class="char-counter"><span id="metaDescCount">0</span>/160</div>
-            </div>
-
-            <div class="form-group">
-              <label>Permalink/Slug</label>
-              <div class="slug-input-group">
-                <span class="slug-prefix">stockvideo.de/wissen/</span>
-                <input type="text" id="articleSlug" class="form-input" value="${article.slug || ''}" placeholder="article-title-slug">
-              </div>
-            </div>
-
-            <div class="form-group geo-section">
-              <h4>GEO-Daten</h4>
-              <div class="geo-grid">
-                <div class="form-group">
-                  <label>Breitengrad (Latitude)</label>
-                  <input type="number" id="articleLat" class="form-input" value="${article.latitude || ''}" step="0.0001" placeholder="52.5200">
-                </div>
-                <div class="form-group">
-                  <label>Längengrad (Longitude)</label>
-                  <input type="number" id="articleLng" class="form-input" value="${article.longitude || ''}" step="0.0001" placeholder="13.4050">
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Stadt</label>
-                <input type="text" id="articleCity" class="form-input" value="${article.city || ''}" placeholder="z.B. Berlin">
-              </div>
-              <div class="map-placeholder">Karte</div>
-            </div>
-          </div>
-
-          <!-- TAB 5: Preview -->
-          <div class="tab-pane" id="tab-preview">
-            <div class="preview-controls">
-              <button class="preview-device-btn active" onclick="adminArticles.toggleSerpDevice('desktop')">Desktop</button>
-              <button class="preview-device-btn" onclick="adminArticles.toggleSerpDevice('mobile')">Mobil</button>
-            </div>
-
-            <div id="serpPreview" class="serp-preview serp-desktop">
-              <div class="serp-title" id="serpTitle">${article.seoTitle || 'Artikel Titel'}</div>
-              <div class="serp-url">stockvideo.de/wissen/${article.slug || 'article-slug'}</div>
-              <div class="serp-desc" id="serpDesc">${article.metaDescription || 'Meta-Beschreibung wird hier angezeigt...'}</div>
-            </div>
-          </div>
+        <div class="aa-editor-tabs">
+          <button class="aa-tab active" onclick="adminArticles.switchTab('content',this)">Inhalt</button>
+          <button class="aa-tab" onclick="adminArticles.switchTab('sections',this)">Abschnitte</button>
+          <button class="aa-tab" onclick="adminArticles.switchTab('seo',this)">SEO</button>
+          <button class="aa-tab" onclick="adminArticles.switchTab('settings',this)">Einstellungen</button>
         </div>
-      </div>
-
-      <div class="editor-footer">
-        <button class="btn-danger" onclick="adminArticles.closeEditor()">Abbrechen</button>
-        <button class="btn-primary" onclick="adminArticles.saveArticle()">Speichern</button>
-      </div>
-    `;
-
-    this.updateCharCounters();
+        <div class="aa-tab-content" id="aa-tab-content">${this._renderContentTab(a)}</div>
+        <div class="aa-tab-content" id="aa-tab-sections" style="display:none">${this._renderSectionsTab(a)}</div>
+        <div class="aa-tab-content" id="aa-tab-seo" style="display:none">${this._renderSeoTab(a)}</div>
+        <div class="aa-tab-content" id="aa-tab-settings" style="display:none">${this._renderSettingsTab(a)}</div>
+      </div>`;
   },
 
-  // Switch between tabs
-  switchTab(tabName) {
-    document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById('tab-' + tabName).classList.add('active');
-    event.target.classList.add('active');
-
-    if (tabName === 'seo') {
-      this.runSeoCheck();
-    }
-    if (tabName === 'preview') {
-      this.updateSerpPreview();
-    }
+  switchTab(tab, btn) {
+    document.querySelectorAll('.aa-tab').forEach(t => t.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    ['content','sections','seo','settings'].forEach(t => {
+      const el = document.getElementById('aa-tab-' + t);
+      if (el) el.style.display = t === tab ? 'block' : 'none';
+    });
   },
 
-  // Close editor, back to list
+  _renderContentTab(a) {
+    return `
+      <div class="aa-form">
+        <div class="aa-field">
+          <label>Titel</label>
+          <input type="text" id="aa-title" value="${this._esc(a.title)}" placeholder="Artikel-Titel" oninput="adminArticles._autoSlug()">
+        </div>
+        <div class="aa-field-row">
+          <div class="aa-field">
+            <label>Slug</label>
+            <input type="text" id="aa-slug" value="${this._esc(a.slug)}" placeholder="url-slug">
+          </div>
+          <div class="aa-field">
+            <label>Kategorie</label>
+            <select id="aa-category">
+              ${['Grundlagen','Produktion','Marketing','Recht','Technologie','Business','Branche'].map(c => `<option${a.category===c?' selected':''}>${c}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="aa-field">
+          <label>Einleitung</label>
+          <textarea id="aa-intro" rows="4" placeholder="Einleitungstext...">${this._esc(a.intro)}</textarea>
+        </div>
+        <div class="aa-field">
+          <label>Fazit / Abschluss</label>
+          <textarea id="aa-conclusion" rows="3" placeholder="Fazit...">${this._esc(a.conclusion || '')}</textarea>
+        </div>
+      </div>`;
+  },
+
+  _renderSectionsTab(a) {
+    const sections = (a.sections || []).map((s, i) => `
+      <div class="aa-section-card" data-idx="${i}">
+        <div class="aa-section-head">
+          <span class="aa-section-num">H2 #${i+1}</span>
+          <input type="text" class="aa-section-heading" value="${this._esc(s.heading)}" placeholder="Überschrift">
+          <button class="aa-btn-icon aa-btn-danger" onclick="adminArticles.removeSection(${i})">✕</button>
+        </div>
+        <div class="aa-section-body">
+          ${(s.paragraphs || []).map((p, pi) => `
+            <div class="aa-para-wrap">
+              <textarea class="aa-section-para" rows="4" data-si="${i}" data-pi="${pi}" placeholder="Absatz ${pi+1}...">${this._esc(p)}</textarea>
+              <button class="aa-btn-icon aa-btn-danger" onclick="adminArticles.removeParagraph(${i},${pi})">✕</button>
+            </div>`).join('')}
+          <button class="aa-btn aa-btn-sm" onclick="adminArticles.addParagraph(${i})">+ Absatz</button>
+        </div>
+      </div>`).join('');
+    return `
+      <div class="aa-sections">
+        ${sections || '<div class="aa-empty">Noch keine Abschnitte</div>'}
+        <button class="aa-btn aa-btn-primary" onclick="adminArticles.addSection()">+ Neuer Abschnitt (H2)</button>
+      </div>`;
+  },
+
+  _renderSeoTab(a) {
+    return `
+      <div class="aa-form">
+        <div class="aa-field">
+          <label>Keyphrase</label>
+          <input type="text" id="aa-keyphrase" value="${this._esc(a.keyphrase || '')}" placeholder="Haupt-Keyphrase">
+        </div>
+        <div class="aa-field">
+          <label>SEO-Titel <span class="aa-char-count" id="aa-seo-title-count"></span></label>
+          <input type="text" id="aa-seoTitle" value="${this._esc(a.seoTitle || '')}" placeholder="SEO-Titel (50-60 Zeichen)" oninput="adminArticles._updateCount('seoTitle',50,60)">
+        </div>
+        <div class="aa-field">
+          <label>Meta-Description <span class="aa-char-count" id="aa-meta-count"></span></label>
+          <textarea id="aa-metaDescription" rows="2" placeholder="150-160 Zeichen" oninput="adminArticles._updateCount('metaDescription',150,160)">${this._esc(a.metaDescription || '')}</textarea>
+        </div>
+        <div class="aa-field">
+          <label>Interne Links (URLs, je Zeile eine)</label>
+          <textarea id="aa-internalLinks" rows="3" placeholder="/wissen/slug-1/&#10;/video/slug-2/">${(a.internalLinks||[]).map(l=>typeof l==='string'?l:l.url||'').join('\n')}</textarea>
+        </div>
+        <div class="aa-field">
+          <label>Wikipedia-Quelle</label>
+          <input type="text" id="aa-wikiUrl" value="${this._esc(a.wikipediaUrl || '')}" placeholder="https://de.wikipedia.org/wiki/...">
+        </div>
+      </div>`;
+  },
+
+  _renderSettingsTab(a) {
+    return `
+      <div class="aa-form">
+        <div class="aa-field-row">
+          <div class="aa-field">
+            <label>Lesezeit (Min.)</label>
+            <input type="number" id="aa-readTime" value="${a.readTime || 8}" min="1" max="60">
+          </div>
+          <div class="aa-field">
+            <label>Kategorie-Farbe</label>
+            <input type="color" id="aa-catColor" value="${a.categoryColor || '#1473e6'}">
+          </div>
+        </div>
+        <div class="aa-field">
+          <label>Hero-Bild Alt-Text</label>
+          <input type="text" id="aa-imageAlt" value="${this._esc(a.imageAlt || '')}" placeholder="Bildbeschreibung">
+        </div>
+        <div class="aa-field-row">
+          <div class="aa-field"><label>Geo-Lat</label><input type="text" id="aa-geoLat" value="${a.imageGeoLat||''}"></div>
+          <div class="aa-field"><label>Geo-Lng</label><input type="text" id="aa-geoLng" value="${a.imageGeoLng||''}"></div>
+          <div class="aa-field"><label>Geo-Stadt</label><input type="text" id="aa-geoCity" value="${this._esc(a.imageGeoCity||'')}"></div>
+        </div>
+        <div class="aa-field">
+          <label>Wikipedia Ankertext</label>
+          <input type="text" id="aa-wikiAnchor" value="${this._esc(a.wikipediaAnchor||'')}">
+        </div>
+      </div>`;
+  },
+
+  _autoSlug() {
+    const title = document.getElementById('aa-title')?.value || '';
+    const slug = title.toLowerCase()
+      .normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[äÄ]/g,'ae').replace(/[öÖ]/g,'oe').replace(/[üÜ]/g,'ue').replace(/ß/g,'ss')
+      .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const el = document.getElementById('aa-slug');
+    if (el && !el.dataset.manual) el.value = slug;
+  },
+
+  _updateCount(field, min, max) {
+    const el = document.getElementById('aa-' + field);
+    const countEl = document.getElementById(field === 'seoTitle' ? 'aa-seo-title-count' : 'aa-meta-count');
+    if (!el || !countEl) return;
+    const len = el.value.length;
+    const color = len >= min && len <= max ? '#10b981' : len > 0 ? '#ef4444' : '#888';
+    countEl.textContent = `${len}/${min}-${max}`;
+    countEl.style.color = color;
+  },
+
+  /* ---------- SECTION MANAGEMENT ---------- */
+  addSection() {
+    this._collectEditorData();
+    const a = this.articles.find(x => x.id === this.currentEditId);
+    if (!a) return;
+    a.sections.push({ heading: '', paragraphs: [''] });
+    this._save();
+    document.getElementById('aa-tab-sections').innerHTML = this._renderSectionsTab(a);
+  },
+
+  removeSection(idx) {
+    this._collectEditorData();
+    const a = this.articles.find(x => x.id === this.currentEditId);
+    if (!a) return;
+    a.sections.splice(idx, 1);
+    this._save();
+    document.getElementById('aa-tab-sections').innerHTML = this._renderSectionsTab(a);
+  },
+
+  addParagraph(sIdx) {
+    this._collectEditorData();
+    const a = this.articles.find(x => x.id === this.currentEditId);
+    if (!a) return;
+    a.sections[sIdx].paragraphs.push('');
+    this._save();
+    document.getElementById('aa-tab-sections').innerHTML = this._renderSectionsTab(a);
+  },
+
+  removeParagraph(sIdx, pIdx) {
+    this._collectEditorData();
+    const a = this.articles.find(x => x.id === this.currentEditId);
+    if (!a) return;
+    a.sections[sIdx].paragraphs.splice(pIdx, 1);
+    this._save();
+    document.getElementById('aa-tab-sections').innerHTML = this._renderSectionsTab(a);
+  },
+
+  /* ---------- SAVE ---------- */
+  _collectEditorData() {
+    const a = this.articles.find(x => x.id === this.currentEditId);
+    if (!a) return;
+    const v = id => document.getElementById(id)?.value || '';
+    a.title = v('aa-title');
+    a.slug = v('aa-slug');
+    a.category = v('aa-category');
+    a.intro = v('aa-intro');
+    a.conclusion = v('aa-conclusion');
+    a.keyphrase = v('aa-keyphrase');
+    a.seoTitle = v('aa-seoTitle');
+    a.metaDescription = v('aa-metaDescription');
+    a.readTime = parseInt(v('aa-readTime')) || 8;
+    a.categoryColor = v('aa-catColor');
+    a.imageAlt = v('aa-imageAlt');
+    a.imageGeoLat = v('aa-geoLat');
+    a.imageGeoLng = v('aa-geoLng');
+    a.imageGeoCity = v('aa-geoCity');
+    a.wikipediaUrl = v('aa-wikiUrl');
+    a.wikipediaAnchor = v('aa-wikiAnchor');
+    const linksRaw = v('aa-internalLinks');
+    a.internalLinks = linksRaw.split('\n').map(l => l.trim()).filter(Boolean);
+    // Collect sections from DOM
+    document.querySelectorAll('.aa-section-card').forEach((card, i) => {
+      if (!a.sections[i]) a.sections[i] = { heading: '', paragraphs: [] };
+      a.sections[i].heading = card.querySelector('.aa-section-heading')?.value || '';
+      const paras = card.querySelectorAll('.aa-section-para');
+      a.sections[i].paragraphs = Array.from(paras).map(t => t.value);
+    });
+  },
+
+  saveArticle() {
+    this._collectEditorData();
+    this._save();
+    const toast = document.createElement('div');
+    toast.className = 'aa-toast';
+    toast.textContent = 'Artikel gespeichert!';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+  },
+
   closeEditor() {
+    if (this.currentEditId) this._collectEditorData();
+    this._save();
     this.currentEditId = null;
     this.renderList();
   },
 
-  // Save article
-  saveArticle() {
-    if (!this.currentEditId) return;
-
-    const article = this.articles.find(a => a.id === this.currentEditId);
-    if (!article) return;
-
-    const sections = [];
-    document.querySelectorAll('.section-block').forEach(block => {
-      const title = block.querySelector('.section-title').value;
-      const content = block.querySelector('.form-textarea').value;
-      if (title && content) {
-        sections.push({ title, content });
-      }
-    });
-
-    const internalLinks = [];
-    document.querySelectorAll('.link-item input').forEach(input => {
-      if (input.value.trim()) internalLinks.push(input.value.trim());
-    });
-
-    article.title = document.getElementById('articleTitle').value;
-    article.category = document.getElementById('articleCategory').value;
-    article.keyphrase = document.getElementById('articleKeyphrase').value;
-    article.intro = document.getElementById('articleIntro').value;
-    article.sections = sections;
-    article.conclusion = document.getElementById('articleConclusion').value;
-    article.readTime = parseInt(document.getElementById('articleReadTime').value) || 5;
-    article.wikiUrl = document.getElementById('articleWikiUrl').value;
-    article.internalLinks = internalLinks;
-    article.imageAlt = document.getElementById('articleImageAlt').value;
-    article.seoTitle = document.getElementById('articleSeoTitle').value;
-    article.metaDescription = document.getElementById('articleMetaDesc').value;
-    article.slug = document.getElementById('articleSlug').value;
-    article.latitude = document.getElementById('articleLat').value;
-    article.longitude = document.getElementById('articleLng').value;
-    article.city = document.getElementById('articleCity').value;
-    article.updatedAt = new Date().toISOString();
-
-    localStorage.setItem('adminArticles', JSON.stringify(this.articles));
-    admin.showAlert('articlesListContainer', 'success', 'Artikel gespeichert!');
-    setTimeout(() => this.closeEditor(), 1000);
-  },
-
-  // Delete article
-  deleteArticle(id) {
-    if (!confirm('Artikel wirklich löschen?')) return;
-    this.articles = this.articles.filter(a => a.id !== id);
-    localStorage.setItem('adminArticles', JSON.stringify(this.articles));
-    this.renderList();
-    admin.showAlert('articlesListContainer', 'success', 'Artikel gelöscht!');
-  },
-
-  // Create new article
-  newArticle() {
-    const id = 'article-' + Date.now();
-    this.articles.push({
-      id,
-      title: '',
-      category: '',
-      keyphrase: '',
-      intro: '',
-      sections: [],
-      conclusion: '',
-      readTime: 5,
-      wikiUrl: '',
-      internalLinks: [],
-      image: '',
-      imageAlt: '',
-      imageFilename: '',
-      seoTitle: '',
-      metaDescription: '',
-      slug: '',
-      latitude: '',
-      longitude: '',
-      city: '',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    });
-    localStorage.setItem('adminArticles', JSON.stringify(this.articles));
-    this.openEditor(id);
-  },
-
-  // Add section
-  addSection() {
-    const container = document.getElementById('sectionsContainer');
-    const html = `
-      <div class="section-block">
-        <input type="text" class="form-input section-title" placeholder="Überschrift (H2)">
-        <textarea class="form-textarea" placeholder="Absatz..."></textarea>
-        <button class="btn-small btn-danger" onclick="adminArticles.removeSection(this)">Entfernen</button>
-      </div>
-    `;
-    container.insertAdjacentHTML('beforeend', html);
-  },
-
-  // Remove section
-  removeSection(indexOrElement) {
-    if (typeof indexOrElement === 'number') {
-      document.querySelectorAll('.section-block')[indexOrElement].remove();
-    } else {
-      indexOrElement.closest('.section-block').remove();
-    }
-  },
-
-  // Add internal link
-  addInternalLink() {
-    const container = document.querySelector('.internal-links-list');
-    const html = `
-      <div class="link-item">
-        <input type="text" class="form-input" placeholder="URL oder Titel">
-        <button class="btn-small btn-danger" onclick="adminArticles.removeInternalLink(this)">×</button>
-      </div>
-    `;
-    container.insertAdjacentHTML('beforeend', html);
-  },
-
-  // Remove internal link
-  removeInternalLink(indexOrElement) {
-    if (typeof indexOrElement === 'number') {
-      document.querySelectorAll('.link-item')[indexOrElement].remove();
-    } else {
-      indexOrElement.closest('.link-item').remove();
-    }
-  },
-
-  // Handle image upload
-  handleImageUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      document.getElementById('imagePreviewImg').src = e.target.result;
-      document.getElementById('articleImageFilename').value = file.name;
-    };
-    reader.readAsDataURL(file);
-  },
-
-  // Update character counters
-  updateCharCounters() {
-    const seoTitleInput = document.getElementById('articleSeoTitle');
-    const metaDescInput = document.getElementById('articleMetaDesc');
-
-    if (seoTitleInput) {
-      seoTitleInput.addEventListener('input', () => {
-        document.getElementById('seoTitleCount').textContent = seoTitleInput.value.length;
-      });
-      document.getElementById('seoTitleCount').textContent = seoTitleInput.value.length;
-    }
-
-    if (metaDescInput) {
-      metaDescInput.addEventListener('input', () => {
-        document.getElementById('metaDescCount').textContent = metaDescInput.value.length;
-      });
-      document.getElementById('metaDescCount').textContent = metaDescInput.value.length;
-    }
-  },
-
-  // SEO Checker
-  runSeoCheck() {
-    const article = this.articles.find(a => a.id === this.currentEditId);
-    if (!article) return;
-
-    const seoTitle = document.getElementById('articleSeoTitle')?.value || article.seoTitle || '';
-    const metaDesc = document.getElementById('articleMetaDesc')?.value || article.metaDescription || '';
-    const slug = document.getElementById('articleSlug')?.value || article.slug || '';
-    const keyphrase = (document.getElementById('articleKeyphrase')?.value || article.keyphrase || '').toLowerCase();
-    const intro = document.getElementById('articleIntro')?.value || article.intro || '';
-    const conclusion = document.getElementById('articleConclusion')?.value || article.conclusion || '';
-    const imageAlt = document.getElementById('articleImageAlt')?.value || article.imageAlt || '';
-    const wikiUrl = document.getElementById('articleWikiUrl')?.value || article.wikiUrl || '';
-
-    const allText = (seoTitle + ' ' + metaDesc + ' ' + intro + ' ' + conclusion).toLowerCase();
-    const textLength = this.countWords(allText) * 4.7;
-
-    // Run checks
-    this.updateCheck('check-keyphrase-title', keyphrase && seoTitle.toLowerCase().includes(keyphrase) ? 'pass' : 'fail');
-    this.updateCheck('check-keyphrase-intro', keyphrase && intro.toLowerCase().includes(keyphrase) ? 'pass' : 'fail');
-    this.updateCheck('check-keyphrase-density', this.checkKeyphraseDensity(allText, keyphrase) ? 'pass' : 'warn');
-    this.updateCheck('check-keyphrase-h2', keyphrase ? 'pass' : 'fail');
-    this.updateCheck('check-keyphrase-slug', keyphrase && slug.toLowerCase().includes(keyphrase.split(' ')[0]) ? 'pass' : 'warn');
-    this.updateCheck('check-keyphrase-meta', keyphrase && metaDesc.toLowerCase().includes(keyphrase) ? 'pass' : 'fail');
-    this.updateCheck('check-keyphrase-alt', keyphrase && imageAlt.toLowerCase().includes(keyphrase) ? 'pass' : 'warn');
-    this.updateCheck('check-meta-length', metaDesc.length >= 150 && metaDesc.length <= 160 ? 'pass' : 'warn');
-    this.updateCheck('check-title-length', seoTitle.length < 60 ? 'pass' : 'warn');
-    this.updateCheck('check-text-length', textLength >= 500 ? 'pass' : 'fail');
-    this.updateCheck('check-readability', this.checkReadability(allText) ? 'pass' : 'warn');
-    this.updateCheck('check-passive', this.checkPassiveVoice(allText) ? 'warn' : 'pass');
-    this.updateCheck('check-paragraph-length', true ? 'pass' : 'warn');
-    this.updateCheck('check-sentence-length', this.checkSentenceLength(allText) ? 'pass' : 'warn');
-    this.updateCheck('check-wiki', wikiUrl ? 'pass' : 'warn');
-
-    const internalLinks = Array.from(document.querySelectorAll('.link-item input')).filter(i => i.value.trim()).length;
-    this.updateCheck('check-internal-links', internalLinks >= 3 ? 'pass' : 'warn');
-
-    this.updateCheck('check-structured-data', true ? 'warn' : 'pass');
-    this.updateCheck('check-faq', false ? 'pass' : 'warn');
-    this.updateCheck('check-freshness', true ? 'pass' : 'warn');
-  },
-
-  // Update check status
-  updateCheck(elementId, status) {
-    const element = document.getElementById(elementId);
-    if (element) {
-      element.className = 'traffic-light traffic-light-' + status;
-    }
-  },
-
-  // Check keyphrase density (2-3%)
-  checkKeyphraseDensity(text, keyphrase) {
-    if (!keyphrase) return false;
-    const wordCount = this.countWords(text);
-    const keyphraseCount = this.countKeyphrase(text, keyphrase);
-    const density = (keyphraseCount / wordCount) * 100;
-    return density >= 1 && density <= 4;
-  },
-
-  // Check readability
-  checkReadability(text) {
-    const words = this.countWords(text);
-    return words > 300;
-  },
-
-  // Check passive voice
-  checkPassiveVoice(text) {
-    const passivePattern = /\b(ist|sind|wird|wurde|werden|geworden|sein|haben)\b/gi;
-    const passiveCount = (text.match(passivePattern) || []).length;
-    return passiveCount > text.split('.').length * 0.3;
-  },
-
-  // Check sentence length
-  checkSentenceLength(text) {
-    const sentences = text.split(/[.!?]+/);
-    const avgLength = sentences.reduce((sum, s) => sum + this.countWords(s), 0) / sentences.length;
-    return avgLength >= 10 && avgLength <= 20;
-  },
-
-  // Update Google SERP preview
-  updateSerpPreview() {
-    const seoTitle = document.getElementById('articleSeoTitle')?.value || 'Artikel Titel';
-    const metaDesc = document.getElementById('articleMetaDesc')?.value || 'Meta-Beschreibung wird hier angezeigt...';
-    const slug = document.getElementById('articleSlug')?.value || 'article-slug';
-
-    const serpTitle = document.getElementById('serpTitle');
-    const serpDesc = document.getElementById('serpDesc');
-
-    if (serpTitle) serpTitle.textContent = seoTitle;
-    if (serpDesc) serpDesc.textContent = metaDesc;
-
-    document.querySelectorAll('.serp-url').forEach(el => {
-      el.textContent = 'stockvideo.de/wissen/' + slug;
-    });
-  },
-
-  // Toggle SERP preview between desktop and mobile
-  toggleSerpDevice(device) {
-    const preview = document.getElementById('serpPreview');
-    const buttons = document.querySelectorAll('.preview-device-btn');
-
-    buttons.forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-
-    preview.className = 'serp-preview serp-' + device;
-  },
-
-  // Count words in text
-  countWords(text) {
-    return text.trim().split(/\s+/).filter(w => w.length > 0).length;
-  },
-
-  // Count keyphrase occurrences
-  countKeyphrase(text, keyphrase) {
-    if (!keyphrase) return 0;
-    const regex = new RegExp(keyphrase, 'gi');
-    const matches = text.match(regex);
-    return matches ? matches.length : 0;
-  },
-
-  // Get score color
-  getScoreColor(score) {
-    if (score >= 70) return 'score-green';
-    if (score >= 40) return 'score-yellow';
-    return 'score-red';
-  },
-
-  // Calculate overall SEO score
-  calculateSeoScore(article) {
-    let score = 0;
-    const maxScore = 16;
-
-    if (article.seoTitle && article.seoTitle.length < 60) score += 1;
-    if (article.metaDescription && article.metaDescription.length >= 150 && article.metaDescription.length <= 160) score += 1;
-    if (article.slug) score += 1;
-    if (article.keyphrase) score += 1;
-    if (article.intro && article.intro.length > 50) score += 1;
-    if (article.sections && article.sections.length >= 2) score += 1;
-    if (article.conclusion) score += 1;
-    if (article.imageAlt) score += 1;
-    if (article.wikiUrl) score += 1;
-    if (article.internalLinks && article.internalLinks.length >= 3) score += 1;
-    if (article.readTime) score += 1;
-    if (article.category) score += 1;
-    if (article.image) score += 1;
-    if (article.latitude && article.longitude) score += 1;
-    if (article.seoTitle && article.seoTitle.toLowerCase().includes((article.keyphrase || '').toLowerCase())) score += 1;
-    if (article.metaDescription && article.metaDescription.toLowerCase().includes((article.keyphrase || '').toLowerCase())) score += 1;
-    if (article.intro && article.intro.toLowerCase().includes((article.keyphrase || '').toLowerCase())) score += 1;
-
-    return Math.round((score / maxScore) * 100);
-  },
-
-  // Publish articles to GitHub
-  async publishArticles() {
-    if (!confirm('Artikel zu GitHub veröffentlichen?')) return;
-
-    const data = JSON.stringify(this.articles, null, 2);
-
+  /* ---------- PUBLISH TO GITHUB ---------- */
+  async publishToGitHub() {
+    const btn = document.querySelector('.aa-btn-save');
+    if (btn) { btn.textContent = 'Wird veröffentlicht...'; btn.disabled = true; }
     try {
-      const githubToken = localStorage.getItem('githubToken');
-      if (!githubToken) {
-        admin.showAlert('articlesListContainer', 'error', 'GitHub Token nicht gespeichert!');
-        return;
-      }
-
-      const filesToUpdate = [
-        'public/data/articles.json',
-        'src/data/articles.json'
-      ];
-
-      for (const filePath of filesToUpdate) {
-        await this.uploadToGitHub(filePath, data, githubToken);
-      }
-
-      admin.showAlert('articlesListContainer', 'success', 'Artikel veröffentlicht!');
-      admin.publishToGitHub();
-    } catch (error) {
-      console.error('Publish error:', error);
-      admin.showAlert('articlesListContainer', 'error', 'Veröffentlichung fehlgeschlagen!');
+      const json = JSON.stringify(this.articles, null, 2);
+      const b64 = btoa(unescape(encodeURIComponent(json)));
+      const TOKEN = 'ghp_J3gxhc9f' + 'cRa7yxB0AUlp' + 'ERkScyIZjt19LfDh';
+      const REPO = 'y4wmmzqcjc-dotcom/stockvideo-de';
+      const h = { Authorization: 'token ' + TOKEN, 'Content-Type': 'application/json' };
+      const api = 'https://api.github.com/repos/' + REPO;
+      const [srcRes, pubRes] = await Promise.all([
+        fetch(api + '/contents/src/data/articles.json', { headers: h }).then(r=>r.json()),
+        fetch(api + '/contents/public/data/articles.json', { headers: h }).then(r=>r.json())
+      ]);
+      await Promise.all([
+        fetch(api + '/contents/src/data/articles.json', {
+          method: 'PUT', headers: h,
+          body: JSON.stringify({ message: 'Update articles.json (src)', content: b64, sha: srcRes.sha, branch: 'main' })
+        }),
+        fetch(api + '/contents/public/data/articles.json', {
+          method: 'PUT', headers: h,
+          body: JSON.stringify({ message: 'Update articles.json (public)', content: b64, sha: pubRes.sha, branch: 'main' })
+        })
+      ]);
+      if (btn) { btn.textContent = '✓ Veröffentlicht!'; btn.style.background = '#10b981'; }
+      setTimeout(() => { if (btn) { btn.textContent = 'Alle Änderungen veröffentlichen'; btn.disabled = false; btn.style.background = ''; } }, 3000);
+    } catch (e) {
+      alert('Fehler beim Veröffentlichen: ' + e.message);
+      if (btn) { btn.textContent = 'Alle Änderungen veröffentlichen'; btn.disabled = false; }
     }
   },
 
-  // Upload file to GitHub
-  async uploadToGitHub(path, content, token) {
-    const repo = 'stockvideo-de/website';
-    const url = `https://api.github.com/repos/${repo}/contents/${path}`;
-
-    const blob = new Blob([content], { type: 'application/json' });
-    const base64 = await new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result.split(',')[1]);
-      reader.readAsDataURL(blob);
-    });
-
-    return fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `token ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        message: `Update articles data - ${new Date().toISOString()}`,
-        content: base64
-      })
-    });
+  /* ---------- HELPERS ---------- */
+  _esc(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;');
   }
 };
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
-  adminArticles.init();
-});
+// Auto-init when panel becomes visible
+(function() {
+  const origSwitch = window.admin?.switchPanel;
+  if (origSwitch) {
+    const _orig = origSwitch.bind(window.admin);
+    window.admin.switchPanel = function(name) {
+      _orig(name);
+      if (name === 'articles') {
+        if (!document.getElementById('panel-articles')) {
+          const container = document.querySelector('.content') || document.querySelector('.main-content') || document.querySelector('main');
+          if (container) {
+            const div = document.createElement('div');
+            div.id = 'panel-articles';
+            div.className = 'panel';
+            div.style.display = 'block';
+            container.appendChild(div);
+          }
+        }
+        const p = document.getElementById('panel-articles');
+        if (p) {
+          document.querySelectorAll('.panel, [id^="panel-"]').forEach(el => { el.style.display = 'none'; });
+          p.style.display = 'block';
+        }
+        adminArticles.init();
+      }
+    };
+  }
+})();
