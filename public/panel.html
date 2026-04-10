@@ -672,6 +672,12 @@ document.addEventListener("change", async function(e){
 })();
 </script>
 
-    <script src="/admin-articles.js?v=1775848206864"></script>
+    <script>
+(function() {
+  var s = document.createElement("script");
+  s.src = "/admin-articles.js?v=" + Date.now();
+  document.body.appendChild(s);
+})();
+</script>
 </body>
 </html>
