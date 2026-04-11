@@ -154,3 +154,19 @@
 .aa-md-download span { color: #ccc; font-size: 14px; }
 .aa-md-download button { background: #1473e6; color: #fff; border: none; border-radius: 6px; padding: 8px 20px; cursor: pointer; font-size: 13px; }
 .aa-md-download button:hover { background: #1260c4; }
+
+
+/* SEO Ampel Indicator */
+.aa-seo-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+  flex-shrink: 0;
+  cursor: help;
+  border: 2px solid rgba(255,255,255,0.15);
+}
+.aa-seo-green { background: #34c759; box-shadow: 0 0 6px rgba(52,199,89,0.4); }
+.aa-seo-yellow { background: #ffcc00; box-shadow: 0 0 6px rgba(255,204,0,0.4); }
+.aa-seo-red { background: #ff3b30; box-shadow: 0 0 6px rgba(255,59,48,0.4); }
