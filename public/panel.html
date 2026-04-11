@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>stockvideo.de - Admin Panel</title>
     <link rel="stylesheet" href="/admin.css?v=20260411D1775902054327">
-    <link rel="stylesheet" href="/admin-articles.css">
+    <link rel="stylesheet" href="/admin-articles.css?v=20260411">
 </head>
 <body>
     <div id="authScreen" class="auth-screen">
@@ -33,7 +33,7 @@
                         <input type="text" id="otpInput" class="form-input" placeholder="000000" maxlength="6" inputmode="numeric">
                     </div>
                     <button class="button button-primary" onclick="auth.verifyOTP()">Anmelden</button>
-                    <button class="button button-secondary" style="width: 100%;" onclick="auth.backToPassword()">Zurück</button>
+                    <button class="button button-secondary" style="width: 100%;" onclick="auth.backToPassword()">ZurÃ¼ck</button>
                     <p style="color: var(--text-secondary); font-size: 0.75rem; text-align: center; margin-top: 1rem;">
                         Versuche: <span id="otpAttempts">0</span>/3
                     </p>
@@ -97,7 +97,7 @@
             <div id="panel-dashboard" class="content-panel active">
                 <div class="content-header">
                     <h1 class="content-title">Dashboard</h1>
-                    <p class="content-subtitle">Überblick über Ihr System</p>
+                    <p class="content-subtitle">Ãberblick Ã¼ber Ihr System</p>
                 </div>
                 <div style="padding: 2rem;">
                     <div id="dashboardAlert"></div>
@@ -107,7 +107,7 @@
                     <div class="action-buttons">
                         <button class="button button-primary" onclick="admin.loadVideos(); admin.switchPanel('videos')">Videos bearbeiten</button>
                         <button class="button button-primary" onclick="admin.loadCategories(); admin.switchPanel('categories')">Kategorien bearbeiten</button>
-                        <button class="button button-primary" onclick="admin.publishToGitHub()">Veröffentlichen</button>
+                        <button class="button button-primary" onclick="admin.publishToGitHub()">VerÃ¶ffentlichen</button>
                         <button class="button button-secondary" onclick="admin.refreshDeployStatus()">Status aktualisieren</button>
                     </div>
                 </div>
@@ -117,7 +117,7 @@
             <div id="panel-videos" class="content-panel">
                 <div class="content-header">
                     <h1 class="content-title">Videos verwalten</h1>
-                    <p class="content-subtitle">Erstellen, bearbeiten und löschen Sie Videos</p>
+                    <p class="content-subtitle">Erstellen, bearbeiten und lÃ¶schen Sie Videos</p>
                 </div>
                 <div style="padding: 2rem;">
                     <div id="videosAlert"></div>
@@ -205,7 +205,7 @@
                         <div class="form-row full">
                             <div>
                                 <label class="form-label">Copyright</label>
-                                <input type="text" class="form-input" id="contentFooterCopyright" placeholder="© 2026 stockvideo.de">
+                                <input type="text" class="form-input" id="contentFooterCopyright" placeholder="Â© 2026 stockvideo.de">
                             </div>
                         </div>
                         <div class="form-row full">
@@ -227,14 +227,14 @@
                         <div class="form-row full">
                             <div>
                                 <label class="form-label">Meta-Beschreibung</label>
-                                <textarea class="textarea" id="contentSEODescription" placeholder="Hochwertige Stock Videos für kommerzielle Projekte..."></textarea>
+                                <textarea class="textarea" id="contentSEODescription" placeholder="Hochwertige Stock Videos fÃ¼r kommerzielle Projekte..."></textarea>
                             </div>
                         </div>
                     </div>
 
                     <div style="display: flex; gap: 1rem;">
                         <button class="button button-primary" onclick="admin.savePageContent()">Speichern</button>
-                        <button class="button button-secondary" onclick="admin.loadPageContent()">Zurücksetzen</button>
+                        <button class="button button-secondary" onclick="admin.loadPageContent()">ZurÃ¼cksetzen</button>
                     </div>
                 </div>
             </div>
@@ -254,15 +254,15 @@
     <div id="panel-calendar" class="content-panel">
         <div class="content-header">
             <h1 class="content-title">Redaktionskalender</h1>
-            <p class="content-subtitle">Artikel planen und Veröffentlichungen im Überblick</p>
+            <p class="content-subtitle">Artikel planen und VerÃ¶ffentlichungen im Ãberblick</p>
         </div>
         <div class="calendar-controls">
-            <button class="btn btn-secondary" onclick="calendarModule.prevMonth()">&larr; Zurück</button>
+            <button class="btn btn-secondary" onclick="calendarModule.prevMonth()">&larr; ZurÃ¼ck</button>
             <h2 id="calendar-month-title" style="margin:0;font-size:18px;color:#fff;"></h2>
             <button class="btn btn-secondary" onclick="calendarModule.nextMonth()">Weiter &rarr;</button>
         </div>
         <div class="calendar-legend">
-            <span class="legend-item"><span class="legend-dot" style="background:#34c759;"></span> Veröffentlicht</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#34c759;"></span> VerÃ¶ffentlicht</span>
             <span class="legend-item"><span class="legend-dot" style="background:#007aff;"></span> Geplant</span>
             <span class="legend-item"><span class="legend-dot" style="background:#8e8e93;"></span> Entwurf</span>
         </div>
@@ -280,9 +280,9 @@
             <p class="content-subtitle">Bilder organisieren, hochladen und in Artikel einbinden</p>
         </div>
         <div class="media-dropzone" id="media-dropzone" ondragover="mediaModule.dragOver(event)" ondragleave="mediaModule.dragLeave(event)" ondrop="mediaModule.drop(event)" onclick="document.getElementById('media-file-input').click()">
-            <div class="media-dropzone-icon">ð·</div>
+            <div class="media-dropzone-icon">Ã°ÂÂÂ·</div>
             <div class="media-dropzone-text">Bilder hierher ziehen oder klicken zum Hochladen</div>
-            <div class="media-dropzone-hint">JPG, PNG, WebP, SVG — max. 10 MB pro Datei</div>
+            <div class="media-dropzone-hint">JPG, PNG, WebP, SVG â max. 10 MB pro Datei</div>
             <input type="file" id="media-file-input" multiple accept="image/*" style="display:none;" onchange="mediaModule.upload(this.files)">
         </div>
         <div class="media-stats">
@@ -304,8 +304,8 @@
             </div>
         </div>
         <div class="media-bulk-bar" id="media-bulk-bar" style="display:none;">
-            <span id="media-selected-count">0 ausgewählt</span>
-            <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);" onclick="mediaModule.bulkDelete()">Ausgewählte löschen</button>
+            <span id="media-selected-count">0 ausgewÃ¤hlt</span>
+            <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);" onclick="mediaModule.bulkDelete()">AusgewÃ¤hlte lÃ¶schen</button>
             <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);" onclick="mediaModule.deselectAll()">Auswahl aufheben</button>
         </div>
         <div class="media-grid" id="media-grid"></div>
@@ -315,7 +315,7 @@
     <div class="media-detail-sidebar" id="media-detail-sidebar" style="display:none;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
             <h3 style="font-size:16px;font-weight:600;color:#fff;">Bilddetails</h3>
-            <button class="btn btn-sm btn-secondary" onclick="mediaModule.closeDetail()">✕</button>
+            <button class="btn btn-sm btn-secondary" onclick="mediaModule.closeDetail()">â</button>
         </div>
         <div class="media-detail-preview" id="media-detail-preview"></div>
         <div class="media-detail-actions">
@@ -323,7 +323,7 @@
             <label class="btn btn-sm btn-secondary" style="cursor:pointer;margin:0;">
                 Ersetzen <input type="file" accept="image/*" style="display:none;" onchange="mediaModule.replace(this.files)">
             </label>
-            <button class="btn btn-sm" style="background:#ff3b30;color:#fff;" onclick="mediaModule.deleteActive()">Löschen</button>
+            <button class="btn btn-sm" style="background:#ff3b30;color:#fff;" onclick="mediaModule.deleteActive()">LÃ¶schen</button>
         </div>
         <div style="margin-top:16px;">
             <label class="form-label">Dateiname</label>
@@ -331,7 +331,7 @@
         </div>
         <div style="margin-top:12px;">
             <label class="form-label">Alt Text (SEO)</label>
-            <input type="text" class="form-input" id="media-detail-alt" placeholder="Bildbeschreibung für Suchmaschinen">
+            <input type="text" class="form-input" id="media-detail-alt" placeholder="Bildbeschreibung fÃ¼r Suchmaschinen">
         </div>
         <div style="margin-top:12px;">
             <label class="form-label">Kategorie</label>
@@ -345,14 +345,14 @@
         </div>
         <div style="margin-top:12px;">
             <label class="form-label">Verwendet in</label>
-            <div id="media-detail-usage" style="font-size:12px;color:#999;">—</div>
+            <div id="media-detail-usage" style="font-size:12px;color:#999;">â</div>
         </div>
         <div style="display:flex;gap:12px;font-size:11px;color:#666;margin-top:12px;">
-            <span id="media-detail-size">—</span>
-            <span id="media-detail-dims">—</span>
-            <span id="media-detail-date">—</span>
+            <span id="media-detail-size">â</span>
+            <span id="media-detail-dims">â</span>
+            <span id="media-detail-date">â</span>
         </div>
-        <button class="btn btn-primary" style="width:100%;margin-top:16px;" onclick="mediaModule.saveDetail()">Änderungen speichern</button>
+        <button class="btn btn-primary" style="width:100%;margin-top:16px;" onclick="mediaModule.saveDetail()">Ãnderungen speichern</button>
     </div>
 
     <!-- Settings Panel (Einstellungen) -->
@@ -371,14 +371,14 @@
 
                     <div class="form-section">
                         <div class="form-section-title">Komplettes Design importieren</div>
-                        <label class="form-label">CSS-Code einfügen (ersetzen Sie alle Variablen)</label>
-                        <textarea class="textarea" id="designImportCSS" placeholder="Komplettes CSS-Variablen-Set hier einfügen..."></textarea>
+                        <label class="form-label">CSS-Code einfÃ¼gen (ersetzen Sie alle Variablen)</label>
+                        <textarea class="textarea" id="designImportCSS" placeholder="Komplettes CSS-Variablen-Set hier einfÃ¼gen..."></textarea>
                     </div>
 
                     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                         <button class="button button-primary" onclick="admin.saveDesignVariables()">Variablen speichern</button>
                         <button class="button button-primary" onclick="admin.importDesignCSS()">CSS importieren</button>
-                        <button class="button button-secondary" onclick="admin.resetDesignToDefault()">Zurücksetzen</button>
+                        <button class="button button-secondary" onclick="admin.resetDesignToDefault()">ZurÃ¼cksetzen</button>
                     </div>
                 </div>
             </div>
@@ -406,7 +406,7 @@
             <div class="form-group">
                 <label class="form-label">Kategorie</label>
                 <select class="select" id="videoModalCategory">
-                    <option value="">-- Wählen Sie eine Kategorie --</option>
+                    <option value="">-- WÃ¤hlen Sie eine Kategorie --</option>
                 </select>
             </div>
             <div class="form-group">
@@ -415,7 +415,7 @@
             </div>
             <div class="form-row">
                 <div>
-                    <label class="form-label">Auflösung</label>
+                    <label class="form-label">AuflÃ¶sung</label>
                     <select class="select" id="videoModalResolution">
                         <option value="4K">4K</option>
                         <option value="HD">HD</option>
@@ -431,7 +431,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="form-label">Preis (€)</label>
+                <label class="form-label">Preis (â¬)</label>
                 <input type="number" class="form-input" id="videoModalPrice" placeholder="49.99" min="0" step="0.01">
             </div>
             <div class="form-group">
@@ -596,7 +596,7 @@
               var hk=document.getElementById('videoModalHoverKey'); if(hk) hk.value=res.hoverKey||'';
               var vid=document.getElementById('videoModalVideoId'); if(vid) vid.value=res.videoId||'';
         if (thumbKey) thumbKey.value = res.thumbKey; var tu=document.getElementById("videoModalThumbnail"); if(tu&&res.thumbKey){tu.value="https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/"+res.thumbKey;}
-        status.textContent = "Upload fertig — speichere & publiziere…"; try{ var ti=document.getElementById("videoModalTitle"); if(ti && !ti.value) ti.value = f.name.replace(/\.[^.]+$/,""); var ds=document.getElementById("videoModalDescription"); if(ds && !ds.value) ds.value=ti?ti.value:""; if(window.admin && admin.saveVideo){ admin.saveVideo(); } status.textContent="Gespeichert. Publiziere zu GitHub…"; if(window.admin && admin.publishToGitHub){ await admin.publishToGitHub(); } status.textContent="Fertig! Live in ~1-2 Min via Cloudflare Pages."; }catch(e2){ status.textContent="Auto-Publish Fehler: "+e2.message; }
+        status.textContent = "Upload fertig â speichere & publiziereâ¦"; try{ var ti=document.getElementById("videoModalTitle"); if(ti && !ti.value) ti.value = f.name.replace(/\.[^.]+$/,""); var ds=document.getElementById("videoModalDescription"); if(ds && !ds.value) ds.value=ti?ti.value:""; if(window.admin && admin.saveVideo){ admin.saveVideo(); } status.textContent="Gespeichert. Publiziere zu GitHubâ¦"; if(window.admin && admin.publishToGitHub){ await admin.publishToGitHub(); } status.textContent="Fertig! Live in ~1-2 Min via Cloudflare Pages."; }catch(e2){ status.textContent="Auto-Publish Fehler: "+e2.message; }
       } catch (err) {
         status.textContent = "Fehler: " + err.message;
       }
@@ -627,12 +627,12 @@
     };
     var origDel=admin.deleteVideo.bind(admin);
     admin.deleteVideo=function(idx){
-      if(!confirm('Wirklich löschen?'))return;
+      if(!confirm('Wirklich lÃ¶schen?'))return;
       this.videos.splice(idx,1);
       try{localStorage.setItem('adminVideos',JSON.stringify(this.videos));}catch(e){}
       this.renderVideosList&&this.renderVideosList();
       this.updateDashboard&&this.updateDashboard();
-      this.showAlert&&this.showAlert('videosAlert','success','Video gelöscht');
+      this.showAlert&&this.showAlert('videosAlert','success','Video gelÃ¶scht');
     };
   }
   once();
@@ -643,8 +643,8 @@
 <button id="batchReprocessBtn" type="button" style="position:fixed;bottom:20px;right:20px;z-index:9999;padding:12px 18px;border-radius:8px;background:#1473e6;color:#fff;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.4);font-weight:600;">Vorschauen neu generieren</button>
 <div id="batchReprocessModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:10000;overflow:auto;padding:40px;">
 <div style="max-width:760px;margin:0 auto;background:#1e1e1e;border-radius:12px;padding:28px;color:#eee;font-family:system-ui;">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="margin:0;font-size:20px;">Preview-Pipeline für bestehende Videos</h2><button onclick="document.getElementById('batchReprocessModal').style.display='none'" style="background:#333;border:none;color:#ccc;padding:6px 12px;border-radius:4px;cursor:pointer;">Schließen</button></div>
-<p style="color:#aaa;font-size:14px;margin:0 0 18px;">Wähle pro Video die <b>originale</b> Videodatei nochmal aus. Es wird automatisch ein 480p Preview + 360p Hover-Loop mit Wasserzeichen erzeugt und hochgeladen. Das Originalvideo in R2 wird dabei <b>nicht</b> erneut hochgeladen.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="margin:0;font-size:20px;">Preview-Pipeline fÃ¼r bestehende Videos</h2><button onclick="document.getElementById('batchReprocessModal').style.display='none'" style="background:#333;border:none;color:#ccc;padding:6px 12px;border-radius:4px;cursor:pointer;">SchlieÃen</button></div>
+<p style="color:#aaa;font-size:14px;margin:0 0 18px;">WÃ¤hle pro Video die <b>originale</b> Videodatei nochmal aus. Es wird automatisch ein 480p Preview + 360p Hover-Loop mit Wasserzeichen erzeugt und hochgeladen. Das Originalvideo in R2 wird dabei <b>nicht</b> erneut hochgeladen.</p>
 <div id="batchReprocessList"></div>
 <div style="margin-top:20px;display:flex;gap:10px;"><button id="batchReprocessPublish" style="padding:10px 18px;background:#16a34a;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;">Publish to GitHub</button></div>
 </div></div>
@@ -668,7 +668,7 @@ function openBatch(){
 }
 function bind(){
   var b=document.getElementById("batchReprocessBtn"); if(b&&!b._bd){ b._bd=1; b.addEventListener("click",openBatch); }
-  var p=document.getElementById("batchReprocessPublish"); if(p&&!p._bd){ p._bd=1; p.addEventListener("click",function(){ if(window.admin&&admin.publishToGitHub){ admin.publishToGitHub(); } else { alert("publishToGitHub nicht verfügbar"); } }); }
+  var p=document.getElementById("batchReprocessPublish"); if(p&&!p._bd){ p._bd=1; p.addEventListener("click",function(){ if(window.admin&&admin.publishToGitHub){ admin.publishToGitHub(); } else { alert("publishToGitHub nicht verfÃ¼gbar"); } }); }
 }
 if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bind); else bind();
 document.addEventListener("change", async function(e){
