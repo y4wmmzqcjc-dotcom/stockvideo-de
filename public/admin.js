@@ -21,14 +21,14 @@ var mediaModule = {
         this.items = [
             { id:1, name:'hero-stockvideo-produktion.jpg', url:this.r2Base+'/hero-stockvideo-produktion.jpg', alt:'Professionelle Stockvideo Produktion', category:'hero', size:'2.4 MB', dims:'1920x1080', date:'2026-03-15', usedIn:['Professionelle Stockvideo Produktion'] },
             { id:2, name:'kamera-setup-studio.jpg', url:this.r2Base+'/kamera-setup-studio.jpg', alt:'Kamera Setup im Studio', category:'artikel', size:'1.8 MB', dims:'1600x900', date:'2026-03-12', usedIn:['Professionelle Stockvideo Produktion'] },
-            { id:3, name:'hero-stockvideo-qualitaet.jpg', url:this.r2Base+'/hero-stockvideo-qualitaet.jpg', alt:'Stockvideo Qualit\u00e4t', category:'hero', size:'3.1 MB', dims:'1920x1080', date:'2026-03-10', usedIn:['Stockvideo Qualit\u00e4t'] },
-            { id:4, name:'drohne-landschaft.jpg', url:this.r2Base+'/drohne-landschaft.jpg', alt:'Drohnenaufnahme', category:'artikel', size:'4.2 MB', dims:'3840x2160', date:'2026-03-08', usedIn:['Stockvideo Qualit\u00e4t'] },
+            { id:3, name:'hero-stockvideo-qualitaet.jpg', url:this.r2Base+'/hero-stockvideo-qualitaet.jpg', alt:'Stockvideo Qualität', category:'hero', size:'3.1 MB', dims:'1920x1080', date:'2026-03-10', usedIn:['Stockvideo Qualität'] },
+            { id:4, name:'drohne-landschaft.jpg', url:this.r2Base+'/drohne-landschaft.jpg', alt:'Drohnenaufnahme', category:'artikel', size:'4.2 MB', dims:'3840x2160', date:'2026-03-08', usedIn:['Stockvideo Qualität'] },
             { id:5, name:'kategorie-natur.jpg', url:this.r2Base+'/kategorie-natur.jpg', alt:'Natur Kategorie', category:'kategorie', size:'1.2 MB', dims:'800x600', date:'2026-02-28', usedIn:[] },
             { id:6, name:'kategorie-business.jpg', url:this.r2Base+'/kategorie-business.jpg', alt:'Business Kategorie', category:'kategorie', size:'980 KB', dims:'800x600', date:'2026-02-25', usedIn:[] },
             { id:7, name:'video-editing-workflow.jpg', url:this.r2Base+'/video-editing-workflow.jpg', alt:'Video Editing Workflow', category:'artikel', size:'2.1 MB', dims:'1600x900', date:'2026-02-20', usedIn:['Stockvideos lizenzieren'] },
-            { id:8, name:'social-media-content.jpg', url:this.r2Base+'/social-media-content.jpg', alt:'Social Media Content', category:'artikel', size:'1.5 MB', dims:'1080x1080', date:'2026-02-15', usedIn:['Stockvideos f\u00fcr Social Media'] },
+            { id:8, name:'social-media-content.jpg', url:this.r2Base+'/social-media-content.jpg', alt:'Social Media Content', category:'artikel', size:'1.5 MB', dims:'1080x1080', date:'2026-02-15', usedIn:['Stockvideos für Social Media'] },
             { id:9, name:'color-grading-example.jpg', url:this.r2Base+'/color-grading-example.jpg', alt:'Color Grading Beispiel', category:'artikel', size:'1.9 MB', dims:'1920x1080', date:'2026-02-10', usedIn:[] },
-            { id:10, name:'stabilisierung-gimbal.jpg', url:this.r2Base+'/stabilisierung-gimbal.jpg', alt:'Gimbal Stabilisierung', category:'artikel', size:'2.3 MB', dims:'1600x1067', date:'2026-02-05', usedIn:['Stockvideo Qualit\u00e4t'] }
+            { id:10, name:'stabilisierung-gimbal.jpg', url:this.r2Base+'/stabilisierung-gimbal.jpg', alt:'Gimbal Stabilisierung', category:'artikel', size:'2.3 MB', dims:'1600x1067', date:'2026-02-05', usedIn:['Stockvideo Qualität'] }
         ];
     },
 
@@ -60,8 +60,9 @@ var mediaModule = {
             'onclick="mediaModule.handleClick(event,' + item.id + ')" ondblclick="mediaModule.openDetail(' + item.id + ')">' +
             '<div class="media-card-check" onclick="event.stopPropagation();mediaModule.toggleSelect(' + item.id + ')">' +
             (this.selectedIds.has(item.id) ? '\u2713' : '') + '</div>' +
-            '<div class="media-card-thumb"><img src="' + item.url + '" alt="' + item.alt + '" ' +
-            'onerror="this.parentElement.innerHTML=\'<div style=font-size:28px;color:#666>\ud83d\udcf7</div>\'"></div>' +
+            '<div class="media-card-thumb"><img src="' + item.url + '" alt="' + (item.alt||item.name) + '" loading="lazy" ' +
+            'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'+
+            '<div class="media-placeholder" style="display:none;align-items:center;justify-content:center;width:100%;height:100%;background:#1a1a2e;color:#555;font-size:11px;text-align:center;padding:4px">' + (item.name||'Bild') + '</div>' +
             '<div class="media-card-info"><div class="media-card-name">' + item.name + '</div>' +
             '<div class="media-card-meta"><span>' + item.size + '</span><span>' + 
             (item.usedIn && item.usedIn.length > 0 ? '\u2713 Verwendet' : 'Frei') + '</span></div></div></div>'
@@ -77,7 +78,7 @@ var mediaModule = {
         const bar = document.getElementById('media-bulk-bar');
         if (this.selectedIds.size > 0) {
             bar.style.display = 'flex';
-            document.getElementById('media-selected-count').textContent = this.selectedIds.size + ' ausgew\u00e4hlt';
+            document.getElementById('media-selected-count').textContent = this.selectedIds.size + ' ausgewählt';
         } else {
             bar.style.display = 'none';
         }
@@ -190,7 +191,7 @@ var mediaModule = {
         this.saveItems();
         this.closeDetail();
         this.render();
-        admin.showAlert('mediaAlert', 'Bild gel\u00f6scht', 'success');
+        admin.showAlert('mediaAlert', 'Bild gelöscht', 'success');
     },
 
     bulkDelete() {
@@ -199,7 +200,7 @@ var mediaModule = {
         this.selectedIds.clear();
         this.saveItems();
         this.render();
-        admin.showAlert('mediaAlert', count + ' Bilder gel\u00f6scht', 'success');
+        admin.showAlert('mediaAlert', count + ' Bilder gelöscht', 'success');
     },
 
     formatSize(bytes) {
@@ -409,7 +410,7 @@ var mediaModule = {
                         this.showLockout();
                         this.startLockoutTimer();
                     } else {
-                        alert.innerHTML = '<div class="alert alert-error">Ung\u00fcltiger Code. Bitte versuchen Sie es erneut.</div>';
+                        alert.innerHTML = '<div class="alert alert-error">Ungültiger Code. Bitte versuchen Sie es erneut.</div>';
                     }
                 }
             },
@@ -509,24 +510,106 @@ var mediaModule = {
             },
 
             // ===== DASHBOARD =====
-            updateDashboard() {
-                this.loadVideos();
-                this.loadCategories();
+        updateDashboard() {
+            this.loadVideos();
+            this.loadCategories();
+            
+            // Gather stats
+            const articles = JSON.parse(localStorage.getItem('adminArticles') || '[]');
+            const mediaItems = JSON.parse(localStorage.getItem('mediaItems') || '[]');
+            const totalVideos = this.videos.length;
+            const totalCats = this.categories.length;
+            const totalArticles = articles.length;
+            const totalMedia = mediaItems.length;
+            const publishedArticles = articles.filter(a => a.status === 'published').length;
+            const draftArticles = articles.filter(a => a.status === 'draft').length;
+            
+            // Calculate R2 storage from media items (size strings like "2.4 MB")
+            let totalBytes = 0;
+            mediaItems.forEach(m => {
+                if (!m.size) return;
+                const s = m.size.toString();
+                const num = parseFloat(s);
+                if (s.includes('GB')) totalBytes += num * 1073741824;
+                else if (s.includes('MB')) totalBytes += num * 1048576;
+                else if (s.includes('KB')) totalBytes += num * 1024;
+                else totalBytes += num;
+            });
+            const usedGB = (totalBytes / 1073741824).toFixed(2);
+            const freeGB = 10;
+            const pct = Math.min(100, (totalBytes / (freeGB * 1073741824)) * 100).toFixed(1);
+            const overageGB = Math.max(0, parseFloat(usedGB) - freeGB);
+            const monthlyCost = (overageGB * 0.015).toFixed(2);
+            const barColor = pct > 80 ? '#ff3b30' : pct > 50 ? '#ffcc00' : '#34c759';
+            
+            const el = document.getElementById('dashboardContent');
+            if (!el) return;
+            
+            el.innerHTML = `
+            <div style="padding:24px">
+                <h2 style="color:#fff;margin:0 0 24px;font-size:22px">Dashboard</h2>
+                
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px">
+                    <div style="background:linear-gradient(135deg,rgba(0,212,255,0.1),rgba(0,153,255,0.05));padding:20px;border-radius:12px;border:1px solid rgba(0,212,255,0.2)">
+                        <div style="color:#0099ff;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Videos</div>
+                        <div style="color:#fff;font-size:36px;font-weight:700">${totalVideos}</div>
+                    </div>
+                    <div style="background:linear-gradient(135deg,rgba(52,199,89,0.1),rgba(52,199,89,0.05));padding:20px;border-radius:12px;border:1px solid rgba(52,199,89,0.2)">
+                        <div style="color:#34c759;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Kategorien</div>
+                        <div style="color:#fff;font-size:36px;font-weight:700">${totalCats}</div>
+                    </div>
+                    <div style="background:linear-gradient(135deg,rgba(255,204,0,0.1),rgba(255,204,0,0.05));padding:20px;border-radius:12px;border:1px solid rgba(255,204,0,0.2)">
+                        <div style="color:#ffcc00;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Artikel</div>
+                        <div style="color:#fff;font-size:36px;font-weight:700">${totalArticles}</div>
+                        <div style="color:#888;font-size:11px;margin-top:4px">${publishedArticles} veröffentlicht · ${draftArticles} Entwürfe</div>
+                    </div>
+                    <div style="background:linear-gradient(135deg,rgba(175,82,222,0.1),rgba(175,82,222,0.05));padding:20px;border-radius:12px;border:1px solid rgba(175,82,222,0.2)">
+                        <div style="color:#af52de;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Medien</div>
+                        <div style="color:#fff;font-size:36px;font-weight:700">${totalMedia}</div>
+                    </div>
+                </div>
+                
+                <div style="background:rgba(255,255,255,0.03);padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);margin-bottom:24px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                        <div style="color:#fff;font-weight:600">Cloudflare R2 Speicher</div>
+                        <div style="color:#888;font-size:13px">${usedGB} GB / ${freeGB} GB</div>
+                    </div>
+                    <div style="background:rgba(0,0,0,0.3);height:12px;border-radius:6px;overflow:hidden;margin-bottom:12px">
+                        <div style="height:100%;background:${barColor};border-radius:6px;transition:width 0.5s;width:${pct}%"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px">
+                        <span style="color:#888">${pct}% belegt</span>
+                        <span style="color:${overageGB > 0 ? '#ff3b30' : '#34c759'}">${overageGB > 0 ? 'Kosten: $' + monthlyCost + '/Monat ($0.015/GB)' : 'Im kostenlosen Kontingent'}</span>
+                    </div>
+                </div>
+                
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                    <div style="background:rgba(255,255,255,0.03);padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.08)">
+                        <div style="color:#fff;font-weight:600;margin-bottom:12px">Letzte Änderung</div>
+                        <div id="statLastChange" style="color:#0099ff;font-size:18px">–</div>
+                        <div id="statLastChangeTime" style="color:#888;font-size:12px;margin-top:4px"></div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.03);padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.08)">
+                        <div style="color:#fff;font-weight:600;margin-bottom:12px">Deploy Status</div>
+                        <div id="statDeployStatus" style="color:#0099ff;font-size:18px">...</div>
+                        <div id="statDeployTime" style="color:#888;font-size:12px;margin-top:4px"></div>
+                    </div>
+                </div>
+                
+                ${articles.length > 0 ? '<div style="background:rgba(255,255,255,0.03);padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);margin-top:16px"><div style="color:#fff;font-weight:600;margin-bottom:12px">Letzte Artikel</div>' + articles.slice(0,5).map(a => '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span style="color:#ccc">' + (a.title||a.seoTitle||'Ohne Titel') + '</span><span style="color:' + (a.status==='published'?'#34c759':'#ffcc00') + ';font-size:12px">' + (a.status==='published'?'Live':'Entwurf') + '</span></div>').join('') + '</div>' : ''}
+            </div>`;
+            
+            const lastChange = localStorage.getItem('adminLastChange');
+            if (lastChange) {
+                const date = new Date(lastChange);
+                document.getElementById('statLastChange').textContent = date.toLocaleDateString('de-DE');
+                document.getElementById('statLastChangeTime').textContent = date.toLocaleTimeString('de-DE');
+            }
+            
+            this.refreshDeployStatus();
+        },
 
-                document.getElementById('statVideos').textContent = this.videos.length;
-                document.getElementById('statCategories').textContent = this.categories.length;
-
-                const lastChange = localStorage.getItem('adminLastChange');
-                if (lastChange) {
-                    const date = new Date(lastChange);
-                    document.getElementById('statLastChange').textContent = date.toLocaleDateString('de-DE');
-                    document.getElementById('statLastChangeTime').textContent = date.toLocaleTimeString('de-DE');
-                } else {
-                    document.getElementById('statLastChange').textContent = '-';
-                    document.getElementById('statLastChangeTime').textContent = '';
-                }
-
-                this.refreshDeployStatus();
+refreshDeployStatus();
             },
 
             refreshDeployStatus() {
@@ -576,7 +659,12 @@ var mediaModule = {
                     return;
                 }
 
-                container.innerHTML = this.videos.map((video, idx) => `
+        const searchTerm = (this._videoSearch || '').toLowerCase();
+        const filtered = searchTerm ? this.videos.filter(v => (v.title||'').toLowerCase().includes(searchTerm) || (v.category||'').toLowerCase().includes(searchTerm)) : this.videos;
+        
+        let searchBar = '<div style="margin-bottom:16px"><input type="text" id="videoSearchInput" placeholder="Videos durchsuchen..." value="' + (this._videoSearch||'').replace(/"/g,'&quot;') + '" oninput="window.admin._videoSearch=this.value;window.admin.renderVideosList()" style="width:100%;padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#fff;font-size:14px;outline:none"><div style="margin-top:6px;font-size:12px;color:#888">' + filtered.length + ' von ' + this.videos.length + ' Videos</div></div>';
+
+                container.innerHTML = searchBar + filtered.map((video, idx) => `
                     <div class="list-item">
                         ${video.thumbnail ? `<img src="${video.thumbnail}" class="thumbnail-preview" onerror="this.style.display='none'">` : ''}
                         <div class="list-item-content">
@@ -585,7 +673,7 @@ var mediaModule = {
                         </div>
                         <div class="list-item-actions">
                             <button class="button button-small button-secondary" onclick="admin.editVideo(${idx})">Bearbeiten</button>
-                            <button class="button button-small button-danger" onclick="admin.deleteVideo(${idx})">L\u00f6schen</button>
+                            <button class="button button-small button-danger" onclick="admin.deleteVideo(${idx})">Löschen</button>
                         </div>
                     </div>
                 `).join('');
@@ -684,7 +772,7 @@ var mediaModule = {
                     .catch(() => [])
                     .then(list => {
                         const cats = (Array.isArray(list) && list.length) ? list : (this.categories || []);
-                        dropdown.innerHTML = '<option value="">-- W\u00e4hlen Sie eine Kategorie --</option>' +
+                        dropdown.innerHTML = '<option value="">-- Wählen Sie eine Kategorie --</option>' +
                             cats.map(c => '<option value="' + (c.slug || c.id) + '">' + (c.label || c.name || c.slug) + '</option>').join('');
                         if (this.currentVideo && this.currentVideo.category) dropdown.value = this.currentVideo.category;
                     });
@@ -779,12 +867,12 @@ var mediaModule = {
             },
 
             deleteVideo(idx) {
-                if (confirm('Wirklich l\u00f6schen?')) {
+                if (confirm('Wirklich löschen?')) {
                     this.videos.splice(idx, 1);
                     localStorage.setItem('adminVideos', JSON.stringify(this.videos));
                     localStorage.setItem('adminLastChange', new Date().toISOString());
                     this.loadVideos();
-                    this.showAlert('videosAlert', 'success', 'Video gel\u00f6scht');
+                    this.showAlert('videosAlert', 'success', 'Video gelöscht');
                 }
             },
 
@@ -815,7 +903,7 @@ var mediaModule = {
                         </div>
                         <div class="list-item-actions">
                             <button class="button button-small button-secondary" onclick="admin.editCategory(${idx})">Bearbeiten</button>
-                            <button class="button button-small button-danger" onclick="admin.deleteCategory(${idx})">L\u00f6schen</button>
+                            <button class="button button-small button-danger" onclick="admin.deleteCategory(${idx})">Löschen</button>
                         </div>
                     </div>
                 `).join('');
@@ -882,12 +970,12 @@ var mediaModule = {
             },
 
             deleteCategory(idx) {
-                if (confirm('Wirklich l\u00f6schen?')) {
+                if (confirm('Wirklich löschen?')) {
                     this.categories.splice(idx, 1);
                     localStorage.setItem('adminCategories', JSON.stringify(this.categories));
                     localStorage.setItem('adminLastChange', new Date().toISOString());
                     this.loadCategories();
-                    this.showAlert('categoriesAlert', 'success', 'Kategorie gel\u00f6scht');
+                    this.showAlert('categoriesAlert', 'success', 'Kategorie gelöscht');
                 }
             },
 
@@ -959,7 +1047,7 @@ var mediaModule = {
                                 <input type="text" class="form-input" value="${p.label}" placeholder="Plan-Name" data-pricing-label="${idx}">
                             </div>
                             <div>
-                                <label class="form-label">Aufl\u00f6sung</label>
+                                <label class="form-label">Auflösung</label>
                                 <input type="text" class="form-input" value="${p.resolution}" placeholder="z.B. 4K" data-pricing-resolution="${idx}">
                             </div>
                         </div>
@@ -1121,7 +1209,7 @@ var mediaModule = {
             },
 
             resetDesignToDefault() {
-                if (confirm('Wirklich zur\u00fccksetzen?')) {
+                if (confirm('Wirklich zurücksetzen?')) {
                     localStorage.removeItem('adminDesignVariables');
                     location.reload();
                 }
@@ -1151,7 +1239,7 @@ var mediaModule = {
                 }
 
                 if (newPassword !== confirmPassword) {
-                    this.showAlert('settingsAlert', 'error', 'Passw\u00f6rter stimmen nicht \u00fcberein');
+                    this.showAlert('settingsAlert', 'error', 'Passwörter stimmen nicht überein');
                     return;
                 }
 
@@ -1161,7 +1249,7 @@ var mediaModule = {
                 document.getElementById('settingsNewPassword').value = '';
                 document.getElementById('settingsConfirmPassword').value = '';
 
-                this.showAlert('settingsAlert', 'success', 'Passwort ge\u00e4ndert');
+                this.showAlert('settingsAlert', 'success', 'Passwort geändert');
             },
 
             save2FASettings() {
@@ -1199,7 +1287,7 @@ var mediaModule = {
 
                 const button = event.target;
                 button.disabled = true;
-                button.textContent = 'Ver\u00f6ffentlichung...';
+                button.textContent = 'Veröffentlichung...';
 
                 const config = {
                     videos: this.videos,
@@ -1209,18 +1297,18 @@ var mediaModule = {
 
                 this.createGitHubCommit(settings, config)
                     .then(() => {
-                        this.showAlert('dashboardAlert', 'success', 'Erfolgreich ver\u00f6ffentlicht! Cloudflare Pages wird neu gebaut...');
+                        this.showAlert('dashboardAlert', 'success', 'Erfolgreich veröffentlicht! Cloudflare Pages wird neu gebaut...');
                         setTimeout(() => {
                             this.refreshDeployStatus();
                         }, 3000);
                     })
                     .catch(err => {
                         console.error('Publish Error:', err);
-                        this.showAlert('dashboardAlert', 'error', 'Fehler beim Ver\u00f6ffentlichen: ' + err.message);
+                        this.showAlert('dashboardAlert', 'error', 'Fehler beim Veröffentlichen: ' + err.message);
                     })
                     .finally(() => {
                         button.disabled = false;
-                        button.textContent = 'Ver\u00f6ffentlichen';
+                        button.textContent = 'Veröffentlichen';
                     });
             },
 
@@ -1433,9 +1521,9 @@ var calendarModule = {
         if (!this.articles || this.articles.length === 0) {
             this.articles = [
                 { title: 'Professionelle Stockvideo Produktion', publishDate: '2026-03-15', status: 'published' },
-                { title: 'Stockvideo Qualit\u00e4t', publishDate: '2026-03-20', status: 'published' },
+                { title: 'Stockvideo Qualität', publishDate: '2026-03-20', status: 'published' },
                 { title: 'Stockvideos lizenzieren', publishDate: '2026-03-25', status: 'published' },
-                { title: 'Stockvideos f\u00fcr Social Media', publishDate: '2026-04-01', status: 'published' },
+                { title: 'Stockvideos für Social Media', publishDate: '2026-04-01', status: 'published' },
                 { title: 'Stockvideo Marketing', publishDate: '2026-04-05', status: 'published' },
                 { title: 'Stockvideo Trends 2026', publishDate: '2026-04-15', status: 'scheduled' },
                 { title: 'Drohnen Stockvideos', publishDate: '2026-04-22', status: 'scheduled' },
@@ -1457,7 +1545,7 @@ var calendarModule = {
         const lastDay = new Date(year, month + 1, 0);
         const startDow = (firstDay.getDay() + 6) % 7; // Monday = 0
 
-        const monthNames = ['Januar','Februar','M\u00e4rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+        const monthNames = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
         document.getElementById('calendar-month-title').textContent = monthNames[month] + ' ' + year;
 
         const days = ['Mo','Di','Mi','Do','Fr','Sa','So'];
@@ -1527,7 +1615,7 @@ var calendarModule = {
 
         listEl.innerHTML = dayArticles.map(a => {
             const colors = { published: '#34c759', scheduled: '#007aff', draft: '#8e8e93' };
-            const labels = { published: 'Ver\u00f6ffentlicht', scheduled: 'Geplant', draft: 'Entwurf' };
+            const labels = { published: 'Veröffentlicht', scheduled: 'Geplant', draft: 'Entwurf' };
             return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #333;">' +
                 '<span style="width:8px;height:8px;border-radius:50%;background:' + (colors[a.status]||'#888') + ';flex-shrink:0;"></span>' +
                 '<div style="flex:1;"><div style="color:#fff;font-size:14px;">' + a.title + '</div>' +
