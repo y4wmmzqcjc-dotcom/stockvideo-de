@@ -620,24 +620,40 @@ var mediaModule = {
         container.innerHTML = '<div style="text-align:center;padding:60px 20px;color:#888"><p>Keine Videos vorhanden</p></div>';
         return;
       }
-      let html = '<div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:12px">' +
-        '<input type="text" placeholder="Videos durchsuchen..." value="' + (this._videoSearch||'') + '" ' +
-        'oninput="admin._videoSearch=this.value;admin.renderVideosList()" ' +
-        'style="flex:1;background:#1a1a2e;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 12px;color:#fff;font-size:14px;outline:none">' +
-        '<span style="color:#888;font-size:13px">' + filtered.length + ' von ' + this.videos.length + ' Videos</span></div>';
-      
-      html += filtered.map(function(v, i) {
+
+      // Only rebuild search bar if it doesn't exist yet
+      let searchBar = document.getElementById('videoSearchBar');
+      if (!searchBar) {
+        const barHtml = '<div id="videoSearchBar" style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:12px">' +
+          '<input type="text" id="videoSearchInput" placeholder="Videos durchsuchen..." ' +
+          'style="flex:1;background:#1a1a2e;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 12px;color:#fff;font-size:14px;outline:none">' +
+          '<span id="videoSearchCount" style="color:#888;font-size:13px;white-space:nowrap"></span></div>' +
+          '<div id="videoListItems"></div>';
+        container.innerHTML = barHtml;
+        document.getElementById('videoSearchInput').addEventListener('input', function(e) {
+          admin._videoSearch = e.target.value;
+          admin.renderVideosList();
+        });
+      }
+
+      // Update count
+      var countEl = document.getElementById('videoSearchCount');
+      if (countEl) countEl.textContent = filtered.length + ' von ' + this.videos.length + ' Videos';
+
+      // Only rebuild the items list
+      var listEl = document.getElementById('videoListItems') || container;
+      listEl.innerHTML = filtered.map(function(v, i) {
+        var origIdx = admin.videos.indexOf(v);
         var thumbUrl = v.thumbnail || v.posterUrl || '';
-        return '<div class="video-item" style="display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer" onclick="admin.editVideo(' + i + ')">' +
+        return '<div class="video-item" style="display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer" onclick="admin.editVideo(' + origIdx + ')">' +
           '<div style="width:80px;height:45px;border-radius:6px;overflow:hidden;background:#1a1a2e;margin-right:12px;flex-shrink:0">' +
           (thumbUrl ? '<img src="' + thumbUrl + '" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display=\'none\'">' : '') +
           '</div>' +
           '<div style="flex:1;min-width:0"><div style="color:#fff;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (v.title||'Ohne Titel') + '</div>' +
           '<div style="color:#888;font-size:12px;margin-top:2px">' + (v.category||'Keine Kategorie') + '</div></div>' +
-          '<button onclick="event.stopPropagation();admin.deleteVideo(' + i + ')" style="background:rgba(255,59,48,0.1);color:#ff3b30;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px">Löschen</button>' +
+          '<button onclick="event.stopPropagation();admin.deleteVideo(' + origIdx + ')" style="background:rgba(255,59,48,0.1);color:#ff3b30;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px">Löschen</button>' +
           '</div>';
       }).join('');
-      container.innerHTML = html;
     },
 
     async syncFromLive() {
