@@ -645,6 +645,10 @@ window.adminArticles = {
     if (target) {
       target.style.display = 'block';
       target.classList.add('active');
+
+            // Auto-render calendar and media panels
+            if (panel === 'calendar' && typeof calendarModule !== 'undefined') calendarModule.render();
+            if (panel === 'media' && typeof mediaModule !== 'undefined') mediaModule.render();
     }
 
     // Update nav highlighting
