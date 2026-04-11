@@ -1482,7 +1482,7 @@ var calendarModule = {
             cellHtml += '<div class="calendar-cell-day">' + d + '</div>';
             dayArticles.forEach(a => {
                 const status = a.status || 'draft';
-                cellHtml += '<div class="calendar-article-pill status-' + status + '" title="' + a.title + '">' + a.title + '</div>';
+                cellHtml += '<div class="calendar-article-pill status-' + status + '" title="' + a.title + '" data-id="' + a.id + '" style="cursor:pointer" onclick="admin.switchPanel(\'articles\');setTimeout(function(){adminArticles.openEditor(\'' + a.id + '\')},100)">' + a.title + '</div>';
             });
             cellHtml += '</div>';
             html += cellHtml;
