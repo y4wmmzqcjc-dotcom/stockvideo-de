@@ -356,126 +356,271 @@ window.adminArticles = {
     }
     if (!a.seo) a.seo = {};
     if (!a.geo) a.geo = {};
-    this._editorTab = 'content';
+
     this._renderBlockEditor();
   },
 
+  _injectEditorStyles() {
+    if (document.getElementById('we-styles')) return;
+    var s = document.createElement('style');
+    s.id = 'we-styles';
+    s.textContent = `
+      .we-wrap { display:flex; gap:0; height:100%; min-height:calc(100vh - 80px); }
+      .we-main { flex:1; min-width:0; background:#f8f9fa; overflow-y:auto; padding:32px 40px; }
+      .we-side { width:300px; flex-shrink:0; background:#1a1a2e; border-left:1px solid #2a2a4a; overflow-y:auto; padding:20px; }
+      .we-topbar { display:flex; align-items:center; gap:12px; margin-bottom:24px; padding:0 0 16px; border-bottom:2px solid #e0e0e0; }
+      .we-topbar button { background:none; border:1px solid #ccc; color:#333; padding:6px 16px; border-radius:6px; cursor:pointer; font-size:13px; }
+      .we-topbar button:hover { background:#e8e8e8; }
+      .we-topbar .we-back { border:none; font-size:22px; padding:4px 10px; color:#666; }
+      .we-topbar .we-save { background:#2563eb; color:#fff; border:none; font-weight:600; margin-left:auto; padding:8px 24px; border-radius:8px; }
+      .we-topbar .we-save:hover { background:#1d4ed8; }
+      .we-title-input { width:100%; font-size:32px; font-weight:700; color:#111; border:none; background:transparent; outline:none; padding:8px 0; margin-bottom:4px; font-family:inherit; }
+      .we-title-input:focus { border-bottom:2px solid #2563eb; }
+      .we-title-input::placeholder { color:#bbb; }
+      .we-slug-row { display:flex; align-items:center; gap:4px; color:#888; font-size:14px; margin-bottom:28px; }
+      .we-slug-row input { border:none; background:transparent; color:#555; font-size:14px; outline:none; flex:1; font-family:monospace; }
+      .we-slug-row input:focus { color:#111; border-bottom:1px solid #2563eb; }
+      .we-block { position:relative; margin-bottom:2px; border-radius:8px; transition:background 0.15s; }
+      .we-block:hover { background:#f0f0f5; }
+      .we-block:hover .we-block-actions { opacity:1; }
+      .we-block-actions { position:absolute; left:-44px; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:2px; opacity:0; transition:opacity 0.15s; }
+      .we-block-actions button { background:#fff; border:1px solid #ddd; width:28px; height:28px; border-radius:6px; cursor:pointer; font-size:12px; display:flex; align-items:center; justify-content:center; color:#666; }
+      .we-block-actions button:hover { background:#e8e8f0; color:#333; }
+      .we-block-del { position:absolute; right:-8px; top:4px; opacity:0; background:#fff !important; border:1px solid #e0e0e0 !important; color:#999 !important; width:24px; height:24px; border-radius:50% !important; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; transition:opacity 0.15s; }
+      .we-block:hover .we-block-del { opacity:1; }
+      .we-block-del:hover { color:#ef4444 !important; border-color:#ef4444 !important; }
+      .we-bh textarea { width:100%; font-size:24px; font-weight:700; color:#111; border:none; background:transparent; outline:none; padding:12px 8px 8px; resize:none; overflow:hidden; font-family:inherit; line-height:1.3; }
+      .we-bh textarea:focus { background:#fff; border-radius:4px; box-shadow:0 0 0 2px rgba(37,99,235,0.2); }
+      .we-bt textarea { width:100%; font-size:16px; color:#333; border:none; background:transparent; outline:none; padding:8px; resize:none; overflow:hidden; font-family:inherit; line-height:1.7; }
+      .we-bt textarea:focus { background:#fff; border-radius:4px; box-shadow:0 0 0 2px rgba(37,99,235,0.2); }
+      .we-bi { padding:8px; }
+      .we-bi img { max-width:100%; max-height:300px; border-radius:8px; display:block; margin:0 auto 8px; cursor:pointer; }
+      .we-bi .we-bi-placeholder { width:100%; height:180px; background:#e8e8f0; border:2px dashed #ccc; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#999; font-size:14px; cursor:pointer; margin-bottom:8px; }
+      .we-bi input { width:100%; border:1px solid #ddd; background:#fff; padding:6px 10px; border-radius:6px; font-size:13px; color:#333; margin-bottom:4px; outline:none; }
+      .we-bi input:focus { border-color:#2563eb; }
+      .we-bq { border-left:4px solid #2563eb; margin-left:8px; }
+      .we-bq textarea { width:100%; font-size:16px; color:#555; border:none; background:transparent; outline:none; padding:8px 8px 8px 16px; resize:none; overflow:hidden; font-style:italic; font-family:inherit; line-height:1.7; }
+      .we-bq textarea:focus { background:#fff; border-radius:0 4px 4px 0; box-shadow:0 0 0 2px rgba(37,99,235,0.2); }
+      .we-add { display:flex; gap:8px; padding:16px 8px; margin-top:12px; }
+      .we-add button { background:#fff; border:1px solid #ddd; padding:8px 18px; border-radius:8px; cursor:pointer; font-size:13px; color:#555; transition:all 0.15s; }
+      .we-add button:hover { background:#2563eb; color:#fff; border-color:#2563eb; }
+      .we-inserter { text-align:center; padding:2px 0; opacity:0; transition:opacity 0.15s; }
+      .we-inserter:hover { opacity:1; }
+      .we-inserter button { background:none; border:1px dashed #ccc; color:#aaa; padding:2px 16px; border-radius:20px; cursor:pointer; font-size:18px; }
+      .we-inserter button:hover { border-color:#2563eb; color:#2563eb; }
+      /* Sidebar */
+      .we-side h3 { color:#fff; font-size:14px; font-weight:600; margin:0 0 16px; text-transform:uppercase; letter-spacing:0.5px; }
+      .we-side h4 { color:#a0a0c0; font-size:12px; font-weight:600; margin:20px 0 10px; text-transform:uppercase; letter-spacing:0.5px; }
+      .we-score { text-align:center; margin-bottom:20px; }
+      .we-score-circle { width:80px; height:80px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:24px; font-weight:700; color:#fff; margin-bottom:8px; }
+      .we-score-label { color:#a0a0c0; font-size:12px; }
+      .we-check { display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:6px; margin-bottom:4px; font-size:13px; color:#ddd; }
+      .we-check-ok { background:rgba(34,197,94,0.1); }
+      .we-check-fail { background:rgba(239,68,68,0.1); }
+      .we-check-icon { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; }
+      .we-check-ok .we-check-icon { background:#22c55e; color:#fff; }
+      .we-check-fail .we-check-icon { background:#ef4444; color:#fff; }
+      .we-side-field { margin-bottom:12px; }
+      .we-side-field label { display:block; color:#a0a0c0; font-size:11px; margin-bottom:4px; text-transform:uppercase; }
+      .we-side-field input, .we-side-field select { width:100%; background:#252545; border:1px solid #3a3a5a; color:#fff; padding:8px 10px; border-radius:6px; font-size:13px; outline:none; }
+      .we-side-field input:focus, .we-side-field select:focus { border-color:#2563eb; }
+      .we-side-field .we-charcount { text-align:right; font-size:11px; color:#888; margin-top:2px; }
+      .we-geo-link { color:#60a5fa; font-size:12px; text-decoration:none; }
+      .we-geo-link:hover { text-decoration:underline; }
+      .we-divider { border:none; border-top:1px solid #2a2a4a; margin:16px 0; }
+    `;
+    document.head.appendChild(s);
+  }
+
   _renderBlockEditor() {
-    const a = this.articles.find(x => x.id == this.currentEditId);
+    var self = this;
+    var a = this.articles.find(function(x) { return x.id == self.currentEditId });
     if (!a) return;
-    const el = document.getElementById('articleContent');
-    const checks = this._getSeoChecks(a);
-    var tabBar = '<div style="display:flex;gap:8px;margin-bottom:16px;align-items:center">'
-      + '<button onclick="adminArticles.closeEditor()" style="background:none;border:none;font-size:18px;cursor:pointer;padding:4px 8px" title="Zurueck">\u2190</button>'
-      + '<button class="aa-btn' + (this._editorTab==='content'?' aa-btn-primary':'') + '" onclick="adminArticles.switchTab(\x27content\x27)">Inhalt</button>'
-      + '<button class="aa-btn' + (this._editorTab==='seo'?' aa-btn-primary':'') + '" onclick="adminArticles.switchTab(\x27seo\x27)">SEO</button>'
-      + '<button class="aa-btn' + (this._editorTab==='geo'?' aa-btn-primary':'') + '" onclick="adminArticles.switchTab(\x27geo\x27)">GEO</button>'
-      + '<div style="flex:1"></div>'
-      + '<button class="aa-btn aa-btn-primary" onclick="adminArticles.saveArticle()">Speichern</button>'
-      + '</div>';
-    var html = tabBar;
+    var ac = document.getElementById('articleContent');
+    if (!ac) return;
+    this._injectEditorStyles();
 
-    if (this._editorTab === 'content') {
-      html += '<div style="margin-bottom:16px">'
-        + '<input type="text" id="editorTitle" value="' + this._esc(a.title||'') + '" placeholder="Artikel-Titel" '
-        + 'onchange="adminArticles._updateMeta(\x27title\x27,this.value)" '
-        + 'style="width:100%;font-size:22px;font-weight:700;padding:8px 12px;border:2px solid #e2e8f0;border-radius:8px;outline:none;box-sizing:border-box">'
-        + '</div>';
-      html += '<div style="margin-bottom:16px;display:flex;gap:8px;align-items:center">'
-        + '<span style="color:#64748b;font-size:13px">/wissen/</span>'
-        + '<input type="text" id="editorSlug" value="' + this._esc(a.slug||'') + '" placeholder="url-slug" '
-        + 'onchange="adminArticles._updateMeta(\x27slug\x27,this.value)" '
-        + 'style="flex:1;padding:6px 10px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;font-family:monospace;outline:none">'
-        + '</div>';
-      html += '<div id="editorBlocks">';
-      a.blocks.forEach(function(block, idx) {
-        html += adminArticles._renderBlock(block, idx);
-      });
-      html += '</div>';
-      html += '<div style="display:flex;gap:8px;margin-top:12px;padding:12px;background:#f8fafc;border-radius:8px;border:2px dashed #e2e8f0">'
-        + '<button class="aa-btn" onclick="adminArticles.addBlock(\x27text\x27)" style="font-size:13px">+ Text</button>'
-        + '<button class="aa-btn" onclick="adminArticles.addBlock(\x27heading\x27)" style="font-size:13px">+ \u00dcberschrift</button>'
-        + '<button class="aa-btn" onclick="adminArticles.addBlock(\x27image\x27)" style="font-size:13px">+ Bild</button>'
-        + '<button class="aa-btn" onclick="adminArticles.addBlock(\x27quote\x27)" style="font-size:13px">+ Zitat</button>'
-        + '</div>';
-    } else if (this._editorTab === 'seo') {
-      html += this._renderSeoTab(a, checks);
-    } else if (this._editorTab === 'geo') {
-      html += this._renderGeoTab(a);
+    // Build blocks HTML
+    var blocksHtml = '';
+    for (var i = 0; i < a.blocks.length; i++) {
+      blocksHtml += '<div class="we-inserter"><button onclick="adminArticles._insertBlockAt(' + i + ')" title="Block einfügen">+</button></div>';
+      blocksHtml += this._renderBlock(a.blocks[i], i);
     }
-    el.innerHTML = html;
-    var tas = el.querySelectorAll('textarea[data-autoresize]');
-    tas.forEach(function(ta) { ta.style.height='auto'; ta.style.height=(ta.scrollHeight+2)+'px'; });
-    if (this._editorTab === 'content') this._initBlockDragDrop();
-  },
 
-
-  _renderSeoTab(a, checks) {
+    // Build SEO checks
     var seo = a.seo || {};
-    var html = '<div style="max-width:640px">';
-    html += '<h3 style="margin:0 0 16px;font-size:16px">SEO-Einstellungen</h3>';
-    html += '<div style="margin-bottom:14px"><label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px">Keyphrase '
-      + (checks.keyphrase ? '\u2705' : '\u274c') + '</label>'
-      + '<input type="text" value="' + this._esc(a.keyphrase||'') + '" placeholder="Haupt-Keyword" '
-      + 'onchange="adminArticles._updateMeta(\x27keyphrase\x27,this.value)" '
-      + 'style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:6px;box-sizing:border-box;outline:none"></div>';
-    html += '<div style="margin-bottom:14px"><label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px">SEO-Titel '
-      + (checks.seoTitle ? '\u2705' : '\u274c') + '</label>'
-      + '<input type="text" value="' + this._esc(seo.title||a.title||'') + '" placeholder="SEO Titel (50-60 Zeichen)" '
-      + 'onchange="adminArticles._updateSeo(\x27title\x27,this.value)" '
-      + 'style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:6px;box-sizing:border-box;outline:none">'
-      + '<div style="font-size:11px;color:#94a3b8;margin-top:2px">' + (seo.title||a.title||'').length + '/60 Zeichen</div></div>';
-    html += '<div style="margin-bottom:14px"><label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px">Meta-Description '
-      + (checks.metaDesc ? '\u2705' : '\u274c') + '</label>'
-      + '<textarea onchange="adminArticles._updateSeo(\x27description\x27,this.value)" placeholder="Meta-Beschreibung (120-160 Zeichen)" '
-      + 'style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:6px;box-sizing:border-box;outline:none;min-height:60px;resize:vertical">'
-      + this._esc(seo.description||'') + '</textarea>'
-      + '<div style="font-size:11px;color:#94a3b8;margin-top:2px">' + (seo.description||'').length + '/160 Zeichen</div></div>';
-    html += '<div style="margin-bottom:14px"><label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px">Interne Links '
-      + (checks.internalLinks ? '\u2705' : '\u274c') + '</label>'
-      + '<input type="text" value="' + this._esc((a.internalLinks||[]).join(', ')) + '" placeholder="Kommagetrennte URLs" '
-      + 'onchange="adminArticles._updateMeta(\x27internalLinks\x27,this.value.split(\x27,\x27).map(function(s){return s.trim()}).filter(Boolean))" '
-      + 'style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:6px;box-sizing:border-box;outline:none"></div>';
-    html += '<div style="margin-bottom:14px"><label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px">Wikipedia-Link '
-      + (checks.wikipedia ? '\u2705' : '\u274c') + '</label>'
-      + '<input type="text" value="' + this._esc(a.wikipediaUrl||'') + '" placeholder="https://de.wikipedia.org/wiki/..." '
-      + 'onchange="adminArticles._updateMeta(\x27wikipediaUrl\x27,this.value)" '
-      + 'style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:6px;box-sizing:border-box;outline:none"></div>';
-    html += '<div style="margin-bottom:14px"><label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px">Kategorie</label>'
-      + '<input type="text" value="' + this._esc(a.category||'') + '" placeholder="z.B. Stockvideo, Marketing" '
-      + 'onchange="adminArticles._updateMeta(\x27category\x27,this.value)" '
-      + 'style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:6px;box-sizing:border-box;outline:none"></div>';
-    html += '</div>';
-    return html;
-  },
+    var checks = this._getSeoChecks(a);
+    var score = this._getSeoScore(a);
+    var scoreColor = score >= 80 ? '#22c55e' : score >= 50 ? '#eab308' : '#ef4444';
 
+    var seoHtml = '';
+    seoHtml += '<div class="we-score">';
+    seoHtml += '<div class="we-score-circle" style="background:' + scoreColor + '">' + score + '</div>';
+    seoHtml += '<div class="we-score-label">SEO Score</div>';
+    seoHtml += '</div>';
 
-  _renderGeoTab(a) {
-    var geo = a.geo || {};
-    var html = '<div style="max-width:640px">';
-    html += '<h3 style="margin:0 0 16px;font-size:16px">GEO-Daten</h3>';
-    html += '<div style="margin-bottom:14px"><label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px">Standort</label>'
-      + '<input type="text" value="' + this._esc(geo.location||'') + '" placeholder="z.B. Berlin, Deutschland" '
-      + 'onchange="adminArticles._updateGeo(\x27location\x27,this.value)" '
-      + 'style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:6px;box-sizing:border-box;outline:none"></div>';
-    html += '<div style="display:flex;gap:12px;margin-bottom:14px">'
-      + '<div style="flex:1"><label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px">Breitengrad</label>'
-      + '<input type="text" value="' + this._esc(geo.lat||'') + '" placeholder="52.5200" '
-      + 'onchange="adminArticles._updateGeo(\x27lat\x27,this.value)" '
-      + 'style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:6px;box-sizing:border-box;outline:none"></div>'
-      + '<div style="flex:1"><label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px">L\u00e4ngengrad</label>'
-      + '<input type="text" value="' + this._esc(geo.lng||'') + '" placeholder="13.4050" '
-      + 'onchange="adminArticles._updateGeo(\x27lng\x27,this.value)" '
-      + 'style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:6px;box-sizing:border-box;outline:none"></div>'
-      + '</div>';
-    if (geo.lat && geo.lng) {
-      html += '<div style="margin-bottom:14px;padding:12px;background:#f0fdf4;border-radius:8px;border:1px solid #bbf7d0">'
-        + '<strong>Kartenvorschau:</strong> <a href="https://www.openstreetmap.org/?mlat=' + geo.lat + '&mlon=' + geo.lng + '#map=14/' + geo.lat + '/' + geo.lng + '" target="_blank" style="color:#2563eb">OpenStreetMap ansehen</a>'
-        + '</div>';
+    var checkLabels = {keyphrase:'Keyphrase', seoTitle:'SEO-Titel', metaDesc:'Meta-Beschreibung', internalLinks:'Interne Links', wikipedia:'Wikipedia'};
+    var keys = ['keyphrase','seoTitle','metaDesc','internalLinks','wikipedia'];
+    for (var k = 0; k < keys.length; k++) {
+      var key = keys[k];
+      var ok = checks[key];
+      seoHtml += '<div class="we-check ' + (ok ? 'we-check-ok' : 'we-check-fail') + '">';
+      seoHtml += '<div class="we-check-icon">' + (ok ? '✓' : '✗') + '</div>';
+      seoHtml += '<span>' + checkLabels[key] + '</span>';
+      seoHtml += '</div>';
     }
+
+    // SEO fields
+    seoHtml += '<h4>SEO Einstellungen</h4>';
+    seoHtml += '<div class="we-side-field"><label>Keyphrase</label><input type="text" value="' + (seo.keyphrase||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'keyphrase\',this.value)"></div>';
+    seoHtml += '<div class="we-side-field"><label>SEO-Titel</label><input type="text" value="' + (seo.seoTitle||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'seoTitle\',this.value)"><div class="we-charcount">' + (seo.seoTitle||'').length + '/60</div></div>';
+    seoHtml += '<div class="we-side-field"><label>Meta-Beschreibung</label><input type="text" value="' + (seo.metaDesc||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'metaDesc\',this.value)"><div class="we-charcount">' + (seo.metaDesc||'').length + '/160</div></div>';
+    seoHtml += '<div class="we-side-field"><label>Interne Links (IDs)</label><input type="text" value="' + (seo.internalLinks||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'internalLinks\',this.value)"></div>';
+    seoHtml += '<div class="we-side-field"><label>Wikipedia-Link</label><input type="text" value="' + (seo.wikipedia||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'wikipedia\',this.value)"></div>';
+    seoHtml += '<div class="we-side-field"><label>Kategorie</label><input type="text" value="' + (seo.category||a.category||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'category\',this.value)"></div>';
+
+    // GEO section
+    var geo = a.geo || {};
+    seoHtml += '<hr class="we-divider">';
+    seoHtml += '<h4>GEO-Daten</h4>';
+    seoHtml += '<div class="we-side-field"><label>Standort</label><input type="text" value="' + (geo.location||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateGeo(\'location\',this.value)"></div>';
+    seoHtml += '<div class="we-side-field"><label>Breitengrad</label><input type="text" value="' + (geo.lat||'') + '" onchange="adminArticles._updateGeo(\'lat\',this.value)"></div>';
+    seoHtml += '<div class="we-side-field"><label>Laengengrad</label><input type="text" value="' + (geo.lng||'') + '" onchange="adminArticles._updateGeo(\'lng\',this.value)"></div>';
+    if (geo.lat && geo.lng) {
+      seoHtml += '<a class="we-geo-link" href="https://www.openstreetmap.org/?mlat=' + geo.lat + '&mlon=' + geo.lng + '#map=14/' + geo.lat + '/' + geo.lng + '" target="_blank">Auf Karte anzeigen ↗</a>';
+    }
+
+    var html = '<div class="we-wrap">';
+    html += '<div class="we-main">';
+    html += '<div class="we-topbar">';
+    html += '<button class="we-back" onclick="adminArticles.closeEditor()">←</button>';
+    html += '<button class="we-save" onclick="adminArticles.saveArticle()">Speichern</button>';
+    html += '</div>';
+    html += '<input class="we-title-input" type="text" value="' + (a.title||'').replace(/"/g,'&quot;') + '" placeholder="Titel eingeben..." onchange="adminArticles._updateMeta(\'title\',this.value)">';
+    html += '<div class="we-slug-row"><span>/wissen/</span><input type="text" value="' + (a.slug||'') + '" onchange="adminArticles._updateMeta(\'slug\',this.value)"></div>';
+    html += '<div class="we-blocks" style="padding-left:44px;">';
+    html += blocksHtml;
+    html += '</div>';
+    html += '<div class="we-add">';
+    html += '<button onclick="adminArticles.addBlock(\'heading\')">+ Ueberschrift</button>';
+    html += '<button onclick="adminArticles.addBlock(\'text\')">+ Text</button>';
+    html += '<button onclick="adminArticles.addBlock(\'image\')">+ Bild</button>';
+    html += '<button onclick="adminArticles.addBlock(\'quote\')">+ Zitat</button>';
+    html += '</div>';
+    html += '</div>';
+    html += '<div class="we-side">';
+    html += '<h3>SEO & Meta</h3>';
+    html += seoHtml;
+    html += '</div>';
+    html += '</div>';
+
+    ac.innerHTML = html;
+    this._autoResizeAll();
+  }
+
+  _renderBlock(block, idx) {
+    var html = '<div class="we-block" data-idx="' + idx + '">';
+    html += '<div class="we-block-actions">';
+    html += '<button onclick="adminArticles.moveBlock(' + idx + ',-1)" title="Nach oben">↑</button>';
+    html += '<button onclick="adminArticles.moveBlock(' + idx + ',1)" title="Nach unten">↓</button>';
+    html += '</div>';
+    html += '<button class="we-block-del" onclick="adminArticles.removeBlock(' + idx + ')" title="Loeschen">×</button>';
+
+    if (block.type === 'heading') {
+      html += '<div class="we-bh"><textarea rows="1" placeholder="Ueberschrift..." oninput="adminArticles._autoResize(this);adminArticles._updateBlock(' + idx + ',\'content\',this.value)">' + (block.content||'').replace(/</g,'&lt;') + '</textarea></div>';
+    } else if (block.type === 'text') {
+      html += '<div class="we-bt"><textarea rows="1" placeholder="Text eingeben..." oninput="adminArticles._autoResize(this);adminArticles._updateBlock(' + idx + ',\'content\',this.value)">' + (block.content||'').replace(/</g,'&lt;') + '</textarea></div>';
+    } else if (block.type === 'image') {
+      html += '<div class="we-bi">';
+      if (block.url) {
+        var src = block.url;
+        if (src.startsWith('/')) src = 'https://stockvideo.de' + src;
+        html += '<img src="' + src + '" alt="' + (block.alt||'').replace(/"/g,'&quot;') + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">';
+        html += '<div class="we-bi-placeholder" style="display:none" onclick="this.parentNode.querySelector(\'input\').focus()">Bild nicht gefunden</div>';
+      } else {
+        html += '<div class="we-bi-placeholder" onclick="this.parentNode.querySelector(\'input\').focus()">Bild-URL eingeben</div>';
+      }
+      html += '<input type="text" placeholder="Bild-URL..." value="' + (block.url||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateBlock(' + idx + ',\'url\',this.value);adminArticles._renderBlockEditor()">';
+      html += '<input type="text" placeholder="Alt-Text..." value="' + (block.alt||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateBlock(' + idx + ',\'alt\',this.value)">';
+      html += '</div>';
+    } else if (block.type === 'quote') {
+      html += '<div class="we-bq"><textarea rows="1" placeholder="Zitat eingeben..." oninput="adminArticles._autoResize(this);adminArticles._updateBlock(' + idx + ',\'content\',this.value)">' + (block.content||'').replace(/</g,'&lt;') + '</textarea></div>';
+    }
+
     html += '</div>';
     return html;
-  },
+  }
+
+  _autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }
+
+  _autoResizeAll() {
+    var tas = document.querySelectorAll('.we-block textarea');
+    for (var i = 0; i < tas.length; i++) {
+      this._autoResize(tas[i]);
+    }
+  }
+
+  _insertBlockAt(idx) {
+    var self = this;
+    var a = this.articles.find(function(x) { return x.id == self.currentEditId });
+    if (!a || !a.blocks) return;
+    a.blocks.splice(idx, 0, {type:'text', content:''});
+    this._save();
+    this._renderBlockEditor();
+  }
+
+  addBlock(type) {
+    var self = this;
+    var a = this.articles.find(function(x) { return x.id == self.currentEditId });
+    if (!a) return;
+    if (!a.blocks) a.blocks = [];
+    var block = {type:type, content:''};
+    if (type === 'image') { block.url = ''; block.alt = ''; block.content = undefined; }
+    a.blocks.push(block);
+    this._save();
+    this._renderBlockEditor();
+    setTimeout(function() {
+      var blocks = document.querySelectorAll('.we-block');
+      if (blocks.length) {
+        var last = blocks[blocks.length-1];
+        var ta = last.querySelector('textarea') || last.querySelector('input');
+        if (ta) { ta.focus(); ta.scrollIntoView({behavior:'smooth',block:'center'}); }
+      }
+    }, 50);
+  }
+
+  removeBlock(idx) {
+    var self = this;
+    var a = this.articles.find(function(x) { return x.id == self.currentEditId });
+    if (!a || !a.blocks) return;
+    a.blocks.splice(idx, 1);
+    this._save();
+    this._renderBlockEditor();
+  }
+
+  moveBlock(idx, dir) {
+    var self = this;
+    var a = this.articles.find(function(x) { return x.id == self.currentEditId });
+    if (!a || !a.blocks) return;
+    var newIdx = idx + dir;
+    if (newIdx < 0 || newIdx >= a.blocks.length) return;
+    var tmp = a.blocks[idx];
+    a.blocks[idx] = a.blocks[newIdx];
+    a.blocks[newIdx] = tmp;
+    this._save();
+    this._renderBlockEditor();
+  }
+
+  _updateBlock(idx, field, value) {
+    var self = this;
+    var a = this.articles.find(function(x) { return x.id == self.currentEditId });
+    if (!a || !a.blocks || !a.blocks[idx]) return;
+    a.blocks[idx][field] = value;
+    this._save();
+  }
 
   _updateMeta(field, value) {
     const a = this.articles.find(x => x.id == this.currentEditId);
@@ -501,101 +646,8 @@ window.adminArticles = {
   },
 
 
-  _renderBlock(block, idx) {
-    var typeLabels = {heading:'H', text:'T', image:'B', quote:'Z'};
-    var typeColors = {heading:'#8b5cf6', text:'#3b82f6', image:'#10b981', quote:'#f59e0b'};
-    var handle = '<div class="aa-block-handle" style="cursor:grab;padding:4px;color:#94a3b8;font-size:14px;user-select:none" title="Ziehen zum Verschieben">\u2261</div>';
-    var badge = '<div style="width:22px;height:22px;border-radius:4px;background:' + (typeColors[block.type]||'#94a3b8') + ';color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">' + (typeLabels[block.type]||'?') + '</div>';
-    var delBtn = '<button onclick="adminArticles.removeBlock(' + idx + ')" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;padding:2px 6px;border-radius:4px;line-height:1" title="Block l\u00f6schen" onmouseover="this.style.color=\x27#ef4444\x27;this.style.background=\x27#fef2f2\x27" onmouseout="this.style.color=\x27#94a3b8\x27;this.style.background=\x27none\x27">\u2715</button>';
-    var a = this.articles.find(function(x){return x.id == adminArticles.currentEditId});
-    var moveUp = idx > 0 ? '<button onclick="adminArticles.moveBlock(' + idx + ',-1)" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:12px;padding:1px 4px" title="Nach oben">\u25B2</button>' : '';
-    var moveDown = (a && idx < a.blocks.length - 1) ? '<button onclick="adminArticles.moveBlock(' + idx + ',1)" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:12px;padding:1px 4px" title="Nach unten">\u25BC</button>' : '';
-    var content = '';
 
-    if (block.type === 'heading') {
-      content = '<input type="text" value="' + this._esc(block.content||'') + '" placeholder="\u00dcberschrift eingeben..." '
-        + 'onchange="adminArticles._updateBlock(' + idx + ',\x27content\x27,this.value)" '
-        + 'style="width:100%;font-size:18px;font-weight:700;padding:6px 8px;border:1px solid transparent;border-radius:4px;outline:none;background:transparent;box-sizing:border-box" '
-        + 'onfocus="this.style.borderColor=\x27#8b5cf6\x27;this.style.background=\x27#fff\x27" '
-        + 'onblur="this.style.borderColor=\x27transparent\x27;this.style.background=\x27transparent\x27">';
-    } else if (block.type === 'text') {
-      content = '<textarea data-autoresize="1" placeholder="Text eingeben..." '
-        + 'onchange="adminArticles._updateBlock(' + idx + ',\x27content\x27,this.value)" '
-        + 'oninput="this.style.height=\x27auto\x27;this.style.height=(this.scrollHeight+2)+\x27px\x27" '
-        + 'style="width:100%;min-height:60px;padding:6px 8px;border:1px solid transparent;border-radius:4px;outline:none;background:transparent;font-size:14px;line-height:1.7;resize:none;font-family:inherit;box-sizing:border-box" '
-        + 'onfocus="this.style.borderColor=\x27#3b82f6\x27;this.style.background=\x27#fff\x27" '
-        + 'onblur="this.style.borderColor=\x27transparent\x27;this.style.background=\x27transparent\x27">'
-        + this._esc(block.content||'') + '</textarea>';
-    } else if (block.type === 'image') {
-      var preview = block.url ? '<img src="' + this._esc(block.url) + '" style="max-width:100%;max-height:200px;border-radius:6px;margin-bottom:8px;display:block" onerror="this.style.display=\x27none\x27">' : '';
-      content = '<div>' + preview
-        + '<input type="text" value="' + this._esc(block.url||'') + '" placeholder="Bild-URL (https://...)" '
-        + 'onchange="adminArticles._updateBlock(' + idx + ',\x27url\x27,this.value);adminArticles._renderBlockEditor()" '
-        + 'style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:4px;outline:none;font-size:13px;margin-bottom:6px;box-sizing:border-box;font-family:monospace">'
-        + '<input type="text" value="' + this._esc(block.alt||'') + '" placeholder="Alt-Text (Bildbeschreibung)" '
-        + 'onchange="adminArticles._updateBlock(' + idx + ',\x27alt\x27,this.value)" '
-        + 'style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:4px;outline:none;font-size:13px;box-sizing:border-box">'
-        + '</div>';
-    } else if (block.type === 'quote') {
-      content = '<textarea data-autoresize="1" placeholder="Zitat eingeben..." '
-        + 'onchange="adminArticles._updateBlock(' + idx + ',\x27content\x27,this.value)" '
-        + 'oninput="this.style.height=\x27auto\x27;this.style.height=(this.scrollHeight+2)+\x27px\x27" '
-        + 'style="width:100%;min-height:50px;padding:6px 8px 6px 16px;border:none;border-left:3px solid #f59e0b;border-radius:0;outline:none;background:transparent;font-size:14px;font-style:italic;line-height:1.7;resize:none;font-family:inherit;box-sizing:border-box" '
-        + 'onfocus="this.style.background=\x27#fffbeb\x27" '
-        + 'onblur="this.style.background=\x27transparent\x27">'
-        + this._esc(block.content||'') + '</textarea>';
-    }
-    return '<div class="aa-block" data-idx="' + idx + '" draggable="true" style="display:flex;align-items:flex-start;gap:8px;padding:8px;margin-bottom:4px;border-radius:8px;border:1px solid transparent;transition:all 0.15s" '
-      + 'onmouseover="this.style.background=\x27#f8fafc\x27;this.style.borderColor=\x27#e2e8f0\x27" '
-      + 'onmouseout="this.style.background=\x27transparent\x27;this.style.borderColor=\x27transparent\x27">'
-      + '<div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding-top:4px">' + handle + badge + moveUp + moveDown + '</div>'
-      + '<div style="flex:1;min-width:0">' + content + '</div>'
-      + '<div style="padding-top:4px">' + delBtn + '</div>'
-      + '</div>';
-  },
-
-
-  addBlock(type) {
-    const a = this.articles.find(x => x.id == this.currentEditId);
-    if (!a) return;
-    var newBlock = {type: type, content: ''};
-    if (type === 'image') { newBlock.url = ''; newBlock.alt = ''; delete newBlock.content; }
-    a.blocks.push(newBlock);
-    this._save();
-    this._renderBlockEditor();
-    setTimeout(function() {
-      var blocks = document.getElementById('editorBlocks');
-      if (blocks && blocks.lastElementChild) blocks.lastElementChild.scrollIntoView({behavior:'smooth', block:'center'});
-    }, 100);
-  },
-
-  removeBlock(idx) {
-    const a = this.articles.find(x => x.id == this.currentEditId);
-    if (!a || !a.blocks[idx]) return;
-    if (a.blocks.length <= 1) { this.showAlert('Mindestens ein Block erforderlich', 'warning'); return; }
-    a.blocks.splice(idx, 1);
-    this._save();
-    this._renderBlockEditor();
-  },
-
-  moveBlock(idx, dir) {
-    const a = this.articles.find(x => x.id == this.currentEditId);
-    if (!a) return;
-    var newIdx = idx + dir;
-    if (newIdx < 0 || newIdx >= a.blocks.length) return;
-    var tmp = a.blocks[idx];
-    a.blocks[idx] = a.blocks[newIdx];
-    a.blocks[newIdx] = tmp;
-    this._save();
-    this._renderBlockEditor();
-  },
-
-  _updateBlock(idx, field, value) {
-    const a = this.articles.find(x => x.id == this.currentEditId);
-    if (!a || !a.blocks[idx]) return;
-    a.blocks[idx][field] = value;
-    this._save();
-  },
+,
 
   _initBlockDragDrop() {
     var container = document.getElementById('editorBlocks');
@@ -648,10 +700,7 @@ window.adminArticles = {
     this.renderList();
   },
 
-  switchTab(tab) {
-    this._editorTab = tab;
-    this._renderBlockEditor();
-  },
+,
 
   saveArticle() {
     const a = this.articles.find(x => x.id == this.currentEditId);
