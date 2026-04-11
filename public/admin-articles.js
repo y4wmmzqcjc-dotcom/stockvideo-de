@@ -1,5 +1,5 @@
 /* ============================================================
-   admin-articles.js \u2014 Wissen/Artikel-Verwaltung fÃÂ¼r stockvideo.de
+   admin-articles.js \u2014 Wissen/Artikel-Verwaltung fÃ¼r stockvideo.de
    Version 2.0 \u2014 Listenansicht, Publish/Draft, Planungskalender
    ============================================================ */
 
@@ -80,7 +80,7 @@ window.adminArticles = {
 
         
       <div class="aa-actions-bottom">
-        <button class="aa-btn aa-btn-save" onclick="adminArticles.publishToGitHub()">Alle \u00c4nderungen verÃÂ¶ffentlichen</button>
+        <button class="aa-btn aa-btn-save" onclick="adminArticles.publishToGitHub()">Alle \u00c4nderungen verÃ¶ffentlichen</button>
       </div>
     `;
   },
@@ -149,7 +149,7 @@ window.adminArticles = {
             </label>
             <button class="aa-btn-icon" title="Planen" onclick="adminArticles.openScheduler('${a.id}')">\uD83D\uDCC5</button>
             <button class="aa-btn-icon" title="Bearbeiten" onclick="adminArticles.openEditor('${a.id}')">\u270F\uFE0F</button>
-            <button class="aa-btn-icon aa-btn-danger" title="LÃÂ¶schen" onclick="adminArticles.deleteArticle('${a.id}')">\uD83D\uDDD1\uFE0F</button>
+            <button class="aa-btn-icon aa-btn-danger" title="LÃ¶schen" onclick="adminArticles.deleteArticle('${a.id}')">\uD83D\uDDD1\uFE0F</button>
           </div>
         </div>`;
     }).join('');
@@ -180,10 +180,10 @@ window.adminArticles = {
     overlay.className = 'aa-overlay';
     overlay.innerHTML = `
       <div class="aa-modal">
-        <h3>VerÃÂ¶ffentlichung planen</h3>
+        <h3>VerÃ¶ffentlichung planen</h3>
         <p class="aa-modal-title">${a.title || a.seoTitle}</p>
         <div class="aa-modal-field">
-          <label>VerÃÂ¶ffentlichungsdatum:</label>
+          <label>VerÃ¶ffentlichungsdatum:</label>
           <input type="date" id="aa-sched-input" value="${current}" min="${new Date().toISOString().split('T')[0]}">
         </div>
         <div class="aa-modal-field">
@@ -203,7 +203,7 @@ window.adminArticles = {
     const a = this.articles.find(x => x.id == id);
     if (!a) return;
     const dateVal = document.getElementById('aa-sched-input').value;
-    if (!dateVal) { alert('Bitte Datum wÃÂ¤hlen'); return; }
+    if (!dateVal) { alert('Bitte Datum wÃ¤hlen'); return; }
     a.scheduledDate = dateVal;
     a.status = 'scheduled';
     this._save();
@@ -223,7 +223,7 @@ window.adminArticles = {
 
   /* ---------- CALENDAR ---------- */
   _monthName(m) {
-    return ['Januar','Februar','MÃÂ¤rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'][m];
+    return ['Januar','Februar','MÃ¤rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'][m];
   },
 
   _formatDate(d) {
@@ -281,7 +281,7 @@ window.adminArticles = {
       .sort((a, b) => a.scheduledDate.localeCompare(b.scheduledDate))
       .slice(0, 5);
     if (!upcoming.length) return '<div class="aa-upcoming-empty">Keine geplanten Artikel</div>';
-    return '<h4>NÃÂ¤chste geplante Artikel</h4>' + upcoming.map(a => `
+    return '<h4>NÃ¤chste geplante Artikel</h4>' + upcoming.map(a => `
       <div class="aa-upcoming-item">
         <span class="aa-upcoming-date">${this._formatDate(a.scheduledDate)}</span>
         <span class="aa-upcoming-title">${a.title || a.seoTitle}</span>
@@ -320,7 +320,7 @@ window.adminArticles = {
   deleteArticle(id) {
     const a = this.articles.find(x => x.id == id);
     if (!a) return;
-    if (!confirm('Artikel "' + (a.title || a.seoTitle) + '" wirklich lÃÂ¶schen?')) return;
+    if (!confirm('Artikel "' + (a.title || a.seoTitle) + '" wirklich lÃ¶schen?')) return;
     this.articles = this.articles.filter(x => x.id !== id);
     this._save();
     this.renderList();
@@ -443,7 +443,7 @@ window.adminArticles = {
     // Build blocks HTML
     var blocksHtml = '';
     for (var i = 0; i < a.blocks.length; i++) {
-      blocksHtml += '<div class="we-inserter"><button onclick="adminArticles._insertBlockAt(' + i + ')" title="Block einfÃ¼gen">+</button></div>';
+      blocksHtml += '<div class="we-inserter"><button onclick="adminArticles._insertBlockAt(' + i + ')" title="Block einfügen">+</button></div>';
       blocksHtml += this._renderBlock(a.blocks[i], i);
     }
 
@@ -493,13 +493,13 @@ window.adminArticles = {
     seoHtml += '<div class="we-side-field"><label>Breitengrad</label><input type="text" value="' + (geo.lat||'') + '" onchange="adminArticles._updateGeo(\'lat\',this.value)"></div>';
     seoHtml += '<div class="we-side-field"><label>Laengengrad</label><input type="text" value="' + (geo.lng||'') + '" onchange="adminArticles._updateGeo(\'lng\',this.value)"></div>';
     if (geo.lat && geo.lng) {
-      seoHtml += '<a class="we-geo-link" href="https://www.openstreetmap.org/?mlat=' + geo.lat + '&mlon=' + geo.lng + '#map=14/' + geo.lat + '/' + geo.lng + '" target="_blank">Auf Karte anzeigen â</a>';
+      seoHtml += '<a class="we-geo-link" href="https://www.openstreetmap.org/?mlat=' + geo.lat + '&mlon=' + geo.lng + '#map=14/' + geo.lat + '/' + geo.lng + '" target="_blank">Auf Karte anzeigen ↗</a>';
     }
 
     var html = '<div class="we-wrap">';
     html += '<div class="we-main">';
     html += '<div class="we-topbar">';
-    html += '<button class="we-back" onclick="adminArticles.closeEditor()">â</button>';
+    html += '<button class="we-back" onclick="adminArticles.closeEditor()">←</button>';
     html += '<button class="we-save" onclick="adminArticles.saveArticle()">Speichern</button>';
     html += '</div>';
     html += '<input class="we-title-input" type="text" value="' + (a.title||'').replace(/"/g,'&quot;') + '" placeholder="Titel eingeben..." onchange="adminArticles._updateMeta(\'title\',this.value)">';
@@ -527,10 +527,10 @@ window.adminArticles = {
   _renderBlock(block, idx) {
     var html = '<div class="we-block" data-idx="' + idx + '">';
     html += '<div class="we-block-actions">';
-    html += '<button onclick="adminArticles.moveBlock(' + idx + ',-1)" title="Nach oben">â</button>';
-    html += '<button onclick="adminArticles.moveBlock(' + idx + ',1)" title="Nach unten">â</button>';
+    html += '<button onclick="adminArticles.moveBlock(' + idx + ',-1)" title="Nach oben">↑</button>';
+    html += '<button onclick="adminArticles.moveBlock(' + idx + ',1)" title="Nach unten">↓</button>';
     html += '</div>';
-    html += '<button class="we-block-del" onclick="adminArticles.removeBlock(' + idx + ')" title="Loeschen">Ã</button>';
+    html += '<button class="we-block-del" onclick="adminArticles.removeBlock(' + idx + ')" title="Loeschen">×</button>';
 
     if (block.type === 'heading') {
       html += '<div class="we-bh"><textarea rows="1" placeholder="Ueberschrift..." oninput="adminArticles._autoResize(this);adminArticles._updateBlock(' + idx + ',\'content\',this.value)">' + (block.content||'').replace(/</g,'&lt;') + '</textarea></div>';
@@ -745,7 +745,7 @@ window.adminArticles = {
   /* ---------- PUBLISH TO GITHUB ---------- */
   async publishToGitHub() {
     const btn = document.querySelector('.aa-btn-save');
-    if (btn) { btn.textContent = 'Wird verÃÂ¶ffentlicht...'; btn.disabled = true; }
+    if (btn) { btn.textContent = 'Wird verÃ¶ffentlicht...'; btn.disabled = true; }
     try {
       const json = JSON.stringify(this.articles, null, 2);
       const b64 = btoa(unescape(encodeURIComponent(json)));
@@ -767,11 +767,11 @@ window.adminArticles = {
           body: JSON.stringify({ message: 'Update articles.json (public)', content: b64, sha: pubRes.sha, branch: 'main' })
         })
       ]);
-      if (btn) { btn.textContent = '\u2713 VerÃÂ¶ffentlicht!'; btn.style.background = '#10b981'; }
-      setTimeout(() => { if (btn) { btn.textContent = 'Alle \u00c4nderungen verÃÂ¶ffentlichen'; btn.disabled = false; btn.style.background = ''; } }, 3000);
+      if (btn) { btn.textContent = '\u2713 VerÃ¶ffentlicht!'; btn.style.background = '#10b981'; }
+      setTimeout(() => { if (btn) { btn.textContent = 'Alle \u00c4nderungen verÃ¶ffentlichen'; btn.disabled = false; btn.style.background = ''; } }, 3000);
     } catch (e) {
-      alert('Fehler beim VerÃÂ¶ffentlichen: ' + e.message);
-      if (btn) { btn.textContent = 'Alle \u00c4nderungen verÃÂ¶ffentlichen'; btn.disabled = false; }
+      alert('Fehler beim VerÃ¶ffentlichen: ' + e.message);
+      if (btn) { btn.textContent = 'Alle \u00c4nderungen verÃ¶ffentlichen'; btn.disabled = false; }
     }
   },
 
