@@ -3,635 +3,722 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Topbar from '../../components/Topbar.astro';
 import Footer from '../../components/Footer.astro';
 import articles from '../../data/articles.json';
-import videos from '../../data/videos.json';
 
 export function getStaticPaths() {
-  return articles.map(article => ({
-    params: { slug: article.slug },
-    props: { article }
-  }));
+  return articles
+    .filter((a) => a.status === 'published')
+    .map((article) => ({
+      params: { slug: article.slug },
+      props: { article },
+    }));
 }
 
 const { article } = Astro.props;
-const relatedArticles = articles.filter(a => article.internalLinks.includes(a.id)).slice(0, 3);
-const relatedVideos = videos.slice(0, 3);
+const allArticles = articles.filter((a) => a.status === 'published');
 
-// Generate table of contents from article content
-const headings = (article.sections || []).map((s: any) => {
-  const text = s.heading;
-  const id = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-  return { text, id };
-});
+// Related articles from internalLinks
+const relatedArticles = (article.internalLinks || [])
+  .map((id) => allArticles.find((a) => a.id === id))
+  .filter(Boolean)
+  .slice(0, 3);
 
-// Structured data - JSON-LD
+// Hero image from making-of photos
+const heroImage = article.heroImage || '/images/making-of/making-of-01.jpg';
+const inlineImages = article.inlineImages || [];
+
+// Matching videos (take first 3 from global videos.json at build time)
+import videosData from '../../../public/data/videos.json';
+const sidebarVideos = videosData.slice(0, 3);
+
+// Build TOC from sections
+const toc = (article.sections || []).map((s, i) => ({
+  id: 'section-' + (i + 1),
+  text: s.heading,
+}));
+
+// JSON-LD structured data
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: article.seoTitle,
+  headline: article.seoTitle || article.title,
   description: article.metaDescription,
-  image: article.imageUrl,
-  datePublished: article.datePublished || new Date().toISOString(),
-  dateModified: new Date().toISOString(),
+  image: {
+    '@type': 'ImageObject',
+    url: 'https://stockvideo.de' + heroImage,
+    width: 1920,
+    height: 640,
+  },
   author: {
     '@type': 'Person',
-    name: 'Timo Rende'
-  }
+    name: 'Timo Rende',
+    url: 'https://stockvideo.de/uber-uns',
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'stockvideo.de',
+    url: 'https://stockvideo.de',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://stockvideo.de/favicon.svg',
+    },
+  },
+  datePublished: article.publishDate,
+  dateModified: article.publishDate,
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': 'https://stockvideo.de/wissen/' + article.slug + '/',
+  },
+  contentLocation: article.imageGeoCity
+    ? {
+        '@type': 'Place',
+        name: article.imageGeoCity,
+        geo: {
+          '@type': 'GeoCoordinates',
+          latitude: article.imageGeoLat,
+          longitude: article.imageGeoLng,
+        },
+      }
+    : undefined,
 };
 
-// Tags from article or defaults
-const tags = article.tags || [article.category];
+// FAQ schema from sections
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: (article.sections || [])
+    .filter((s) => s.heading && s.heading.includes('?'))
+    .map((s) => ({
+      '@type': 'Question',
+      name: s.heading,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: s.paragraphs ? s.paragraphs[0] : '',
+      },
+    })),
+};
+
+// Canonical URL
+const canonicalUrl = 'https://stockvideo.de/wissen/' + article.slug + '/';
+
+// Find inline image insertion points (after section 1 and section 3)
+function getInlineImage(index) {
+  if (inlineImages && inlineImages[index]) {
+    return '/images/making-of/' + inlineImages[index];
+  }
+  return null;
+}
 ---
 
-<BaseLayout title={article.seoTitle} description={article.metaDescription}>
-  <div class="page-wrapper">
-    <Topbar />
+<BaseLayout
+  title={article.seoTitle || article.title}
+  description={article.metaDescription}
+>
+  <Fragment slot="head">
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content={article.seoTitle || article.title} />
+    <meta property="og:description" content={article.metaDescription} />
+    <meta property="og:image" content={'https://stockvideo.de' + heroImage} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:site_name" content="stockvideo.de" />
+    <meta property="article:published_time" content={article.publishDate} />
+    <meta property="article:author" content="Timo Rende" />
+    <meta property="article:section" content={article.category} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={article.seoTitle || article.title} />
+    <meta name="twitter:description" content={article.metaDescription} />
+    <meta name="twitter:image" content={'https://stockvideo.de' + heroImage} />
+    {article.imageGeoLat && (
+      <meta name="geo.position" content={`${article.imageGeoLat};${article.imageGeoLng}`} />
+    )}
+    {article.imageGeoCity && <meta name="geo.placename" content={article.imageGeoCity} />}
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {faqSchema.mainEntity.length > 0 && (
+      <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+    )}
+  </Fragment>
 
-    <div class="breadcrumbs">
-      <a href="/">Startseite</a> / <a href="/wissen">Wissen</a> / {article.title}
+  <Topbar />
+
+  <!-- Breadcrumbs -->
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <div class="breadcrumbs-inner">
+      <a href="/">Startseite</a>
+      <span class="sep">/</span>
+      <a href="/wissen/">Wissen</a>
+      <span class="sep">/</span>
+      <span class="current">{article.title}</span>
     </div>
+  </nav>
 
-    <!-- Fullwidth Hero -->
-    <div class="article-hero" style={`background: linear-gradient(135deg, ${article.categoryColor || '#1a1a2e'}cc, ${article.categoryColor || '#16213e'}88, #0f3460)`}>
-      <div class="hero-emoji">{article.categoryEmoji || 'ð'}</div>
+  <!-- Hero with Making-Of Photo -->
+  <div class="article-hero">
+    <img
+      src={heroImage}
+      alt={article.imageAlt || article.title}
+      class="hero-img"
+      loading="eager"
+      width="1920"
+      height="640"
+    />
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <span class="hero-category" style={`background:${article.categoryColor || '#3B82F6'}`}>
+        {article.category}
+      </span>
     </div>
+  </div>
 
-    <!-- Content overlapping hero -->
-    <div class="article-wrap">
-      <div class="article-main">
-        <div class="article-content">
-          <div class="article-cat" style={`color: ${article.categoryColor || '#2563eb'}`}>{article.category}</div>
-          <h1 class="article-title">{article.title}</h1>
-          <div class="article-meta">
-            <div class="author">
-              <div class="author-avatar">TR</div>
-              <span>Timo Rende</span>
+  <!-- Article Wrap -->
+  <div class="article-wrap">
+    <div class="article-grid">
+
+      <!-- Main Content -->
+      <article class="article-content">
+        <h1>{article.title}</h1>
+
+        <div class="article-meta">
+          <div class="author-info">
+            <span class="author-avatar">TR</span>
+            <div>
+              <span class="author-name">Timo Rende</span>
+              <span class="meta-details">
+                {article.readTime} Min. Lesezeit &middot; {new Date(article.publishDate).toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' })}
+                {article.imageGeoCity && (<span> &middot; {article.imageGeoCity}
+              </span>
             </div>
-            <span>ð {article.readTime} Min. Lesezeit</span>
-            <span>ð 10. April 2026</span>
           </div>
+        </div>
 
-          {article.intro && (
-            <p class="intro-paragraph">{article.intro}</p>
-          )}
+        {article.intro && (
+          <p class="article-intro">{article.intro}</p>
+        )}
 
-          <div class="article-body">
-          {(article.sections || []).map((section: any) => (
+        <div class="article-body">
+          {(article.sections || []).map((section, idx) => (
             <section>
-              <h2 id={section.heading.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')}>{section.heading}</h2>
-              {section.paragraphs.map((p: string) => (
+              <h2 id={`section-${idx + 1}`}>{section.heading}</h2>
+              {(section.paragraphs || []).map((p) => (
                 <p set:html={p} />
               ))}
+              {/* Inline Making-Of image after sections 1 and 3 */}
+              {idx === 0 && getInlineImage(0) && (
+                <figure class="inline-figure">
+                  <img
+                    src={getInlineImage(0)}
+                    alt={`Making-Of: ${article.title}`}
+                    loading="lazy"
+                    width="800"
+                    height="450"
+                  />
+                  <figcaption>Einblick in unsere Produktion</figcaption>
+                </figure>
+              )}
+              {idx === 2 && getInlineImage(1) && (
+                <figure class="inline-figure">
+                  <img
+                    src={getInlineImage(1)}
+                    alt={`Behind the Scenes: ${article.title}`}
+                    loading="lazy"
+                    width="800"
+                    height="450"
+                  />
+                  <figcaption>Hinter den Kulissen bei stockvideo.de</figcaption>
+                </figure>
+              )}
+              {idx === 4 && getInlineImage(2) && (
+                <figure class="inline-figure">
+                  <img
+                    src={getInlineImage(2)}
+                    alt={`Produktion: ${article.title}`}
+                    loading="lazy"
+                    width="800"
+                    height="450"
+                  />
+                  <figcaption>So arbeiten wir bei stockvideo.de</figcaption>
+                </figure>
+              )}
             </section>
           ))}
         </div>
 
-          {article.conclusion && (
-            <p class="conclusion-paragraph">{article.conclusion}</p>
-          )}
-
-          {relatedArticles.length > 0 && (
-            <section class="internal-links-section">
-              <h2>WeiterfÃ¼hrende Artikel</h2>
-              <ul class="internal-links-list">
-                {relatedArticles.map(related => (
-                  <li>
-                    <a href={`/wissen/${related.slug}`}>{related.title}</a>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-
-          <div class="article-tags">
-            {tags.map((tag: string) => (
-              <a href={`/wissen?tag=${tag}`} class="tag">{tag}</a>
-            ))}
+        {article.conclusion && (
+          <div class="article-conclusion">
+            <h2>Fazit</h2>
+            <p>{article.conclusion}</p>
           </div>
+        )}
 
-          <div class="share-row">
-            <button class="share-btn" data-action="copy">ð Link kopieren</button>
-            <button class="share-btn" data-action="email">ð§ Per E-Mail teilen</button>
-            <button class="share-btn" data-action="twitter">ð Twitter</button>
-            <button class="share-btn" data-action="linkedin">ð¼ LinkedIn</button>
-          </div>
+        <!-- Tags -->
+        <div class="article-tags">
+          <span class="tag-label">Themen:</span>
+          <a href={`/wissen/?q=${encodeURIComponent(article.keyphrase)}`} class="tag">{article.keyphrase}</a>
+          <a href={`/wissen/?q=${encodeURIComponent(article.category)}`} class="tag">{article.category}</a>
         </div>
 
-        <!-- Sidebar -->
-        <aside class="article-sidebar">
-          {headings.length > 0 && (
-            <div class="sidebar-section">
-              <h3 class="sidebar-title">Inhaltsverzeichnis</h3>
-              <nav class="toc-nav">
-                {headings.map((heading: any) => (
-                  <a href={`#${heading.id}`} class="toc-link">{heading.text}</a>
-                ))}
-              </nav>
-            </div>
-          )}
+        <!-- Share -->
+        <div class="article-share">
+          <span class="share-label">Teilen:</span>
+          <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href).then(()=>this.textContent='Kopiert!')">Link kopieren</button>
+          <a class="share-btn" href={`mailto:?subject=${encodeURIComponent(article.title)}&body=${encodeURIComponent(canonicalUrl)}`}>Per E-Mail</a>
+          <a class="share-btn" href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(canonicalUrl)}&text=${encodeURIComponent(article.title)}`} target="_blank" rel="noopener noreferrer">Twitter</a>
+          <a class="share-btn" href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonicalUrl)}`} target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        </div>
+      </article>
 
-          <div class="sidebar-section">
-            <h3 class="sidebar-title">Passende Videos</h3>
-            {relatedVideos.map(video => (
-              <a href={`/video/${video.slug}`} class="video-card-sm">
-                <div class="video-thumb-placeholder" style={`background: linear-gradient(135deg, ${article.categoryColor || '#2563eb'}40, ${article.categoryColor || '#2563eb'}20)`}>â¶</div>
-                <div class="video-card-info">
-                  <div class="video-card-title">{video.title}</div>
-                  <div class="video-card-price">ab 29 â¬</div>
-                </div>
-              </a>
-            ))}
-          </div>
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <!-- TOC -->
+        <div class="sidebar-box toc-box">
+          <h3>Inhalt</h3>
+          <nav class="toc-nav">
+            <ul>
+              {toc.map((item) => (
+                <li>
+                  <a href={`#${item.id}`} class="toc-link">{item.text}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
 
-          <div class="cta-box">
-            <h3>Videos entdecken</h3>
-            <p>Finden Sie das perfekte Stockvideo fÃ¼r Ihr Projekt.</p>
-            <a href="/" class="cta-btn">Jetzt durchstÃ¶bern â</a>
-          </div>
-        </aside>
-      </div>
-
-      <!-- Related Articles -->
-      {relatedArticles.length > 0 && (
-        <div class="related-articles">
-          <h2 class="related-title">Verwandte Artikel</h2>
-          <div class="related-grid">
-            {relatedArticles.map(related => (
-              <a href={`/wissen/${related.slug}`} class="related-card">
-                <div class="img-placeholder" style={`background: linear-gradient(135deg, ${related.categoryColor || '#2563eb'}40, ${related.categoryColor || '#2563eb'}20)`}>
-                  <span>{related.categoryEmoji || 'ð'}</span>
-                </div>
-                <div class="related-card-body">
-                  <div class="related-card-cat">{related.category}</div>
-                  <div class="related-card-title">{related.title}</div>
-                </div>
+        <!-- Passende Videos -->
+        <div class="sidebar-box videos-box">
+          <h3>Passende Videos</h3>
+          <div class="sidebar-videos">
+            {sidebarVideos.map((video) => (
+              <a href={`/video/${video.slug}/`} class="sidebar-video-card">
+                <img
+                  src={video.thumbnail}
+                  alt={video.title}
+                  loading="lazy"
+                  width="320"
+                  height="180"
+                />
+                <span class="video-card-title">{video.title}</span>
               </a>
             ))}
           </div>
         </div>
-      )}
+
+        <!-- CTA Box -->
+        <div class="sidebar-box cta-box">
+          <h3>Videos entdecken</h3>
+          <p>Lizenzfreie 4K-Videos fuer Ihr naechstes Projekt. Sofort einsatzbereit.</p>
+          <a href="/" class="cta-button">Jetzt stoebern</a>
+        </div>
+      </aside>
     </div>
 
-    <Footer />
+    <!-- Related Articles -->
+    {relatedArticles.length > 0 && (
+      <section class="related-section">
+        <h2>Weiterlesen</h2>
+        <div class="related-grid">
+          {relatedArticles.map((rel) => (
+            <a href={`/wissen/${rel.slug}/`} class="related-card">
+              <img
+                src={rel.heroImage || '/images/making-of/making-of-01.jpg'}
+                alt={rel.title}
+                loading="lazy"
+                width="400"
+                height="225"
+              />
+              <div class="related-card-body">
+                <span class="related-category" style={`color:${rel.categoryColor || '#3B82F6'}`}>{rel.category}</span>
+                <h3>{rel.title}</h3>
+                <span class="related-meta">{rel.readTime} Min. Lesezeit</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
   </div>
 
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-
-  <script>
-    // Share functionality
-    document.querySelectorAll('.share-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const action = (btn as HTMLElement).dataset.action;
-        const url = window.location.href;
-        const title = document.title;
-        if (action === 'copy') {
-          navigator.clipboard.writeText(url).then(() => {
-            (btn as HTMLElement).textContent = 'â Kopiert!';
-            setTimeout(() => { (btn as HTMLElement).textContent = 'ð Link kopieren'; }, 2000);
-          });
-        } else if (action === 'email') {
-          window.open(`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`);
-        } else if (action === 'twitter') {
-          window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`, '_blank');
-        } else if (action === 'linkedin') {
-          window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
-        }
-      });
-    });
-
-    // TOC active state on scroll
-    const tocLinks = document.querySelectorAll('.toc-link');
-    if (tocLinks.length > 0) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            tocLinks.forEach(l => l.classList.remove('active'));
-            const activeLink = document.querySelector(`.toc-link[href="#${entry.target.id}"]`);
-            if (activeLink) activeLink.classList.add('active');
-          }
-        });
-      }, { rootMargin: '-80px 0px -60% 0px' });
-
-      document.querySelectorAll('.article-body h2').forEach(h2 => {
-        const text = h2.textContent || '';
-        const id = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-        h2.id = id;
-        observer.observe(h2);
-      });
-    }
-  </script>
+  <Footer />
 </BaseLayout>
 
 <style>
-  /* === BASE === */
-  .page-wrapper {
-    min-height: 100vh;
-    background: #0d0d0d;
-    color: #e1e1e1;
-    font-family: 'Inter', 'Source Sans 3', sans-serif;
-  }
-
-  /* === BREADCRUMBS === */
+  /* Breadcrumbs */
   .breadcrumbs {
-    padding: 16px 40px;
-    font-size: 13px;
-    color: #666;
-    border-bottom: 1px solid #151515;
+    background: #111;
+    border-bottom: 1px solid #222;
+    padding: 12px 0;
+  }
+  .breadcrumbs-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    font-size: 0.85rem;
+    color: #888;
   }
   .breadcrumbs a {
-    color: #888;
+    color: #aaa;
     text-decoration: none;
   }
   .breadcrumbs a:hover {
-    color: #2563eb;
+    color: #fff;
+  }
+  .breadcrumbs .sep {
+    margin: 0 8px;
+    color: #555;
+  }
+  .breadcrumbs .current {
+    color: #ccc;
   }
 
-  /* === HERO === */
+  /* Hero */
   .article-hero {
+    position: relative;
     width: 100%;
     aspect-ratio: 21 / 7;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+    max-height: 480px;
     overflow: hidden;
+    background: #0d0d0d;
   }
-  .article-hero::after {
-    content: '';
+  .hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .hero-overlay {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 120px;
-    background: linear-gradient(transparent, #0d0d0d);
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(13, 13, 13, 0) 40%,
+      rgba(13, 13, 13, 0.7) 75%,
+      rgba(13, 13, 13, 1) 100%
+    );
   }
-  .hero-emoji {
-    font-size: 80px;
-    line-height: 1;
-    position: relative;
-    z-index: 1;
+  .hero-content {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 1280px;
+    padding: 0 24px;
+    box-sizing: border-box;
+  }
+  .hero-category {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
-  /* === ARTICLE WRAP === */
+  /* Article Wrap */
   .article-wrap {
     max-width: 1280px;
     margin: -40px auto 0;
-    padding: 0 40px 60px;
+    padding: 0 24px 60px;
     position: relative;
     z-index: 2;
   }
 
-  /* === MAIN GRID === */
-  .article-main {
+  /* Grid */
+  .article-grid {
     display: grid;
     grid-template-columns: 1fr 360px;
     gap: 48px;
     align-items: start;
   }
+
+  /* Article Content */
   .article-content {
     min-width: 0;
   }
-
-  /* === CATEGORY LABEL === */
-  .article-cat {
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: #2563eb;
-    margin-bottom: 12px;
-    display: inline-block;
-  }
-
-  /* === TITLE === */
-  .article-title {
-    font-size: 36px;
+  .article-content h1 {
+    font-size: 2.2rem;
     font-weight: 800;
+    line-height: 1.2;
     color: #fff;
-    line-height: 1.25;
-    margin-bottom: 16px;
+    margin: 0 0 20px;
   }
 
-  /* === META === */
+  /* Meta */
   .article-meta {
     display: flex;
     align-items: center;
-    gap: 20px;
-    font-size: 13px;
-    color: #666;
-    margin-bottom: 32px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid #1a1a1a;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #222;
   }
-  .article-meta .author {
+  .author-info {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
   }
   .author-avatar {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    background: #2563eb;
+    background: linear-gradient(135deg, #3B82F6, #8B5CF6);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
     font-weight: 700;
+    font-size: 0.85rem;
     color: #fff;
     flex-shrink: 0;
   }
-
-  /* === INTRO === */
-  .intro-paragraph {
-    font-size: 17px;
-    color: #ccc;
-    line-height: 1.85;
-    margin-bottom: 24px;
+  .author-name {
+    display: block;
+    font-weight: 600;
+    color: #fff;
+    font-size: 0.95rem;
+  }
+  .meta-details {
+    display: block;
+    color: #888;
+    font-size: 0.85rem;
+    margin-top: 2px;
   }
 
-  /* === ARTICLE BODY === */
-  .article-body {
-    font-size: 16px;
-    line-height: 1.85;
+  /* Intro */
+  .article-intro {
+    font-size: 1.15rem;
+    line-height: 1.7;
     color: #ccc;
+    margin-bottom: 32px;
+    border-left: 3px solid #3B82F6;
+    padding-left: 16px;
   }
-  .article-body :global(h2) {
-    font-size: 24px;
+
+  /* Body */
+  .article-body h2 {
+    font-size: 1.5rem;
     font-weight: 700;
     color: #fff;
     margin: 40px 0 16px;
+    scroll-margin-top: 100px;
   }
-  .article-body :global(h3) {
-    font-size: 19px;
-    font-weight: 600;
-    color: #fff;
-    margin: 32px 0 12px;
-  }
-  .article-body :global(p) {
-    margin-bottom: 20px;
-  }
-  .article-body :global(strong) {
-    color: #fff;
-  }
-  .article-body :global(ul) {
-    margin: 12px 0 20px 20px;
-  }
-  .article-body :global(li) {
-    margin-bottom: 8px;
+  .article-body p {
+    font-size: 1.05rem;
+    line-height: 1.8;
     color: #bbb;
+    margin-bottom: 16px;
   }
-  .article-body :global(a) {
-    color: #2563eb;
+
+  /* Inline figures */
+  .inline-figure {
+    margin: 32px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #1a1a1a;
+  }
+  .inline-figure img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .inline-figure figcaption {
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    color: #888;
+    text-align: center;
+  }
+
+  /* Conclusion */
+  .article-conclusion {
+    margin-top: 40px;
+    padding: 24px;
+    background: #1a1a1a;
+    border-radius: 12px;
+    border-left: 4px solid #3B82F6;
+  }
+  .article-conclusion h2 {
+    font-size: 1.3rem;
+    color: #fff;
+    margin: 0 0 12px;
+  }
+  .article-conclusion p {
+    color: #bbb;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  /* Tags */
+  .article-tags {
+    margin-top: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .tag-label {
+    color: #888;
+    font-size: 0.9rem;
+    margin-right: 4px;
+  }
+  .tag {
+    background: #1a1a1a;
+    color: #ccc;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
     text-decoration: none;
-    border-bottom: 1px solid transparent;
+    border: 1px solid #333;
     transition: border-color 0.2s;
   }
-  .article-body :global(a:hover) {
-    border-bottom-color: #2563eb;
-  }
-  .article-body :global(blockquote) {
-    border-left: 3px solid #2563eb;
-    padding: 16px 24px;
-    margin: 24px 0;
-    background: #111;
-    border-radius: 0 12px 12px 0;
-    font-style: italic;
-    color: #aaa;
-  }
-  .article-body :global(.info-box) {
-    background: #0f1a2e;
-    border: 1px solid #1a2e4e;
-    border-radius: 12px;
-    padding: 20px 24px;
-    margin: 24px 0;
-  }
-  .article-body :global(.info-box h4) {
-    font-size: 14px;
-    font-weight: 700;
-    color: #2563eb;
-    margin-bottom: 8px;
-  }
-
-  /* === CONCLUSION === */
-  .conclusion-paragraph {
-    font-size: 16px;
-    color: #ccc;
-    line-height: 1.85;
-    margin-top: 32px;
-    padding-top: 24px;
-    border-top: 1px solid #1a1a1a;
-  }
-
-  /* === INTERNAL LINKS === */
-  .internal-links-section {
-    margin-top: 48px;
-    padding-top: 32px;
-    border-top: 1px solid #1a1a1a;
-  }
-  .internal-links-section h2 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 16px;
+  .tag:hover {
+    border-color: #3B82F6;
     color: #fff;
   }
-  .internal-links-list {
+
+  /* Share */
+  .article-share {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #222;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .share-label {
+    color: #888;
+    font-size: 0.9rem;
+    margin-right: 4px;
+  }
+  .share-btn {
+    background: #1a1a1a;
+    color: #ccc;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    text-decoration: none;
+    border: 1px solid #333;
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  .share-btn:hover {
+    border-color: #3B82F6;
+    color: #fff;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    position: sticky;
+    top: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .sidebar-box {
+    background: #151515;
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .sidebar-box h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 14px;
+  }
+
+  /* TOC */
+  .toc-nav ul {
     list-style: none;
     padding: 0;
     margin: 0;
   }
-  .internal-links-list li {
-    margin-bottom: 12px;
-  }
-  .internal-links-list a {
-    color: #2563eb;
-    text-decoration: none;
-    font-size: 15px;
-    transition: color 0.2s;
-  }
-  .internal-links-list a:hover {
-    color: #fff;
-  }
-
-  /* === TAGS === */
-  .article-tags {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 32px;
-    padding-top: 24px;
-    border-top: 1px solid #1a1a1a;
-  }
-  .tag {
-    padding: 6px 14px;
-    background: #1a1a2e;
-    color: #7aa2f7;
-    font-size: 12px;
-    border-radius: 20px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: background 0.2s;
-  }
-  .tag:hover {
-    background: #2a2a4e;
-  }
-
-  /* === SHARE === */
-  .share-row {
-    display: flex;
-    gap: 8px;
-    margin-top: 24px;
-    flex-wrap: wrap;
-  }
-  .share-btn {
-    padding: 8px 16px;
-    background: #1a1a1a;
-    border: 1px solid #2a2a2a;
-    border-radius: 8px;
-    color: #aaa;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: inherit;
-  }
-  .share-btn:hover {
-    border-color: #2563eb;
-    color: #fff;
-  }
-
-  /* === SIDEBAR === */
-  .article-sidebar {
-    position: sticky;
-    top: 100px;
-  }
-
-  .sidebar-section {
-    background: #131313;
-    border: 1px solid #1e1e1e;
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 20px;
-  }
-  .sidebar-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 16px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  /* TOC */
-  .toc-nav {
-    display: flex;
-    flex-direction: column;
+  .toc-nav li {
+    margin-bottom: 6px;
   }
   .toc-link {
-    display: block;
-    padding: 8px 12px;
     color: #888;
-    font-size: 13px;
     text-decoration: none;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    display: block;
+    padding: 4px 0 4px 12px;
     border-left: 2px solid transparent;
     transition: all 0.2s;
-    margin-bottom: 2px;
   }
   .toc-link:hover,
   .toc-link.active {
-    color: #2563eb;
-    border-left-color: #2563eb;
-    background: #0f1a2e;
-    border-radius: 0 8px 8px 0;
+    color: #fff;
+    border-left-color: #3B82F6;
   }
 
-  /* Video cards */
-  .video-card-sm {
+  /* Sidebar Videos */
+  .sidebar-videos {
     display: flex;
+    flex-direction: column;
     gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid #1a1a1a;
-    text-decoration: none;
-    color: inherit;
-    transition: opacity 0.2s;
   }
-  .video-card-sm:last-child {
-    border-bottom: none;
-  }
-  .video-card-sm:hover {
-    opacity: 0.8;
-  }
-  .video-thumb-placeholder {
-    width: 96px;
-    height: 54px;
-    border-radius: 8px;
-    flex-shrink: 0;
+  .sidebar-video-card {
     display: flex;
+    gap: 10px;
     align-items: center;
-    justify-content: center;
-    font-size: 20px;
+    text-decoration: none;
+    color: #ccc;
+    padding: 6px;
+    border-radius: 8px;
+    transition: background 0.2s;
   }
-  .video-card-info {
-    min-width: 0;
+  .sidebar-video-card:hover {
+    background: #1a1a1a;
+  }
+  .sidebar-video-card img {
+    width: 100px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+    background: #222;
   }
   .video-card-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: #ddd;
+    font-size: 0.85rem;
     line-height: 1.3;
-    margin-bottom: 4px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .video-card-price {
-    font-size: 12px;
-    color: #2563eb;
-    font-weight: 700;
   }
 
-  /* CTA */
+  /* CTA Box */
   .cta-box {
-    background: linear-gradient(135deg, #0f1a2e, #1a2e4e);
-    border: 1px solid rgba(37, 99, 235, 0.2);
-    border-radius: 16px;
-    padding: 24px;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border-color: #1a3a5c;
     text-align: center;
   }
-  .cta-box h3 {
-    font-size: 16px;
-    font-weight: 700;
-    color: #fff;
-    margin: 0 0 8px;
-  }
   .cta-box p {
-    font-size: 13px;
     color: #aaa;
-    margin: 0 0 16px;
+    font-size: 0.85rem;
+    margin: 0 0 14px;
     line-height: 1.5;
   }
-  .cta-btn {
+  .cta-button {
     display: inline-block;
-    padding: 12px 28px;
-    background: #2563eb;
+    background: #3B82F6;
     color: #fff;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 14px;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
     text-decoration: none;
     transition: background 0.2s;
   }
-  .cta-btn:hover {
-    background: #1d4ed8;
+  .cta-button:hover {
+    background: #2563eb;
   }
 
-  /* === RELATED ARTICLES === */
-  .related-articles {
-    margin-top: 48px;
+  /* Related Section */
+  .related-section {
+    margin-top: 60px;
     padding-top: 40px;
-    border-top: 1px solid #1a1a1a;
+    border-top: 1px solid #222;
   }
-  .related-title {
-    font-size: 22px;
+  .related-section h2 {
+    font-size: 1.5rem;
     font-weight: 700;
     color: #fff;
     margin-bottom: 24px;
@@ -639,93 +726,87 @@ const tags = article.tags || [article.category];
   .related-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    gap: 24px;
   }
   .related-card {
-    background: #131313;
-    border: 1px solid #1e1e1e;
+    background: #151515;
+    border: 1px solid #222;
     border-radius: 12px;
     overflow: hidden;
     text-decoration: none;
-    color: inherit;
-    transition: all 0.2s;
+    transition: border-color 0.2s, transform 0.2s;
   }
   .related-card:hover {
-    border-color: #2563eb;
+    border-color: #333;
     transform: translateY(-2px);
   }
-  .related-card .img-placeholder {
+  .related-card img {
     width: 100%;
-    aspect-ratio: 16 / 9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 32px;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    background: #222;
   }
   .related-card-body {
-    padding: 14px 16px;
+    padding: 16px;
   }
-  .related-card-cat {
-    font-size: 10px;
-    font-weight: 700;
-    color: #2563eb;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  .related-card-title {
-    font-size: 14px;
+  .related-category {
+    font-size: 0.75rem;
     font-weight: 600;
-    color: #ddd;
-    margin-top: 4px;
-    line-height: 1.35;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .related-card h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 6px 0;
+    line-height: 1.3;
+  }
+  .related-meta {
+    font-size: 0.8rem;
+    color: #888;
   }
 
-  /* === RESPONSIVE === */
-  @media (max-width: 1024px) {
-    .article-main {
+  /* Responsive */
+  @media (max-width: 900px) {
+    .article-grid {
       grid-template-columns: 1fr;
-      gap: 32px;
     }
-    .article-sidebar {
+    .sidebar {
       position: static;
     }
-    .article-wrap {
-      padding: 0 24px 40px;
-    }
-    .related-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (max-width: 768px) {
-    .article-hero {
-      aspect-ratio: 21 / 10;
-    }
-    .article-title {
-      font-size: clamp(22px, 5vw, 30px);
-    }
-    .article-meta {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
-    }
-    .article-wrap {
-      padding: 0 16px 32px;
-    }
-    .breadcrumbs {
-      padding: 12px 16px;
-      font-size: 12px;
-    }
     .related-grid {
       grid-template-columns: 1fr;
     }
-    .share-row {
-      flex-wrap: wrap;
+    .article-hero {
+      aspect-ratio: 16 / 9;
     }
-    .share-btn {
-      flex: 1;
-      min-width: 120px;
-      text-align: center;
+    .article-content h1 {
+      font-size: 1.6rem;
     }
   }
 </style>
+
+<script>
+  // TOC active state on scroll
+  document.addEventListener('DOMContentLoaded', () => {
+    const links = document.querySelectorAll('.toc-link');
+    const headings = document.querySelectorAll('.article-body h2[id]');
+    if (!headings.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            links.forEach((l) => l.classList.remove('active'));
+            const active = document.querySelector(`.toc-link[href="#${entry.target.id}"]`);
+            if (active) active.classList.add('active');
+          }
+        });
+      },
+      { rootMargin: '-100px 0px -70% 0px' }
+    );
+    headings.forEach((h) => observer.observe(h));
+  });
+</script>
