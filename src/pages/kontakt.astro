@@ -16,12 +16,12 @@ import config from '../data/config.json';
       {config.contact.city}<br><br>
       Telefon: {config.contact.phone}<br>
       Fax: {config.contact.fax}<br>
-      E-Mail: <a href={`mailto:${config.contact.email}`}>{config.contact.email}</a>
+      Email: <a href={`mailto:${config.contact.email}`}>{config.contact.email}</a>
     </p>
     <h2>Kontaktformular</h2>
     <form id="contactForm" style="display:flex;flex-direction:column;gap:16px;max-width:500px;">
       <input type="text" name="name" placeholder="Ihr Name" required style="background:#2c2c2c;border:1px solid #3a3a3a;border-radius:8px;padding:12px 16px;color:#fff;font-size:15px;font-family:inherit;outline:none;">
-      <input type="email" name="email" placeholder="Ihre E-Mail-Adresse" required style="background:#2c2c2c;border:1px solid #3a3a3a;border-radius:8px;padding:12px 16px;color:#fff;font-size:15px;font-family:inherit;outline:none;">
+      <input type="email" name="email" placeholder="Ihre Email-Adresse" required style="background:#2c2c2c;border:1px solid #3a3a3a;border-radius:8px;padding:12px 16px;color:#fff;font-size:15px;font-family:inherit;outline:none;">
       <select name="subject" style="background:#2c2c2c;border:1px solid #3a3a3a;border-radius:8px;padding:12px 16px;color:#ccc;font-size:15px;font-family:inherit;outline:none;">
         <option value="allgemein">Allgemeine Anfrage</option>
         <option value="lizenz">Lizenzfrage</option>
