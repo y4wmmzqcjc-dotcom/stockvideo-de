@@ -653,9 +653,13 @@ window.adminArticles = {
 
     // Update nav highlighting
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    if (event && event.target) {
-      const navItem = event.target.closest('.nav-item');
+    if (nameOrEvent && typeof nameOrEvent !== 'string' && nameOrEvent.target) {
+      var navItem = nameOrEvent.target.closest('.nav-item');
       if (navItem) navItem.classList.add('active');
+    } else {
+      document.querySelectorAll('.nav-item').forEach(function(n) {
+        if ((n.getAttribute('onclick') || '').indexOf("'" + name + "'") !== -1) n.classList.add('active');
+      });
     }
 
     // Init articles module when switching to articles
