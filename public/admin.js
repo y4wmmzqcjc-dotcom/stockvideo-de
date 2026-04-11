@@ -609,9 +609,6 @@ var mediaModule = {
             this.refreshDeployStatus();
         },
 
-refreshDeployStatus();
-            },
-
             refreshDeployStatus() {
                 const settings = auth.loadSettings();
                 if (!settings.gitHub.token) {
