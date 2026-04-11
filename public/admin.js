@@ -1,7 +1,7 @@
 
 
 // ===== MEDIENDATENBANK MODULE =====
-const mediaModule = {
+var mediaModule = {
     items: [],
     selectedIds: new Set(),
     activeId: null,
@@ -1402,7 +1402,7 @@ if (typeof admin !== "undefined" && admin.syncFromLive) { setTimeout(()=>admin.s
 
 
 // ===== REDAKTIONSKALENDER MODULE =====
-const calendarModule = {
+var calendarModule = {
     currentMonth: new Date().getMonth(),
     currentYear: new Date().getFullYear(),
     articles: [],
