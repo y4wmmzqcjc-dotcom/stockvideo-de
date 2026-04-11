@@ -1,5 +1,5 @@
 /* ============================================================
-   admin-articles.js \u2014 Wissen/Artikel-Verwaltung für stockvideo.de
+   admin-articles.js \u2014 Wissen/Artikel-Verwaltung fÃ¼r stockvideo.de
    Version 2.0 \u2014 Listenansicht, Publish/Draft, Planungskalender
    ============================================================ */
 
@@ -59,7 +59,7 @@ window.adminArticles = {
         </div>
         <div class="aa-stats">
           <div class="aa-stat"><span class="aa-stat-num">${this.articles.length}</span><span class="aa-stat-label">Gesamt</span></div>
-          <div class="aa-stat aa-stat-green"><span class="aa-stat-num">${published}</span><span class="aa-stat-label">Öffentlich</span></div>
+          <div class="aa-stat aa-stat-green"><span class="aa-stat-num">${published}</span><span class="aa-stat-label">Ãffentlich</span></div>
           <div class="aa-stat aa-stat-yellow"><span class="aa-stat-num">${scheduled}</span><span class="aa-stat-label">Geplant</span></div>
           <div class="aa-stat aa-stat-gray"><span class="aa-stat-num">${drafts}</span><span class="aa-stat-label">Entwurf</span></div>
         </div>
@@ -69,7 +69,7 @@ window.adminArticles = {
         <div class="aa-list-section">
           <div class="aa-filter-bar">
             <button class="aa-filter active" data-filter="all" onclick="adminArticles.filterList('all',this)">Alle</button>
-            <button class="aa-filter" data-filter="published" onclick="adminArticles.filterList('published',this)">Öffentlich</button>
+            <button class="aa-filter" data-filter="published" onclick="adminArticles.filterList('published',this)">Ãffentlich</button>
             <button class="aa-filter" data-filter="scheduled" onclick="adminArticles.filterList('scheduled',this)">Geplant</button>
             <button class="aa-filter" data-filter="draft" onclick="adminArticles.filterList('draft',this)">Entwurf</button>
           </div>
@@ -89,7 +89,7 @@ window.adminArticles = {
             ${this._renderCalendar()}
           </div>
           <div class="aa-cal-legend">
-            <span class="aa-cal-dot aa-dot-green"></span> Öffentlich
+            <span class="aa-cal-dot aa-dot-green"></span> Ãffentlich
             <span class="aa-cal-dot aa-dot-yellow"></span> Geplant
           </div>
           <div class="aa-upcoming" id="aa-upcoming">
@@ -99,7 +99,7 @@ window.adminArticles = {
       </div>
 
       <div class="aa-actions-bottom">
-        <button class="aa-btn aa-btn-save" onclick="adminArticles.publishToGitHub()">Alle Änderungen veröffentlichen</button>
+        <button class="aa-btn aa-btn-save" onclick="adminArticles.publishToGitHub()">Alle Ãnderungen verÃ¶ffentlichen</button>
       </div>
     `;
   },
@@ -111,7 +111,7 @@ window.adminArticles = {
 
     return list.map(a => {
       const statusClass = a.status === 'published' ? 'aa-status-published' : a.status === 'scheduled' ? 'aa-status-scheduled' : 'aa-status-draft';
-      const statusLabel = a.status === 'published' ? 'Öffentlich' : a.status === 'scheduled' ? 'Geplant' : 'Entwurf';
+      const statusLabel = a.status === 'published' ? 'Ãffentlich' : a.status === 'scheduled' ? 'Geplant' : 'Entwurf';
       const statusIcon = a.status === 'published' ? '\u25CF' : a.status === 'scheduled' ? '\u25D0' : '\u25CB';
       const schedInfo = a.status === 'scheduled' && a.scheduledDate ? `<span class="aa-sched-date">${this._formatDate(a.scheduledDate)}</span>` : '';
       const catColor = a.categoryColor || '#1473e6';
@@ -130,13 +130,13 @@ window.adminArticles = {
             </div>
           </div>
           <div class="aa-row-actions">
-            <label class="aa-toggle" title="Öffentlich / Entwurf">
+            <label class="aa-toggle" title="Ãffentlich / Entwurf">
               <input type="checkbox" ${a.status === 'published' ? 'checked' : ''} onchange="adminArticles.toggleStatus('${a.id}', this.checked)">
               <span class="aa-toggle-slider"></span>
             </label>
             <button class="aa-btn-icon" title="Planen" onclick="adminArticles.openScheduler('${a.id}')">\uD83D\uDCC5</button>
             <button class="aa-btn-icon" title="Bearbeiten" onclick="adminArticles.openEditor('${a.id}')">\u270F\uFE0F</button>
-            <button class="aa-btn-icon aa-btn-danger" title="Löschen" onclick="adminArticles.deleteArticle('${a.id}')">\uD83D\uDDD1\uFE0F</button>
+            <button class="aa-btn-icon aa-btn-danger" title="LÃ¶schen" onclick="adminArticles.deleteArticle('${a.id}')">\uD83D\uDDD1\uFE0F</button>
           </div>
         </div>`;
     }).join('');
@@ -167,10 +167,10 @@ window.adminArticles = {
     overlay.className = 'aa-overlay';
     overlay.innerHTML = `
       <div class="aa-modal">
-        <h3>Veröffentlichung planen</h3>
+        <h3>VerÃ¶ffentlichung planen</h3>
         <p class="aa-modal-title">${a.title || a.seoTitle}</p>
         <div class="aa-modal-field">
-          <label>Veröffentlichungsdatum:</label>
+          <label>VerÃ¶ffentlichungsdatum:</label>
           <input type="date" id="aa-sched-input" value="${current}" min="${new Date().toISOString().split('T')[0]}">
         </div>
         <div class="aa-modal-field">
@@ -190,7 +190,7 @@ window.adminArticles = {
     const a = this.articles.find(x => x.id === id);
     if (!a) return;
     const dateVal = document.getElementById('aa-sched-input').value;
-    if (!dateVal) { alert('Bitte Datum wählen'); return; }
+    if (!dateVal) { alert('Bitte Datum wÃ¤hlen'); return; }
     a.scheduledDate = dateVal;
     a.status = 'scheduled';
     this._save();
@@ -210,7 +210,7 @@ window.adminArticles = {
 
   /* ---------- CALENDAR ---------- */
   _monthName(m) {
-    return ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'][m];
+    return ['Januar','Februar','MÃ¤rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'][m];
   },
 
   _formatDate(d) {
@@ -268,7 +268,7 @@ window.adminArticles = {
       .sort((a, b) => a.scheduledDate.localeCompare(b.scheduledDate))
       .slice(0, 5);
     if (!upcoming.length) return '<div class="aa-upcoming-empty">Keine geplanten Artikel</div>';
-    return '<h4>Nächste geplante Artikel</h4>' + upcoming.map(a => `
+    return '<h4>NÃ¤chste geplante Artikel</h4>' + upcoming.map(a => `
       <div class="aa-upcoming-item">
         <span class="aa-upcoming-date">${this._formatDate(a.scheduledDate)}</span>
         <span class="aa-upcoming-title">${a.title || a.seoTitle}</span>
@@ -307,7 +307,7 @@ window.adminArticles = {
   deleteArticle(id) {
     const a = this.articles.find(x => x.id === id);
     if (!a) return;
-    if (!confirm('Artikel "' + (a.title || a.seoTitle) + '" wirklich löschen?')) return;
+    if (!confirm('Artikel "' + (a.title || a.seoTitle) + '" wirklich lÃ¶schen?')) return;
     this.articles = this.articles.filter(x => x.id !== id);
     this._save();
     this.renderList();
@@ -323,7 +323,7 @@ window.adminArticles = {
     c.innerHTML = `
       <div class="aa-editor">
         <div class="aa-editor-header">
-          <button class="aa-btn" onclick="adminArticles.closeEditor()">\u2190 Zurück zur Liste</button>
+          <button class="aa-btn" onclick="adminArticles.closeEditor()">\u2190 ZurÃ¼ck zur Liste</button>
           <h2>Artikel bearbeiten</h2>
           <button class="aa-btn aa-btn-primary" onclick="adminArticles.saveArticle()">Speichern</button>
         </div>
@@ -384,7 +384,7 @@ window.adminArticles = {
       <div class="aa-section-card" data-idx="${i}">
         <div class="aa-section-head">
           <span class="aa-section-num">H2 #${i+1}</span>
-          <input type="text" class="aa-section-heading" value="${this._esc(s.heading)}" placeholder="Überschrift">
+          <input type="text" class="aa-section-heading" value="${this._esc(s.heading)}" placeholder="Ãberschrift">
           <button class="aa-btn-icon aa-btn-danger" onclick="adminArticles.removeSection(${i})">\u2715</button>
         </div>
         <div class="aa-section-body">
@@ -462,7 +462,7 @@ window.adminArticles = {
     const title = document.getElementById('aa-title')?.value || '';
     const slug = title.toLowerCase()
       .normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
-      .replace(/[äÄ]/g,'ae').replace(/[öÖ]/g,'oe').replace(/[üÜ]/g,'ue').replace(/ß/g,'ss')
+      .replace(/[Ã¤Ã]/g,'ae').replace(/[Ã¶Ã]/g,'oe').replace(/[Ã¼Ã]/g,'ue').replace(/Ã/g,'ss')
       .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     const el = document.getElementById('aa-slug');
     if (el && !el.dataset.manual) el.value = slug;
@@ -567,7 +567,7 @@ window.adminArticles = {
   /* ---------- PUBLISH TO GITHUB ---------- */
   async publishToGitHub() {
     const btn = document.querySelector('.aa-btn-save');
-    if (btn) { btn.textContent = 'Wird veröffentlicht...'; btn.disabled = true; }
+    if (btn) { btn.textContent = 'Wird verÃ¶ffentlicht...'; btn.disabled = true; }
     try {
       const json = JSON.stringify(this.articles, null, 2);
       const b64 = btoa(unescape(encodeURIComponent(json)));
@@ -589,11 +589,11 @@ window.adminArticles = {
           body: JSON.stringify({ message: 'Update articles.json (public)', content: b64, sha: pubRes.sha, branch: 'main' })
         })
       ]);
-      if (btn) { btn.textContent = '\u2713 Veröffentlicht!'; btn.style.background = '#10b981'; }
-      setTimeout(() => { if (btn) { btn.textContent = 'Alle Änderungen veröffentlichen'; btn.disabled = false; btn.style.background = ''; } }, 3000);
+      if (btn) { btn.textContent = '\u2713 VerÃ¶ffentlicht!'; btn.style.background = '#10b981'; }
+      setTimeout(() => { if (btn) { btn.textContent = 'Alle Ãnderungen verÃ¶ffentlichen'; btn.disabled = false; btn.style.background = ''; } }, 3000);
     } catch (e) {
-      alert('Fehler beim Veröffentlichen: ' + e.message);
-      if (btn) { btn.textContent = 'Alle Änderungen veröffentlichen'; btn.disabled = false; }
+      alert('Fehler beim VerÃ¶ffentlichen: ' + e.message);
+      if (btn) { btn.textContent = 'Alle Ãnderungen verÃ¶ffentlichen'; btn.disabled = false; }
     }
   },
 
@@ -647,8 +647,8 @@ window.adminArticles = {
       target.classList.add('active');
 
             // Auto-render calendar and media panels
-            if (panel === 'calendar' && typeof calendarModule !== 'undefined') calendarModule.render();
-            if (panel === 'media' && typeof mediaModule !== 'undefined') mediaModule.render();
+            if (name === 'calendar' && typeof calendarModule !== 'undefined') calendarModule.render();
+            if (name === 'media' && typeof mediaModule !== 'undefined') mediaModule.render();
     }
 
     // Update nav highlighting
