@@ -1,5 +1,5 @@
 /* ============================================================
-   admin-articles.js \u2014 Wissen/Artikel-Verwaltung für stockvideo.de
+   admin-articles.js \u2014 Wissen/Artikel-Verwaltung fÃ¼r stockvideo.de
    Version 2.0 \u2014 Listenansicht, Publish/Draft, Planungskalender
    ============================================================ */
 
@@ -80,7 +80,7 @@ window.adminArticles = {
 
         
       <div class="aa-actions-bottom">
-        <button class="aa-btn aa-btn-save" onclick="adminArticles.publishToGitHub()">Alle \u00c4nderungen veröffentlichen</button>
+        <button class="aa-btn aa-btn-save" onclick="adminArticles.publishToGitHub()">Alle \u00c4nderungen verÃ¶ffentlichen</button>
       </div>
     `;
   },
@@ -149,7 +149,7 @@ window.adminArticles = {
             </label>
             <button class="aa-btn-icon" title="Planen" onclick="adminArticles.openScheduler('${a.id}')">\uD83D\uDCC5</button>
             <button class="aa-btn-icon" title="Bearbeiten" onclick="adminArticles.openEditor('${a.id}')">\u270F\uFE0F</button>
-            <button class="aa-btn-icon aa-btn-danger" title="Löschen" onclick="adminArticles.deleteArticle('${a.id}')">\uD83D\uDDD1\uFE0F</button>
+            <button class="aa-btn-icon aa-btn-danger" title="LÃ¶schen" onclick="adminArticles.deleteArticle('${a.id}')">\uD83D\uDDD1\uFE0F</button>
           </div>
         </div>`;
     }).join('');
@@ -180,10 +180,10 @@ window.adminArticles = {
     overlay.className = 'aa-overlay';
     overlay.innerHTML = `
       <div class="aa-modal">
-        <h3>Veröffentlichung planen</h3>
+        <h3>VerÃ¶ffentlichung planen</h3>
         <p class="aa-modal-title">${a.title || a.seoTitle}</p>
         <div class="aa-modal-field">
-          <label>Veröffentlichungsdatum:</label>
+          <label>VerÃ¶ffentlichungsdatum:</label>
           <input type="date" id="aa-sched-input" value="${current}" min="${new Date().toISOString().split('T')[0]}">
         </div>
         <div class="aa-modal-field">
@@ -203,7 +203,7 @@ window.adminArticles = {
     const a = this.articles.find(x => x.id == id);
     if (!a) return;
     const dateVal = document.getElementById('aa-sched-input').value;
-    if (!dateVal) { alert('Bitte Datum wählen'); return; }
+    if (!dateVal) { alert('Bitte Datum wÃ¤hlen'); return; }
     a.scheduledDate = dateVal;
     a.status = 'scheduled';
     this._save();
@@ -223,7 +223,7 @@ window.adminArticles = {
 
   /* ---------- CALENDAR ---------- */
   _monthName(m) {
-    return ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'][m];
+    return ['Januar','Februar','MÃ¤rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'][m];
   },
 
   _formatDate(d) {
@@ -281,7 +281,7 @@ window.adminArticles = {
       .sort((a, b) => a.scheduledDate.localeCompare(b.scheduledDate))
       .slice(0, 5);
     if (!upcoming.length) return '<div class="aa-upcoming-empty">Keine geplanten Artikel</div>';
-    return '<h4>Nächste geplante Artikel</h4>' + upcoming.map(a => `
+    return '<h4>NÃ¤chste geplante Artikel</h4>' + upcoming.map(a => `
       <div class="aa-upcoming-item">
         <span class="aa-upcoming-date">${this._formatDate(a.scheduledDate)}</span>
         <span class="aa-upcoming-title">${a.title || a.seoTitle}</span>
@@ -320,7 +320,7 @@ window.adminArticles = {
   deleteArticle(id) {
     const a = this.articles.find(x => x.id == id);
     if (!a) return;
-    if (!confirm('Artikel "' + (a.title || a.seoTitle) + '" wirklich löschen?')) return;
+    if (!confirm('Artikel "' + (a.title || a.seoTitle) + '" wirklich lÃ¶schen?')) return;
     this.articles = this.articles.filter(x => x.id !== id);
     this._save();
     this.renderList();
@@ -329,7 +329,7 @@ window.adminArticles = {
   /* ---------- EDITOR (Block-Editor) ---------- */
 
   openEditor(id) {
-    const a = this.articles.find(x => x.id === id);
+    const a = this.articles.find(x => x.id == id);
     if (!a) return;
     this.currentEditId = id;
     // Show editor container
@@ -361,7 +361,7 @@ window.adminArticles = {
   },
 
   _renderBlockEditor() {
-    const a = this.articles.find(x => x.id === this.currentEditId);
+    const a = this.articles.find(x => x.id == this.currentEditId);
     if (!a) return;
     const el = document.getElementById('articleContent');
     const checks = this._getSeoChecks(a);
@@ -478,14 +478,14 @@ window.adminArticles = {
   },
 
   _updateMeta(field, value) {
-    const a = this.articles.find(x => x.id === this.currentEditId);
+    const a = this.articles.find(x => x.id == this.currentEditId);
     if (!a) return;
     a[field] = value;
     this._save();
   },
 
   _updateSeo(field, value) {
-    const a = this.articles.find(x => x.id === this.currentEditId);
+    const a = this.articles.find(x => x.id == this.currentEditId);
     if (!a) return;
     if (!a.seo) a.seo = {};
     a.seo[field] = value;
@@ -493,7 +493,7 @@ window.adminArticles = {
   },
 
   _updateGeo(field, value) {
-    const a = this.articles.find(x => x.id === this.currentEditId);
+    const a = this.articles.find(x => x.id == this.currentEditId);
     if (!a) return;
     if (!a.geo) a.geo = {};
     a.geo[field] = value;
@@ -507,7 +507,7 @@ window.adminArticles = {
     var handle = '<div class="aa-block-handle" style="cursor:grab;padding:4px;color:#94a3b8;font-size:14px;user-select:none" title="Ziehen zum Verschieben">\u2261</div>';
     var badge = '<div style="width:22px;height:22px;border-radius:4px;background:' + (typeColors[block.type]||'#94a3b8') + ';color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">' + (typeLabels[block.type]||'?') + '</div>';
     var delBtn = '<button onclick="adminArticles.removeBlock(' + idx + ')" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;padding:2px 6px;border-radius:4px;line-height:1" title="Block l\u00f6schen" onmouseover="this.style.color=\x27#ef4444\x27;this.style.background=\x27#fef2f2\x27" onmouseout="this.style.color=\x27#94a3b8\x27;this.style.background=\x27none\x27">\u2715</button>';
-    var a = this.articles.find(function(x){return x.id===adminArticles.currentEditId});
+    var a = this.articles.find(function(x){return x.id == adminArticles.currentEditId});
     var moveUp = idx > 0 ? '<button onclick="adminArticles.moveBlock(' + idx + ',-1)" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:12px;padding:1px 4px" title="Nach oben">\u25B2</button>' : '';
     var moveDown = (a && idx < a.blocks.length - 1) ? '<button onclick="adminArticles.moveBlock(' + idx + ',1)" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:12px;padding:1px 4px" title="Nach unten">\u25BC</button>' : '';
     var content = '';
@@ -556,7 +556,7 @@ window.adminArticles = {
 
 
   addBlock(type) {
-    const a = this.articles.find(x => x.id === this.currentEditId);
+    const a = this.articles.find(x => x.id == this.currentEditId);
     if (!a) return;
     var newBlock = {type: type, content: ''};
     if (type === 'image') { newBlock.url = ''; newBlock.alt = ''; delete newBlock.content; }
@@ -570,7 +570,7 @@ window.adminArticles = {
   },
 
   removeBlock(idx) {
-    const a = this.articles.find(x => x.id === this.currentEditId);
+    const a = this.articles.find(x => x.id == this.currentEditId);
     if (!a || !a.blocks[idx]) return;
     if (a.blocks.length <= 1) { this.showAlert('Mindestens ein Block erforderlich', 'warning'); return; }
     a.blocks.splice(idx, 1);
@@ -579,7 +579,7 @@ window.adminArticles = {
   },
 
   moveBlock(idx, dir) {
-    const a = this.articles.find(x => x.id === this.currentEditId);
+    const a = this.articles.find(x => x.id == this.currentEditId);
     if (!a) return;
     var newIdx = idx + dir;
     if (newIdx < 0 || newIdx >= a.blocks.length) return;
@@ -591,7 +591,7 @@ window.adminArticles = {
   },
 
   _updateBlock(idx, field, value) {
-    const a = this.articles.find(x => x.id === this.currentEditId);
+    const a = this.articles.find(x => x.id == this.currentEditId);
     if (!a || !a.blocks[idx]) return;
     a.blocks[idx][field] = value;
     this._save();
@@ -623,7 +623,7 @@ window.adminArticles = {
         var fromIdx = parseInt(e.dataTransfer.getData('text/plain'));
         var toIdx = parseInt(el.dataset.idx);
         if (isNaN(fromIdx) || isNaN(toIdx) || fromIdx === toIdx) return;
-        var art = self.articles.find(function(x){return x.id===self.currentEditId});
+        var art = self.articles.find(function(x){return x.id == self.currentEditId});
         if (!art) return;
         var moved = art.blocks.splice(fromIdx, 1)[0];
         art.blocks.splice(toIdx, 0, moved);
@@ -654,7 +654,7 @@ window.adminArticles = {
   },
 
   saveArticle() {
-    const a = this.articles.find(x => x.id === this.currentEditId);
+    const a = this.articles.find(x => x.id == this.currentEditId);
     if (!a) return;
     var titleEl = document.getElementById('editorTitle');
     var slugEl = document.getElementById('editorSlug');
@@ -694,7 +694,7 @@ window.adminArticles = {
   /* ---------- PUBLISH TO GITHUB ---------- */
   async publishToGitHub() {
     const btn = document.querySelector('.aa-btn-save');
-    if (btn) { btn.textContent = 'Wird veröffentlicht...'; btn.disabled = true; }
+    if (btn) { btn.textContent = 'Wird verÃ¶ffentlicht...'; btn.disabled = true; }
     try {
       const json = JSON.stringify(this.articles, null, 2);
       const b64 = btoa(unescape(encodeURIComponent(json)));
@@ -716,11 +716,11 @@ window.adminArticles = {
           body: JSON.stringify({ message: 'Update articles.json (public)', content: b64, sha: pubRes.sha, branch: 'main' })
         })
       ]);
-      if (btn) { btn.textContent = '\u2713 Veröffentlicht!'; btn.style.background = '#10b981'; }
-      setTimeout(() => { if (btn) { btn.textContent = 'Alle \u00c4nderungen veröffentlichen'; btn.disabled = false; btn.style.background = ''; } }, 3000);
+      if (btn) { btn.textContent = '\u2713 VerÃ¶ffentlicht!'; btn.style.background = '#10b981'; }
+      setTimeout(() => { if (btn) { btn.textContent = 'Alle \u00c4nderungen verÃ¶ffentlichen'; btn.disabled = false; btn.style.background = ''; } }, 3000);
     } catch (e) {
-      alert('Fehler beim Veröffentlichen: ' + e.message);
-      if (btn) { btn.textContent = 'Alle \u00c4nderungen veröffentlichen'; btn.disabled = false; }
+      alert('Fehler beim VerÃ¶ffentlichen: ' + e.message);
+      if (btn) { btn.textContent = 'Alle \u00c4nderungen verÃ¶ffentlichen'; btn.disabled = false; }
     }
   },
 
