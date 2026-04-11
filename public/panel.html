@@ -33,7 +33,7 @@
                         <input type="text" id="otpInput" class="form-input" placeholder="000000" maxlength="6" inputmode="numeric">
                     </div>
                     <button class="button button-primary" onclick="auth.verifyOTP()">Anmelden</button>
-                    <button class="button button-secondary" style="width: 100%;" onclick="auth.backToPassword()">ZurÃ¼ck</button>
+                    <button class="button button-secondary" style="width: 100%;" onclick="auth.backToPassword()">Zurück</button>
                     <p style="color: var(--text-secondary); font-size: 0.75rem; text-align: center; margin-top: 1rem;">
                         Versuche: <span id="otpAttempts">0</span>/3
                     </p>
@@ -60,31 +60,31 @@
             </div>
             <nav class="sidebar-nav">
                 <div class="nav-item active" onclick="admin.switchPanel('dashboard')">
-                    <span>=</span> Dashboard
+                    <span>&#128202;</span> Dashboard
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('videos')">
-                    <span>ð¥</span> Videos verwalten
+                    <span>&#127916;</span> Videos verwalten
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('categories')">
-                    <span>=</span> Kategorien
+                    <span>&#9776;</span> Kategorien
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('content')">
-                    <span>=</span> Seiteninhalte
+                    <span>&#9776;</span> Seiteninhalte
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('articles')">
-                    <span>âï¸</span> Wissen / Artikel
+                    <span>&#9997;&#65039;</span> Wissen / Artikel
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('calendar')">
-                    <span>ð</span> Redaktionskalender
+                    <span>&#128197;</span> Redaktionskalender
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('media')">
-                    <span>ð¼</span> Mediendatenbank
+                    <span>&#128444;</span> Mediendatenbank
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('design')">
-                    <span>ð¨</span> Design
+                    <span>&#127912;</span> Design
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('settings')">
-                    <span>âï¸</span> Einstellungen
+                    <span>&#9881;&#65039;</span> Einstellungen
                 </div>
             </nav>
             <div class="sidebar-footer">
@@ -97,7 +97,7 @@
             <div id="panel-dashboard" class="content-panel active">
                 <div class="content-header">
                     <h1 class="content-title">Dashboard</h1>
-                    <p class="content-subtitle">Ãberblick Ã¼ber Ihr System</p>
+                    <p class="content-subtitle">Überblick über Ihr System</p>
                 </div>
                 <div style="padding: 2rem;">
                     <div id="dashboardAlert"></div>
@@ -107,7 +107,7 @@
                     <div class="action-buttons">
                         <button class="button button-primary" onclick="admin.loadVideos(); admin.switchPanel('videos')">Videos bearbeiten</button>
                         <button class="button button-primary" onclick="admin.loadCategories(); admin.switchPanel('categories')">Kategorien bearbeiten</button>
-                        <button class="button button-primary" onclick="admin.publishToGitHub()">VerÃ¶ffentlichen</button>
+                        <button class="button button-primary" onclick="admin.publishToGitHub()">Veröffentlichen</button>
                         <button class="button button-secondary" onclick="admin.refreshDeployStatus()">Status aktualisieren</button>
                     </div>
                 </div>
@@ -117,7 +117,7 @@
             <div id="panel-videos" class="content-panel">
                 <div class="content-header">
                     <h1 class="content-title">Videos verwalten</h1>
-                    <p class="content-subtitle">Erstellen, bearbeiten und lÃ¶schen Sie Videos</p>
+                    <p class="content-subtitle">Erstellen, bearbeiten und löschen Sie Videos</p>
                 </div>
                 <div style="padding: 2rem;">
                     <div id="videosAlert"></div>
@@ -227,14 +227,14 @@
                         <div class="form-row full">
                             <div>
                                 <label class="form-label">Meta-Beschreibung</label>
-                                <textarea class="textarea" id="contentSEODescription" placeholder="Hochwertige Stock Videos fÃ¼r kommerzielle Projekte..."></textarea>
+                                <textarea class="textarea" id="contentSEODescription" placeholder="Hochwertige Stock Videos für kommerzielle Projekte..."></textarea>
                             </div>
                         </div>
                     </div>
 
                     <div style="display: flex; gap: 1rem;">
                         <button class="button button-primary" onclick="admin.savePageContent()">Speichern</button>
-                        <button class="button button-secondary" onclick="admin.loadPageContent()">ZurÃ¼cksetzen</button>
+                        <button class="button button-secondary" onclick="admin.loadPageContent()">Zurücksetzen</button>
                     </div>
                 </div>
             </div>
@@ -254,15 +254,15 @@
     <div id="panel-calendar" class="content-panel">
         <div class="content-header">
             <h1 class="content-title">Redaktionskalender</h1>
-            <p class="content-subtitle">Artikel planen und VerÃ¶ffentlichungen im Ãberblick</p>
+            <p class="content-subtitle">Artikel planen und Veröffentlichungen im Überblick</p>
         </div>
         <div class="calendar-controls">
-            <button class="btn btn-secondary" onclick="calendarModule.prevMonth()">&larr; ZurÃ¼ck</button>
+            <button class="btn btn-secondary" onclick="calendarModule.prevMonth()">&larr; Zurück</button>
             <h2 id="calendar-month-title" style="margin:0;font-size:18px;color:#fff;"></h2>
             <button class="btn btn-secondary" onclick="calendarModule.nextMonth()">Weiter &rarr;</button>
         </div>
         <div class="calendar-legend">
-            <span class="legend-item"><span class="legend-dot" style="background:#34c759;"></span> VerÃ¶ffentlicht</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#34c759;"></span> Veröffentlicht</span>
             <span class="legend-item"><span class="legend-dot" style="background:#007aff;"></span> Geplant</span>
             <span class="legend-item"><span class="legend-dot" style="background:#8e8e93;"></span> Entwurf</span>
         </div>
@@ -304,8 +304,8 @@
             </div>
         </div>
         <div class="media-bulk-bar" id="media-bulk-bar" style="display:none;">
-            <span id="media-selected-count">0 ausgewÃ¤hlt</span>
-            <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);" onclick="mediaModule.bulkDelete()">AusgewÃ¤hlte lÃ¶schen</button>
+            <span id="media-selected-count">0 ausgewählt</span>
+            <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);" onclick="mediaModule.bulkDelete()">Ausgewählte löschen</button>
             <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);" onclick="mediaModule.deselectAll()">Auswahl aufheben</button>
         </div>
         <div class="media-grid" id="media-grid"></div>
@@ -323,7 +323,7 @@
             <label class="btn btn-sm btn-secondary" style="cursor:pointer;margin:0;">
                 Ersetzen <input type="file" accept="image/*" style="display:none;" onchange="mediaModule.replace(this.files)">
             </label>
-            <button class="btn btn-sm" style="background:#ff3b30;color:#fff;" onclick="mediaModule.deleteActive()">LÃ¶schen</button>
+            <button class="btn btn-sm" style="background:#ff3b30;color:#fff;" onclick="mediaModule.deleteActive()">Löschen</button>
         </div>
         <div style="margin-top:16px;">
             <label class="form-label">Dateiname</label>
@@ -331,7 +331,7 @@
         </div>
         <div style="margin-top:12px;">
             <label class="form-label">Alt Text (SEO)</label>
-            <input type="text" class="form-input" id="media-detail-alt" placeholder="Bildbeschreibung fÃ¼r Suchmaschinen">
+            <input type="text" class="form-input" id="media-detail-alt" placeholder="Bildbeschreibung für Suchmaschinen">
         </div>
         <div style="margin-top:12px;">
             <label class="form-label">Kategorie</label>
@@ -352,7 +352,7 @@
             <span id="media-detail-dims">â</span>
             <span id="media-detail-date">â</span>
         </div>
-        <button class="btn btn-primary" style="width:100%;margin-top:16px;" onclick="mediaModule.saveDetail()">Ãnderungen speichern</button>
+        <button class="btn btn-primary" style="width:100%;margin-top:16px;" onclick="mediaModule.saveDetail()">Änderungen speichern</button>
     </div>
 
     <!-- Settings Panel (Einstellungen) -->
@@ -371,14 +371,14 @@
 
                     <div class="form-section">
                         <div class="form-section-title">Komplettes Design importieren</div>
-                        <label class="form-label">CSS-Code einfÃ¼gen (ersetzen Sie alle Variablen)</label>
-                        <textarea class="textarea" id="designImportCSS" placeholder="Komplettes CSS-Variablen-Set hier einfÃ¼gen..."></textarea>
+                        <label class="form-label">CSS-Code einfügen (ersetzen Sie alle Variablen)</label>
+                        <textarea class="textarea" id="designImportCSS" placeholder="Komplettes CSS-Variablen-Set hier einfügen..."></textarea>
                     </div>
 
                     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                         <button class="button button-primary" onclick="admin.saveDesignVariables()">Variablen speichern</button>
                         <button class="button button-primary" onclick="admin.importDesignCSS()">CSS importieren</button>
-                        <button class="button button-secondary" onclick="admin.resetDesignToDefault()">ZurÃ¼cksetzen</button>
+                        <button class="button button-secondary" onclick="admin.resetDesignToDefault()">Zurücksetzen</button>
                     </div>
                 </div>
             </div>
@@ -406,7 +406,7 @@
             <div class="form-group">
                 <label class="form-label">Kategorie</label>
                 <select class="select" id="videoModalCategory">
-                    <option value="">-- WÃ¤hlen Sie eine Kategorie --</option>
+                    <option value="">-- Wählen Sie eine Kategorie --</option>
                 </select>
             </div>
             <div class="form-group">
@@ -415,7 +415,7 @@
             </div>
             <div class="form-row">
                 <div>
-                    <label class="form-label">AuflÃ¶sung</label>
+                    <label class="form-label">Auflösung</label>
                     <select class="select" id="videoModalResolution">
                         <option value="4K">4K</option>
                         <option value="HD">HD</option>
@@ -627,12 +627,12 @@
     };
     var origDel=admin.deleteVideo.bind(admin);
     admin.deleteVideo=function(idx){
-      if(!confirm('Wirklich lÃ¶schen?'))return;
+      if(!confirm('Wirklich löschen?'))return;
       this.videos.splice(idx,1);
       try{localStorage.setItem('adminVideos',JSON.stringify(this.videos));}catch(e){}
       this.renderVideosList&&this.renderVideosList();
       this.updateDashboard&&this.updateDashboard();
-      this.showAlert&&this.showAlert('videosAlert','success','Video gelÃ¶scht');
+      this.showAlert&&this.showAlert('videosAlert','success','Video gelöscht');
     };
   }
   once();
@@ -643,8 +643,8 @@
 <button id="batchReprocessBtn" type="button" style="position:fixed;bottom:20px;right:20px;z-index:9999;padding:12px 18px;border-radius:8px;background:#1473e6;color:#fff;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.4);font-weight:600;">Vorschauen neu generieren</button>
 <div id="batchReprocessModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:10000;overflow:auto;padding:40px;">
 <div style="max-width:760px;margin:0 auto;background:#1e1e1e;border-radius:12px;padding:28px;color:#eee;font-family:system-ui;">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="margin:0;font-size:20px;">Preview-Pipeline fÃ¼r bestehende Videos</h2><button onclick="document.getElementById('batchReprocessModal').style.display='none'" style="background:#333;border:none;color:#ccc;padding:6px 12px;border-radius:4px;cursor:pointer;">SchlieÃen</button></div>
-<p style="color:#aaa;font-size:14px;margin:0 0 18px;">WÃ¤hle pro Video die <b>originale</b> Videodatei nochmal aus. Es wird automatisch ein 480p Preview + 360p Hover-Loop mit Wasserzeichen erzeugt und hochgeladen. Das Originalvideo in R2 wird dabei <b>nicht</b> erneut hochgeladen.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="margin:0;font-size:20px;">Preview-Pipeline für bestehende Videos</h2><button onclick="document.getElementById('batchReprocessModal').style.display='none'" style="background:#333;border:none;color:#ccc;padding:6px 12px;border-radius:4px;cursor:pointer;">Schließen</button></div>
+<p style="color:#aaa;font-size:14px;margin:0 0 18px;">Wähle pro Video die <b>originale</b> Videodatei nochmal aus. Es wird automatisch ein 480p Preview + 360p Hover-Loop mit Wasserzeichen erzeugt und hochgeladen. Das Originalvideo in R2 wird dabei <b>nicht</b> erneut hochgeladen.</p>
 <div id="batchReprocessList"></div>
 <div style="margin-top:20px;display:flex;gap:10px;"><button id="batchReprocessPublish" style="padding:10px 18px;background:#16a34a;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;">Publish to GitHub</button></div>
 </div></div>
@@ -668,7 +668,7 @@ function openBatch(){
 }
 function bind(){
   var b=document.getElementById("batchReprocessBtn"); if(b&&!b._bd){ b._bd=1; b.addEventListener("click",openBatch); }
-  var p=document.getElementById("batchReprocessPublish"); if(p&&!p._bd){ p._bd=1; p.addEventListener("click",function(){ if(window.admin&&admin.publishToGitHub){ admin.publishToGitHub(); } else { alert("publishToGitHub nicht verfÃ¼gbar"); } }); }
+  var p=document.getElementById("batchReprocessPublish"); if(p&&!p._bd){ p._bd=1; p.addEventListener("click",function(){ if(window.admin&&admin.publishToGitHub){ admin.publishToGitHub(); } else { alert("publishToGitHub nicht verfügbar"); } }); }
 }
 if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bind); else bind();
 document.addEventListener("change", async function(e){
