@@ -448,7 +448,7 @@ window.adminArticles = {
     }
 
     // Build SEO checks
-    var seo = a.seo || {};
+    var _s = a.seo || {}; var seo = {keyphrase: a.keyphrase || _s.keyphrase || "", seoTitle: a.seoTitle || _s.seoTitle || "", metaDesc: a.metaDesc || _s.metaDesc || "", internalLinks: (Array.isArray(a.internalLinks) ? a.internalLinks.join(",") : (a.internalLinks || _s.internalLinks || "")), wikipedia: a.wikipedia || _s.wikipedia || "", category: a.category || _s.category || ""};
     var checks = this._getSeoChecks(a);
     var score = this._getSeoScore(a);
     // score returns string: "green", "yellow", "red"
@@ -641,9 +641,9 @@ window.adminArticles = {
   _updateSeo(field, value) {
     const a = this.articles.find(x => x.id == this.currentEditId);
     if (!a) return;
-    if (!a.seo) a.seo = {};
-    a.seo[field] = value;
+    a[field] = value;
     this._save();
+    this._renderBlockEditor();
   },
 
   _updateGeo(field, value) {
