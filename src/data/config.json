@@ -1,16 +1,16 @@
 {
   "siteName": "stockvideo.de",
   "siteUrl": "https://stockvideo.de",
-  "siteDescription": "1.000+ handverlesene, lizenzfreie Videoclips in 4K und Full HD. Einmal kaufen, unbegrenzt nutzen. Keine Abo-Pflicht. Faire Preise made in Germany.",
+  "siteDescription": "1.000+ handverlesene, lizenzfreie Videoclips in 4K und Full HD. Einmal kaufen, unbegrenzt nutzen. Keine Abopflicht. Faire Preise made in Germany.",
   "hero": {
     "title": "Lizenzfreie Stock Videos in 4K & HD",
-    "subtitle": "1.000+ handverlesene Videoclips. Einmal kaufen, unbegrenzt nutzen.\nKeine Abo-Pflicht. Faire Preise made in Germany.",
+    "subtitle": "1.000+ handverlesene Videoclips. Einmal kaufen, unbegrenzt nutzen.\nKeine Abopflicht. Faire Preise made in Germany.",
     "searchPlaceholder": "Suche nach Videos… z.B. Natur, Business, Drohne, Berlin"
   },
   "features": [
     {
       "icon": "✦",
-      "title": "Keine Abo-Pflicht",
+      "title": "Keine Abopflicht",
       "desc": "Einzelkauf oder Pakete. Keine monatliche Bindung, keine versteckten Kosten."
     },
     {
@@ -25,7 +25,7 @@
     },
     {
       "icon": "↓",
-      "title": "Sofort-Download",
+      "title": "Sofortdownload",
       "desc": "MP4 & MOV direkt nach Kauf. Kein Wasserzeichen, keine Wartezeit."
     }
   ],
@@ -52,7 +52,7 @@
       "featured": true
     },
     {
-      "label": "10er-Paket",
+      "label": "10er Paket",
       "res": "Mix",
       "price": 249,
       "desc": "10 Videos nach Wahl — 38% Ersparnis",
