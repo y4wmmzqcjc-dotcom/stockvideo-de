@@ -131,11 +131,11 @@ const mediaModule = {
             usageEl.innerHTML = '<span style="color:#666;">Nicht in Verwendung</span>';
         }
 
-        document.getElementById('media-detail-sidebar').classList.add('active');
+        const sidebar = document.getElementById('media-detail-sidebar'); sidebar.style.display = 'block'; setTimeout(() => sidebar.classList.add('active'), 10);
     },
 
     closeDetail() {
-        document.getElementById('media-detail-sidebar').classList.remove('active');
+        const sb = document.getElementById('media-detail-sidebar'); sb.classList.remove('active'); setTimeout(() => { if (!sb.classList.contains('active')) sb.style.display = 'none'; }, 350);
         this.activeId = null;
     },
 
