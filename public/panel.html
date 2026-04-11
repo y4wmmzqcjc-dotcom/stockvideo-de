@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>stockvideo.de - Admin Panel</title>
-    <link rel="stylesheet" href="/admin.css">
-    <link rel="stylesheet" href="/admin-articles.css">
+    <link rel="stylesheet" href="/admin.css?v=20260411D">
+    <link rel="stylesheet" href="/admin-articles.css?v=20260411D">
 </head>
 <body>
     <div id="authScreen" class="auth-screen">
@@ -60,25 +60,31 @@
             </div>
             <nav class="sidebar-nav">
                 <div class="nav-item active" onclick="admin.switchPanel('dashboard')">
-                    <span>=</span> Dashboard
+                    <span>&#128202;</span> Dashboard
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('videos')">
-                    <span><</span> Videos verwalten
+                    <span>&#127916;</span> Videos verwalten
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('categories')">
-                    <span>=</span> Kategorien
+                    <span>&#9776;</span> Kategorien
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('content')">
-                    <span>=</span> Seiteninhalte
+                    <span>&#9776;</span> Seiteninhalte
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('articles')">
-                    <span>✍</span> Wissen / Artikel
+                    <span>&#9997;&#65039;</span> Wissen / Artikel
+                </div>
+                <div class="nav-item" onclick="admin.switchPanel('calendar')">
+                    <span>&#128197;</span> Redaktionskalender
+                </div>
+                <div class="nav-item" onclick="admin.switchPanel('media')">
+                    <span>&#128444;</span> Mediendatenbank
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('design')">
-                    <span><</span> Design
+                    <span>&#127912;</span> Design
                 </div>
                 <div class="nav-item" onclick="admin.switchPanel('settings')">
-                    <span>⚙️</span> Einstellungen
+                    <span>&#9881;&#65039;</span> Einstellungen
                 </div>
             </nav>
             <div class="sidebar-footer">
@@ -89,23 +95,8 @@
         <div class="main-content">
             <!-- Dashboard Panel -->
             <div id="panel-dashboard" class="content-panel active">
-                <div class="content-header">
-                    <h1 class="content-title">Dashboard</h1>
-                    <p class="content-subtitle">Überblick über Ihr System</p>
-                </div>
-                <div style="padding: 2rem;">
-                    <div id="dashboardAlert"></div>
-                    <div class="grid">
-                        
-                    </div>
-                    <div class="action-buttons">
-                        <button class="button button-primary" onclick="admin.loadVideos(); admin.switchPanel('videos')">Videos bearbeiten</button>
-                        <button class="button button-primary" onclick="admin.loadCategories(); admin.switchPanel('categories')">Kategorien bearbeiten</button>
-                        <button class="button button-primary" onclick="admin.publishToGitHub()">Veröffentlichen</button>
-                        <button class="button button-secondary" onclick="admin.refreshDeployStatus()">Status aktualisieren</button>
-                    </div>
-                </div>
-            </div>
+            <div id="dashboardContent" style="height:100%;overflow-y:auto"></div>
+        </div>
 
             <!-- Videos Panel -->
             <div id="panel-videos" class="content-panel">
@@ -199,7 +190,7 @@
                         <div class="form-row full">
                             <div>
                                 <label class="form-label">Copyright</label>
-                                <input type="text" class="form-input" id="contentFooterCopyright" placeholder="© 2026 stockvideo.de">
+                                <input type="text" class="form-input" id="contentFooterCopyright" placeholder="Â© 2026 stockvideo.de">
                             </div>
                         </div>
                         <div class="form-row full">
@@ -234,7 +225,123 @@
             </div>
 
             <!-- Design Panel -->
-            <div id="panel-design" class="content-panel">
+            <div id="panel-articles" class="content-panel">
+        <div class="content-header">
+            <h1 class="content-title">Wissen / Artikel</h1>
+            <p class="content-subtitle">Artikel verwalten und planen</p>
+        </div>
+        <div id="articles-app">
+            <p style="color:#999; padding:20px;">Artikel werden geladen...</p>
+        </div>
+    </div>
+
+    <!-- Calendar Panel (Redaktionskalender) -->
+    <div id="panel-calendar" class="content-panel">
+        <div class="content-header">
+            <h1 class="content-title">Redaktionskalender</h1>
+            <p class="content-subtitle">Artikel planen und Veröffentlichungen im Überblick</p>
+        </div>
+        <div class="calendar-controls">
+            <button class="btn btn-secondary" onclick="calendarModule.prevMonth()">&larr; Zurück</button>
+            <h2 id="calendar-month-title" style="margin:0;font-size:18px;color:#fff;"></h2>
+            <button class="btn btn-secondary" onclick="calendarModule.nextMonth()">Weiter &rarr;</button>
+        </div>
+        <div class="calendar-legend">
+            <span class="legend-item"><span class="legend-dot" style="background:#34c759;"></span> Veröffentlicht</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#007aff;"></span> Geplant</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#8e8e93;"></span> Entwurf</span>
+        </div>
+        <div class="calendar-grid" id="calendar-grid"></div>
+        <div id="calendar-day-detail" class="calendar-day-detail" style="display:none;">
+            <h3 id="calendar-detail-title" style="color:#fff;margin:0 0 12px 0;"></h3>
+            <div id="calendar-detail-articles"></div>
+        </div>
+    </div>
+
+    <!-- Media Panel (Mediendatenbank) -->
+    <div id="panel-media" class="content-panel">
+        <div class="content-header">
+            <h1 class="content-title">Mediendatenbank</h1>
+            <p class="content-subtitle">Bilder organisieren, hochladen und in Artikel einbinden</p>
+        </div>
+        <div class="media-dropzone" id="media-dropzone" ondragover="mediaModule.dragOver(event)" ondragleave="mediaModule.dragLeave(event)" ondrop="mediaModule.drop(event)" onclick="document.getElementById('media-file-input').click()">
+            <div class="media-dropzone-icon">Ã°ÂÂÂ·</div>
+            <div class="media-dropzone-text">Bilder hierher ziehen oder klicken zum Hochladen</div>
+            <div class="media-dropzone-hint">JPG, PNG, WebP, SVG â max. 10 MB pro Datei</div>
+            <input type="file" id="media-file-input" multiple accept="image/*" style="display:none;" onchange="mediaModule.upload(this.files)">
+        </div>
+        <div class="media-stats">
+            <div class="media-stat"><div class="media-stat-value" id="media-total-count">0</div><div class="media-stat-label">Bilder gesamt</div></div>
+            <div class="media-stat"><div class="media-stat-value" id="media-used-count">0</div><div class="media-stat-label">In Artikeln verwendet</div></div>
+            <div class="media-stat"><div class="media-stat-value" id="media-unused-count">0</div><div class="media-stat-label">Nicht verwendet</div></div>
+            <div class="media-stat"><div class="media-stat-value" id="media-storage">0 MB</div><div class="media-stat-label">Speicher belegt</div></div>
+        </div>
+        <div class="media-toolbar">
+            <div class="media-search-wrap">
+                <input type="text" class="form-input" id="media-search" placeholder="Bilder suchen..." oninput="mediaModule.filter()">
+            </div>
+            <div class="media-filter-pills">
+                <button class="media-pill active" onclick="mediaModule.setFilter('alle', this)">Alle</button>
+                <button class="media-pill" onclick="mediaModule.setFilter('artikel', this)">Artikel</button>
+                <button class="media-pill" onclick="mediaModule.setFilter('hero', this)">Hero</button>
+                <button class="media-pill" onclick="mediaModule.setFilter('kategorie', this)">Kategorie</button>
+                <button class="media-pill" onclick="mediaModule.setFilter('unbenutzt', this)">Unbenutzt</button>
+            </div>
+        </div>
+        <div class="media-bulk-bar" id="media-bulk-bar" style="display:none;">
+            <span id="media-selected-count">0 ausgewählt</span>
+            <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);" onclick="mediaModule.bulkDelete()">Ausgewählte löschen</button>
+            <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);" onclick="mediaModule.deselectAll()">Auswahl aufheben</button>
+        </div>
+        <div class="media-grid" id="media-grid"></div>
+    </div>
+
+    <!-- Media Detail Sidebar -->
+    <div class="media-detail-sidebar" id="media-detail-sidebar" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 style="font-size:16px;font-weight:600;color:#fff;">Bilddetails</h3>
+            <button class="btn btn-sm btn-secondary" onclick="mediaModule.closeDetail()">â</button>
+        </div>
+        <div class="media-detail-preview" id="media-detail-preview"></div>
+        <div class="media-detail-actions">
+            <button class="btn btn-sm btn-primary" onclick="mediaModule.copyUrl()">URL kopieren</button>
+            <label class="btn btn-sm btn-secondary" style="cursor:pointer;margin:0;">
+                Ersetzen <input type="file" accept="image/*" style="display:none;" onchange="mediaModule.replace(this.files)">
+            </label>
+            <button class="btn btn-sm" style="background:#ff3b30;color:#fff;" onclick="mediaModule.deleteActive()">Löschen</button>
+        </div>
+        <div style="margin-top:16px;">
+            <label class="form-label">Dateiname</label>
+            <input type="text" class="form-input" id="media-detail-name">
+        </div>
+        <div style="margin-top:12px;">
+            <label class="form-label">Alt Text (SEO)</label>
+            <input type="text" class="form-input" id="media-detail-alt" placeholder="Bildbeschreibung für Suchmaschinen">
+        </div>
+        <div style="margin-top:12px;">
+            <label class="form-label">Kategorie</label>
+            <select class="form-input" id="media-detail-category">
+                <option value="">Keine</option>
+                <option value="artikel">Artikel-Bild</option>
+                <option value="hero">Hero-Bild</option>
+                <option value="kategorie">Kategorie-Bild</option>
+                <option value="sonstiges">Sonstiges</option>
+            </select>
+        </div>
+        <div style="margin-top:12px;">
+            <label class="form-label">Verwendet in</label>
+            <div id="media-detail-usage" style="font-size:12px;color:#999;">â</div>
+        </div>
+        <div style="display:flex;gap:12px;font-size:11px;color:#666;margin-top:12px;">
+            <span id="media-detail-size">â</span>
+            <span id="media-detail-dims">â</span>
+            <span id="media-detail-date">â</span>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:16px;" onclick="mediaModule.saveDetail()">Änderungen speichern</button>
+    </div>
+
+    <!-- Settings Panel (Einstellungen) -->
+    <div id="panel-design" class="content-panel">
                 <div class="content-header">
                     <h1 class="content-title">Design-Verwaltung</h1>
                     <p class="content-subtitle">CSS-Variablen und Design anpassen</p>
@@ -261,97 +368,7 @@
                 </div>
             </div>
 
-            <!-- Settings P
-            <div id="panel-articles" class="content-panel">
-                <div class="content-header">
-                    <h1>Wissen / Artikel</h1>
-                </div>
-                <div id="articlesListContainer"></div>
-            </div>
-
-            <div id="panel-settings" class="content-panel">
-                <div class="content-header">
-                    <h1 class="content-title">Einstellungen</h1>
-                    <p class="content-subtitle">Konfigurieren Sie Admin-Funktionen</p>
-                </div>
-                <div style="padding: 2rem;">
-                    <div id="settingsAlert"></div>
-
-                    <div class="form-section">
-                        <div class="form-section-title">Admin-Passwort</div>
-                        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">Das Passwort wird als SHA-256 Hash gespeichert</p>
-                        <div class="form-row">
-                            <div>
-                                <label class="form-label">Neues Passwort</label>
-                                <input type="password" class="form-input" id="settingsNewPassword" placeholder="Neues Passwort">
-                            </div>
-                            <div>
-                                <label class="form-label">Bestätigen</label>
-                                <input type="password" class="form-input" id="settingsConfirmPassword" placeholder="Passwort wiederholen">
-                            </div>
-                        </div>
-                        <button class="button button-primary" onclick="admin.changePassword()">Passwort ändern</button>
-                    </div>
-
-                    <div class="form-section">
-                        <div class="form-section-title">2-Faktor-Authentifizierung (EmailJS)</div>
-                        <div class="form-row">
-                            <div>
-                                <label class="form-label">Service-ID</label>
-                                <input type="text" class="form-input" id="settings2faServiceId" placeholder="z.B. service_xxx">
-                            </div>
-                            <div>
-                                <label class="form-label">Template-ID</label>
-                                <input type="text" class="form-input" id="settings2faTemplateId" placeholder="z.B. template_xxx">
-                            </div>
-                        </div>
-                        <div class="form-row full">
-                            <div>
-                                <label class="form-label">Public-Key</label>
-                                <input type="text" class="form-input" id="settings2faPublicKey" placeholder="z.B. xxx_public">
-                            </div>
-                        </div>
-                        <div class="form-row full">
-                            <div>
-                                <label class="form-label">Admin-Email (für OTP)</label>
-                                <input type="email" class="form-input" id="settings2faEmail" placeholder="admin@example.com">
-                            </div>
-                        </div>
-                        <button class="button button-primary" onclick="admin.save2FASettings()">2FA-Einstellungen speichern</button>
-                    </div>
-
-                    <div class="form-section">
-                        <div class="form-section-title">GitHub-Integration</div>
-                        <div class="form-row full">
-                            <div>
-                                <label class="form-label">Personal Access Token</label>
-                                <input type="password" class="form-input" id="settingsGitHubToken" placeholder="ghp_xxxxx">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div>
-                                <label class="form-label">Repository-Pfad</label>
-                                <input type="text" class="form-input" id="settingsGitHubRepo" placeholder="username/repo" value="y4wmmzqcjc-dotcom/stockvideo-de">
-                            </div>
-                            <div>
-                                <label class="form-label">Branch</label>
-                                <input type="text" class="form-input" id="settingsGitHubBranch" placeholder="main" value="main">
-                            </div>
-                        </div>
-                        <button class="button button-primary" onclick="admin.saveGitHubSettings()">GitHub-Einstellungen speichern</button>
-                    </div>
-
-                    <div class="form-section">
-                        <div class="form-section-title">Daten exportieren/importieren</div>
-                        <button class="button button-secondary" onclick="admin.exportAllData()">Alle Daten exportieren</button>
-                        <button class="button button-secondary" onclick="admin.importAllData()">Daten importieren</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modals -->
+            
     <div id="videoModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -399,7 +416,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="form-label">Preis (€)</label>
+                <label class="form-label">Preis (â¬)</label>
                 <input type="number" class="form-input" id="videoModalPrice" placeholder="49.99" min="0" step="0.01">
             </div>
             <div class="form-group">
@@ -466,6 +483,48 @@
         </div>
     </div>
 
+    
+    <!-- Articles Panel (Wissen / Artikel) -->
+    <div id="panel-settings" class="content-panel">
+        <div class="content-header">
+            <h1 class="content-title">Einstellungen</h1>
+            <p class="content-subtitle">Systemkonfiguration und Zugangsdaten</p>
+        </div>
+        <div class="settings-section" style="padding: 0 20px 20px;">
+            <h3 style="color:#fff; margin-bottom:15px;">E-Mail / 2FA Konfiguration (EmailJS)</h3>
+            <div style="margin-bottom:12px;">
+                <label style="color:#ccc; display:block; margin-bottom:4px; font-size:13px;">Service ID</label>
+                <input type="text" id="settings2faServiceId" style="width:100%; padding:8px 12px; background:#1a1a1a; border:1px solid #333; border-radius:6px; color:#fff; font-size:14px; box-sizing:border-box;">
+            </div>
+            <div style="margin-bottom:12px;">
+                <label style="color:#ccc; display:block; margin-bottom:4px; font-size:13px;">Template ID</label>
+                <input type="text" id="settings2faTemplateId" style="width:100%; padding:8px 12px; background:#1a1a1a; border:1px solid #333; border-radius:6px; color:#fff; font-size:14px; box-sizing:border-box;">
+            </div>
+            <div style="margin-bottom:12px;">
+                <label style="color:#ccc; display:block; margin-bottom:4px; font-size:13px;">Public Key</label>
+                <input type="text" id="settings2faPublicKey" style="width:100%; padding:8px 12px; background:#1a1a1a; border:1px solid #333; border-radius:6px; color:#fff; font-size:14px; box-sizing:border-box;">
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="color:#ccc; display:block; margin-bottom:4px; font-size:13px;">Admin E-Mail</label>
+                <input type="text" id="settings2faEmail" style="width:100%; padding:8px 12px; background:#1a1a1a; border:1px solid #333; border-radius:6px; color:#fff; font-size:14px; box-sizing:border-box;">
+            </div>
+            <h3 style="color:#fff; margin-bottom:15px; margin-top:30px;">GitHub Konfiguration</h3>
+            <div style="margin-bottom:12px;">
+                <label style="color:#ccc; display:block; margin-bottom:4px; font-size:13px;">GitHub Token</label>
+                <input type="password" id="settingsGitHubToken" style="width:100%; padding:8px 12px; background:#1a1a1a; border:1px solid #333; border-radius:6px; color:#fff; font-size:14px; box-sizing:border-box;">
+            </div>
+            <div style="margin-bottom:12px;">
+                <label style="color:#ccc; display:block; margin-bottom:4px; font-size:13px;">Repository</label>
+                <input type="text" id="settingsGitHubRepo" style="width:100%; padding:8px 12px; background:#1a1a1a; border:1px solid #333; border-radius:6px; color:#fff; font-size:14px; box-sizing:border-box;">
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="color:#ccc; display:block; margin-bottom:4px; font-size:13px;">Branch</label>
+                <input type="text" id="settingsGitHubBranch" style="width:100%; padding:8px 12px; background:#1a1a1a; border:1px solid #333; border-radius:6px; color:#fff; font-size:14px; box-sizing:border-box;">
+            </div>
+            <button onclick="admin.saveSettingsFromForm()" style="background:#1473e6; color:#fff; border:none; padding:10px 24px; border-radius:6px; cursor:pointer; font-size:14px; font-weight:600;">Einstellungen speichern</button>
+        </div>
+    </div>
+
     <!-- EmailJS SDK for 2FA -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <!-- Inline SHA-256 shim (replaces CryptoJS CDN) -->
@@ -499,7 +558,7 @@
         }
     };
     </script>
-    <script src="/admin.js?v=1775593138636"></script>
+    <script src="/admin.js?v=20260411D" charset="utf-8"></script>
 <div id="__stat_stubs" style="display:none"><span id="statVideos"></span><span id="statCategories"></span><span id="statLastChange"></span><span id="statLastChangeTime"></span><span id="statDeployStatus"></span><span id="statDeployTime"></span></div>
 <script>document.write('<scr'+'ipt src="/upload.js?v='+Date.now()+'"><\/scr'+'ipt>')</script>
 <script>
@@ -522,7 +581,7 @@
               var hk=document.getElementById('videoModalHoverKey'); if(hk) hk.value=res.hoverKey||'';
               var vid=document.getElementById('videoModalVideoId'); if(vid) vid.value=res.videoId||'';
         if (thumbKey) thumbKey.value = res.thumbKey; var tu=document.getElementById("videoModalThumbnail"); if(tu&&res.thumbKey){tu.value="https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/"+res.thumbKey;}
-        status.textContent = "Upload fertig — speichere & publiziere…"; try{ var ti=document.getElementById("videoModalTitle"); if(ti && !ti.value) ti.value = f.name.replace(/\.[^.]+$/,""); var ds=document.getElementById("videoModalDescription"); if(ds && !ds.value) ds.value=ti?ti.value:""; if(window.admin && admin.saveVideo){ admin.saveVideo(); } status.textContent="Gespeichert. Publiziere zu GitHub…"; if(window.admin && admin.publishToGitHub){ await admin.publishToGitHub(); } status.textContent="Fertig! Live in ~1-2 Min via Cloudflare Pages."; }catch(e2){ status.textContent="Auto-Publish Fehler: "+e2.message; }
+        status.textContent = "Upload fertig â speichere & publiziereâ¦"; try{ var ti=document.getElementById("videoModalTitle"); if(ti && !ti.value) ti.value = f.name.replace(/\.[^.]+$/,""); var ds=document.getElementById("videoModalDescription"); if(ds && !ds.value) ds.value=ti?ti.value:""; if(window.admin && admin.saveVideo){ admin.saveVideo(); } status.textContent="Gespeichert. Publiziere zu GitHubâ¦"; if(window.admin && admin.publishToGitHub){ await admin.publishToGitHub(); } status.textContent="Fertig! Live in ~1-2 Min via Cloudflare Pages."; }catch(e2){ status.textContent="Auto-Publish Fehler: "+e2.message; }
       } catch (err) {
         status.textContent = "Fehler: " + err.message;
       }
@@ -569,7 +628,7 @@
 <button id="batchReprocessBtn" type="button" style="position:fixed;bottom:20px;right:20px;z-index:9999;padding:12px 18px;border-radius:8px;background:#1473e6;color:#fff;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.4);font-weight:600;">Vorschauen neu generieren</button>
 <div id="batchReprocessModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:10000;overflow:auto;padding:40px;">
 <div style="max-width:760px;margin:0 auto;background:#1e1e1e;border-radius:12px;padding:28px;color:#eee;font-family:system-ui;">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="margin:0;font-size:20px;">Preview-Pipeline für bestehende Videos</h2><button onclick="document.getElementById('batchReprocessModal').style.display='none'" style="background:#333;border:none;color:#ccc;padding:6px 12px;border-radius:4px;cursor:pointer;">Schließen</button></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="margin:0;font-size:20px;">Preview-Pipeline für bestehende Videos</h2><button onclick="document.getElementById('batchReprocessModal').style.display='none'" style="background:#333;border:none;color:#ccc;padding:6px 12px;border-radius:4px;cursor:pointer;">SchlieÃen</button></div>
 <p style="color:#aaa;font-size:14px;margin:0 0 18px;">Wähle pro Video die <b>originale</b> Videodatei nochmal aus. Es wird automatisch ein 480p Preview + 360p Hover-Loop mit Wasserzeichen erzeugt und hochgeladen. Das Originalvideo in R2 wird dabei <b>nicht</b> erneut hochgeladen.</p>
 <div id="batchReprocessList"></div>
 <div style="margin-top:20px;display:flex;gap:10px;"><button id="batchReprocessPublish" style="padding:10px 18px;background:#16a34a;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;">Publish to GitHub</button></div>
@@ -619,6 +678,12 @@ document.addEventListener("change", async function(e){
 })();
 </script>
 
-    <script src="/admin-articles.js?v=20260411FIX2"></script>
+    <script>
+(function() {
+  var s = document.createElement("script");
+  s.charset = "utf-8"; s.src = "/admin-articles.js?v=20260411FINAL" + Date.now();
+  document.body.appendChild(s);
+})();
+</script>
 </body>
 </html>
