@@ -26,15 +26,9 @@ const relatedArticles = (article.internalLinks || [])
 const heroImage = article.heroImage || '/images/making-of/making-of-01.jpg';
 const inlineImages = article.inlineImages || [];
 
-// Matching videos (read from public/data at build time)
-import { readFileSync } from 'node:fs';
-let sidebarVideos = [];
-try {
-  const raw = readFileSync('public/data/videos.json', 'utf-8');
-  sidebarVideos = JSON.parse(raw).slice(0, 3);
-} catch (e) {
-  sidebarVideos = [];
-}
+// Matching videos
+import videosData from '../../data/videos.json';
+const sidebarVideos = (videosData || []).slice(0, 3);
 
 // Build TOC from sections
 const toc = (article.sections || []).map((s, i) => ({
