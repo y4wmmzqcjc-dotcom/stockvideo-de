@@ -511,105 +511,65 @@ var mediaModule = {
 
             // ===== DASHBOARD =====
         updateDashboard() {
-            this.loadVideos();
-            this.loadCategories();
-            
-            // Gather stats
-            const articles = JSON.parse(localStorage.getItem('adminArticles') || '[]');
-            const mediaItems = JSON.parse(localStorage.getItem('mediaItems') || '[]');
-            const totalVideos = this.videos.length;
-            const totalCats = this.categories.length;
-            const totalArticles = articles.length;
-            const totalMedia = mediaItems.length;
-            const publishedArticles = articles.filter(a => a.status === 'published').length;
-            const draftArticles = articles.filter(a => a.status === 'draft').length;
-            
-            // Calculate R2 storage from media items (size strings like "2.4 MB")
-            let totalBytes = 0;
-            mediaItems.forEach(m => {
-                if (!m.size) return;
-                const s = m.size.toString();
-                const num = parseFloat(s);
-                if (s.includes('GB')) totalBytes += num * 1073741824;
-                else if (s.includes('MB')) totalBytes += num * 1048576;
-                else if (s.includes('KB')) totalBytes += num * 1024;
-                else totalBytes += num;
-            });
-            const usedGB = (totalBytes / 1073741824).toFixed(2);
-            const freeGB = 10;
-            const pct = Math.min(100, (totalBytes / (freeGB * 1073741824)) * 100).toFixed(1);
-            const overageGB = Math.max(0, parseFloat(usedGB) - freeGB);
-            const monthlyCost = (overageGB * 0.015).toFixed(2);
-            const barColor = pct > 80 ? '#ff3b30' : pct > 50 ? '#ffcc00' : '#34c759';
-            
-            const el = document.getElementById('dashboardContent');
-            if (!el) return;
-            
-            el.innerHTML = `
-            <div style="padding:24px">
-                <h2 style="color:#fff;margin:0 0 24px;font-size:22px">Dashboard</h2>
-                
-                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px">
-                    <div style="background:linear-gradient(135deg,rgba(0,212,255,0.1),rgba(0,153,255,0.05));padding:20px;border-radius:12px;border:1px solid rgba(0,212,255,0.2)">
-                        <div style="color:#0099ff;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Videos</div>
-                        <div style="color:#fff;font-size:36px;font-weight:700">${totalVideos}</div>
-                    </div>
-                    <div style="background:linear-gradient(135deg,rgba(52,199,89,0.1),rgba(52,199,89,0.05));padding:20px;border-radius:12px;border:1px solid rgba(52,199,89,0.2)">
-                        <div style="color:#34c759;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Kategorien</div>
-                        <div style="color:#fff;font-size:36px;font-weight:700">${totalCats}</div>
-                    </div>
-                    <div style="background:linear-gradient(135deg,rgba(255,204,0,0.1),rgba(255,204,0,0.05));padding:20px;border-radius:12px;border:1px solid rgba(255,204,0,0.2)">
-                        <div style="color:#ffcc00;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Artikel</div>
-                        <div style="color:#fff;font-size:36px;font-weight:700">${totalArticles}</div>
-                        <div style="color:#888;font-size:11px;margin-top:4px">${publishedArticles} veröffentlicht · ${draftArticles} Entwürfe</div>
-                    </div>
-                    <div style="background:linear-gradient(135deg,rgba(175,82,222,0.1),rgba(175,82,222,0.05));padding:20px;border-radius:12px;border:1px solid rgba(175,82,222,0.2)">
-                        <div style="color:#af52de;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Medien</div>
-                        <div style="color:#fff;font-size:36px;font-weight:700">${totalMedia}</div>
-                    </div>
-                </div>
-                
-                <div style="background:rgba(255,255,255,0.03);padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);margin-bottom:24px">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-                        <div style="color:#fff;font-weight:600">Cloudflare R2 Speicher</div>
-                        <div style="color:#888;font-size:13px">${usedGB} GB / ${freeGB} GB</div>
-                    </div>
-                    <div style="background:rgba(0,0,0,0.3);height:12px;border-radius:6px;overflow:hidden;margin-bottom:12px">
-                        <div style="height:100%;background:${barColor};border-radius:6px;transition:width 0.5s;width:${pct}%"></div>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;font-size:12px">
-                        <span style="color:#888">${pct}% belegt</span>
-                        <span style="color:${overageGB > 0 ? '#ff3b30' : '#34c759'}">${overageGB > 0 ? 'Kosten: $' + monthlyCost + '/Monat ($0.015/GB)' : 'Im kostenlosen Kontingent'}</span>
-                    </div>
-                </div>
-                
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-                    <div style="background:rgba(255,255,255,0.03);padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.08)">
-                        <div style="color:#fff;font-weight:600;margin-bottom:12px">Letzte Änderung</div>
-                        <div id="statLastChange" style="color:#0099ff;font-size:18px">–</div>
-                        <div id="statLastChangeTime" style="color:#888;font-size:12px;margin-top:4px"></div>
-                    </div>
-                    <div style="background:rgba(255,255,255,0.03);padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.08)">
-                        <div style="color:#fff;font-weight:600;margin-bottom:12px">Deploy Status</div>
-                        <div id="statDeployStatus" style="color:#0099ff;font-size:18px">...</div>
-                        <div id="statDeployTime" style="color:#888;font-size:12px;margin-top:4px"></div>
-                    </div>
-                </div>
-                
-                ${articles.length > 0 ? '<div style="background:rgba(255,255,255,0.03);padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);margin-top:16px"><div style="color:#fff;font-weight:600;margin-bottom:12px">Letzte Artikel</div>' + articles.slice(0,5).map(a => '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span style="color:#ccc">' + (a.title||a.seoTitle||'Ohne Titel') + '</span><span style="color:' + (a.status==='published'?'#34c759':'#ffcc00') + ';font-size:12px">' + (a.status==='published'?'Live':'Entwurf') + '</span></div>').join('') + '</div>' : ''}
-            </div>`;
-            
-            const lastChange = localStorage.getItem('adminLastChange');
-            if (lastChange) {
-                const date = new Date(lastChange);
-                document.getElementById('statLastChange').textContent = date.toLocaleDateString('de-DE');
-                document.getElementById('statLastChangeTime').textContent = date.toLocaleTimeString('de-DE');
-            }
-            
-            this.refreshDeployStatus();
-        },
+      this.loadVideos();
+      this.loadCategories();
+      const vCount = this.videos.length;
+      const cCount = this.categories.length;
+      const articles = JSON.parse(localStorage.getItem('adminArticles') || '[]');
+      const aCount = articles.length;
+      const mediaItems = JSON.parse(localStorage.getItem('mediaItems') || '[]');
+      const mCount = mediaItems.length;
+      // R2 storage calc
+      const r2UsedMB = mediaItems.reduce((sum, m) => sum + (m.size || 0), 0) / (1024*1024);
+      const r2FreeMB = 10240; // 10 GB free
+      const r2Pct = Math.min(100, (r2UsedMB / r2FreeMB * 100));
+      const r2Color = r2Pct > 90 ? '#ff3b30' : r2Pct > 70 ? '#ff9500' : '#34c759';
+      const overageMB = Math.max(0, r2UsedMB - r2FreeMB);
+      const overageCost = (overageMB / 1024 * 0.015).toFixed(4);
+      const lastDeploy = localStorage.getItem('lastDeployTime') || 'Unbekannt';
 
-            refreshDeployStatus() {
+      const dc = document.getElementById('dashboardContent');
+      if (!dc) return;
+      dc.innerHTML = '<div style="padding:24px;max-width:1100px">' +
+        '<h2 style="margin:0 0 20px;color:#fff;font-size:22px">Dashboard</h2>' +
+        '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px">' +
+          '<div style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px;text-align:center">' +
+            '<div style="font-size:32px;font-weight:700;color:#0099ff">' + vCount + '</div>' +
+            '<div style="color:#888;font-size:13px;margin-top:4px">Videos</div></div>' +
+          '<div style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px;text-align:center">' +
+            '<div style="font-size:32px;font-weight:700;color:#34c759">' + cCount + '</div>' +
+            '<div style="color:#888;font-size:13px;margin-top:4px">Kategorien</div></div>' +
+          '<div style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px;text-align:center">' +
+            '<div style="font-size:32px;font-weight:700;color:#ff9500">' + aCount + '</div>' +
+            '<div style="color:#888;font-size:13px;margin-top:4px">Artikel</div></div>' +
+          '<div style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px;text-align:center">' +
+            '<div style="font-size:32px;font-weight:700;color:#af52de">' + mCount + '</div>' +
+            '<div style="color:#888;font-size:13px;margin-top:4px">Medien</div></div>' +
+        '</div>' +
+        '<div style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px;margin-bottom:24px">' +
+          '<h3 style="margin:0 0 12px;color:#fff;font-size:16px">R2 Speicher</h3>' +
+          '<div style="background:#0d0d1a;border-radius:8px;height:24px;overflow:hidden;margin-bottom:8px">' +
+            '<div style="height:100%;width:' + r2Pct + '%;background:' + r2Color + ';border-radius:8px;transition:width 0.5s"></div></div>' +
+          '<div style="display:flex;justify-content:space-between;color:#888;font-size:13px">' +
+            '<span>' + r2UsedMB.toFixed(1) + ' MB belegt</span>' +
+            '<span>' + (r2FreeMB/1024).toFixed(0) + ' GB frei (Cloudflare R2)</span></div>' +
+          '<div style="margin-top:12px;padding:12px;background:#0d0d1a;border-radius:8px;font-size:13px;color:#888">' +
+            '<strong style="color:#fff">Kostenkalkulator:</strong> 10 GB kostenlos. Danach $0.015/GB/Monat.' +
+            (overageMB > 0 ? ' <span style="color:#ff9500">Aktuell: $' + overageCost + '/Monat Mehrkosten</span>' : ' <span style="color:#34c759">Aktuell im Free Tier</span>') +
+          '</div></div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">' +
+          '<div style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px">' +
+            '<h3 style="margin:0 0 8px;color:#fff;font-size:16px">Status</h3>' +
+            '<div style="color:#888;font-size:13px">Letztes Deploy: ' + lastDeploy + '</div></div>' +
+          '<div style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px">' +
+            '<h3 style="margin:0 0 8px;color:#fff;font-size:16px">Letzte Artikel</h3>' +
+            '<div style="color:#888;font-size:13px">' +
+            (articles.length > 0 ? articles.slice(0,3).map(function(a){return '<div style="margin-bottom:4px">' + (a.title||'Ohne Titel') + '</div>';}).join('') : 'Keine Artikel') +
+          '</div></div></div></div>';
+      this.refreshDeployStatus();
+    },
+
+    refreshDeployStatus() {
                 const settings = auth.loadSettings();
                 if (!settings.gitHub.token) {
                     document.getElementById('statDeployStatus').textContent = '\u26a0\ufe0f';
@@ -650,34 +610,37 @@ var mediaModule = {
             },
 
             renderVideosList() {
-                const container = document.getElementById('videosList');
-                if (this.videos.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon"><</div><div class="empty-state-title">Keine Videos</div><p>Erstellen Sie Ihr erstes Video</p></div>';
-                    return;
-                }
+      const container = document.getElementById('videosList');
+      const searchTerm = (this._videoSearch || '').toLowerCase();
+      const filtered = searchTerm ? this.videos.filter(function(v) {
+        return (v.title||'').toLowerCase().includes(searchTerm) || (v.category||'').toLowerCase().includes(searchTerm);
+      }) : this.videos;
 
-        const searchTerm = (this._videoSearch || '').toLowerCase();
-        const filtered = searchTerm ? this.videos.filter(v => (v.title||'').toLowerCase().includes(searchTerm) || (v.category||'').toLowerCase().includes(searchTerm)) : this.videos;
-        
-        let searchBar = '<div style="margin-bottom:16px"><input type="text" id="videoSearchInput" placeholder="Videos durchsuchen..." value="' + (this._videoSearch||'').replace(/"/g,'&quot;') + '" oninput="window.admin._videoSearch=this.value;window.admin.renderVideosList()" style="width:100%;padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#fff;font-size:14px;outline:none"><div style="margin-top:6px;font-size:12px;color:#888">' + filtered.length + ' von ' + this.videos.length + ' Videos</div></div>';
+      if (this.videos.length === 0) {
+        container.innerHTML = '<div style="text-align:center;padding:60px 20px;color:#888"><p>Keine Videos vorhanden</p></div>';
+        return;
+      }
+      let html = '<div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:12px">' +
+        '<input type="text" placeholder="Videos durchsuchen..." value="' + (this._videoSearch||'') + '" ' +
+        'oninput="admin._videoSearch=this.value;admin.renderVideosList()" ' +
+        'style="flex:1;background:#1a1a2e;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 12px;color:#fff;font-size:14px;outline:none">' +
+        '<span style="color:#888;font-size:13px">' + filtered.length + ' von ' + this.videos.length + ' Videos</span></div>';
+      
+      html += filtered.map(function(v, i) {
+        var thumbUrl = v.thumbnail || v.posterUrl || '';
+        return '<div class="video-item" style="display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer" onclick="admin.editVideo(' + i + ')">' +
+          '<div style="width:80px;height:45px;border-radius:6px;overflow:hidden;background:#1a1a2e;margin-right:12px;flex-shrink:0">' +
+          (thumbUrl ? '<img src="' + thumbUrl + '" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display=\'none\'">' : '') +
+          '</div>' +
+          '<div style="flex:1;min-width:0"><div style="color:#fff;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (v.title||'Ohne Titel') + '</div>' +
+          '<div style="color:#888;font-size:12px;margin-top:2px">' + (v.category||'Keine Kategorie') + '</div></div>' +
+          '<button onclick="event.stopPropagation();admin.deleteVideo(' + i + ')" style="background:rgba(255,59,48,0.1);color:#ff3b30;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px">Löschen</button>' +
+          '</div>';
+      }).join('');
+      container.innerHTML = html;
+    },
 
-                container.innerHTML = searchBar + filtered.map((video, idx) => `
-                    <div class="list-item">
-                        ${video.thumbnail ? `<img src="${video.thumbnail}" class="thumbnail-preview" onerror="this.style.display='none'">` : ''}
-                        <div class="list-item-content">
-                            <div class="list-item-title">${video.title}</div>
-                            <div class="list-item-meta">${video.category} \u2022 ${video.resolution} \u2022 \u20ac${video.prices.web}</div>
-                        </div>
-                        <div class="list-item-actions">
-                            <button class="button button-small button-secondary" onclick="admin.editVideo(${idx})">Bearbeiten</button>
-                            <button class="button button-small button-danger" onclick="admin.deleteVideo(${idx})">Löschen</button>
-                        </div>
-                    </div>
-                `).join('');
-            },
-
-            
-        async syncFromLive() {
+    async syncFromLive() {
           try {
             const [cr, vr] = await Promise.all([
               fetch('/data/categories.json?_='+Date.now(), { cache: 'no-store' }),
