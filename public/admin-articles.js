@@ -78,30 +78,28 @@ window.adminArticles = {
           </div>
         </div>
 
-        <div class="aa-calendar-section">
-          <h3>Redaktionskalender</h3>
-          <div class="aa-cal-nav">
-            <button onclick="adminArticles.calPrev()">&laquo;</button>
-            <span id="aa-cal-title">${this._monthName(this.calendarMonth)} ${this.calendarYear}</span>
-            <button onclick="adminArticles.calNext()">&raquo;</button>
-          </div>
-          <div class="aa-calendar" id="aa-calendar">
-            ${this._renderCalendar()}
-          </div>
-          <div class="aa-cal-legend">
-            <span class="aa-cal-dot aa-dot-green"></span> \u00d6ffentlich
-            <span class="aa-cal-dot aa-dot-yellow"></span> Geplant
-          </div>
-          <div class="aa-upcoming" id="aa-upcoming">
-            ${this._renderUpcoming()}
-          </div>
-        </div>
-      </div>
-
+        
       <div class="aa-actions-bottom">
         <button class="aa-btn aa-btn-save" onclick="adminArticles.publishToGitHub()">Alle \u00c4nderungen ver\u00f6ffentlichen</button>
       </div>
     `;
+  },
+
+  _getSeoScore(a) {
+    var score = 0;
+    if (a.keyphrase && a.keyphrase.trim()) score++;
+    if (a.seoTitle && a.seoTitle.trim()) { score++; if (a.seoTitle.length >= 50 && a.seoTitle.length <= 60) score++; }
+    if (a.metaDescription && a.metaDescription.trim()) { score++; if (a.metaDescription.length >= 150 && a.metaDescription.length <= 160) score++; }
+    if (a.internalLinks && a.internalLinks.length > 0) score++;
+    if (score >= 4) return 'green';
+    if (score >= 2) return 'yellow';
+    return 'red';
+  },
+
+  _getSeoLabel(color) {
+    if (color === 'green') return 'SEO gut';
+    if (color === 'yellow') return 'SEO teilweise';
+    return 'SEO fehlt';
   },
 
   _renderArticleRows(filter) {
@@ -130,6 +128,7 @@ window.adminArticles = {
             </div>
           </div>
           <div class="aa-row-actions">
+            <span class="aa-seo-dot aa-seo-${this._getSeoScore(a)}" title="${this._getSeoLabel(this._getSeoScore(a))}"></span>
             <label class="aa-toggle" title="\u00d6ffentlich / Entwurf">
               <input type="checkbox" ${a.status === 'published' ? 'checked' : ''} onchange="adminArticles.toggleStatus('${a.id}', this.checked)">
               <span class="aa-toggle-slider"></span>
