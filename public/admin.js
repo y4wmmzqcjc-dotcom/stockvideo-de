@@ -1,4 +1,249 @@
-// FORCE_DEFAULT_HASH: ensure admin123 login works in every browser
+
+
+// ===== MEDIENDATENBANK MODULE =====
+const mediaModule = {
+    items: [],
+    selectedIds: new Set(),
+    activeId: null,
+    currentFilter: 'alle',
+    r2Base: 'https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev',
+
+    init() {
+        this.loadItems();
+    },
+
+    loadItems() {
+        const stored = localStorage.getItem('mediaItems');
+        if (stored) {
+            try { this.items = JSON.parse(stored); return; } catch(e) {}
+        }
+        // Default demo items
+        this.items = [
+            { id:1, name:'hero-stockvideo-produktion.jpg', url:this.r2Base+'/hero-stockvideo-produktion.jpg', alt:'Professionelle Stockvideo Produktion', category:'hero', size:'2.4 MB', dims:'1920x1080', date:'2026-03-15', usedIn:['Professionelle Stockvideo Produktion'] },
+            { id:2, name:'kamera-setup-studio.jpg', url:this.r2Base+'/kamera-setup-studio.jpg', alt:'Kamera Setup im Studio', category:'artikel', size:'1.8 MB', dims:'1600x900', date:'2026-03-12', usedIn:['Professionelle Stockvideo Produktion'] },
+            { id:3, name:'hero-stockvideo-qualitaet.jpg', url:this.r2Base+'/hero-stockvideo-qualitaet.jpg', alt:'Stockvideo Qualit\u00e4t', category:'hero', size:'3.1 MB', dims:'1920x1080', date:'2026-03-10', usedIn:['Stockvideo Qualit\u00e4t'] },
+            { id:4, name:'drohne-landschaft.jpg', url:this.r2Base+'/drohne-landschaft.jpg', alt:'Drohnenaufnahme', category:'artikel', size:'4.2 MB', dims:'3840x2160', date:'2026-03-08', usedIn:['Stockvideo Qualit\u00e4t'] },
+            { id:5, name:'kategorie-natur.jpg', url:this.r2Base+'/kategorie-natur.jpg', alt:'Natur Kategorie', category:'kategorie', size:'1.2 MB', dims:'800x600', date:'2026-02-28', usedIn:[] },
+            { id:6, name:'kategorie-business.jpg', url:this.r2Base+'/kategorie-business.jpg', alt:'Business Kategorie', category:'kategorie', size:'980 KB', dims:'800x600', date:'2026-02-25', usedIn:[] },
+            { id:7, name:'video-editing-workflow.jpg', url:this.r2Base+'/video-editing-workflow.jpg', alt:'Video Editing Workflow', category:'artikel', size:'2.1 MB', dims:'1600x900', date:'2026-02-20', usedIn:['Stockvideos lizenzieren'] },
+            { id:8, name:'social-media-content.jpg', url:this.r2Base+'/social-media-content.jpg', alt:'Social Media Content', category:'artikel', size:'1.5 MB', dims:'1080x1080', date:'2026-02-15', usedIn:['Stockvideos f\u00fcr Social Media'] },
+            { id:9, name:'color-grading-example.jpg', url:this.r2Base+'/color-grading-example.jpg', alt:'Color Grading Beispiel', category:'artikel', size:'1.9 MB', dims:'1920x1080', date:'2026-02-10', usedIn:[] },
+            { id:10, name:'stabilisierung-gimbal.jpg', url:this.r2Base+'/stabilisierung-gimbal.jpg', alt:'Gimbal Stabilisierung', category:'artikel', size:'2.3 MB', dims:'1600x1067', date:'2026-02-05', usedIn:['Stockvideo Qualit\u00e4t'] }
+        ];
+    },
+
+    saveItems() {
+        localStorage.setItem('mediaItems', JSON.stringify(this.items));
+    },
+
+    render() {
+        this.loadItems();
+        const grid = document.getElementById('media-grid');
+        if (!grid) return;
+
+        let filtered = this.items;
+        const search = (document.getElementById('media-search')?.value || '').toLowerCase();
+
+        if (this.currentFilter !== 'alle') {
+            if (this.currentFilter === 'unbenutzt') {
+                filtered = filtered.filter(m => !m.usedIn || m.usedIn.length === 0);
+            } else {
+                filtered = filtered.filter(m => m.category === this.currentFilter);
+            }
+        }
+        if (search) {
+            filtered = filtered.filter(m => m.name.toLowerCase().includes(search) || m.alt.toLowerCase().includes(search));
+        }
+
+        grid.innerHTML = filtered.map(item => 
+            '<div class="media-card' + (this.selectedIds.has(item.id) ? ' selected' : '') + '" ' +
+            'onclick="mediaModule.handleClick(event,' + item.id + ')" ondblclick="mediaModule.openDetail(' + item.id + ')">' +
+            '<div class="media-card-check" onclick="event.stopPropagation();mediaModule.toggleSelect(' + item.id + ')">' +
+            (this.selectedIds.has(item.id) ? '\u2713' : '') + '</div>' +
+            '<div class="media-card-thumb"><img src="' + item.url + '" alt="' + item.alt + '" ' +
+            'onerror="this.parentElement.innerHTML=\'<div style=font-size:28px;color:#666>\ud83d\udcf7</div>\'"></div>' +
+            '<div class="media-card-info"><div class="media-card-name">' + item.name + '</div>' +
+            '<div class="media-card-meta"><span>' + item.size + '</span><span>' + 
+            (item.usedIn && item.usedIn.length > 0 ? '\u2713 Verwendet' : 'Frei') + '</span></div></div></div>'
+        ).join('');
+
+        // Stats
+        document.getElementById('media-total-count').textContent = this.items.length;
+        const used = this.items.filter(m => m.usedIn && m.usedIn.length > 0).length;
+        document.getElementById('media-used-count').textContent = used;
+        document.getElementById('media-unused-count').textContent = this.items.length - used;
+
+        // Bulk bar
+        const bar = document.getElementById('media-bulk-bar');
+        if (this.selectedIds.size > 0) {
+            bar.style.display = 'flex';
+            document.getElementById('media-selected-count').textContent = this.selectedIds.size + ' ausgew\u00e4hlt';
+        } else {
+            bar.style.display = 'none';
+        }
+    },
+
+    handleClick(event, id) {
+        if (event.shiftKey || event.metaKey || event.ctrlKey) {
+            this.toggleSelect(id);
+        } else {
+            this.openDetail(id);
+        }
+    },
+
+    toggleSelect(id) {
+        if (this.selectedIds.has(id)) this.selectedIds.delete(id); else this.selectedIds.add(id);
+        this.render();
+    },
+
+    deselectAll() {
+        this.selectedIds.clear();
+        this.render();
+    },
+
+    filter() { this.render(); },
+
+    setFilter(type, el) {
+        this.currentFilter = type;
+        document.querySelectorAll('.media-pill').forEach(p => p.classList.remove('active'));
+        if (el) el.classList.add('active');
+        this.render();
+    },
+
+    openDetail(id) {
+        this.activeId = id;
+        const item = this.items.find(m => m.id === id);
+        if (!item) return;
+
+        document.getElementById('media-detail-preview').innerHTML =
+            '<img src="' + item.url + '" alt="' + item.alt + '" onerror="this.parentElement.innerHTML=\'<div style=font-size:40px;color:#666>\ud83d\udcf7</div>\'"></' + 'img>';
+        document.getElementById('media-detail-name').value = item.name;
+        document.getElementById('media-detail-alt').value = item.alt;
+        document.getElementById('media-detail-category').value = item.category || '';
+        document.getElementById('media-detail-size').textContent = item.size;
+        document.getElementById('media-detail-dims').textContent = item.dims;
+        document.getElementById('media-detail-date').textContent = item.date;
+
+        const usageEl = document.getElementById('media-detail-usage');
+        if (item.usedIn && item.usedIn.length > 0) {
+            usageEl.innerHTML = item.usedIn.map(a => '<div style="padding:4px 0;border-bottom:1px solid #333;">\ud83d\udcc4 ' + a + '</div>').join('');
+        } else {
+            usageEl.innerHTML = '<span style="color:#666;">Nicht in Verwendung</span>';
+        }
+
+        document.getElementById('media-detail-sidebar').classList.add('active');
+    },
+
+    closeDetail() {
+        document.getElementById('media-detail-sidebar').classList.remove('active');
+        this.activeId = null;
+    },
+
+    saveDetail() {
+        if (!this.activeId) return;
+        const item = this.items.find(m => m.id === this.activeId);
+        if (!item) return;
+        item.name = document.getElementById('media-detail-name').value;
+        item.alt = document.getElementById('media-detail-alt').value;
+        item.category = document.getElementById('media-detail-category').value;
+        this.saveItems();
+        this.render();
+        admin.showAlert('mediaAlert', 'Bilddetails gespeichert', 'success');
+    },
+
+    copyUrl() {
+        if (!this.activeId) return;
+        const item = this.items.find(m => m.id === this.activeId);
+        if (!item) return;
+        navigator.clipboard.writeText(item.url).then(() => {
+            admin.showAlert('mediaAlert', 'URL kopiert', 'success');
+        });
+    },
+
+    replace(files) {
+        if (!files || !files[0] || !this.activeId) return;
+        const file = files[0];
+        const item = this.items.find(m => m.id === this.activeId);
+        if (!item) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            item.url = e.target.result;
+            item.name = file.name;
+            item.size = this.formatSize(file.size);
+            item.date = new Date().toISOString().split('T')[0];
+            const img = new Image();
+            img.onload = () => {
+                item.dims = img.width + 'x' + img.height;
+                this.saveItems();
+                this.openDetail(this.activeId);
+                this.render();
+                admin.showAlert('mediaAlert', 'Bild ersetzt', 'success');
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    },
+
+    deleteActive() {
+        if (!this.activeId) return;
+        this.items = this.items.filter(m => m.id !== this.activeId);
+        this.saveItems();
+        this.closeDetail();
+        this.render();
+        admin.showAlert('mediaAlert', 'Bild gel\u00f6scht', 'success');
+    },
+
+    bulkDelete() {
+        const count = this.selectedIds.size;
+        this.items = this.items.filter(m => !this.selectedIds.has(m.id));
+        this.selectedIds.clear();
+        this.saveItems();
+        this.render();
+        admin.showAlert('mediaAlert', count + ' Bilder gel\u00f6scht', 'success');
+    },
+
+    formatSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1048576) return (bytes / 1024).toFixed(0) + ' KB';
+        return (bytes / 1048576).toFixed(1) + ' MB';
+    },
+
+    upload(files) {
+        if (!files || files.length === 0) return;
+        let uploaded = 0;
+        const imageFiles = Array.from(files).filter(f => f.type.startsWith('image/'));
+        imageFiles.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const newId = Math.max(...this.items.map(m => m.id), 0) + 1;
+                    this.items.unshift({
+                        id: newId, name: file.name, url: e.target.result,
+                        alt: file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' '),
+                        category: '', size: this.formatSize(file.size),
+                        dims: img.width + 'x' + img.height,
+                        date: new Date().toISOString().split('T')[0], usedIn: []
+                    });
+                    uploaded++;
+                    if (uploaded === imageFiles.length) {
+                        this.saveItems();
+                        this.render();
+                        admin.showAlert('mediaAlert', uploaded + ' Bild(er) hochgeladen', 'success');
+                    }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    },
+
+    dragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); },
+    dragLeave(e) { e.currentTarget.classList.remove('drag-over'); },
+    drop(e) { e.preventDefault(); e.currentTarget.classList.remove('drag-over'); this.upload(e.dataTransfer.files); }
+};
+
+        // FORCE_DEFAULT_HASH: ensure admin123 login works in every browser
 (function(){try{var DEFAULT="240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";var cur=localStorage.getItem("adminPasswordHash");if(!cur||cur.length!==64){localStorage.setItem("adminPasswordHash",DEFAULT);}}catch(e){}})();
 
 // ========== AUTHENTICATION MODULE ==========
@@ -255,6 +500,8 @@
 
                 document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
                 event.target.closest('.nav-item').classList.add('active');
+                if (panel === 'calendar') calendarModule.render();
+                if (panel === 'media') mediaModule.render();
             },
 
             // ===== DASHBOARD =====
@@ -1115,6 +1362,8 @@
                 document.getElementById('authScreen').style.display = 'none';
                 document.getElementById('adminLayout').style.display = 'flex';
                 admin.init();
+                calendarModule.init();
+                mediaModule.init();
             } else {
                 auth.init();
             }
@@ -1150,3 +1399,136 @@
 ;(function(){function tryRender(n){if(window.admin&&typeof window.admin.updateDashboard==="function"){try{window.admin.updateDashboard()}catch(e){}}if(n>0)setTimeout(function(){tryRender(n-1)},500)}setTimeout(function(){tryRender(20)},500)})();/*ROBUST_RERENDER*/
 
 if (typeof admin !== "undefined" && admin.syncFromLive) { setTimeout(()=>admin.syncFromLive(), 500); }
+
+
+// ===== REDAKTIONSKALENDER MODULE =====
+const calendarModule = {
+    currentMonth: new Date().getMonth(),
+    currentYear: new Date().getFullYear(),
+    articles: [],
+
+    init() {
+        this.loadArticles();
+    },
+
+    loadArticles() {
+        // Load from admin.articles data (article editor's data)
+        try {
+            const stored = localStorage.getItem('adminArticles');
+            if (stored) {
+                this.articles = JSON.parse(stored);
+            }
+        } catch(e) {}
+        
+        // Also try to get from the article editor if available
+        if (typeof articleEditor !== 'undefined' && articleEditor.articles) {
+            this.articles = articleEditor.articles;
+        }
+
+        // Fallback demo data if nothing loaded
+        if (!this.articles || this.articles.length === 0) {
+            this.articles = [
+                { title: 'Professionelle Stockvideo Produktion', publishDate: '2026-03-15', status: 'published' },
+                { title: 'Stockvideo Qualit\u00e4t', publishDate: '2026-03-20', status: 'published' },
+                { title: 'Stockvideos lizenzieren', publishDate: '2026-03-25', status: 'published' },
+                { title: 'Stockvideos f\u00fcr Social Media', publishDate: '2026-04-01', status: 'published' },
+                { title: 'Stockvideo Marketing', publishDate: '2026-04-05', status: 'published' },
+                { title: 'Stockvideo Trends 2026', publishDate: '2026-04-15', status: 'scheduled' },
+                { title: 'Drohnen Stockvideos', publishDate: '2026-04-22', status: 'scheduled' },
+                { title: 'KI und Stockvideo', publishDate: '2026-05-01', status: 'draft' },
+                { title: 'Stockvideo SEO Tipps', publishDate: '2026-05-10', status: 'draft' },
+                { title: 'Stockvideo Preisgestaltung', publishDate: '2026-05-18', status: 'draft' }
+            ];
+        }
+    },
+
+    render() {
+        this.loadArticles();
+        const grid = document.getElementById('calendar-grid');
+        if (!grid) return;
+
+        const year = this.currentYear;
+        const month = this.currentMonth;
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const startDow = (firstDay.getDay() + 6) % 7; // Monday = 0
+
+        const monthNames = ['Januar','Februar','M\u00e4rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+        document.getElementById('calendar-month-title').textContent = monthNames[month] + ' ' + year;
+
+        const days = ['Mo','Di','Mi','Do','Fr','Sa','So'];
+        let html = days.map(d => '<div class="calendar-header-cell">' + d + '</div>').join('');
+
+        const today = new Date();
+        const todayStr = today.toISOString().split('T')[0];
+
+        // Previous month padding
+        const prevLast = new Date(year, month, 0).getDate();
+        for (let i = startDow - 1; i >= 0; i--) {
+            html += '<div class="calendar-cell other-month"><div class="calendar-cell-day">' + (prevLast - i) + '</div></div>';
+        }
+
+        // Current month days
+        for (let d = 1; d <= lastDay.getDate(); d++) {
+            const dateStr = year + '-' + String(month+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+            const isToday = dateStr === todayStr;
+            const dayArticles = this.articles.filter(a => a.publishDate === dateStr);
+            
+            let cellHtml = '<div class="calendar-cell' + (isToday ? ' today' : '') + '" onclick="calendarModule.selectDay(\'' + dateStr + '\')">';
+            cellHtml += '<div class="calendar-cell-day">' + d + '</div>';
+            dayArticles.forEach(a => {
+                const status = a.status || 'draft';
+                cellHtml += '<div class="calendar-article-pill status-' + status + '" title="' + a.title + '">' + a.title + '</div>';
+            });
+            cellHtml += '</div>';
+            html += cellHtml;
+        }
+
+        // Next month padding
+        const totalCells = startDow + lastDay.getDate();
+        const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+        for (let i = 1; i <= remaining; i++) {
+            html += '<div class="calendar-cell other-month"><div class="calendar-cell-day">' + i + '</div></div>';
+        }
+
+        grid.innerHTML = html;
+    },
+
+    prevMonth() {
+        this.currentMonth--;
+        if (this.currentMonth < 0) { this.currentMonth = 11; this.currentYear--; }
+        this.render();
+    },
+
+    nextMonth() {
+        this.currentMonth++;
+        if (this.currentMonth > 11) { this.currentMonth = 0; this.currentYear++; }
+        this.render();
+    },
+
+    selectDay(dateStr) {
+        const dayArticles = this.articles.filter(a => a.publishDate === dateStr);
+        const detail = document.getElementById('calendar-day-detail');
+        const titleEl = document.getElementById('calendar-detail-title');
+        const listEl = document.getElementById('calendar-detail-articles');
+
+        if (dayArticles.length === 0) {
+            detail.style.display = 'none';
+            return;
+        }
+
+        const d = new Date(dateStr);
+        const opts = { day: 'numeric', month: 'long', year: 'numeric' };
+        titleEl.textContent = d.toLocaleDateString('de-DE', opts);
+
+        listEl.innerHTML = dayArticles.map(a => {
+            const colors = { published: '#34c759', scheduled: '#007aff', draft: '#8e8e93' };
+            const labels = { published: 'Ver\u00f6ffentlicht', scheduled: 'Geplant', draft: 'Entwurf' };
+            return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #333;">' +
+                '<span style="width:8px;height:8px;border-radius:50%;background:' + (colors[a.status]||'#888') + ';flex-shrink:0;"></span>' +
+                '<div style="flex:1;"><div style="color:#fff;font-size:14px;">' + a.title + '</div>' +
+                '<div style="color:#888;font-size:12px;">' + (labels[a.status]||'Entwurf') + '</div></div></div>';
+        }).join('');
+        detail.style.display = 'block';
+    }
+};
