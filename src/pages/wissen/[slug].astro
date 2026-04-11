@@ -152,7 +152,7 @@ function getInlineImage(index) {
     </div>
   </nav>
 
-  <!-- Hero with Making-Of Photo -->
+  <!-- Hero with Making Of Photo -->
   <div class="article-hero">
     <img
       src={heroImage}
@@ -202,12 +202,12 @@ function getInlineImage(index) {
               {(section.paragraphs || []).map((p) => (
                 <p set:html={p} />
               ))}
-              {/* Inline Making-Of image after sections 1 and 3 */}
+              {/* Inline Making Of image after sections 1 and 3 */}
               {idx === 0 && getInlineImage(0) && (
                 <figure class="inline-figure">
                   <img
                     src={getInlineImage(0)}
-                    alt={`Making-Of: ${article.title}`}
+                    alt={`Making Of: ${article.title}`}
                     loading="lazy"
                     width="800"
                     height="450"
@@ -261,7 +261,7 @@ function getInlineImage(index) {
         <div class="article-share">
           <span class="share-label">Teilen:</span>
           <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href).then(()=>this.textContent='Kopiert!')">Link kopieren</button>
-          <a class="share-btn" href={`mailto:?subject=${encodeURIComponent(article.title)}&body=${encodeURIComponent(canonicalUrl)}`}>Per E-Mail</a>
+          <a class="share-btn" href={`mailto:?subject=${encodeURIComponent(article.title)}&body=${encodeURIComponent(canonicalUrl)}`}>Per Email</a>
           <a class="share-btn" href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(canonicalUrl)}&text=${encodeURIComponent(article.title)}`} target="_blank" rel="noopener noreferrer">Twitter</a>
           <a class="share-btn" href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonicalUrl)}`} target="_blank" rel="noopener noreferrer">LinkedIn</a>
         </div>
@@ -305,7 +305,7 @@ function getInlineImage(index) {
         <!-- CTA Box -->
         <div class="sidebar-box cta-box">
           <h3>Videos entdecken</h3>
-          <p>Lizenzfreie 4K-Videos für Ihr nächstes Projekt. Sofort einsatzbereit.</p>
+          <p>Lizenzfreie 4K Videos für Ihr nächstes Projekt. Sofort einsatzbereit.</p>
           <a href="/" class="cta-button">Jetzt stöbern</a>
         </div>
       </aside>
