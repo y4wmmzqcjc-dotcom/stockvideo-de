@@ -26,9 +26,15 @@ const relatedArticles = (article.internalLinks || [])
 const heroImage = article.heroImage || '/images/making-of/making-of-01.jpg';
 const inlineImages = article.inlineImages || [];
 
-// Matching videos (take first 3 from global videos.json at build time)
-import videosData from '../../../public/data/videos.json';
-const sidebarVideos = videosData.slice(0, 3);
+// Matching videos (read from public/data at build time)
+import { readFileSync } from 'node:fs';
+let sidebarVideos = [];
+try {
+  const raw = readFileSync('public/data/videos.json', 'utf-8');
+  sidebarVideos = JSON.parse(raw).slice(0, 3);
+} catch (e) {
+  sidebarVideos = [];
+}
 
 // Build TOC from sections
 const toc = (article.sections || []).map((s, i) => ({
@@ -185,7 +191,7 @@ function getInlineImage(index) {
               <span class="author-name">Timo Rende</span>
               <span class="meta-details">
                 {article.readTime} Min. Lesezeit &middot; {new Date(article.publishDate).toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' })}
-                {article.imageGeoCity && (<span> &middot; {article.imageGeoCity}
+                {article.imageGeoCity && (<span> &middot; {article.imageGeoCity}</span>)}
               </span>
             </div>
           </div>
