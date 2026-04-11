@@ -430,7 +430,7 @@ window.adminArticles = {
       .we-divider { border:none; border-top:1px solid #2a2a4a; margin:16px 0; }
     `;
     document.head.appendChild(s);
-  }
+  },
 
   _renderBlockEditor() {
     var self = this;
@@ -516,7 +516,7 @@ window.adminArticles = {
 
     ac.innerHTML = html;
     this._autoResizeAll();
-  }
+  },
 
   _renderBlock(block, idx) {
     var html = '<div class="we-block" data-idx="' + idx + '">';
@@ -549,19 +549,19 @@ window.adminArticles = {
 
     html += '</div>';
     return html;
-  }
+  },
 
   _autoResize(el) {
     el.style.height = 'auto';
     el.style.height = el.scrollHeight + 'px';
-  }
+  },
 
   _autoResizeAll() {
     var tas = document.querySelectorAll('.we-block textarea');
     for (var i = 0; i < tas.length; i++) {
       this._autoResize(tas[i]);
     }
-  }
+  },
 
   _insertBlockAt(idx) {
     var self = this;
@@ -570,7 +570,7 @@ window.adminArticles = {
     a.blocks.splice(idx, 0, {type:'text', content:''});
     this._save();
     this._renderBlockEditor();
-  }
+  },
 
   addBlock(type) {
     var self = this;
@@ -590,7 +590,7 @@ window.adminArticles = {
         if (ta) { ta.focus(); ta.scrollIntoView({behavior:'smooth',block:'center'}); }
       }
     }, 50);
-  }
+  },
 
   removeBlock(idx) {
     var self = this;
@@ -599,7 +599,7 @@ window.adminArticles = {
     a.blocks.splice(idx, 1);
     this._save();
     this._renderBlockEditor();
-  }
+  },
 
   moveBlock(idx, dir) {
     var self = this;
@@ -612,7 +612,7 @@ window.adminArticles = {
     a.blocks[newIdx] = tmp;
     this._save();
     this._renderBlockEditor();
-  }
+  },
 
   _updateBlock(idx, field, value) {
     var self = this;
@@ -620,7 +620,8 @@ window.adminArticles = {
     if (!a || !a.blocks || !a.blocks[idx]) return;
     a.blocks[idx][field] = value;
     this._save();
-  }
+  },
+
 
   _updateMeta(field, value) {
     const a = this.articles.find(x => x.id == this.currentEditId);
@@ -645,9 +646,6 @@ window.adminArticles = {
     this._save();
   },
 
-
-
-,
 
   _initBlockDragDrop() {
     var container = document.getElementById('editorBlocks');
@@ -699,8 +697,6 @@ window.adminArticles = {
     }
     this.renderList();
   },
-
-,
 
   saveArticle() {
     const a = this.articles.find(x => x.id == this.currentEditId);
