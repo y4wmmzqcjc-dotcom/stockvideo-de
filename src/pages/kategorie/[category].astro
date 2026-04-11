@@ -15,7 +15,7 @@ const { category } = Astro.params;
 const cat = categories.find(c => c.slug === category);
 const catVideos = videos.filter(v => v.category === category);
 ---
-<BaseLayout title={cat?.label || category} description={`${cat?.label} — Lizenzfreie Stock Videos bei stockvideo.de`}>
+<BaseLayout title={cat?.label || category} description={`${cat?.label}. Lizenzfreie Stock Videos bei stockvideo.de`}>
   <Topbar />
   <div class="page-content" style="max-width:var(--max-w);">
     <h1>{cat?.label}</h1>
