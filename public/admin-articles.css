@@ -170,3 +170,17 @@
 .aa-seo-green { background: #34c759; box-shadow: 0 0 6px rgba(52,199,89,0.4); }
 .aa-seo-yellow { background: #ffcc00; box-shadow: 0 0 6px rgba(255,204,0,0.4); }
 .aa-seo-red { background: #ff3b30; box-shadow: 0 0 6px rgba(255,59,48,0.4); }
+
+
+/* SEO Individual Badges */
+.aa-seo-badges { display: flex; gap: 3px; margin-right: 8px; flex-shrink: 0; }
+.aa-seo-icon { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+.aa-seo-ok { background: rgba(52,199,89,0.15); color: #34c759; }
+.aa-seo-miss { background: rgba(255,59,48,0.1); color: #ff3b30; }
+
+/* Block Editor */
+.aa-block:hover { border-color: rgba(255,255,255,0.15) !important; }
+.aa-block-handle:hover { color: #fff !important; }
+.aa-block.dragging { opacity: 0.5; border-color: #0099ff !important; }
+.aa-block textarea, .aa-block input[type="text"] { font-family: inherit; }
+.aa-block textarea:focus, .aa-block input[type="text"]:focus { background: rgba(255,255,255,0.03) !important; }
