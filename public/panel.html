@@ -240,7 +240,123 @@
             </div>
 
             <!-- Design Panel -->
-            <div id="panel-design" class="content-panel">
+            <div id="panel-articles" class="content-panel">
+        <div class="content-header">
+            <h1 class="content-title">Wissen / Artikel</h1>
+            <p class="content-subtitle">Artikel verwalten und planen</p>
+        </div>
+        <div id="articles-app">
+            <p style="color:#999; padding:20px;">Artikel werden geladen...</p>
+        </div>
+    </div>
+
+    <!-- Calendar Panel (Redaktionskalender) -->
+    <div id="panel-calendar" class="content-panel">
+        <div class="content-header">
+            <h1 class="content-title">Redaktionskalender</h1>
+            <p class="content-subtitle">Artikel planen und Veröffentlichungen im Überblick</p>
+        </div>
+        <div class="calendar-controls">
+            <button class="btn btn-secondary" onclick="calendarModule.prevMonth()">&larr; Zurück</button>
+            <h2 id="calendar-month-title" style="margin:0;font-size:18px;color:#fff;"></h2>
+            <button class="btn btn-secondary" onclick="calendarModule.nextMonth()">Weiter &rarr;</button>
+        </div>
+        <div class="calendar-legend">
+            <span class="legend-item"><span class="legend-dot" style="background:#34c759;"></span> Veröffentlicht</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#007aff;"></span> Geplant</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#8e8e93;"></span> Entwurf</span>
+        </div>
+        <div class="calendar-grid" id="calendar-grid"></div>
+        <div id="calendar-day-detail" class="calendar-day-detail" style="display:none;">
+            <h3 id="calendar-detail-title" style="color:#fff;margin:0 0 12px 0;"></h3>
+            <div id="calendar-detail-articles"></div>
+        </div>
+    </div>
+
+    <!-- Media Panel (Mediendatenbank) -->
+    <div id="panel-media" class="content-panel">
+        <div class="content-header">
+            <h1 class="content-title">Mediendatenbank</h1>
+            <p class="content-subtitle">Bilder organisieren, hochladen und in Artikel einbinden</p>
+        </div>
+        <div class="media-dropzone" id="media-dropzone" ondragover="mediaModule.dragOver(event)" ondragleave="mediaModule.dragLeave(event)" ondrop="mediaModule.drop(event)" onclick="document.getElementById('media-file-input').click()">
+            <div class="media-dropzone-icon">📷</div>
+            <div class="media-dropzone-text">Bilder hierher ziehen oder klicken zum Hochladen</div>
+            <div class="media-dropzone-hint">JPG, PNG, WebP, SVG — max. 10 MB pro Datei</div>
+            <input type="file" id="media-file-input" multiple accept="image/*" style="display:none;" onchange="mediaModule.upload(this.files)">
+        </div>
+        <div class="media-stats">
+            <div class="media-stat"><div class="media-stat-value" id="media-total-count">0</div><div class="media-stat-label">Bilder gesamt</div></div>
+            <div class="media-stat"><div class="media-stat-value" id="media-used-count">0</div><div class="media-stat-label">In Artikeln verwendet</div></div>
+            <div class="media-stat"><div class="media-stat-value" id="media-unused-count">0</div><div class="media-stat-label">Nicht verwendet</div></div>
+            <div class="media-stat"><div class="media-stat-value" id="media-storage">0 MB</div><div class="media-stat-label">Speicher belegt</div></div>
+        </div>
+        <div class="media-toolbar">
+            <div class="media-search-wrap">
+                <input type="text" class="form-input" id="media-search" placeholder="Bilder suchen..." oninput="mediaModule.filter()">
+            </div>
+            <div class="media-filter-pills">
+                <button class="media-pill active" onclick="mediaModule.setFilter('alle', this)">Alle</button>
+                <button class="media-pill" onclick="mediaModule.setFilter('artikel', this)">Artikel</button>
+                <button class="media-pill" onclick="mediaModule.setFilter('hero', this)">Hero</button>
+                <button class="media-pill" onclick="mediaModule.setFilter('kategorie', this)">Kategorie</button>
+                <button class="media-pill" onclick="mediaModule.setFilter('unbenutzt', this)">Unbenutzt</button>
+            </div>
+        </div>
+        <div class="media-bulk-bar" id="media-bulk-bar" style="display:none;">
+            <span id="media-selected-count">0 ausgewählt</span>
+            <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);" onclick="mediaModule.bulkDelete()">Ausgewählte löschen</button>
+            <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);" onclick="mediaModule.deselectAll()">Auswahl aufheben</button>
+        </div>
+        <div class="media-grid" id="media-grid"></div>
+    </div>
+
+    <!-- Media Detail Sidebar -->
+    <div class="media-detail-sidebar" id="media-detail-sidebar" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 style="font-size:16px;font-weight:600;color:#fff;">Bilddetails</h3>
+            <button class="btn btn-sm btn-secondary" onclick="mediaModule.closeDetail()">✕</button>
+        </div>
+        <div class="media-detail-preview" id="media-detail-preview"></div>
+        <div class="media-detail-actions">
+            <button class="btn btn-sm btn-primary" onclick="mediaModule.copyUrl()">URL kopieren</button>
+            <label class="btn btn-sm btn-secondary" style="cursor:pointer;margin:0;">
+                Ersetzen <input type="file" accept="image/*" style="display:none;" onchange="mediaModule.replace(this.files)">
+            </label>
+            <button class="btn btn-sm" style="background:#ff3b30;color:#fff;" onclick="mediaModule.deleteActive()">Löschen</button>
+        </div>
+        <div style="margin-top:16px;">
+            <label class="form-label">Dateiname</label>
+            <input type="text" class="form-input" id="media-detail-name">
+        </div>
+        <div style="margin-top:12px;">
+            <label class="form-label">Alt Text (SEO)</label>
+            <input type="text" class="form-input" id="media-detail-alt" placeholder="Bildbeschreibung für Suchmaschinen">
+        </div>
+        <div style="margin-top:12px;">
+            <label class="form-label">Kategorie</label>
+            <select class="form-input" id="media-detail-category">
+                <option value="">Keine</option>
+                <option value="artikel">Artikel-Bild</option>
+                <option value="hero">Hero-Bild</option>
+                <option value="kategorie">Kategorie-Bild</option>
+                <option value="sonstiges">Sonstiges</option>
+            </select>
+        </div>
+        <div style="margin-top:12px;">
+            <label class="form-label">Verwendet in</label>
+            <div id="media-detail-usage" style="font-size:12px;color:#999;">—</div>
+        </div>
+        <div style="display:flex;gap:12px;font-size:11px;color:#666;margin-top:12px;">
+            <span id="media-detail-size">—</span>
+            <span id="media-detail-dims">—</span>
+            <span id="media-detail-date">—</span>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:16px;" onclick="mediaModule.saveDetail()">Änderungen speichern</button>
+    </div>
+
+    <!-- Settings Panel (Einstellungen) -->
+    <div id="panel-design" class="content-panel">
                 <div class="content-header">
                     <h1 class="content-title">Design-Verwaltung</h1>
                     <p class="content-subtitle">CSS-Variablen und Design anpassen</p>
@@ -384,122 +500,6 @@
 
     
     <!-- Articles Panel (Wissen / Artikel) -->
-    <div id="panel-articles" class="content-panel">
-        <div class="content-header">
-            <h1 class="content-title">Wissen / Artikel</h1>
-            <p class="content-subtitle">Artikel verwalten und planen</p>
-        </div>
-        <div id="articles-app">
-            <p style="color:#999; padding:20px;">Artikel werden geladen...</p>
-        </div>
-    </div>
-
-    <!-- Calendar Panel (Redaktionskalender) -->
-    <div id="panel-calendar" class="content-panel">
-        <div class="content-header">
-            <h1 class="content-title">Redaktionskalender</h1>
-            <p class="content-subtitle">Artikel planen und Veröffentlichungen im Überblick</p>
-        </div>
-        <div class="calendar-controls">
-            <button class="btn btn-secondary" onclick="calendarModule.prevMonth()">&larr; Zurück</button>
-            <h2 id="calendar-month-title" style="margin:0;font-size:18px;color:#fff;"></h2>
-            <button class="btn btn-secondary" onclick="calendarModule.nextMonth()">Weiter &rarr;</button>
-        </div>
-        <div class="calendar-legend">
-            <span class="legend-item"><span class="legend-dot" style="background:#34c759;"></span> Veröffentlicht</span>
-            <span class="legend-item"><span class="legend-dot" style="background:#007aff;"></span> Geplant</span>
-            <span class="legend-item"><span class="legend-dot" style="background:#8e8e93;"></span> Entwurf</span>
-        </div>
-        <div class="calendar-grid" id="calendar-grid"></div>
-        <div id="calendar-day-detail" class="calendar-day-detail" style="display:none;">
-            <h3 id="calendar-detail-title" style="color:#fff;margin:0 0 12px 0;"></h3>
-            <div id="calendar-detail-articles"></div>
-        </div>
-    </div>
-
-    <!-- Media Panel (Mediendatenbank) -->
-    <div id="panel-media" class="content-panel">
-        <div class="content-header">
-            <h1 class="content-title">Mediendatenbank</h1>
-            <p class="content-subtitle">Bilder organisieren, hochladen und in Artikel einbinden</p>
-        </div>
-        <div class="media-dropzone" id="media-dropzone" ondragover="mediaModule.dragOver(event)" ondragleave="mediaModule.dragLeave(event)" ondrop="mediaModule.drop(event)" onclick="document.getElementById('media-file-input').click()">
-            <div class="media-dropzone-icon">📷</div>
-            <div class="media-dropzone-text">Bilder hierher ziehen oder klicken zum Hochladen</div>
-            <div class="media-dropzone-hint">JPG, PNG, WebP, SVG — max. 10 MB pro Datei</div>
-            <input type="file" id="media-file-input" multiple accept="image/*" style="display:none;" onchange="mediaModule.upload(this.files)">
-        </div>
-        <div class="media-stats">
-            <div class="media-stat"><div class="media-stat-value" id="media-total-count">0</div><div class="media-stat-label">Bilder gesamt</div></div>
-            <div class="media-stat"><div class="media-stat-value" id="media-used-count">0</div><div class="media-stat-label">In Artikeln verwendet</div></div>
-            <div class="media-stat"><div class="media-stat-value" id="media-unused-count">0</div><div class="media-stat-label">Nicht verwendet</div></div>
-            <div class="media-stat"><div class="media-stat-value" id="media-storage">0 MB</div><div class="media-stat-label">Speicher belegt</div></div>
-        </div>
-        <div class="media-toolbar">
-            <div class="media-search-wrap">
-                <input type="text" class="form-input" id="media-search" placeholder="Bilder suchen..." oninput="mediaModule.filter()">
-            </div>
-            <div class="media-filter-pills">
-                <button class="media-pill active" onclick="mediaModule.setFilter('alle', this)">Alle</button>
-                <button class="media-pill" onclick="mediaModule.setFilter('artikel', this)">Artikel</button>
-                <button class="media-pill" onclick="mediaModule.setFilter('hero', this)">Hero</button>
-                <button class="media-pill" onclick="mediaModule.setFilter('kategorie', this)">Kategorie</button>
-                <button class="media-pill" onclick="mediaModule.setFilter('unbenutzt', this)">Unbenutzt</button>
-            </div>
-        </div>
-        <div class="media-bulk-bar" id="media-bulk-bar" style="display:none;">
-            <span id="media-selected-count">0 ausgewählt</span>
-            <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);" onclick="mediaModule.bulkDelete()">Ausgewählte löschen</button>
-            <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);" onclick="mediaModule.deselectAll()">Auswahl aufheben</button>
-        </div>
-        <div class="media-grid" id="media-grid"></div>
-    </div>
-
-    <!-- Media Detail Sidebar -->
-    <div class="media-detail-sidebar" id="media-detail-sidebar" style="display:none;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-            <h3 style="font-size:16px;font-weight:600;color:#fff;">Bilddetails</h3>
-            <button class="btn btn-sm btn-secondary" onclick="mediaModule.closeDetail()">✕</button>
-        </div>
-        <div class="media-detail-preview" id="media-detail-preview"></div>
-        <div class="media-detail-actions">
-            <button class="btn btn-sm btn-primary" onclick="mediaModule.copyUrl()">URL kopieren</button>
-            <label class="btn btn-sm btn-secondary" style="cursor:pointer;margin:0;">
-                Ersetzen <input type="file" accept="image/*" style="display:none;" onchange="mediaModule.replace(this.files)">
-            </label>
-            <button class="btn btn-sm" style="background:#ff3b30;color:#fff;" onclick="mediaModule.deleteActive()">Löschen</button>
-        </div>
-        <div style="margin-top:16px;">
-            <label class="form-label">Dateiname</label>
-            <input type="text" class="form-input" id="media-detail-name">
-        </div>
-        <div style="margin-top:12px;">
-            <label class="form-label">Alt Text (SEO)</label>
-            <input type="text" class="form-input" id="media-detail-alt" placeholder="Bildbeschreibung für Suchmaschinen">
-        </div>
-        <div style="margin-top:12px;">
-            <label class="form-label">Kategorie</label>
-            <select class="form-input" id="media-detail-category">
-                <option value="">Keine</option>
-                <option value="artikel">Artikel-Bild</option>
-                <option value="hero">Hero-Bild</option>
-                <option value="kategorie">Kategorie-Bild</option>
-                <option value="sonstiges">Sonstiges</option>
-            </select>
-        </div>
-        <div style="margin-top:12px;">
-            <label class="form-label">Verwendet in</label>
-            <div id="media-detail-usage" style="font-size:12px;color:#999;">—</div>
-        </div>
-        <div style="display:flex;gap:12px;font-size:11px;color:#666;margin-top:12px;">
-            <span id="media-detail-size">—</span>
-            <span id="media-detail-dims">—</span>
-            <span id="media-detail-date">—</span>
-        </div>
-        <button class="btn btn-primary" style="width:100%;margin-top:16px;" onclick="mediaModule.saveDetail()">Änderungen speichern</button>
-    </div>
-
-    <!-- Settings Panel (Einstellungen) -->
     <div id="panel-settings" class="content-panel">
         <div class="content-header">
             <h1 class="content-title">Einstellungen</h1>
