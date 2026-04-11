@@ -332,6 +332,14 @@ window.adminArticles = {
     const a = this.articles.find(x => x.id === id);
     if (!a) return;
     this.currentEditId = id;
+    // Show editor container
+    var panel = document.getElementById('panel-articles');
+    if (panel) {
+      for (var i = 0; i < panel.children.length; i++) panel.children[i].style.display = 'none';
+      var ac = document.getElementById('articleContent');
+      if (!ac) { ac = document.createElement('div'); ac.id = 'articleContent'; ac.style.padding = '20px'; ac.style.height = '100%'; ac.style.overflowY = 'auto'; panel.appendChild(ac); }
+      ac.style.display = 'block';
+    }
     if (!a.blocks || !a.blocks.length) {
       a.blocks = [];
       if (a.sections && a.sections.length) {
@@ -631,6 +639,12 @@ window.adminArticles = {
 
   closeEditor() {
     this.currentEditId = null;
+    var panel = document.getElementById('panel-articles');
+    if (panel) {
+      var ac = document.getElementById('articleContent');
+      if (ac) ac.remove();
+      for (var i = 0; i < panel.children.length; i++) panel.children[i].style.display = '';
+    }
     this.renderList();
   },
 
