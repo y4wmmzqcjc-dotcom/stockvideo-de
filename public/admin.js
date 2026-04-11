@@ -352,7 +352,7 @@ var mediaModule = {
                 document.getElementById('otpEmail').textContent = email;
 
                 if (typeof emailjs === 'undefined') {
-                    // EmailJS not loaded – show OTP in console for dev/testing
+                    // EmailJS not loaded \u2013 show OTP in console for dev/testing
                     console.warn('EmailJS not loaded. OTP code:', otp);
                     document.getElementById('authStep1').style.display = 'none';
                     document.getElementById('authStep2').style.display = 'block';
@@ -409,7 +409,7 @@ var mediaModule = {
                         this.showLockout();
                         this.startLockoutTimer();
                     } else {
-                        alert.innerHTML = '<div class="alert alert-error">Ungültiger Code. Bitte versuchen Sie es erneut.</div>';
+                        alert.innerHTML = '<div class="alert alert-error">Ung\u00fcltiger Code. Bitte versuchen Sie es erneut.</div>';
                     }
                 }
             },
@@ -532,7 +532,7 @@ var mediaModule = {
             refreshDeployStatus() {
                 const settings = auth.loadSettings();
                 if (!settings.gitHub.token) {
-                    document.getElementById('statDeployStatus').textContent = '⚠️';
+                    document.getElementById('statDeployStatus').textContent = '\u26a0\ufe0f';
                     document.getElementById('statDeployTime').textContent = 'GitHub nicht konfiguriert';
                     return;
                 }
@@ -548,7 +548,7 @@ var mediaModule = {
                 .then(res => res.json())
                 .then(data => {
                     if (data.commit) {
-                        document.getElementById('statDeployStatus').textContent = '✅';
+                        document.getElementById('statDeployStatus').textContent = '\u2705';
                         const date = new Date(data.commit.author.date);
                         document.getElementById('statDeployTime').textContent = date.toLocaleTimeString('de-DE');
                     } else {
@@ -557,7 +557,7 @@ var mediaModule = {
                 })
                 .catch(err => {
                     console.error('GitHub Error:', err);
-                    document.getElementById('statDeployStatus').textContent = '❌';
+                    document.getElementById('statDeployStatus').textContent = '\u274c';
                     document.getElementById('statDeployTime').textContent = 'Fehler beim Abrufen';
                 });
             },
@@ -581,11 +581,11 @@ var mediaModule = {
                         ${video.thumbnail ? `<img src="${video.thumbnail}" class="thumbnail-preview" onerror="this.style.display='none'">` : ''}
                         <div class="list-item-content">
                             <div class="list-item-title">${video.title}</div>
-                            <div class="list-item-meta">${video.category} • ${video.resolution} • €${video.prices.web}</div>
+                            <div class="list-item-meta">${video.category} \u2022 ${video.resolution} \u2022 \u20ac${video.prices.web}</div>
                         </div>
                         <div class="list-item-actions">
                             <button class="button button-small button-secondary" onclick="admin.editVideo(${idx})">Bearbeiten</button>
-                            <button class="button button-small button-danger" onclick="admin.deleteVideo(${idx})">Löschen</button>
+                            <button class="button button-small button-danger" onclick="admin.deleteVideo(${idx})">L\u00f6schen</button>
                         </div>
                     </div>
                 `).join('');
@@ -684,7 +684,7 @@ var mediaModule = {
                     .catch(() => [])
                     .then(list => {
                         const cats = (Array.isArray(list) && list.length) ? list : (this.categories || []);
-                        dropdown.innerHTML = '<option value="">-- Wählen Sie eine Kategorie --</option>' +
+                        dropdown.innerHTML = '<option value="">-- W\u00e4hlen Sie eine Kategorie --</option>' +
                             cats.map(c => '<option value="' + (c.slug || c.id) + '">' + (c.label || c.name || c.slug) + '</option>').join('');
                         if (this.currentVideo && this.currentVideo.category) dropdown.value = this.currentVideo.category;
                     });
@@ -779,12 +779,12 @@ var mediaModule = {
             },
 
             deleteVideo(idx) {
-                if (confirm('Wirklich löschen?')) {
+                if (confirm('Wirklich l\u00f6schen?')) {
                     this.videos.splice(idx, 1);
                     localStorage.setItem('adminVideos', JSON.stringify(this.videos));
                     localStorage.setItem('adminLastChange', new Date().toISOString());
                     this.loadVideos();
-                    this.showAlert('videosAlert', 'success', 'Video gelöscht');
+                    this.showAlert('videosAlert', 'success', 'Video gel\u00f6scht');
                 }
             },
 
@@ -808,14 +808,14 @@ var mediaModule = {
 
                 container.innerHTML = this.categories.map((cat, idx) => `
                     <div class="list-item">
-                        <div style="font-size: 2rem; margin-right: 1rem;">${cat.icon}</div>
+                        <div style="font-size: 2rem; margin-right: 1rem;">${cat.icon || '\u{1F4C1}'}</div>
                         <div class="list-item-content">
                             <div class="list-item-title">${cat.label}</div>
                             <div class="list-item-meta">${cat.slug}</div>
                         </div>
                         <div class="list-item-actions">
                             <button class="button button-small button-secondary" onclick="admin.editCategory(${idx})">Bearbeiten</button>
-                            <button class="button button-small button-danger" onclick="admin.deleteCategory(${idx})">Löschen</button>
+                            <button class="button button-small button-danger" onclick="admin.deleteCategory(${idx})">L\u00f6schen</button>
                         </div>
                     </div>
                 `).join('');
@@ -882,12 +882,12 @@ var mediaModule = {
             },
 
             deleteCategory(idx) {
-                if (confirm('Wirklich löschen?')) {
+                if (confirm('Wirklich l\u00f6schen?')) {
                     this.categories.splice(idx, 1);
                     localStorage.setItem('adminCategories', JSON.stringify(this.categories));
                     localStorage.setItem('adminLastChange', new Date().toISOString());
                     this.loadCategories();
-                    this.showAlert('categoriesAlert', 'success', 'Kategorie gelöscht');
+                    this.showAlert('categoriesAlert', 'success', 'Kategorie gel\u00f6scht');
                 }
             },
 
@@ -899,7 +899,7 @@ var mediaModule = {
                     features: [
                         { icon: '<', title: '', description: '' },
                         { icon: '=', title: '', description: '' },
-                        { icon: '⚡', title: '', description: '' },
+                        { icon: '\u26a1', title: '', description: '' },
                         { icon: '=', title: '', description: '' }
                     ],
                     pricing: [
@@ -959,14 +959,14 @@ var mediaModule = {
                                 <input type="text" class="form-input" value="${p.label}" placeholder="Plan-Name" data-pricing-label="${idx}">
                             </div>
                             <div>
-                                <label class="form-label">Auflösung</label>
+                                <label class="form-label">Aufl\u00f6sung</label>
                                 <input type="text" class="form-input" value="${p.resolution}" placeholder="z.B. 4K" data-pricing-resolution="${idx}">
                             </div>
                         </div>
                         <div class="form-row">
                             <div>
                                 <label class="form-label">Preis</label>
-                                <input type="text" class="form-input" value="${p.price}" placeholder="€ 99.99" data-pricing-price="${idx}">
+                                <input type="text" class="form-input" value="${p.price}" placeholder="\u20ac 99.99" data-pricing-price="${idx}">
                             </div>
                             <div style="display: flex; align-items: flex-end;">
                                 <div class="checkbox-group">
@@ -1121,7 +1121,7 @@ var mediaModule = {
             },
 
             resetDesignToDefault() {
-                if (confirm('Wirklich zurücksetzen?')) {
+                if (confirm('Wirklich zur\u00fccksetzen?')) {
                     localStorage.removeItem('adminDesignVariables');
                     location.reload();
                 }
@@ -1151,7 +1151,7 @@ var mediaModule = {
                 }
 
                 if (newPassword !== confirmPassword) {
-                    this.showAlert('settingsAlert', 'error', 'Passwörter stimmen nicht überein');
+                    this.showAlert('settingsAlert', 'error', 'Passw\u00f6rter stimmen nicht \u00fcberein');
                     return;
                 }
 
@@ -1161,7 +1161,7 @@ var mediaModule = {
                 document.getElementById('settingsNewPassword').value = '';
                 document.getElementById('settingsConfirmPassword').value = '';
 
-                this.showAlert('settingsAlert', 'success', 'Passwort geändert');
+                this.showAlert('settingsAlert', 'success', 'Passwort ge\u00e4ndert');
             },
 
             save2FASettings() {
@@ -1199,7 +1199,7 @@ var mediaModule = {
 
                 const button = event.target;
                 button.disabled = true;
-                button.textContent = 'Veröffentlichung...';
+                button.textContent = 'Ver\u00f6ffentlichung...';
 
                 const config = {
                     videos: this.videos,
@@ -1209,18 +1209,18 @@ var mediaModule = {
 
                 this.createGitHubCommit(settings, config)
                     .then(() => {
-                        this.showAlert('dashboardAlert', 'success', 'Erfolgreich veröffentlicht! Cloudflare Pages wird neu gebaut...');
+                        this.showAlert('dashboardAlert', 'success', 'Erfolgreich ver\u00f6ffentlicht! Cloudflare Pages wird neu gebaut...');
                         setTimeout(() => {
                             this.refreshDeployStatus();
                         }, 3000);
                     })
                     .catch(err => {
                         console.error('Publish Error:', err);
-                        this.showAlert('dashboardAlert', 'error', 'Fehler beim Veröffentlichen: ' + err.message);
+                        this.showAlert('dashboardAlert', 'error', 'Fehler beim Ver\u00f6ffentlichen: ' + err.message);
                     })
                     .finally(() => {
                         button.disabled = false;
-                        button.textContent = 'Veröffentlichen';
+                        button.textContent = 'Ver\u00f6ffentlichen';
                     });
             },
 
