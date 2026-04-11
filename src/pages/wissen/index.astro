@@ -85,11 +85,14 @@ const enrichedArticles = visibleArticles.map((article: Article) => ({
       {enrichedArticles.map((article) => (
         <a href={`/wissen/${article.slug}/`} class="article-card" data-category={article.category} data-title={article.title.toLowerCase()}>
           <!-- Image Area with Gradient and Emoji -->
-          <div
-            class="article-image"
-            style={`background: linear-gradient(135deg, ${article.categoryColor}40, ${article.categoryColor}10);`}
-          >
-            <span class="article-emoji">{categoryEmojis[article.category as keyof typeof categoryEmojis] || '📄'}</span>
+          <div class="article-image">
+            <img
+              src={article.heroImage}
+              alt={article.title}
+              loading="lazy"
+              width="400"
+              height="225"
+            />
           </div>
 
           <!-- Card Content -->
@@ -350,17 +353,22 @@ const enrichedArticles = visibleArticles.map((article: Article) => ({
   /* Article Image Area */
   .article-image {
     width: 100%;
-    aspect-ratio: 16 / 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, rgba(255, 107, 107, 0.25), rgba(255, 107, 107, 0.05));
+    height: 220px;
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+  }
+  .article-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s;
+  }
+  .article-card:hover .article-image img {
+    transform: scale(1.05);
   }
 
-  .article-emoji {
-    font-size: 64px;
-    line-height: 1;
-  }
+  
 
   /* Article Content */
   .article-content {
