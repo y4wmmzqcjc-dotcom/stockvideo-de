@@ -500,6 +500,10 @@ var mediaModule = {
 
                 document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
                 event.target.closest('.nav-item').classList.add('active');
+
+            // Auto-render calendar and media panels
+            if (panel === 'calendar' && typeof calendarModule !== 'undefined') calendarModule.render();
+            if (panel === 'media' && typeof mediaModule !== 'undefined') mediaModule.render();
                 if (panel === 'calendar') calendarModule.render();
                 if (panel === 'media') mediaModule.render();
             },
