@@ -62,9 +62,9 @@ var mediaModule = {
             (this.selectedIds.has(item.id) ? '\u2713' : '') + '</div>' +
             '<div class="media-card-thumb"><img src="' + item.url + '" alt="' + (item.alt||item.name) + '" loading="lazy" ' +
             'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'+
-            '<div class="media-placeholder" style="display:none;align-items:center;justify-content:center;width:100%;height:100%;background:#1a1a2e;color:#555;font-size:11px;text-align:center;padding:4px">' + (item.name||'Bild') + '</div>' +
+            '<div class="media-placeholder" style="display:none;align-items:center;justify-content:center;width:100%;height:100%;background:#1a1a2e;color:#555;font-size:11px;text-align:center;padding:4px">' + (item.name||'Bild') + '</div></div>' +
             '<div class="media-card-info"><div class="media-card-name">' + item.name + '</div>' +
-            '<div class="media-card-meta"><span>' + item.size + '</span><span>' + 
+            '<div class="media-card-meta"><span>' + item.size + '</span><span>' +
             (item.usedIn && item.usedIn.length > 0 ? '\u2713 Verwendet' : 'Frei') + '</span></div></div></div>'
         ).join('');
 
