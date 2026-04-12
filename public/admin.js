@@ -17,18 +17,28 @@ var mediaModule = {
         if (stored) {
             try { this.items = JSON.parse(stored); return; } catch(e) {}
         }
-        // Default demo items
+        // Default demo items with picsum placeholder images
         this.items = [
-            { id:1, name:'hero-stockvideo-produktion.jpg', url:this.r2Base+'/hero-stockvideo-produktion.jpg', alt:'Professionelle Stockvideo Produktion', category:'hero', size:'2.4 MB', dims:'1920x1080', date:'2026-03-15', usedIn:['Professionelle Stockvideo Produktion'] },
-            { id:2, name:'kamera-setup-studio.jpg', url:this.r2Base+'/kamera-setup-studio.jpg', alt:'Kamera Setup im Studio', category:'artikel', size:'1.8 MB', dims:'1600x900', date:'2026-03-12', usedIn:['Professionelle Stockvideo Produktion'] },
-            { id:3, name:'hero-stockvideo-qualitaet.jpg', url:this.r2Base+'/hero-stockvideo-qualitaet.jpg', alt:'Stockvideo Qualität', category:'hero', size:'3.1 MB', dims:'1920x1080', date:'2026-03-10', usedIn:['Stockvideo Qualität'] },
-            { id:4, name:'drohne-landschaft.jpg', url:this.r2Base+'/drohne-landschaft.jpg', alt:'Drohnenaufnahme', category:'artikel', size:'4.2 MB', dims:'3840x2160', date:'2026-03-08', usedIn:['Stockvideo Qualität'] },
-            { id:5, name:'kategorie-natur.jpg', url:this.r2Base+'/kategorie-natur.jpg', alt:'Natur Kategorie', category:'kategorie', size:'1.2 MB', dims:'800x600', date:'2026-02-28', usedIn:[] },
-            { id:6, name:'kategorie-business.jpg', url:this.r2Base+'/kategorie-business.jpg', alt:'Business Kategorie', category:'kategorie', size:'980 KB', dims:'800x600', date:'2026-02-25', usedIn:[] },
-            { id:7, name:'video-editing-workflow.jpg', url:this.r2Base+'/video-editing-workflow.jpg', alt:'Video Editing Workflow', category:'artikel', size:'2.1 MB', dims:'1600x900', date:'2026-02-20', usedIn:['Stockvideos lizenzieren'] },
-            { id:8, name:'social-media-content.jpg', url:this.r2Base+'/social-media-content.jpg', alt:'Social Media Content', category:'artikel', size:'1.5 MB', dims:'1080x1080', date:'2026-02-15', usedIn:['Stockvideos für Social Media'] },
-            { id:9, name:'color-grading-example.jpg', url:this.r2Base+'/color-grading-example.jpg', alt:'Color Grading Beispiel', category:'artikel', size:'1.9 MB', dims:'1920x1080', date:'2026-02-10', usedIn:[] },
-            { id:10, name:'stabilisierung-gimbal.jpg', url:this.r2Base+'/stabilisierung-gimbal.jpg', alt:'Gimbal Stabilisierung', category:'artikel', size:'2.3 MB', dims:'1600x1067', date:'2026-02-05', usedIn:['Stockvideo Qualität'] }
+            { id:1, name:'hero-stockvideo-produktion.jpg', url:'https://picsum.photos/seed/svprod/400/300', alt:'Professionelle Stockvideo Produktion', category:'hero', size:'2.4 MB', dims:'1920x1080', date:'2026-03-15', usedIn:['Professionelle Stockvideo Produktion'] },
+            { id:2, name:'kamera-setup-studio.jpg', url:'https://picsum.photos/seed/svkamera/400/300', alt:'Kamera Setup im Studio', category:'artikel', size:'1.8 MB', dims:'1600x900', date:'2026-03-12', usedIn:['Professionelle Stockvideo Produktion'] },
+            { id:3, name:'hero-stockvideo-qualitaet.jpg', url:'https://picsum.photos/seed/svqual/400/300', alt:'Stockvideo Qualität', category:'hero', size:'3.1 MB', dims:'1920x1080', date:'2026-03-10', usedIn:['Stockvideo Qualität'] },
+            { id:4, name:'drohne-landschaft.jpg', url:'https://picsum.photos/seed/svdrohne/400/300', alt:'Drohnenaufnahme', category:'artikel', size:'4.2 MB', dims:'3840x2160', date:'2026-03-08', usedIn:['Stockvideo Qualität'] },
+            { id:5, name:'kategorie-natur.jpg', url:'https://picsum.photos/seed/svnatur/400/300', alt:'Natur Kategorie', category:'kategorie', size:'1.2 MB', dims:'800x600', date:'2026-02-28', usedIn:[] },
+            { id:6, name:'kategorie-business.jpg', url:'https://picsum.photos/seed/svbiz/400/300', alt:'Business Kategorie', category:'kategorie', size:'980 KB', dims:'800x600', date:'2026-02-25', usedIn:[] },
+            { id:7, name:'video-editing-workflow.jpg', url:'https://picsum.photos/seed/svedit/400/300', alt:'Video Editing Workflow', category:'artikel', size:'2.1 MB', dims:'1600x900', date:'2026-02-20', usedIn:['Stockvideos lizenzieren'] },
+            { id:8, name:'social-media-content.jpg', url:'https://picsum.photos/seed/svsocial/400/300', alt:'Social Media Content', category:'artikel', size:'1.5 MB', dims:'1080x1080', date:'2026-02-15', usedIn:['Stockvideos für Social Media'] },
+            { id:9, name:'color-grading-example.jpg', url:'https://picsum.photos/seed/svcolor/400/300', alt:'Color Grading Beispiel', category:'artikel', size:'1.9 MB', dims:'1920x1080', date:'2026-02-10', usedIn:[] },
+            { id:10, name:'stabilisierung-gimbal.jpg', url:'https://picsum.photos/seed/svgimbal/400/300', alt:'Gimbal Stabilisierung', category:'artikel', size:'2.3 MB', dims:'1600x1067', date:'2026-02-05', usedIn:['Stockvideo Qualität'] },
+            { id:11, name:'interview-beleuchtung.jpg', url:'https://picsum.photos/seed/svlight/400/300', alt:'Interview Beleuchtung', category:'artikel', size:'1.7 MB', dims:'1920x1080', date:'2026-02-01', usedIn:['Beleuchtung für Interviews'] },
+            { id:12, name:'greenscreen-setup.jpg', url:'https://picsum.photos/seed/svgreen/400/300', alt:'Greenscreen Setup', category:'artikel', size:'2.0 MB', dims:'1600x900', date:'2026-01-28', usedIn:['Greenscreen Technik'] },
+            { id:13, name:'hero-lizenzierung.jpg', url:'https://picsum.photos/seed/svlizenz/400/300', alt:'Lizenzierung', category:'hero', size:'2.8 MB', dims:'1920x1080', date:'2026-01-25', usedIn:['Royalty-Free vs Rights-Managed'] },
+            { id:14, name:'audio-recording.jpg', url:'https://picsum.photos/seed/svaudio/400/300', alt:'Audio Recording', category:'artikel', size:'1.4 MB', dims:'1600x900', date:'2026-01-20', usedIn:['Audio für Stockvideos'] },
+            { id:15, name:'kategorie-technik.jpg', url:'https://picsum.photos/seed/svtech/400/300', alt:'Technik Kategorie', category:'kategorie', size:'1.1 MB', dims:'800x600', date:'2026-01-15', usedIn:[] },
+            { id:16, name:'slow-motion-beispiel.jpg', url:'https://picsum.photos/seed/svslow/400/300', alt:'Slow Motion Beispiel', category:'artikel', size:'3.5 MB', dims:'3840x2160', date:'2026-01-10', usedIn:['Slow Motion Techniken'] },
+            { id:17, name:'hero-trends-2026.jpg', url:'https://picsum.photos/seed/svtrend/400/300', alt:'Trends 2026', category:'hero', size:'2.6 MB', dims:'1920x1080', date:'2026-01-05', usedIn:['Stockvideo Trends 2026'] },
+            { id:18, name:'smartphone-filmmaking.jpg', url:'https://picsum.photos/seed/svphone/400/300', alt:'Smartphone Filmmaking', category:'artikel', size:'1.3 MB', dims:'1080x1080', date:'2025-12-28', usedIn:['Smartphone Video Produktion'] },
+            { id:19, name:'kategorie-lifestyle.jpg', url:'https://picsum.photos/seed/svlife/400/300', alt:'Lifestyle Kategorie', category:'kategorie', size:'950 KB', dims:'800x600', date:'2025-12-20', usedIn:[] },
+            { id:20, name:'timelapse-beispiel.jpg', url:'https://picsum.photos/seed/svtime/400/300', alt:'Timelapse Beispiel', category:'artikel', size:'4.1 MB', dims:'3840x2160', date:'2025-12-15', usedIn:['Timelapse Aufnahmen'] }
         ];
     },
 
@@ -62,7 +72,7 @@ var mediaModule = {
             (this.selectedIds.has(item.id) ? '\u2713' : '') + '</div>' +
             '<div class="media-card-thumb"><img src="' + item.url + '" alt="' + (item.alt||item.name) + '" loading="lazy" ' +
             'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'+
-            '<div class="media-placeholder" style="display:none;align-items:center;justify-content:center;width:100%;height:100%;background:#1a1a2e;color:#555;font-size:11px;text-align:center;padding:4px">' + (item.name||'Bild') + '</div></div>' +
+            '<div class="media-placeholder" style="display:none;align-items:center;justify-content:center;flex-direction:column;gap:6px;width:100%;height:100%;background:linear-gradient(135deg,#1a1a2e,#2a2a4e);color:#8888aa;font-size:11px;text-align:center;padding:8px"><span style="font-size:24px;opacity:0.5">🖼</span><span style="word-break:break-all;line-height:1.3">' + (item.name||'Bild') + '</span></div></div>' +
             '<div class="media-card-info"><div class="media-card-name">' + item.name + '</div>' +
             '<div class="media-card-meta"><span>' + item.size + '</span><span>' +
             (item.usedIn && item.usedIn.length > 0 ? '\u2713 Verwendet' : 'Frei') + '</span></div></div></div>'
