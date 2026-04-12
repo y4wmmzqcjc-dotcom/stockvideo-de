@@ -21,14 +21,14 @@ var mediaModule = {
         this.items = [
             { id:1, name:'hero-stockvideo-produktion.jpg', url:this.r2Base+'/hero-stockvideo-produktion.jpg', alt:'Professionelle Stockvideo Produktion', category:'hero', size:'2.4 MB', dims:'1920x1080', date:'2026-03-15', usedIn:['Professionelle Stockvideo Produktion'] },
             { id:2, name:'kamera-setup-studio.jpg', url:this.r2Base+'/kamera-setup-studio.jpg', alt:'Kamera Setup im Studio', category:'artikel', size:'1.8 MB', dims:'1600x900', date:'2026-03-12', usedIn:['Professionelle Stockvideo Produktion'] },
-            { id:3, name:'hero-stockvideo-qualitaet.jpg', url:this.r2Base+'/hero-stockvideo-qualitaet.jpg', alt:'Stockvideo Qualität', category:'hero', size:'3.1 MB', dims:'1920x1080', date:'2026-03-10', usedIn:['Stockvideo Qualität'] },
-            { id:4, name:'drohne-landschaft.jpg', url:this.r2Base+'/drohne-landschaft.jpg', alt:'Drohnenaufnahme', category:'artikel', size:'4.2 MB', dims:'3840x2160', date:'2026-03-08', usedIn:['Stockvideo Qualität'] },
+            { id:3, name:'hero-stockvideo-qualitaet.jpg', url:this.r2Base+'/hero-stockvideo-qualitaet.jpg', alt:'Stockvideo QualitÃ¤t', category:'hero', size:'3.1 MB', dims:'1920x1080', date:'2026-03-10', usedIn:['Stockvideo QualitÃ¤t'] },
+            { id:4, name:'drohne-landschaft.jpg', url:this.r2Base+'/drohne-landschaft.jpg', alt:'Drohnenaufnahme', category:'artikel', size:'4.2 MB', dims:'3840x2160', date:'2026-03-08', usedIn:['Stockvideo QualitÃ¤t'] },
             { id:5, name:'kategorie-natur.jpg', url:this.r2Base+'/kategorie-natur.jpg', alt:'Natur Kategorie', category:'kategorie', size:'1.2 MB', dims:'800x600', date:'2026-02-28', usedIn:[] },
             { id:6, name:'kategorie-business.jpg', url:this.r2Base+'/kategorie-business.jpg', alt:'Business Kategorie', category:'kategorie', size:'980 KB', dims:'800x600', date:'2026-02-25', usedIn:[] },
             { id:7, name:'video-editing-workflow.jpg', url:this.r2Base+'/video-editing-workflow.jpg', alt:'Video Editing Workflow', category:'artikel', size:'2.1 MB', dims:'1600x900', date:'2026-02-20', usedIn:['Stockvideos lizenzieren'] },
-            { id:8, name:'social-media-content.jpg', url:this.r2Base+'/social-media-content.jpg', alt:'Social Media Content', category:'artikel', size:'1.5 MB', dims:'1080x1080', date:'2026-02-15', usedIn:['Stockvideos für Social Media'] },
+            { id:8, name:'social-media-content.jpg', url:this.r2Base+'/social-media-content.jpg', alt:'Social Media Content', category:'artikel', size:'1.5 MB', dims:'1080x1080', date:'2026-02-15', usedIn:['Stockvideos fÃ¼r Social Media'] },
             { id:9, name:'color-grading-example.jpg', url:this.r2Base+'/color-grading-example.jpg', alt:'Color Grading Beispiel', category:'artikel', size:'1.9 MB', dims:'1920x1080', date:'2026-02-10', usedIn:[] },
-            { id:10, name:'stabilisierung-gimbal.jpg', url:this.r2Base+'/stabilisierung-gimbal.jpg', alt:'Gimbal Stabilisierung', category:'artikel', size:'2.3 MB', dims:'1600x1067', date:'2026-02-05', usedIn:['Stockvideo Qualität'] }
+            { id:10, name:'stabilisierung-gimbal.jpg', url:this.r2Base+'/stabilisierung-gimbal.jpg', alt:'Gimbal Stabilisierung', category:'artikel', size:'2.3 MB', dims:'1600x1067', date:'2026-02-05', usedIn:['Stockvideo QualitÃ¤t'] }
         ];
     },
 
@@ -78,7 +78,7 @@ var mediaModule = {
         const bar = document.getElementById('media-bulk-bar');
         if (this.selectedIds.size > 0) {
             bar.style.display = 'flex';
-            document.getElementById('media-selected-count').textContent = this.selectedIds.size + ' ausgewählt';
+            document.getElementById('media-selected-count').textContent = this.selectedIds.size + ' ausgewÃ¤hlt';
         } else {
             bar.style.display = 'none';
         }
@@ -191,7 +191,7 @@ var mediaModule = {
         this.saveItems();
         this.closeDetail();
         this.render();
-        admin.showAlert('mediaAlert', 'Bild gelöscht', 'success');
+        admin.showAlert('mediaAlert', 'Bild gelÃ¶scht', 'success');
     },
 
     bulkDelete() {
@@ -200,7 +200,7 @@ var mediaModule = {
         this.selectedIds.clear();
         this.saveItems();
         this.render();
-        admin.showAlert('mediaAlert', count + ' Bilder gelöscht', 'success');
+        admin.showAlert('mediaAlert', count + ' Bilder gelÃ¶scht', 'success');
     },
 
     formatSize(bytes) {
@@ -410,7 +410,7 @@ var mediaModule = {
                         this.showLockout();
                         this.startLockoutTimer();
                     } else {
-                        alert.innerHTML = '<div class="alert alert-error">Ungültiger Code. Bitte versuchen Sie es erneut.</div>';
+                        alert.innerHTML = '<div class="alert alert-error">UngÃ¼ltiger Code. Bitte versuchen Sie es erneut.</div>';
                     }
                 }
             },
@@ -651,7 +651,7 @@ var mediaModule = {
           '</div>' +
           '<div style="flex:1;min-width:0"><div style="color:#fff;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (v.title||'Ohne Titel') + '</div>' +
           '<div style="color:#888;font-size:12px;margin-top:2px">' + (v.category||'Keine Kategorie') + '</div></div>' +
-          '<button onclick="event.stopPropagation();admin.deleteVideo(' + origIdx + ')" style="background:rgba(255,59,48,0.1);color:#ff3b30;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px">Löschen</button>' +
+          '<button onclick="event.stopPropagation();admin.deleteVideo(' + origIdx + ')" style="background:rgba(255,59,48,0.1);color:#ff3b30;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px">Bearbeiten</button> LÃ¶schen</button>' +
           '</div>';
       }).join('');
     },
@@ -748,7 +748,7 @@ var mediaModule = {
                     .catch(() => [])
                     .then(list => {
                         const cats = (Array.isArray(list) && list.length) ? list : (this.categories || []);
-                        dropdown.innerHTML = '<option value="">-- Wählen Sie eine Kategorie --</option>' +
+                        dropdown.innerHTML = '<option value="">-- WÃ¤hlen Sie eine Kategorie --</option>' +
                             cats.map(c => '<option value="' + (c.slug || c.id) + '">' + (c.label || c.name || c.slug) + '</option>').join('');
                         if (this.currentVideo && this.currentVideo.category) dropdown.value = this.currentVideo.category;
                     });
@@ -843,12 +843,12 @@ var mediaModule = {
             },
 
             deleteVideo(idx) {
-                if (confirm('Wirklich löschen?')) {
+                if (confirm('Wirklich lÃ¶schen?')) {
                     this.videos.splice(idx, 1);
                     localStorage.setItem('adminVideos', JSON.stringify(this.videos));
                     localStorage.setItem('adminLastChange', new Date().toISOString());
                     this.loadVideos();
-                    this.showAlert('videosAlert', 'success', 'Video gelöscht');
+                    this.showAlert('videosAlert', 'success', 'Video gelÃ¶scht');
                 }
             },
 
@@ -879,7 +879,7 @@ var mediaModule = {
                         </div>
                         <div class="list-item-actions">
                             <button class="button button-small button-secondary" onclick="admin.editCategory(${idx})">Bearbeiten</button>
-                            <button class="button button-small button-danger" onclick="admin.deleteCategory(${idx})">Löschen</button>
+                            <button class="button button-small button-danger" onclick="admin.deleteCategory(${idx})">LÃ¶schen</button>
                         </div>
                     </div>
                 `).join('');
@@ -946,12 +946,12 @@ var mediaModule = {
             },
 
             deleteCategory(idx) {
-                if (confirm('Wirklich löschen?')) {
+                if (confirm('Wirklich lÃ¶schen?')) {
                     this.categories.splice(idx, 1);
                     localStorage.setItem('adminCategories', JSON.stringify(this.categories));
                     localStorage.setItem('adminLastChange', new Date().toISOString());
                     this.loadCategories();
-                    this.showAlert('categoriesAlert', 'success', 'Kategorie gelöscht');
+                    this.showAlert('categoriesAlert', 'success', 'Kategorie gelÃ¶scht');
                 }
             },
 
@@ -1023,7 +1023,7 @@ var mediaModule = {
                                 <input type="text" class="form-input" value="${p.label}" placeholder="Plan-Name" data-pricing-label="${idx}">
                             </div>
                             <div>
-                                <label class="form-label">Auflösung</label>
+                                <label class="form-label">AuflÃ¶sung</label>
                                 <input type="text" class="form-input" value="${p.resolution}" placeholder="z.B. 4K" data-pricing-resolution="${idx}">
                             </div>
                         </div>
@@ -1185,7 +1185,7 @@ var mediaModule = {
             },
 
             resetDesignToDefault() {
-                if (confirm('Wirklich zurücksetzen?')) {
+                if (confirm('Wirklich zurÃ¼cksetzen?')) {
                     localStorage.removeItem('adminDesignVariables');
                     location.reload();
                 }
@@ -1215,7 +1215,7 @@ var mediaModule = {
                 }
 
                 if (newPassword !== confirmPassword) {
-                    this.showAlert('settingsAlert', 'error', 'Passwörter stimmen nicht überein');
+                    this.showAlert('settingsAlert', 'error', 'PasswÃ¶rter stimmen nicht Ã¼berein');
                     return;
                 }
 
@@ -1225,7 +1225,7 @@ var mediaModule = {
                 document.getElementById('settingsNewPassword').value = '';
                 document.getElementById('settingsConfirmPassword').value = '';
 
-                this.showAlert('settingsAlert', 'success', 'Passwort geändert');
+                this.showAlert('settingsAlert', 'success', 'Passwort geÃ¤ndert');
             },
 
             save2FASettings() {
@@ -1263,7 +1263,7 @@ var mediaModule = {
 
                 const button = event.target;
                 button.disabled = true;
-                button.textContent = 'Veröffentlichung...';
+                button.textContent = 'VerÃ¶ffentlichung...';
 
                 const config = {
                     videos: this.videos,
@@ -1273,18 +1273,18 @@ var mediaModule = {
 
                 this.createGitHubCommit(settings, config)
                     .then(() => {
-                        this.showAlert('dashboardAlert', 'success', 'Erfolgreich veröffentlicht! Cloudflare Pages wird neu gebaut...');
+                        this.showAlert('dashboardAlert', 'success', 'Erfolgreich verÃ¶ffentlicht! Cloudflare Pages wird neu gebaut...');
                         setTimeout(() => {
                             this.refreshDeployStatus();
                         }, 3000);
                     })
                     .catch(err => {
                         console.error('Publish Error:', err);
-                        this.showAlert('dashboardAlert', 'error', 'Fehler beim Veröffentlichen: ' + err.message);
+                        this.showAlert('dashboardAlert', 'error', 'Fehler beim VerÃ¶ffentlichen: ' + err.message);
                     })
                     .finally(() => {
                         button.disabled = false;
-                        button.textContent = 'Veröffentlichen';
+                        button.textContent = 'VerÃ¶ffentlichen';
                     });
             },
 
@@ -1497,9 +1497,9 @@ var calendarModule = {
         if (!this.articles || this.articles.length === 0) {
             this.articles = [
                 { title: 'Professionelle Stockvideo Produktion', publishDate: '2026-03-15', status: 'published' },
-                { title: 'Stockvideo Qualität', publishDate: '2026-03-20', status: 'published' },
+                { title: 'Stockvideo QualitÃ¤t', publishDate: '2026-03-20', status: 'published' },
                 { title: 'Stockvideos lizenzieren', publishDate: '2026-03-25', status: 'published' },
-                { title: 'Stockvideos für Social Media', publishDate: '2026-04-01', status: 'published' },
+                { title: 'Stockvideos fÃ¼r Social Media', publishDate: '2026-04-01', status: 'published' },
                 { title: 'Stockvideo Marketing', publishDate: '2026-04-05', status: 'published' },
                 { title: 'Stockvideo Trends 2026', publishDate: '2026-04-15', status: 'scheduled' },
                 { title: 'Drohnen Stockvideos', publishDate: '2026-04-22', status: 'scheduled' },
@@ -1521,7 +1521,7 @@ var calendarModule = {
         const lastDay = new Date(year, month + 1, 0);
         const startDow = (firstDay.getDay() + 6) % 7; // Monday = 0
 
-        const monthNames = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+        const monthNames = ['Januar','Februar','MÃ¤rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
         document.getElementById('calendar-month-title').textContent = monthNames[month] + ' ' + year;
 
         const days = ['Mo','Di','Mi','Do','Fr','Sa','So'];
@@ -1591,7 +1591,7 @@ var calendarModule = {
 
         listEl.innerHTML = dayArticles.map(a => {
             const colors = { published: '#34c759', scheduled: '#007aff', draft: '#8e8e93' };
-            const labels = { published: 'Veröffentlicht', scheduled: 'Geplant', draft: 'Entwurf' };
+            const labels = { published: 'VerÃ¶ffentlicht', scheduled: 'Geplant', draft: 'Entwurf' };
             return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #333;">' +
                 '<span style="width:8px;height:8px;border-radius:50%;background:' + (colors[a.status]||'#888') + ';flex-shrink:0;"></span>' +
                 '<div style="flex:1;"><div style="color:#fff;font-size:14px;">' + a.title + '</div>' +
