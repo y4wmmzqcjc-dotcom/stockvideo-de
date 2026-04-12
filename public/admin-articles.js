@@ -13,22 +13,36 @@ window.adminArticles = {
   init() {
     const container = document.getElementById('panel-articles');
     if (!container) return;
-    // Load from localStorage or fetch
+    // Always fetch from server, use localStorage only if article count matches
     const stored = localStorage.getItem('adminArticles');
+    let localArticles = [];
     if (stored) {
-      try { this.articles = JSON.parse(stored); } catch(e) { this.articles = []; }
-      this._ensureStatusFields();
-      this.renderList();
-    } else {
-      fetch('/data/articles.json')
-        .then(r => r.json())
-        .catch(() => [])
-        .then(data => {
-          this.articles = data || [];
-          this._ensureStatusFields();
-          this.renderList();
-        });
+      try { localArticles = JSON.parse(stored); } catch(e) { localArticles = []; }
     }
+    fetch('/data/articles.json?t=' + Date.now())
+      .then(r => r.json())
+      .catch(() => [])
+      .then(serverData => {
+        const server = serverData || [];
+        if (localArticles.length > 0 && localArticles.length === server.length) {
+          // Same count: use localStorage (may have unsaved edits)
+          this.articles = localArticles;
+        } else if (server.length > 0) {
+          // Server has different count: sync from server
+          this.articles = server;
+          localStorage.setItem('adminArticles', JSON.stringify(server));
+          if (localArticles.length > 0) {
+            console.log('Articles resynced: ' + server.length + ' (was ' + localArticles.length + ')');
+          }
+        } else if (localArticles.length > 0) {
+          // Server empty but local has data: keep local
+          this.articles = localArticles;
+        } else {
+          this.articles = [];
+        }
+        this._ensureStatusFields();
+        this.renderList();
+      });
   },
 
   _ensureStatusFields() {
