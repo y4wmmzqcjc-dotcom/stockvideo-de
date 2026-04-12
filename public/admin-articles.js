@@ -1,5 +1,5 @@
 /* ============================================================
-   admin-articles.js \u2014 Wissen/Artikel-Verwaltung fÃ¼r stockvideo.de
+   admin-articles.js \u2014 Wissen/Artikel-Verwaltung für stockvideo.de
    Version 2.0 \u2014 Listenansicht, Publish/Draft, Planungskalender
    ============================================================ */
 
@@ -94,7 +94,7 @@ window.adminArticles = {
 
         
       <div class="aa-actions-bottom">
-        <button class="aa-btn aa-btn-save" onclick="adminArticles.publishToGitHub()">Alle \u00c4nderungen verÃ¶ffentlichen</button>
+        <button class="aa-btn aa-btn-save" onclick="adminArticles.publishToGitHub()">Alle \u00c4nderungen veröffentlichen</button>
       </div>
     `;
   },
@@ -163,7 +163,7 @@ window.adminArticles = {
             </label>
             <button class="aa-btn-icon" title="Planen" onclick="adminArticles.openScheduler('${a.id}')">\uD83D\uDCC5</button>
             <button class="aa-btn-icon" title="Bearbeiten" onclick="adminArticles.openEditor('${a.id}')">\u270F\uFE0F</button>
-            <button class="aa-btn-icon aa-btn-danger" title="LÃ¶schen" onclick="adminArticles.deleteArticle('${a.id}')">\uD83D\uDDD1\uFE0F</button>
+            <button class="aa-btn-icon aa-btn-danger" title="Löschen" onclick="adminArticles.deleteArticle('${a.id}')">\uD83D\uDDD1\uFE0F</button>
           </div>
         </div>`;
     }).join('');
@@ -194,10 +194,10 @@ window.adminArticles = {
     overlay.className = 'aa-overlay';
     overlay.innerHTML = `
       <div class="aa-modal">
-        <h3>VerÃ¶ffentlichung planen</h3>
+        <h3>Veröffentlichung planen</h3>
         <p class="aa-modal-title">${a.title || a.seoTitle}</p>
         <div class="aa-modal-field">
-          <label>VerÃ¶ffentlichungsdatum:</label>
+          <label>Veröffentlichungsdatum:</label>
           <input type="date" id="aa-sched-input" value="${current}" min="${new Date().toISOString().split('T')[0]}">
         </div>
         <div class="aa-modal-field">
@@ -217,7 +217,7 @@ window.adminArticles = {
     const a = this.articles.find(x => x.id == id);
     if (!a) return;
     const dateVal = document.getElementById('aa-sched-input').value;
-    if (!dateVal) { alert('Bitte Datum wÃ¤hlen'); return; }
+    if (!dateVal) { alert('Bitte Datum wählen'); return; }
     a.scheduledDate = dateVal;
     a.status = 'scheduled';
     this._save();
@@ -237,7 +237,7 @@ window.adminArticles = {
 
   /* ---------- CALENDAR ---------- */
   _monthName(m) {
-    return ['Januar','Februar','MÃ¤rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'][m];
+    return ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'][m];
   },
 
   _formatDate(d) {
@@ -295,7 +295,7 @@ window.adminArticles = {
       .sort((a, b) => a.scheduledDate.localeCompare(b.scheduledDate))
       .slice(0, 5);
     if (!upcoming.length) return '<div class="aa-upcoming-empty">Keine geplanten Artikel</div>';
-    return '<h4>NÃ¤chste geplante Artikel</h4>' + upcoming.map(a => `
+    return '<h4>Nächste geplante Artikel</h4>' + upcoming.map(a => `
       <div class="aa-upcoming-item">
         <span class="aa-upcoming-date">${this._formatDate(a.scheduledDate)}</span>
         <span class="aa-upcoming-title">${a.title || a.seoTitle}</span>
@@ -334,7 +334,7 @@ window.adminArticles = {
   deleteArticle(id) {
     const a = this.articles.find(x => x.id == id);
     if (!a) return;
-    if (!confirm('Artikel "' + (a.title || a.seoTitle) + '" wirklich lÃ¶schen?')) return;
+    if (!confirm('Artikel "' + (a.title || a.seoTitle) + '" wirklich löschen?')) return;
     this.articles = this.articles.filter(x => x.id !== id);
     this._save();
     this.renderList();
@@ -362,6 +362,33 @@ window.adminArticles = {
           if (s.paragraphs && s.paragraphs.length) { s.paragraphs.forEach(function(p) { a.blocks.push({type:'text', content:p}); }); } else if (s.text) { a.blocks.push({type:'text', content:s.text}); }
           if (s.image) a.blocks.push({type:'image', url:s.image, alt:s.imageAlt||''});
         });
+        // Insert inline images distributed between sections
+        if (a.inlineImages && a.inlineImages.length > 0) {
+          var imgIdx = 0;
+          var sectionEnds = [];
+          // Find positions after each section's text blocks
+          for (var bi = 0, secCount = 0; bi < a.blocks.length; bi++) {
+            if (a.blocks[bi].type === 'heading') { secCount++; }
+            // Mark end of each section (before next heading or at end)
+            if (bi === a.blocks.length - 1 || (a.blocks[bi+1] && a.blocks[bi+1].type === 'heading')) {
+              sectionEnds.push(bi + 1);
+            }
+          }
+          // Insert images after roughly every 2 sections
+          var interval = Math.max(1, Math.floor(sectionEnds.length / (a.inlineImages.length + 1)));
+          var insertPositions = [];
+          for (var si = interval; si < sectionEnds.length && imgIdx < a.inlineImages.length; si += interval) {
+            var pos = sectionEnds[Math.min(si, sectionEnds.length - 1)];
+            var imgFile = a.inlineImages[imgIdx];
+            var imgUrl = imgFile.startsWith('/') ? imgFile : '/images/making-of/' + imgFile;
+            insertPositions.push({pos: pos, url: imgUrl, alt: a.imageAlt || a.title || ''});
+            imgIdx++;
+          }
+          // Insert from back to front to preserve positions
+          for (var ip = insertPositions.length - 1; ip >= 0; ip--) {
+            a.blocks.splice(insertPositions[ip].pos, 0, {type:'image', url:insertPositions[ip].url, alt:insertPositions[ip].alt});
+          }
+        }
       }
       if (!a.blocks.length) {
         a.blocks.push({type:'heading', content:''});
@@ -407,6 +434,11 @@ window.adminArticles = {
       .we-bh textarea:focus { background:#fff; border-radius:4px; box-shadow:0 0 0 2px rgba(37,99,235,0.2); }
       .we-bt textarea { width:100%; font-size:16px; color:#333; border:none; background:transparent; outline:none; padding:8px; resize:none; overflow:hidden; font-family:inherit; line-height:1.7; }
       .we-bt textarea:focus { background:#fff; border-radius:4px; box-shadow:0 0 0 2px rgba(37,99,235,0.2); }
+      .we-bt .we-ce { width:100%; font-size:16px; color:#333; border:none; background:transparent; outline:none; padding:8px; min-height:1.7em; font-family:inherit; line-height:1.7; white-space:pre-wrap; word-wrap:break-word; }
+      .we-bt .we-ce:focus { background:#fff; border-radius:4px; box-shadow:0 0 0 2px rgba(37,99,235,0.2); }
+      .we-bt .we-ce:empty:before { content:attr(data-placeholder); color:#bbb; pointer-events:none; }
+      .we-bt .we-ce a { color:#2563eb; text-decoration:underline; cursor:pointer; }
+      .we-bt .we-ce a:hover { color:#1d4ed8; }
       .we-bi { padding:8px; }
       .we-bi img { max-width:100%; max-height:300px; border-radius:8px; display:block; margin:0 auto 8px; cursor:pointer; }
       .we-bi .we-bi-placeholder { width:100%; height:180px; background:#e8e8f0; border:2px dashed #ccc; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#999; font-size:14px; cursor:pointer; margin-bottom:8px; }
@@ -551,7 +583,7 @@ window.adminArticles = {
     if (block.type === 'heading') {
       html += '<div class="we-bh"><textarea rows="1" placeholder="Ueberschrift..." oninput="adminArticles._autoResize(this);adminArticles._updateBlock(' + idx + ',\'content\',this.value)">' + (block.content||'').replace(/</g,'&lt;') + '</textarea></div>';
     } else if (block.type === 'text') {
-      html += '<div class="we-bt"><textarea rows="1" placeholder="Text eingeben..." oninput="adminArticles._autoResize(this);adminArticles._updateBlock(' + idx + ',\'content\',this.value)">' + (block.content||'').replace(/</g,'&lt;') + '</textarea></div>';
+      html += '<div class="we-bt"><div contenteditable="true" class="we-ce" data-placeholder="Text eingeben..." oninput="adminArticles._updateBlock(' + idx + ',\'content\',this.innerHTML)">' + (block.content||'') + '</div></div>';
     } else if (block.type === 'image') {
       html += '<div class="we-bi">';
       if (block.url) {
@@ -762,7 +794,7 @@ window.adminArticles = {
   /* ---------- PUBLISH TO GITHUB ---------- */
   async publishToGitHub() {
     const btn = document.querySelector('.aa-btn-save');
-    if (btn) { btn.textContent = 'Wird verÃ¶ffentlicht...'; btn.disabled = true; }
+    if (btn) { btn.textContent = 'Wird veröffentlicht...'; btn.disabled = true; }
     try {
       const json = JSON.stringify(this.articles, null, 2);
       const b64 = btoa(unescape(encodeURIComponent(json)));
@@ -784,11 +816,11 @@ window.adminArticles = {
           body: JSON.stringify({ message: 'Update articles.json (public)', content: b64, sha: pubRes.sha, branch: 'main' })
         })
       ]);
-      if (btn) { btn.textContent = '\u2713 VerÃ¶ffentlicht!'; btn.style.background = '#10b981'; }
-      setTimeout(() => { if (btn) { btn.textContent = 'Alle \u00c4nderungen verÃ¶ffentlichen'; btn.disabled = false; btn.style.background = ''; } }, 3000);
+      if (btn) { btn.textContent = '\u2713 Veröffentlicht!'; btn.style.background = '#10b981'; }
+      setTimeout(() => { if (btn) { btn.textContent = 'Alle \u00c4nderungen veröffentlichen'; btn.disabled = false; btn.style.background = ''; } }, 3000);
     } catch (e) {
-      alert('Fehler beim VerÃ¶ffentlichen: ' + e.message);
-      if (btn) { btn.textContent = 'Alle \u00c4nderungen verÃ¶ffentlichen'; btn.disabled = false; }
+      alert('Fehler beim Veröffentlichen: ' + e.message);
+      if (btn) { btn.textContent = 'Alle \u00c4nderungen veröffentlichen'; btn.disabled = false; }
     }
   },
 
