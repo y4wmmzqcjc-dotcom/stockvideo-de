@@ -102,8 +102,8 @@ window.adminArticles = {
   _getSeoChecks(a) {
     return [
       { key: 'keyphrase', label: 'Keyphrase', ok: !!(a.keyphrase && a.keyphrase.trim()) },
-      { key: 'title', label: 'SEO-Titel', ok: !!(a.seoTitle && a.seoTitle.length >= 50 && a.seoTitle.length <= 60) },
-      { key: 'desc', label: 'Meta-Beschreibung', ok: !!(a.metaDescription && a.metaDescription.length >= 150 && a.metaDescription.length <= 160) },
+      { key: 'title', label: 'SEO-Titel', ok: !!(a.seoTitle && a.seoTitle.length >= 30 && a.seoTitle.length <= 70) },
+      { key: 'desc', label: 'Meta-Beschreibung', ok: !!(a.metaDescription && a.metaDescription.length >= 80 && a.metaDescription.length <= 170) },
       { key: 'links', label: 'Interne Links', ok: !!(a.internalLinks && a.internalLinks.length > 0) },
       { key: 'wiki', label: 'Wikipedia', ok: !!(a.wikipediaUrl && a.wikipediaUrl.trim()) }
     ];
@@ -437,8 +437,17 @@ window.adminArticles = {
       .we-bt .we-ce { width:100%; font-size:16px; color:#333; border:none; background:transparent; outline:none; padding:8px; min-height:1.7em; font-family:inherit; line-height:1.7; white-space:pre-wrap; word-wrap:break-word; }
       .we-bt .we-ce:focus { background:#fff; border-radius:4px; box-shadow:0 0 0 2px rgba(37,99,235,0.2); }
       .we-bt .we-ce:empty:before { content:attr(data-placeholder); color:#bbb; pointer-events:none; }
-      .we-bt .we-ce a { color:#2563eb; text-decoration:underline; cursor:pointer; }
-      .we-bt .we-ce a:hover { color:#1d4ed8; }
+      .we-bt .we-ce a { color:#2563eb; text-decoration:underline; cursor:text; pointer-events:auto; }
+      .we-bt .we-ce a:hover { color:#1d4ed8; background:rgba(37,99,235,0.08); border-radius:2px; }
+      .we-bt .we-ce a:focus, .we-bt .we-ce a::selection { background:rgba(37,99,235,0.15); }
+      .we-link-toolbar { position:absolute; background:#1e293b; border:1px solid #475569; border-radius:6px; padding:6px 10px; display:flex; align-items:center; gap:8px; z-index:100; box-shadow:0 4px 12px rgba(0,0,0,0.3); font-size:12px; color:#e2e8f0; }
+      .we-link-toolbar a.we-link-url { color:#60a5fa; text-decoration:underline; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:inline-block; }
+      .we-link-toolbar button { background:#334155; border:1px solid #475569; color:#e2e8f0; padding:3px 8px; border-radius:4px; cursor:pointer; font-size:11px; }
+      .we-link-toolbar button:hover { background:#475569; }
+      .we-link-toolbar button.we-link-remove { color:#f87171; border-color:#7f1d1d; }
+      .we-block-toolbar { display:flex; gap:4px; margin-bottom:4px; }
+      .we-block-toolbar button { background:#f1f5f9; border:1px solid #cbd5e1; color:#334155; padding:3px 8px; border-radius:4px; cursor:pointer; font-size:12px; }
+      .we-block-toolbar button:hover { background:#e2e8f0; }
       .we-bi { padding:8px; }
       .we-bi img { max-width:100%; max-height:300px; border-radius:8px; display:block; margin:0 auto 8px; cursor:pointer; }
       .we-bi .we-bi-placeholder { width:100%; height:180px; background:#e8e8f0; border:2px dashed #ccc; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#999; font-size:14px; cursor:pointer; margin-bottom:8px; }
@@ -527,8 +536,8 @@ window.adminArticles = {
     // SEO fields
     seoHtml += '<h4>SEO Einstellungen</h4>';
     seoHtml += '<div class="we-side-field"><label>Keyphrase</label><input type="text" value="' + (seo.keyphrase||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'keyphrase\',this.value)"></div>';
-    seoHtml += '<div class="we-side-field"><label>SEO-Titel</label><input type="text" value="' + (seo.seoTitle||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'seoTitle\',this.value)"><div class="we-charcount">' + (seo.seoTitle||'').length + '/60</div></div>';
-    seoHtml += '<div class="we-side-field"><label>Meta-Beschreibung</label><input type="text" value="' + (seo.metaDesc||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'metaDesc\',this.value)"><div class="we-charcount">' + (seo.metaDesc||'').length + '/160</div></div>';
+    seoHtml += '<div class="we-side-field"><label>SEO-Titel (30–70 Zeichen)</label><input type="text" value="' + (seo.seoTitle||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'seoTitle\',this.value)"><div class="we-charcount">' + (seo.seoTitle||'').length + '/70</div></div>';
+    seoHtml += '<div class="we-side-field"><label>Meta-Beschreibung (80–170 Zeichen)</label><input type="text" value="' + (seo.metaDesc||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'metaDesc\',this.value)"><div class="we-charcount">' + (seo.metaDesc||'').length + '/170</div></div>';
     seoHtml += '<div class="we-side-field"><label>Interne Links (IDs)</label><input type="text" value="' + (seo.internalLinks||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'internalLinks\',this.value)"></div>';
     seoHtml += '<div class="we-side-field"><label>Wikipedia-Link</label><input type="text" value="' + (seo.wikipedia||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'wikipedia\',this.value)"></div>';
     seoHtml += '<div class="we-side-field"><label>Kategorie</label><input type="text" value="' + (seo.category||a.category||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'category\',this.value)"></div>';
@@ -583,7 +592,9 @@ window.adminArticles = {
     if (block.type === 'heading') {
       html += '<div class="we-bh"><textarea rows="1" placeholder="Ueberschrift..." oninput="adminArticles._autoResize(this);adminArticles._updateBlock(' + idx + ',\'content\',this.value)">' + (block.content||'').replace(/</g,'&lt;') + '</textarea></div>';
     } else if (block.type === 'text') {
-      html += '<div class="we-bt"><div contenteditable="true" class="we-ce" data-placeholder="Text eingeben..." oninput="adminArticles._updateBlock(' + idx + ',\'content\',this.innerHTML)">' + (block.content||'') + '</div></div>';
+      html += '<div class="we-bt">';
+      html += '<div class="we-block-toolbar"><button onclick="adminArticles._insertLink(' + idx + ')" title="Link einf\u00fcgen/bearbeiten">🔗 Link</button><button onclick="adminArticles._toggleBold()" title="Fett"><b>F</b></button><button onclick="adminArticles._toggleItalic()" title="Kursiv"><i>K</i></button></div>';
+      html += '<div contenteditable="true" class="we-ce" data-placeholder="Text eingeben..." oninput="adminArticles._updateBlock(' + idx + ',\'content\',this.innerHTML)" onclick="adminArticles._handleCeClick(event,' + idx + ')">' + (block.content||'') + '</div></div>';
     } else if (block.type === 'image') {
       html += '<div class="we-bi">';
       if (block.url) {
@@ -676,6 +687,117 @@ window.adminArticles = {
     this._save();
   },
 
+  // --- Link editing in contenteditable ---
+  _handleCeClick(event, idx) {
+    // Prevent link navigation inside contenteditable
+    var target = event.target;
+    if (target.tagName === 'A') {
+      event.preventDefault();
+      event.stopPropagation();
+      this._showLinkToolbar(target, idx);
+      return false;
+    }
+    // Remove any existing link toolbar
+    this._removeLinkToolbar();
+  },
+
+  _showLinkToolbar(linkEl, idx) {
+    this._removeLinkToolbar();
+    var toolbar = document.createElement('div');
+    toolbar.className = 'we-link-toolbar';
+    toolbar.id = 'we-link-toolbar-active';
+    var href = linkEl.getAttribute('href') || '';
+    var text = linkEl.textContent || '';
+    toolbar.innerHTML = '<a class="we-link-url" href="' + href + '" target="_blank" title="' + href + '">' + href + '</a>' +
+      '<button onclick="adminArticles._editLink()" title="Link bearbeiten">\u270E</button>' +
+      '<button class="we-link-remove" onclick="adminArticles._removeLink()" title="Link entfernen">\u2717</button>';
+    // Position near the link
+    var rect = linkEl.getBoundingClientRect();
+    toolbar.style.position = 'fixed';
+    toolbar.style.left = rect.left + 'px';
+    toolbar.style.top = (rect.bottom + 4) + 'px';
+    document.body.appendChild(toolbar);
+    // Store reference
+    this._activeLinkEl = linkEl;
+    this._activeLinkBlockIdx = idx;
+    // Close on outside click
+    setTimeout(function() {
+      document.addEventListener('click', adminArticles._closeLinkToolbarHandler);
+    }, 50);
+  },
+
+  _closeLinkToolbarHandler(e) {
+    var tb = document.getElementById('we-link-toolbar-active');
+    if (tb && !tb.contains(e.target) && e.target.tagName !== 'A') {
+      adminArticles._removeLinkToolbar();
+    }
+  },
+
+  _removeLinkToolbar() {
+    var tb = document.getElementById('we-link-toolbar-active');
+    if (tb) tb.remove();
+    document.removeEventListener('click', this._closeLinkToolbarHandler);
+  },
+
+  _editLink() {
+    var linkEl = this._activeLinkEl;
+    if (!linkEl) return;
+    var currentHref = linkEl.getAttribute('href') || '';
+    var currentText = linkEl.textContent || '';
+    var newHref = prompt('Link-URL:', currentHref);
+    if (newHref === null) return; // cancelled
+    if (newHref.trim() === '') { this._removeLink(); return; }
+    var newText = prompt('Link-Text:', currentText);
+    if (newText === null) return;
+    linkEl.setAttribute('href', newHref.trim());
+    if (newText.trim()) linkEl.textContent = newText.trim();
+    this._removeLinkToolbar();
+    // Trigger update
+    var idx = this._activeLinkBlockIdx;
+    var ce = linkEl.closest('.we-ce');
+    if (ce && idx !== undefined) this._updateBlock(idx, 'content', ce.innerHTML);
+  },
+
+  _removeLink() {
+    var linkEl = this._activeLinkEl;
+    if (!linkEl) return;
+    var text = document.createTextNode(linkEl.textContent);
+    linkEl.parentNode.replaceChild(text, linkEl);
+    this._removeLinkToolbar();
+    // Trigger update
+    var idx = this._activeLinkBlockIdx;
+    var ce = text.parentElement ? text.parentElement.closest('.we-ce') : null;
+    if (ce && idx !== undefined) this._updateBlock(idx, 'content', ce.innerHTML);
+  },
+
+  _insertLink(idx) {
+    var sel = window.getSelection();
+    var selectedText = sel.toString();
+    if (!selectedText) {
+      selectedText = prompt('Link-Text:', '');
+      if (!selectedText) return;
+    }
+    var url = prompt('Link-URL (z.B. /wissen/artikel-slug):', '');
+    if (!url) return;
+    // Create link
+    document.execCommand('createLink', false, url.trim());
+    // Update block content
+    var ceEls = document.querySelectorAll('.we-ce');
+    // Find the one for this block index
+    var blocks = document.querySelectorAll('.we-block');
+    if (blocks[idx]) {
+      var ce = blocks[idx].querySelector('.we-ce');
+      if (ce) this._updateBlock(idx, 'content', ce.innerHTML);
+    }
+  },
+
+  _toggleBold() {
+    document.execCommand('bold', false, null);
+  },
+
+  _toggleItalic() {
+    document.execCommand('italic', false, null);
+  },
 
   _updateMeta(field, value) {
     const a = this.articles.find(x => x.id == this.currentEditId);
