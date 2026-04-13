@@ -105,7 +105,7 @@ window.adminArticles = {
       { key: 'title', label: 'SEO-Titel', ok: !!(a.seoTitle && a.seoTitle.length >= 30 && a.seoTitle.length <= 70) },
       { key: 'desc', label: 'Meta-Beschreibung', ok: !!(a.metaDescription && a.metaDescription.length >= 80 && a.metaDescription.length <= 170) },
       { key: 'links', label: 'Interne Links', ok: !!(a.internalLinks && a.internalLinks.length > 0) },
-      { key: 'wiki', label: 'Wikipedia', ok: !!(a.wikipediaUrl && a.wikipediaUrl.trim()) }
+      { key: 'external', label: 'Externer Link', ok: !!((a.externalUrl && a.externalUrl.trim()) || (a.wikipediaUrl && a.wikipediaUrl.trim())) }
     ];
   },
 
@@ -503,7 +503,7 @@ window.adminArticles = {
     }
 
     // Build SEO checks
-    var _s = a.seo || {}; var seo = {keyphrase: a.keyphrase || _s.keyphrase || "", seoTitle: a.seoTitle || _s.seoTitle || "", metaDesc: a.metaDescription || a.metaDesc || _s.metaDesc || "", internalLinks: (Array.isArray(a.internalLinks) ? a.internalLinks.join(",") : (a.internalLinks || _s.internalLinks || "")), wikipedia: a.wikipedia || _s.wikipedia || "", category: a.category || _s.category || ""};
+    var _s = a.seo || {}; var seo = {keyphrase: a.keyphrase || _s.keyphrase || "", seoTitle: a.seoTitle || _s.seoTitle || "", metaDesc: a.metaDescription || a.metaDesc || _s.metaDesc || "", internalLinks: (Array.isArray(a.internalLinks) ? a.internalLinks.join(",") : (a.internalLinks || _s.internalLinks || "")), externalUrl: a.externalUrl || a.wikipediaUrl || _s.wikipedia || "", wikipedia: a.wikipedia || _s.wikipedia || "", category: a.category || _s.category || ""};
     var checks = this._getSeoChecks(a);
     var score = this._getSeoScore(a);
     // score returns string: "green", "yellow", "red"
@@ -539,7 +539,7 @@ window.adminArticles = {
     seoHtml += '<div class="we-side-field"><label>SEO-Titel (30–70 Zeichen)</label><input type="text" value="' + (seo.seoTitle||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'seoTitle\',this.value)"><div class="we-charcount">' + (seo.seoTitle||'').length + '/70</div></div>';
     seoHtml += '<div class="we-side-field"><label>Meta-Beschreibung (80–170 Zeichen)</label><input type="text" value="' + (seo.metaDesc||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'metaDesc\',this.value)"><div class="we-charcount">' + (seo.metaDesc||'').length + '/170</div></div>';
     seoHtml += '<div class="we-side-field"><label>Interne Links (IDs)</label><input type="text" value="' + (seo.internalLinks||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'internalLinks\',this.value)"></div>';
-    seoHtml += '<div class="we-side-field"><label>Wikipedia-Link</label><input type="text" value="' + (seo.wikipedia||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'wikipedia\',this.value)"></div>';
+    seoHtml += '<div class="we-side-field"><label>Externer Link</label><input type="text" value="' + (seo.externalUrl||seo.wikipedia||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'externalUrl\',this.value)"></div>';
     seoHtml += '<div class="we-side-field"><label>Kategorie</label><input type="text" value="' + (seo.category||a.category||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'category\',this.value)"></div>';
 
     // GEO section
