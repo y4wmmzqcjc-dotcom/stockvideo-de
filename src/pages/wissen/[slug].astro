@@ -192,7 +192,7 @@ function getInlineImage(index) {
         </div>
 
         {article.intro && (
-          <p class="article-intro">{article.intro}</p>
+          <p class="article-intro" set:html={article.intro} />
         )}
 
         <div class="article-body">
@@ -246,7 +246,7 @@ function getInlineImage(index) {
         {article.conclusion && (
           <div class="article-conclusion">
             <h2>Fazit</h2>
-            <p>{article.conclusion}</p>
+            <p set:html={article.conclusion} />
           </div>
         )}
 
