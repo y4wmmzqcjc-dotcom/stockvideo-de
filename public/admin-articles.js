@@ -167,11 +167,11 @@ window.adminArticles = {
         (a.category || '').toLowerCase().includes(q)
       );
     }
-    // Sort newest-first by publishDate or scheduledDate
+    // Geplant: nächster Termin zuerst (aufsteigend). Alle anderen: neueste zuerst (absteigend).
     list = list.slice().sort((a, b) => {
       const da = a.publishDate || a.scheduledDate || '';
       const db = b.publishDate || b.scheduledDate || '';
-      return db.localeCompare(da);
+      return filter === 'scheduled' ? da.localeCompare(db) : db.localeCompare(da);
     });
     if (!list.length) {
       return q
