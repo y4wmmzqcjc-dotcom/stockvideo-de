@@ -585,17 +585,13 @@ var mediaModule = {
       const aCount = articles.length;
       const mediaItems = JSON.parse(localStorage.getItem('mediaItems') || '[]');
       const mCount = mediaItems.length;
-      // R2 storage calc
-      const r2UsedMB = mediaItems.reduce((sum, m) => sum + (m.size || 0), 0) / (1024*1024);
-      const r2FreeMB = 10240; // 10 GB free
-      const r2Pct = Math.min(100, (r2UsedMB / r2FreeMB * 100));
-      const r2Color = r2Pct > 90 ? '#ff3b30' : r2Pct > 70 ? '#ff9500' : '#34c759';
-      const overageMB = Math.max(0, r2UsedMB - r2FreeMB);
-      const overageCost = (overageMB / 1024 * 0.015).toFixed(4);
       const lastDeploy = localStorage.getItem('lastDeployTime') || 'Unbekannt';
 
       const dc = document.getElementById('dashboardContent');
       if (!dc) return;
+
+      // Render dashboard with placeholder for R2 stats (filled async below)
+      const r2FreeMB = 10240; // 10 GB free tier
       dc.innerHTML = '<div style="padding:24px;max-width:1100px">' +
         '<h2 style="margin:0 0 20px;color:#fff;font-size:22px">Dashboard</h2>' +
         '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px">' +
@@ -612,61 +608,72 @@ var mediaModule = {
             '<div style="font-size:32px;font-weight:700;color:#af52de">' + mCount + '</div>' +
             '<div style="color:#888;font-size:13px;margin-top:4px">Medien</div></div>' +
         '</div>' +
-        '<div style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px;margin-bottom:24px">' +
+        '<div style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px;margin-bottom:24px" id="_r2box">' +
           '<h3 style="margin:0 0 12px;color:#fff;font-size:16px">R2 Speicher</h3>' +
-          '<div style="background:#0d0d1a;border-radius:8px;height:24px;overflow:hidden;margin-bottom:8px">' +
-            '<div style="height:100%;width:' + r2Pct + '%;background:' + r2Color + ';border-radius:8px;transition:width 0.5s"></div></div>' +
-          '<div style="display:flex;justify-content:space-between;color:#888;font-size:13px">' +
-            '<span>' + r2UsedMB.toFixed(1) + ' MB belegt</span>' +
-            '<span>' + (r2FreeMB/1024).toFixed(0) + ' GB frei (Cloudflare R2)</span></div>' +
-          '<div style="margin-top:12px;padding:12px;background:#0d0d1a;border-radius:8px;font-size:13px;color:#888">' +
-            '<strong style="color:#fff">Kostenkalkulator:</strong> 10 GB kostenlos. Danach $0.015/GB/Monat.' +
-            (overageMB > 0 ? ' <span style="color:#ff9500">Aktuell: $' + overageCost + '/Monat Mehrkosten</span>' : ' <span style="color:#34c759">Aktuell im Free Tier</span>') +
-          '</div></div>' +
+          '<div style="color:#888;font-size:13px">Lade...</div>' +
+        '</div>' +
         '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">' +
           '<div style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px">' +
             '<h3 style="margin:0 0 8px;color:#fff;font-size:16px">Status</h3>' +
-            '<div style="color:#888;font-size:13px">Letztes Deploy: ' + lastDeploy + '</div></div>' +
+            '<div style="color:#888;font-size:13px" id="_deployStatus">Letztes Deploy: wird geladen...</div></div>' +
           '<div style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px">' +
             '<h3 style="margin:0 0 8px;color:#fff;font-size:16px">Letzte Artikel</h3>' +
             '<div style="color:#888;font-size:13px">' +
             (articles.length > 0 ? articles.slice(0,3).map(function(a){return '<div style="margin-bottom:4px">' + (a.title||'Ohne Titel') + '</div>';}).join('') : 'Keine Artikel') +
           '</div></div></div></div>';
+
+      // Fetch real R2 storage from Worker
+      var pw = localStorage.getItem('adminPublishPw') || '';
+      if (pw) {
+        fetch('https://stockvideo-checkout.rende.workers.dev/admin/r2-stats', {
+          headers: { 'X-Admin-Password': pw }
+        }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+          var box = document.getElementById('_r2box');
+          if (!box) return;
+          var usedMB = j ? (j.totalBytes / 1048576) : 0;
+          var objCount = j ? j.objectCount : 0;
+          var pct = Math.min(100, usedMB / r2FreeMB * 100);
+          var col = pct > 90 ? '#ff3b30' : pct > 70 ? '#ff9500' : '#34c759';
+          var ovMB = Math.max(0, usedMB - r2FreeMB);
+          var ovCost = (ovMB / 1024 * 0.015).toFixed(4);
+          box.innerHTML = '<h3 style="margin:0 0 12px;color:#fff;font-size:16px">R2 Speicher</h3>' +
+            '<div style="background:#0d0d1a;border-radius:8px;height:24px;overflow:hidden;margin-bottom:8px">' +
+              '<div style="height:100%;width:' + pct.toFixed(2) + '%;background:' + col + ';border-radius:8px;transition:width 0.5s"></div></div>' +
+            '<div style="display:flex;justify-content:space-between;color:#888;font-size:13px">' +
+              '<span>' + usedMB.toFixed(1) + ' MB belegt (' + objCount + ' Dateien)</span>' +
+              '<span>' + (r2FreeMB/1024).toFixed(0) + ' GB frei (Cloudflare R2)</span></div>' +
+            '<div style="margin-top:12px;padding:12px;background:#0d0d1a;border-radius:8px;font-size:13px;color:#888">' +
+              '<strong style="color:#fff">Kostenkalkulator:</strong> 10 GB kostenlos. Danach $0.015/GB/Monat. ' +
+              (ovMB > 0 ? '<span style="color:#ff9500">Aktuell: $' + ovCost + '/Monat Mehrkosten</span>' : '<span style="color:#34c759">Aktuell im Free Tier</span>') +
+            '</div>';
+        }).catch(function(){
+          var box = document.getElementById('_r2box');
+          if (box) box.innerHTML = '<h3 style="margin:0 0 12px;color:#fff;font-size:16px">R2 Speicher</h3><div style="color:#888;font-size:13px">Nicht verfügbar (Passwort fehlt oder Worker nicht erreichbar)</div>';
+        });
+      } else {
+        var box = document.getElementById('_r2box');
+        if (box) box.innerHTML = '<h3 style="margin:0 0 12px;color:#fff;font-size:16px">R2 Speicher</h3><div style="color:#888;font-size:13px">Passwort einmalig über "Veröffentlichen" eingeben, dann wird der Speicher angezeigt.</div>';
+      }
       this.refreshDeployStatus();
     },
 
     refreshDeployStatus() {
-                const settings = auth.loadSettings();
-                if (!settings.gitHub.token) {
-                    document.getElementById('statDeployStatus').textContent = '\u26a0\ufe0f';
-                    document.getElementById('statDeployTime').textContent = 'GitHub nicht konfiguriert';
-                    return;
-                }
-
-                const repo = settings.gitHub.repo;
-                const branch = settings.gitHub.branch;
-
-                fetch(`https://api.github.com/repos/${repo}/commits/${branch}`, {
-                    headers: {
-                        'Authorization': `token ${settings.gitHub.token}`
-                    }
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.commit) {
-                        document.getElementById('statDeployStatus').textContent = '\u2705';
-                        const date = new Date(data.commit.author.date);
-                        document.getElementById('statDeployTime').textContent = date.toLocaleTimeString('de-DE');
-                    } else {
-                        throw new Error('No commit data');
-                    }
-                })
-                .catch(err => {
-                    console.error('GitHub Error:', err);
-                    document.getElementById('statDeployStatus').textContent = '\u274c';
-                    document.getElementById('statDeployTime').textContent = 'Fehler beim Abrufen';
-                });
-            },
+      var pw = localStorage.getItem('adminPublishPw') || '';
+      var el = document.getElementById('_deployStatus');
+      if (!el) return;
+      if (!pw) { el.innerHTML = 'Deploy-Status: Passwort einmalig über "Veröffentlichen" eingeben.'; return; }
+      fetch('https://stockvideo-checkout.rende.workers.dev/admin/last-commit', {
+        headers: { 'X-Admin-Password': pw }
+      }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+        if (!j || !j.date) { el.textContent = 'Deploy-Status: nicht verfügbar'; return; }
+        var d = new Date(j.date);
+        var dateStr = d.toLocaleDateString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric'}) + ' ' + d.toLocaleTimeString('de-DE', {hour:'2-digit',minute:'2-digit'});
+        el.innerHTML = '✅ Letzter Commit: <strong style="color:#fff">' + dateStr + '</strong>' +
+          (j.message ? '<br><span style="font-size:12px;color:#666">' + j.message + '</span>' : '');
+      }).catch(function(){
+        el.textContent = 'Deploy-Status: Verbindungsfehler';
+      });
+    },
 
             // ===== VIDEOS =====
             loadVideos() {
