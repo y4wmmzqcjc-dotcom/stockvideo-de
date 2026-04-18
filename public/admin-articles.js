@@ -1224,6 +1224,7 @@ window.adminArticles = {
             // Auto-render calendar and media panels
             if (name === 'calendar' && typeof calendarModule !== 'undefined') calendarModule.render();
             if (name === 'media' && typeof mediaModule !== 'undefined') mediaModule.render();
+            if (name === 'content' && typeof admin !== 'undefined') admin.loadPageContent();
     }
 
     // Update nav highlighting

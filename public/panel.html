@@ -80,12 +80,6 @@
                 <div class="nav-item" onclick="admin.switchPanel('media')">
                     <span>&#128444;</span> Mediendatenbank
                 </div>
-                <div class="nav-item" onclick="admin.switchPanel('design')">
-                    <span>&#127912;</span> Design
-                </div>
-                <div class="nav-item" onclick="admin.switchPanel('settings')">
-                    <span>&#9881;&#65039;</span> Einstellungen
-                </div>
             </nav>
             <div class="sidebar-footer">
                 <button class="logout-button" onclick="auth.logout()">Abmelden</button>
@@ -130,98 +124,108 @@
 
             <!-- Content Panel -->
             <div id="panel-content" class="content-panel">
-                <div class="content-header">
-                    <h1 class="content-title">Seiteninhalte bearbeiten</h1>
-                    <p class="content-subtitle">Bearbeiten Sie Text- und Navigationsinhalte</p>
+              <style>
+                .sc-wrap { padding: 28px; max-width: 860px; }
+                .sc-topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; }
+                .sc-topbar h2 { margin:0; color:#fff; font-size:22px; }
+                .sc-pub-btn { background:#2563eb; color:#fff; border:none; padding:10px 22px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:8px; transition:background .15s; }
+                .sc-pub-btn:hover { background:#1d4ed8; }
+                .sc-pub-btn:disabled { background:#334155; color:#888; cursor:not-allowed; }
+                .sc-card { background:#1a1a2e; border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:22px 24px; margin-bottom:18px; }
+                .sc-card-title { font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#7c8db5; margin:0 0 18px; display:flex; align-items:center; gap:8px; }
+                .sc-card-title span { font-size:16px; }
+                .sc-field { margin-bottom:14px; }
+                .sc-field label { display:block; color:#8899bb; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; margin-bottom:5px; }
+                .sc-input { width:100%; background:#0f1023; border:1px solid #2a2a4a; color:#e0e0ff; padding:9px 12px; border-radius:8px; font-size:13px; outline:none; box-sizing:border-box; font-family:inherit; }
+                .sc-input:focus { border-color:#4f6ef7; }
+                .sc-textarea { width:100%; background:#0f1023; border:1px solid #2a2a4a; color:#e0e0ff; padding:9px 12px; border-radius:8px; font-size:13px; outline:none; box-sizing:border-box; font-family:inherit; resize:vertical; min-height:72px; line-height:1.6; }
+                .sc-textarea:focus { border-color:#4f6ef7; }
+                .sc-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+                .sc-grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+                .sc-sub-card { background:#111127; border:1px solid #2a2a40; border-radius:10px; padding:16px; margin-bottom:12px; }
+                .sc-sub-title { font-size:11px; font-weight:700; color:#5b6ef5; text-transform:uppercase; margin:0 0 12px; }
+                .sc-featured-toggle { display:flex; align-items:center; gap:8px; margin-top:8px; }
+                .sc-featured-toggle input { accent-color:#5b6ef5; width:16px; height:16px; cursor:pointer; }
+                .sc-featured-toggle label { color:#8899bb; font-size:12px; cursor:pointer; }
+                .sc-alert { padding:10px 14px; border-radius:8px; font-size:13px; margin-bottom:18px; display:none; }
+                .sc-alert.ok { background:rgba(34,197,94,.12); border:1px solid #22c55e; color:#22c55e; display:block; }
+                .sc-alert.err { background:rgba(239,68,68,.12); border:1px solid #ef4444; color:#ef4444; display:block; }
+                .sc-nav-row { display:flex; gap:10px; align-items:flex-start; margin-bottom:10px; }
+                .sc-nav-row .sc-input { flex:1; }
+                .sc-nav-del { background:#1f1f3a; border:1px solid #3a3a5a; color:#888; width:34px; height:36px; border-radius:7px; cursor:pointer; font-size:16px; flex-shrink:0; margin-top:0; }
+                .sc-nav-del:hover { border-color:#ef4444; color:#ef4444; }
+                .sc-add-btn { background:#111127; border:1px dashed #3a3a5a; color:#7c8db5; padding:7px 16px; border-radius:8px; font-size:12px; cursor:pointer; margin-top:4px; }
+                .sc-add-btn:hover { border-color:#5b6ef5; color:#5b6ef5; }
+              </style>
+              <div class="sc-wrap">
+                <div class="sc-topbar">
+                  <h2>🗂 Seiteninhalte</h2>
+                  <button class="sc-pub-btn" id="scPublishBtn" onclick="admin.publishConfig()">
+                    <span>↑</span> Auf GitHub veröffentlichen
+                  </button>
                 </div>
-                <div style="padding: 2rem;">
-                    <div id="contentAlert"></div>
+                <div id="scAlert" class="sc-alert"></div>
 
-                    <div class="form-section">
-                        <div class="form-section-title">Hero-Bereich</div>
-                        <div class="form-row full">
-                            <div>
-                                <label class="form-label">Titel</label>
-                                <input type="text" class="form-input" id="contentHeroTitle" placeholder="Hero Titel">
-                            </div>
-                        </div>
-                        <div class="form-row full">
-                            <div>
-                                <label class="form-label">Untertitel</label>
-                                <input type="text" class="form-input" id="contentHeroSubtitle" placeholder="Hero Untertitel">
-                            </div>
-                        </div>
-                        <div class="form-row full">
-                            <div>
-                                <label class="form-label">Suchplatzhalter</label>
-                                <input type="text" class="form-input" id="contentHeroSearchPlaceholder" placeholder="Suchplatzhalter">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-section">
-                        <div class="form-section-title">Features (4 Karten)</div>
-                        <div id="contentFeaturesContainer"></div>
-                    </div>
-
-                    <div class="form-section">
-                        <div class="form-section-title">Preisgestaltung (4 Karten)</div>
-                        <div id="contentPricingContainer"></div>
-                    </div>
-
-                    <div class="form-section">
-                        <div class="form-section-title">Navigation</div>
-                        <div class="form-row full">
-                            <div>
-                                <label class="form-label">Navigations-Links (durch Komma getrennt)</label>
-                                <input type="text" class="form-input" id="contentNavLinks" placeholder="Home, Videos, Preise, Kontakt">
-                            </div>
-                        </div>
-                        <div class="form-row full">
-                            <div>
-                                <label class="form-label">CTA-Text</label>
-                                <input type="text" class="form-input" id="contentNavCTA" placeholder="Jetzt anmelden">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-section">
-                        <div class="form-section-title">Footer</div>
-                        <div class="form-row full">
-                            <div>
-                                <label class="form-label">Copyright</label>
-                                <input type="text" class="form-input" id="contentFooterCopyright" placeholder="© 2026 stockvideo.de">
-                            </div>
-                        </div>
-                        <div class="form-row full">
-                            <div>
-                                <label class="form-label">Footer-Spalten (JSON-Format)</label>
-                                <textarea class="textarea" id="contentFooterColumns" placeholder='[{"title": "Produkt", "links": ["Videos", "Lizenz"]}]'></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-section">
-                        <div class="form-section-title">SEO</div>
-                        <div class="form-row full">
-                            <div>
-                                <label class="form-label">Meta-Titel</label>
-                                <input type="text" class="form-input" id="contentSEOTitle" placeholder="stockvideo.de - Premium Stock Videos">
-                            </div>
-                        </div>
-                        <div class="form-row full">
-                            <div>
-                                <label class="form-label">Meta-Beschreibung</label>
-                                <textarea class="textarea" id="contentSEODescription" placeholder="Hochwertige Stock Videos für kommerzielle Projekte..."></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; gap: 1rem;">
-                        <button class="button button-primary" onclick="admin.savePageContent()">Speichern</button>
-                        <button class="button button-secondary" onclick="admin.loadPageContent()">Zurücksetzen</button>
-                    </div>
+                <!-- Hero -->
+                <div class="sc-card">
+                  <div class="sc-card-title"><span>🎬</span> Hero-Bereich</div>
+                  <div class="sc-field"><label>Überschrift</label><input class="sc-input" id="scHeroTitle" type="text" placeholder="Lizenzfreie Stock Videos in 4K & HD"></div>
+                  <div class="sc-field"><label>Untertitel</label><textarea class="sc-textarea" id="scHeroSubtitle" rows="2" placeholder="Kurzer Begleittext unter der Überschrift…"></textarea></div>
+                  <div class="sc-field"><label>Suchfeld-Platzhalter</label><input class="sc-input" id="scHeroSearch" type="text" placeholder="Suche nach Videos…"></div>
                 </div>
+
+                <!-- Site Meta -->
+                <div class="sc-card">
+                  <div class="sc-card-title"><span>🔍</span> Site-Beschreibung</div>
+                  <div class="sc-field"><label>Site-Name</label><input class="sc-input" id="scSiteName" type="text" placeholder="stockvideo.de"></div>
+                  <div class="sc-field"><label>Meta-Beschreibung (SEO)</label><textarea class="sc-textarea" id="scSiteDesc" rows="2" placeholder="Kurze Beschreibung der Seite für Suchmaschinen…"></textarea></div>
+                </div>
+
+                <!-- Features -->
+                <div class="sc-card">
+                  <div class="sc-card-title"><span>✦</span> USP-Karten (4 Stück)</div>
+                  <div id="scFeatures"></div>
+                </div>
+
+                <!-- Pricing -->
+                <div class="sc-card">
+                  <div class="sc-card-title"><span>💰</span> Preise</div>
+                  <div id="scPricing"></div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="sc-card">
+                  <div class="sc-card-title"><span>🧭</span> Navigation</div>
+                  <div class="sc-field"><label>CTA-Button Text</label><input class="sc-input" id="scNavCta" type="text" placeholder="Kontakt"></div>
+                  <div class="sc-field">
+                    <label>Navigationslinks</label>
+                    <div id="scNavLinks"></div>
+                    <button class="sc-add-btn" onclick="admin.scAddNavLink()">+ Link hinzufügen</button>
+                  </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="sc-card">
+                  <div class="sc-card-title"><span>🔗</span> Footer</div>
+                  <div class="sc-field"><label>Copyright-Zeile</label><input class="sc-input" id="scFooterCopyright" type="text" placeholder="© 2026 stockvideo.de"></div>
+                  <div class="sc-field"><label>Spalten (JSON)</label><textarea class="sc-textarea" id="scFooterColumns" rows="8" style="font-family:monospace;font-size:12px;"></textarea></div>
+                </div>
+
+                <!-- Kontakt -->
+                <div class="sc-card">
+                  <div class="sc-card-title"><span>📬</span> Kontakt & Impressum</div>
+                  <div class="sc-grid2">
+                    <div class="sc-field"><label>Name</label><input class="sc-input" id="scContactName" type="text"></div>
+                    <div class="sc-field"><label>E-Mail</label><input class="sc-input" id="scContactEmail" type="text"></div>
+                    <div class="sc-field"><label>Straße & Hausnummer</label><input class="sc-input" id="scContactStreet" type="text"></div>
+                    <div class="sc-field"><label>PLZ & Ort</label><input class="sc-input" id="scContactCity" type="text"></div>
+                    <div class="sc-field"><label>Telefon</label><input class="sc-input" id="scContactPhone" type="text"></div>
+                    <div class="sc-field"><label>Fax</label><input class="sc-input" id="scContactFax" type="text"></div>
+                    <div class="sc-field"><label>USt-ID</label><input class="sc-input" id="scContactUstId" type="text"></div>
+                  </div>
+                </div>
+
+              </div>
             </div>
 
             <!-- Design Panel -->
@@ -340,33 +344,7 @@
         <button class="btn btn-primary" style="width:100%;margin-top:16px;" onclick="mediaModule.saveDetail()">Änderungen speichern</button>
     </div>
 
-    <!-- Settings Panel (Einstellungen) -->
-    <div id="panel-design" class="content-panel">
-                <div class="content-header">
-                    <h1 class="content-title">Design-Verwaltung</h1>
-                    <p class="content-subtitle">CSS-Variablen und Design anpassen</p>
-                </div>
-                <div style="padding: 2rem;">
-                    <div id="designAlert"></div>
-
-                    <div class="form-section">
-                        <div class="form-section-title">Design-Variablen</div>
-                        <div id="designVariablesContainer"></div>
-                    </div>
-
-                    <div class="form-section">
-                        <div class="form-section-title">Komplettes Design importieren</div>
-                        <label class="form-label">CSS-Code einfügen (ersetzen Sie alle Variablen)</label>
-                        <textarea class="textarea" id="designImportCSS" placeholder="Komplettes CSS-Variablen-Set hier einfügen..."></textarea>
-                    </div>
-
-                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                        <button class="button button-primary" onclick="admin.saveDesignVariables()">Variablen speichern</button>
-                        <button class="button button-primary" onclick="admin.importDesignCSS()">CSS importieren</button>
-                        <button class="button button-secondary" onclick="admin.resetDesignToDefault()">Zurücksetzen</button>
-                    </div>
-                </div>
-            </div>
+    <div id="panel-design" class="content-panel" style="display:none"></div>
 
             
     <div id="videoModal" class="modal">
@@ -484,46 +462,7 @@
     </div>
 
     
-    <!-- Articles Panel (Wissen / Artikel) -->
-    <div id="panel-settings" class="content-panel">
-        <div class="content-header">
-            <h1 class="content-title">Einstellungen</h1>
-            <p class="content-subtitle">Systemkonfiguration und Zugangsdaten</p>
-        </div>
-        <div class="settings-section" style="padding: 0 20px 20px;">
-            <h3 style="color:#fff; margin-bottom:15px;">E-Mail / 2FA Konfiguration (EmailJS)</h3>
-            <div style="margin-bottom:12px;">
-                <label style="color:#ccc; display:block; margin-bottom:4px; font-size:13px;">Service ID</label>
-                <input type="text" id="settings2faServiceId" style="width:100%; padding:8px 12px; background:#1a1a1a; border:1px solid #333; border-radius:6px; color:#fff; font-size:14px; box-sizing:border-box;">
-            </div>
-            <div style="margin-bottom:12px;">
-                <label style="color:#ccc; display:block; margin-bottom:4px; font-size:13px;">Template ID</label>
-                <input type="text" id="settings2faTemplateId" style="width:100%; padding:8px 12px; background:#1a1a1a; border:1px solid #333; border-radius:6px; color:#fff; font-size:14px; box-sizing:border-box;">
-            </div>
-            <div style="margin-bottom:12px;">
-                <label style="color:#ccc; display:block; margin-bottom:4px; font-size:13px;">Public Key</label>
-                <input type="text" id="settings2faPublicKey" style="width:100%; padding:8px 12px; background:#1a1a1a; border:1px solid #333; border-radius:6px; color:#fff; font-size:14px; box-sizing:border-box;">
-            </div>
-            <div style="margin-bottom:20px;">
-                <label style="color:#ccc; display:block; margin-bottom:4px; font-size:13px;">Admin E-Mail</label>
-                <input type="text" id="settings2faEmail" style="width:100%; padding:8px 12px; background:#1a1a1a; border:1px solid #333; border-radius:6px; color:#fff; font-size:14px; box-sizing:border-box;">
-            </div>
-            <h3 style="color:#fff; margin-bottom:15px; margin-top:30px;">GitHub Konfiguration</h3>
-            <div style="margin-bottom:12px;">
-                <label style="color:#ccc; display:block; margin-bottom:4px; font-size:13px;">GitHub Token</label>
-                <input type="password" id="settingsGitHubToken" style="width:100%; padding:8px 12px; background:#1a1a1a; border:1px solid #333; border-radius:6px; color:#fff; font-size:14px; box-sizing:border-box;">
-            </div>
-            <div style="margin-bottom:12px;">
-                <label style="color:#ccc; display:block; margin-bottom:4px; font-size:13px;">Repository</label>
-                <input type="text" id="settingsGitHubRepo" style="width:100%; padding:8px 12px; background:#1a1a1a; border:1px solid #333; border-radius:6px; color:#fff; font-size:14px; box-sizing:border-box;">
-            </div>
-            <div style="margin-bottom:20px;">
-                <label style="color:#ccc; display:block; margin-bottom:4px; font-size:13px;">Branch</label>
-                <input type="text" id="settingsGitHubBranch" style="width:100%; padding:8px 12px; background:#1a1a1a; border:1px solid #333; border-radius:6px; color:#fff; font-size:14px; box-sizing:border-box;">
-            </div>
-            <button onclick="admin.saveSettingsFromForm()" style="background:#1473e6; color:#fff; border:none; padding:10px 24px; border-radius:6px; cursor:pointer; font-size:14px; font-weight:600;">Einstellungen speichern</button>
-        </div>
-    </div>
+    <div id="panel-settings" class="content-panel" style="display:none"></div>
 
     <!-- EmailJS SDK for 2FA -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
@@ -629,14 +568,6 @@
 </script>
 
 
-<button id="batchReprocessBtn" type="button" style="position:fixed;bottom:20px;right:20px;z-index:9999;padding:12px 18px;border-radius:8px;background:#1473e6;color:#fff;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.4);font-weight:600;">Vorschauen neu generieren</button>
-<div id="batchReprocessModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:10000;overflow:auto;padding:40px;">
-<div style="max-width:760px;margin:0 auto;background:#1e1e1e;border-radius:12px;padding:28px;color:#eee;font-family:system-ui;">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="margin:0;font-size:20px;">Preview-Pipeline für bestehende Videos</h2><button onclick="document.getElementById('batchReprocessModal').style.display='none'" style="background:#333;border:none;color:#ccc;padding:6px 12px;border-radius:4px;cursor:pointer;">Schließen</button></div>
-<p style="color:#aaa;font-size:14px;margin:0 0 18px;">Wähle pro Video die <b>originale</b> Videodatei nochmal aus. Es wird automatisch ein 480p Preview + 360p Hover-Loop mit Wasserzeichen erzeugt und hochgeladen. Das Originalvideo in R2 wird dabei <b>nicht</b> erneut hochgeladen.</p>
-<div id="batchReprocessList"></div>
-<div style="margin-top:20px;display:flex;gap:10px;"><button id="batchReprocessPublish" style="padding:10px 18px;background:#16a34a;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;">Publish to GitHub</button></div>
-</div></div>
 <script>
 (function(){
 function openBatch(){
