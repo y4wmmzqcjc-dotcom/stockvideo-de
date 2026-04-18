@@ -156,6 +156,13 @@
                 .sc-nav-del:hover { border-color:#ef4444; color:#ef4444; }
                 .sc-add-btn { background:#111127; border:1px dashed #3a3a5a; color:#7c8db5; padding:7px 16px; border-radius:8px; font-size:12px; cursor:pointer; margin-top:4px; }
                 .sc-add-btn:hover { border-color:#5b6ef5; color:#5b6ef5; }
+                .sc-footer-col { background:#0d0d20; border:1px solid #2a2a4a; border-radius:10px; padding:14px; margin-bottom:12px; }
+                .sc-footer-col-head { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+                .sc-footer-col-head .sc-input { flex:1; font-weight:600; }
+                .sc-footer-col-links { padding-left:4px; }
+                .sc-footer-col-links .sc-nav-row { margin-bottom:8px; }
+                .sc-col-del { background:#1a1a35; border:1px solid #3a3a5a; color:#666; padding:5px 10px; border-radius:7px; cursor:pointer; font-size:13px; white-space:nowrap; }
+                .sc-col-del:hover { border-color:#ef4444; color:#ef4444; }
               </style>
               <div class="sc-wrap">
                 <div class="sc-topbar">
@@ -202,7 +209,11 @@
                 <div class="sc-card">
                   <div class="sc-card-title"><span>🔗</span> Footer</div>
                   <div class="sc-field"><label>Copyright-Zeile</label><input class="sc-input" id="scFooterCopyright" type="text" placeholder="© 2026 stockvideo.de"></div>
-                  <div class="sc-field"><label>Spalten (JSON)</label><textarea class="sc-textarea" id="scFooterColumns" rows="8" style="font-family:monospace;font-size:12px;"></textarea></div>
+                  <div class="sc-field">
+                    <label>Fußzeilen-Spalten</label>
+                    <div id="scFooterCols"></div>
+                    <button class="sc-add-btn" style="margin-top:8px;" onclick="admin.scAddFooterCol()">+ Spalte hinzufügen</button>
+                  </div>
                 </div>
 
                 <!-- Kontakt -->

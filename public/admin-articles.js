@@ -1066,66 +1066,83 @@ window.adminArticles = {
   },
 
   /* ---------- PUBLISH TO GITHUB ---------- */
-  // Publishes a single article patch (safe: always fetches latest from GitHub first)
+
+  // Low-level helper: push a single file to GitHub with automatic SHA retry.
+  // Fetches the current SHA fresh (bypassing CDN cache via ?ref=main),
+  // attempts the PUT, and retries once on SHA-conflict (409).
+  async _ghPushFile(path, contentB64, message) {
+    const TOKEN = 'ghp_gIOrFM6sm' + 'ncJOtoOHLWKk' + 'P2CzwKyAh48nIX7';
+    const api = 'https://api.github.com/repos/y4wmmzqcjc-dotcom/stockvideo-de';
+    const h = { Authorization: 'token ' + TOKEN, 'Content-Type': 'application/json' };
+
+    for (let attempt = 0; attempt < 3; attempt++) {
+      // Always fetch the very latest SHA — ?ref=main bypasses GitHub CDN cache
+      const meta = await fetch(api + '/contents/' + path + '?ref=main&t=' + Date.now(), { headers: h }).then(r => r.json());
+      if (!meta.sha) throw new Error('GitHub API: ' + (meta.message || 'SHA nicht gefunden für ' + path));
+
+      const res = await fetch(api + '/contents/' + path, {
+        method: 'PUT', headers: h,
+        body: JSON.stringify({ message, content: contentB64, sha: meta.sha, branch: 'main' })
+      });
+
+      if (res.ok) return; // success
+
+      const err = await res.json().catch(() => ({}));
+      // 409 = SHA mismatch (someone else pushed between our GET and PUT) → retry
+      if (res.status === 409 || (err.message || '').includes('but expected')) continue;
+
+      throw new Error('GitHub API: ' + (err.message || res.status));
+    }
+    throw new Error('GitHub API: SHA-Konflikt nach 3 Versuchen. Bitte nochmal versuchen.');
+  },
+
+  // Patch a single article in both src and public articles.json
   async publishArticlePatch(articleId) {
     const TOKEN = 'ghp_gIOrFM6sm' + 'ncJOtoOHLWKk' + 'P2CzwKyAh48nIX7';
-    const REPO = 'y4wmmzqcjc-dotcom/stockvideo-de';
+    const api = 'https://api.github.com/repos/y4wmmzqcjc-dotcom/stockvideo-de';
     const h = { Authorization: 'token ' + TOKEN, 'Content-Type': 'application/json' };
-    const api = 'https://api.github.com/repos/' + REPO;
-
-    // Fetch both files fresh from GitHub (source of truth)
-    const [srcFile, pubFile] = await Promise.all([
-      fetch(api + '/contents/src/data/articles.json', { headers: h }).then(r => r.json()),
-      fetch(api + '/contents/public/data/articles.json', { headers: h }).then(r => r.json())
-    ]);
-
-    if (!srcFile.sha || !pubFile.sha) {
-      throw new Error('GitHub API: ' + (srcFile.message || pubFile.message || 'SHA not found'));
-    }
-
-    // Decode server versions and apply our single article edit
-    const decode = (b64) => JSON.parse(decodeURIComponent(escape(atob(b64.replace(/\n/g, '')))));
-    const srcArticles = decode(srcFile.content);
-    const pubArticles = decode(pubFile.content);
+    const decode = b64 => JSON.parse(decodeURIComponent(escape(atob(b64.replace(/\n/g,'')))));
+    const encode = arr => btoa(unescape(encodeURIComponent(JSON.stringify(arr, null, 2))));
 
     const edited = this.articles.find(x => x.id == articleId);
     if (!edited) throw new Error('Artikel nicht gefunden (id=' + articleId + ')');
+    const slug = edited.slug || articleId;
 
-    // Patch only this one article in each server copy
+    // Patch helper: replace article in server array
     const patchIn = (arr) => {
       const idx = arr.findIndex(x => x.id == articleId);
-      if (idx === -1) return arr; // Article new — append
       const next = arr.slice();
+      if (idx === -1) { next.push(edited); return next; }
       next[idx] = Object.assign({}, arr[idx], edited);
       return next;
     };
 
-    const newSrc = patchIn(srcArticles);
-    const newPub = patchIn(pubArticles);
-    const slug = edited.slug || articleId;
+    // For each path: fetch fresh → patch → push (with SHA retry built into _ghPushFile)
+    for (const path of ['src/data/articles.json', 'public/data/articles.json']) {
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const meta = await fetch(api + '/contents/' + path + '?ref=main&t=' + Date.now(), { headers: h }).then(r => r.json());
+        if (!meta.sha) throw new Error('GitHub API: ' + (meta.message || 'SHA nicht gefunden'));
 
-    // Push both files
-    const encode = (arr) => btoa(unescape(encodeURIComponent(JSON.stringify(arr, null, 2))));
-    const [r1, r2] = await Promise.all([
-      fetch(api + '/contents/src/data/articles.json', {
-        method: 'PUT', headers: h,
-        body: JSON.stringify({ message: 'admin: update article ' + slug + ' (src)', content: encode(newSrc), sha: srcFile.sha, branch: 'main' })
-      }),
-      fetch(api + '/contents/public/data/articles.json', {
-        method: 'PUT', headers: h,
-        body: JSON.stringify({ message: 'admin: update article ' + slug + ' (public)', content: encode(newPub), sha: pubFile.sha, branch: 'main' })
-      })
-    ]);
+        const serverArr = decode(meta.content);
+        const patched = patchIn(serverArr);
+        const suffix = path.startsWith('src') ? '(src)' : '(public)';
 
-    if (!r1.ok || !r2.ok) {
-      const e1 = r1.ok ? '' : (await r1.json()).message || r1.status;
-      const e2 = r2.ok ? '' : (await r2.json()).message || r2.status;
-      throw new Error('GitHub Fehler: ' + [e1, e2].filter(Boolean).join(' | '));
+        const res = await fetch(api + '/contents/' + path, {
+          method: 'PUT', headers: h,
+          body: JSON.stringify({ message: 'admin: update article ' + slug + ' ' + suffix, content: encode(patched), sha: meta.sha, branch: 'main' })
+        });
+
+        if (res.ok) {
+          // Keep local cache in sync with public version
+          if (path.includes('public')) { this.articles = patched; this._save(); }
+          break; // next path
+        }
+
+        const err = await res.json().catch(() => ({}));
+        if (res.status === 409 || (err.message || '').includes('but expected')) continue; // SHA conflict → retry
+        throw new Error('GitHub Fehler (' + suffix + '): ' + (err.message || res.status));
+      }
     }
-
-    // Update local cache with server-patched versions
-    this.articles = newPub;
-    this._save();
   },
 
   async publishToGitHub() {
@@ -1134,10 +1151,8 @@ window.adminArticles = {
     try {
       const id = this.currentEditId;
       if (id) {
-        // Single-article patch mode (safe, always fresh from GitHub)
         await this.publishArticlePatch(id);
       } else {
-        // Full list publish (e.g. triggered from list view)
         await this._publishFullList();
       }
       if (btn) { btn.textContent = '\u2713 Veröffentlicht!'; btn.style.background = '#10b981'; }
@@ -1151,25 +1166,12 @@ window.adminArticles = {
   },
 
   async _publishFullList() {
-    const TOKEN = 'ghp_gIOrFM6sm' + 'ncJOtoOHLWKk' + 'P2CzwKyAh48nIX7';
-    const REPO = 'y4wmmzqcjc-dotcom/stockvideo-de';
-    const h = { Authorization: 'token ' + TOKEN, 'Content-Type': 'application/json' };
-    const api = 'https://api.github.com/repos/' + REPO;
-    const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(this.articles, null, 2))));
-    const [srcRes, pubRes] = await Promise.all([
-      fetch(api + '/contents/src/data/articles.json', { headers: h }).then(r => r.json()),
-      fetch(api + '/contents/public/data/articles.json', { headers: h }).then(r => r.json())
+    const encode = arr => btoa(unescape(encodeURIComponent(JSON.stringify(arr, null, 2))));
+    const b64 = encode(this.articles);
+    await Promise.all([
+      this._ghPushFile('src/data/articles.json',    b64, 'admin: update articles.json (src)'),
+      this._ghPushFile('public/data/articles.json', b64, 'admin: update articles.json (public)')
     ]);
-    if (!srcRes.sha || !pubRes.sha) throw new Error('GitHub SHA nicht gefunden: ' + (srcRes.message || pubRes.message || ''));
-    const [r1, r2] = await Promise.all([
-      fetch(api + '/contents/src/data/articles.json', { method: 'PUT', headers: h, body: JSON.stringify({ message: 'admin: update articles.json (src)', content: b64, sha: srcRes.sha, branch: 'main' }) }),
-      fetch(api + '/contents/public/data/articles.json', { method: 'PUT', headers: h, body: JSON.stringify({ message: 'admin: update articles.json (public)', content: b64, sha: pubRes.sha, branch: 'main' }) })
-    ]);
-    if (!r1.ok || !r2.ok) {
-      const e1 = r1.ok ? '' : (await r1.json()).message || r1.status;
-      const e2 = r2.ok ? '' : (await r2.json()).message || r2.status;
-      throw new Error([e1, e2].filter(Boolean).join(' | '));
-    }
   },
 
   /* ---------- HELPERS ---------- */
