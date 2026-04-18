@@ -572,7 +572,11 @@
       const prog = document.getElementById("videoModalUploadProgress");
       const r2 = document.getElementById("videoModalR2Key");
       const thumbKey = document.getElementById("videoModalThumbKey");
-      const slug = (slugInput && slugInput.value) || (titleInput && window.slugifyKey(titleInput.value)) || window.slugifyKey(f.name.replace(/\.[^.]+$/,""));
+      const autoSlug = window.slugifyKey(f.name.replace(/\.[^.]+$/, ""));
+      if (slugInput && !slugInput.value) slugInput.value = autoSlug;
+      const slug = (slugInput && slugInput.value) || autoSlug;
+      // Titel aus Dateiname vorbelegen (falls leer)
+      if (titleInput && !titleInput.value) titleInput.value = f.name.replace(/\.[^.]+$/, "");
       prog.style.display = "block"; prog.value = 0;
       try {
         const res = await window.uploadVideo(f, { slug, onStatus: m => status.textContent = m, onProgress: p => prog.value = p });
