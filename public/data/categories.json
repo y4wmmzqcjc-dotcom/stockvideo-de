@@ -98,5 +98,13 @@
     "slug": "reisen",
     "label": "Reisen",
     "dataCat": "reisen"
+  },
+  {
+    "id": "1776490850429",
+    "label": "Drohne Arials",
+    "slug": "drohne-arials",
+    "description": "",
+    "icon": "",
+    "order": 0
   }
 ]
