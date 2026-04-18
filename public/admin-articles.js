@@ -587,7 +587,7 @@ window.adminArticles = {
       html += '<div class="we-bh"><textarea rows="1" placeholder="Ueberschrift..." oninput="adminArticles._autoResize(this);adminArticles._updateBlock(' + idx + ',\'content\',this.value)">' + (block.content||'').replace(/</g,'&lt;') + '</textarea></div>';
     } else if (block.type === 'text') {
       html += '<div class="we-bt">';
-      html += '<div class="we-block-toolbar"><button onclick="adminArticles._insertLink(' + idx + ')" title="Link einf\u00fcgen/bearbeiten">ð Link</button><button onclick="adminArticles._toggleBold()" title="Fett"><b>F</b></button><button onclick="adminArticles._toggleItalic()" title="Kursiv"><i>K</i></button></div>';
+      html += '<div class="we-block-toolbar"><button onclick="adminArticles._insertLink(' + idx + ')" title="Link einf\u00fcgen/bearbeiten">🔗 Link</button><button onclick="adminArticles._toggleBold()" title="Fett"><b>F</b></button><button onclick="adminArticles._toggleItalic()" title="Kursiv"><i>K</i></button></div>';
       html += '<div contenteditable="true" class="we-ce" data-placeholder="Text eingeben..." oninput="adminArticles._updateBlock(' + idx + ',\'content\',this.innerHTML)" onclick="adminArticles._handleCeClick(event,' + idx + ')">' + (block.content||'') + '</div></div>';
     } else if (block.type === 'image') {
       html += '<div class="we-bi">';
