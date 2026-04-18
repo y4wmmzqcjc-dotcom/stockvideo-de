@@ -111,6 +111,9 @@
                 <div class="nav-item" onclick="admin.switchPanel('media')">
                     <span>&#128444;</span> Mediendatenbank
                 </div>
+                <div class="nav-item" onclick="admin.switchPanel('seo')">
+                    <span>&#128269;</span> SEO &amp; Sichtbarkeit
+                </div>
             </nav>
             <div class="sidebar-footer">
                 <button class="logout-button" onclick="auth.logout()">Abmelden</button>
@@ -382,7 +385,12 @@
 
     <div id="panel-design" class="content-panel" style="display:none"></div>
 
-            
+    <!-- SEO & Sichtbarkeit Panel -->
+    <div id="panel-seo" class="content-panel" style="display:none">
+        <div id="seoContent"></div>
+    </div>
+
+
     <div id="videoModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -742,27 +750,17 @@ window.buildStatus = (function () {
   }
 
   // ── Öffentliche API ──────────────────────────────────────────────────────
-  // url: welche JSON-Datei gepollt werden soll (z.B. '/data/articles.json')
-  async function triggerBuild(url) {
+  // url        : welche JSON-Datei gepollt werden soll
+  // preSnapshot: der ALTE Stand der Datei, VOR dem GitHub-Push erfasst
+  //              (muss vor dem Push abgerufen werden — damit ist er guaranteed alt)
+  function triggerBuild(url, preSnapshot) {
     var checkUrl = url || '/data/articles.json';
-
-    // Sofort "building" anzeigen
-    var info = { start: Date.now(), url: checkUrl, snapshot: null };
+    var info = { start: Date.now(), url: checkUrl, snapshot: preSnapshot || null };
     localStorage.setItem(KEY, JSON.stringify(info));
     tick();
     startPolling();
-
-    // Snapshot des AKTUELLEN Live-Standes holen (= altes Deployment)
-    // Sobald Cloudflare fertig ist, weicht der Live-Stand davon ab → done
-    try {
-      var r    = await fetch(checkUrl + '?_bs=' + Date.now(), {
-        cache: 'no-store',
-        headers: { 'Pragma': 'no-cache', 'Cache-Control': 'no-cache, no-store' }
-      });
-      var text = await r.text();
-      var cur  = getInfo();
-      if (cur) { cur.snapshot = text; localStorage.setItem(KEY, JSON.stringify(cur)); }
-    } catch (e) { /* kein Snapshot → Timer-Fallback */ }
+    // Erste Poll-Prüfung nach 3s (edge-case: Cloudflare war sehr schnell)
+    setTimeout(pollCheck, 3000);
   }
 
   // ── Initialisierung ──────────────────────────────────────────────────────
@@ -792,6 +790,13 @@ window.buildStatus = (function () {
 (function() {
   var s = document.createElement("script");
   s.charset = "utf-8"; s.src = "/admin-articles.js?v=20260418H" + Date.now();
+  document.body.appendChild(s);
+})();
+</script>
+    <script>
+(function() {
+  var s = document.createElement("script");
+  s.charset = "utf-8"; s.src = "/admin-seo.js?v=1" + Date.now();
   document.body.appendChild(s);
 })();
 </script>

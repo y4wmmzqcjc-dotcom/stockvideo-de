@@ -1817,6 +1817,9 @@ var mediaModule = {
           inp.addEventListener("keydown",function(e){if(e.key==="Enter")done(inp.value);if(e.key==="Escape")done("");});
         });
         if(!pw)return;
+        // Snapshot vor dem Push — garantiert alter Stand
+        window._videoPreSnapshot=null;
+        try{var _sr=await fetch('/data/videos.json?_pre='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-store,no-cache','Pragma':'no-cache'}});window._videoPreSnapshot=await _sr.text();}catch(e){}
         var videos=JSON.parse(localStorage.getItem("adminVideos")||"[]");
         var cats=JSON.parse(localStorage.getItem("adminCategories")||"[]");
         var hdr={"Content-Type":"application/json","X-Admin-Password":pw};
@@ -1826,7 +1829,8 @@ var mediaModule = {
         var r2=await fetch("https://stockvideo-checkout.rende.workers.dev/admin/data",{method:"POST",headers:hdr,body:JSON.stringify({kind:"categories",items:cats})});
         var j2=await r2.json();
         if(!r2.ok){alert("Categories Fehler: "+(j2.error||r2.status));return;}
-        if (window.buildStatus) window.buildStatus.triggerBuild('/data/videos.json');
+        if (window.buildStatus) window.buildStatus.triggerBuild('/data/videos.json', window._videoPreSnapshot || null);
+        window._videoPreSnapshot = null;
         alert("Ver\u00f6ffentlicht! Cloudflare Pages rebuildet in ~60s.");
       }catch(e){alert("Fehler: "+e.message);}
     };

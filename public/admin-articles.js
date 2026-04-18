@@ -1186,6 +1186,16 @@ window.adminArticles = {
     const btn = document.querySelector('.aa-btn-save');
     if (btn) { btn.textContent = 'Wird veröffentlicht...'; btn.disabled = true; }
 
+    // Snapshot des AKTUELLEN Live-Standes holen BEVOR wir zu GitHub pushen.
+    // So ist der Snapshot garantiert der alte Stand — egal wie schnell Cloudflare baut.
+    let preSnapshot = null;
+    try {
+      const sr = await fetch('/data/articles.json?_pre=' + Date.now(), {
+        cache: 'no-store', headers: { 'Cache-Control': 'no-store, no-cache', 'Pragma': 'no-cache' }
+      });
+      preSnapshot = await sr.text();
+    } catch (e) { /* kein Snapshot → Timer-Fallback */ }
+
     const id = this.currentEditId;
     if (id) {
       await this.publishArticlePatch(id); // throws on error
@@ -1193,8 +1203,8 @@ window.adminArticles = {
       await this._publishFullList(); // throws on error
     }
 
-    // Only reached on success — trigger build status polling
-    if (window.buildStatus) window.buildStatus.triggerBuild('/data/articles.json');
+    // Jetzt Build-Status-Polling starten — mit vorher erfasstem Snapshot
+    if (window.buildStatus) window.buildStatus.triggerBuild('/data/articles.json', preSnapshot);
 
     if (btn) {
       btn.textContent = '\u2713 Ver\u00f6ffentlicht!';
@@ -1290,6 +1300,11 @@ window.adminArticles = {
       } else {
         adminArticles.renderList();
       }
+    }
+
+    // SEO panel
+    if (name === 'seo' && typeof seoModule !== 'undefined') {
+      seoModule.init();
     }
   };
 })();
