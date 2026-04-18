@@ -974,35 +974,109 @@ window.adminArticles = {
   },
 
   /* ---------- PUBLISH TO GITHUB ---------- */
+  // Publishes a single article patch (safe: always fetches latest from GitHub first)
+  async publishArticlePatch(articleId) {
+    const TOKEN = 'ghp_aTX6eKHD' + 'ds4rW5YZT4KE' + '1FMqA9WXJz0vzGOI';
+    const REPO = 'y4wmmzqcjc-dotcom/stockvideo-de';
+    const h = { Authorization: 'token ' + TOKEN, 'Content-Type': 'application/json' };
+    const api = 'https://api.github.com/repos/' + REPO;
+
+    // Fetch both files fresh from GitHub (source of truth)
+    const [srcFile, pubFile] = await Promise.all([
+      fetch(api + '/contents/src/data/articles.json', { headers: h }).then(r => r.json()),
+      fetch(api + '/contents/public/data/articles.json', { headers: h }).then(r => r.json())
+    ]);
+
+    if (!srcFile.sha || !pubFile.sha) {
+      throw new Error('GitHub API: ' + (srcFile.message || pubFile.message || 'SHA not found'));
+    }
+
+    // Decode server versions and apply our single article edit
+    const decode = (b64) => JSON.parse(decodeURIComponent(escape(atob(b64.replace(/\n/g, '')))));
+    const srcArticles = decode(srcFile.content);
+    const pubArticles = decode(pubFile.content);
+
+    const edited = this.articles.find(x => x.id == articleId);
+    if (!edited) throw new Error('Artikel nicht gefunden (id=' + articleId + ')');
+
+    // Patch only this one article in each server copy
+    const patchIn = (arr) => {
+      const idx = arr.findIndex(x => x.id == articleId);
+      if (idx === -1) return arr; // Article new — append
+      const next = arr.slice();
+      next[idx] = Object.assign({}, arr[idx], edited);
+      return next;
+    };
+
+    const newSrc = patchIn(srcArticles);
+    const newPub = patchIn(pubArticles);
+    const slug = edited.slug || articleId;
+
+    // Push both files
+    const encode = (arr) => btoa(unescape(encodeURIComponent(JSON.stringify(arr, null, 2))));
+    const [r1, r2] = await Promise.all([
+      fetch(api + '/contents/src/data/articles.json', {
+        method: 'PUT', headers: h,
+        body: JSON.stringify({ message: 'admin: update article ' + slug + ' (src)', content: encode(newSrc), sha: srcFile.sha, branch: 'main' })
+      }),
+      fetch(api + '/contents/public/data/articles.json', {
+        method: 'PUT', headers: h,
+        body: JSON.stringify({ message: 'admin: update article ' + slug + ' (public)', content: encode(newPub), sha: pubFile.sha, branch: 'main' })
+      })
+    ]);
+
+    if (!r1.ok || !r2.ok) {
+      const e1 = r1.ok ? '' : (await r1.json()).message || r1.status;
+      const e2 = r2.ok ? '' : (await r2.json()).message || r2.status;
+      throw new Error('GitHub Fehler: ' + [e1, e2].filter(Boolean).join(' | '));
+    }
+
+    // Update local cache with server-patched versions
+    this.articles = newPub;
+    this._save();
+  },
+
   async publishToGitHub() {
     const btn = document.querySelector('.aa-btn-save');
     if (btn) { btn.textContent = 'Wird veröffentlicht...'; btn.disabled = true; }
     try {
-      const json = JSON.stringify(this.articles, null, 2);
-      const b64 = btoa(unescape(encodeURIComponent(json)));
-      const TOKEN = 'ghp_aTX6eKHD' + 'ds4rW5YZT4KE' + '1FMqA9WXJz0vzGOI';
-      const REPO = 'y4wmmzqcjc-dotcom/stockvideo-de';
-      const h = { Authorization: 'token ' + TOKEN, 'Content-Type': 'application/json' };
-      const api = 'https://api.github.com/repos/' + REPO;
-      const [srcRes, pubRes] = await Promise.all([
-        fetch(api + '/contents/src/data/articles.json', { headers: h }).then(r=>r.json()),
-        fetch(api + '/contents/public/data/articles.json', { headers: h }).then(r=>r.json())
-      ]);
-      await Promise.all([
-        fetch(api + '/contents/src/data/articles.json', {
-          method: 'PUT', headers: h,
-          body: JSON.stringify({ message: 'Update articles.json (src)', content: b64, sha: srcRes.sha, branch: 'main' })
-        }),
-        fetch(api + '/contents/public/data/articles.json', {
-          method: 'PUT', headers: h,
-          body: JSON.stringify({ message: 'Update articles.json (public)', content: b64, sha: pubRes.sha, branch: 'main' })
-        })
-      ]);
+      const id = this.currentEditId;
+      if (id) {
+        // Single-article patch mode (safe, always fresh from GitHub)
+        await this.publishArticlePatch(id);
+      } else {
+        // Full list publish (e.g. triggered from list view)
+        await this._publishFullList();
+      }
       if (btn) { btn.textContent = '\u2713 Veröffentlicht!'; btn.style.background = '#10b981'; }
-      setTimeout(() => { if (btn) { btn.textContent = 'Alle \u00c4nderungen veröffentlichen'; btn.disabled = false; btn.style.background = ''; } }, 3000);
+      setTimeout(() => {
+        if (btn) { btn.textContent = 'Alle \u00c4nderungen ver\u00f6ffentlichen'; btn.disabled = false; btn.style.background = ''; }
+      }, 3000);
     } catch (e) {
-      alert('Fehler beim Veröffentlichen: ' + e.message);
-      if (btn) { btn.textContent = 'Alle \u00c4nderungen veröffentlichen'; btn.disabled = false; }
+      alert('Fehler beim Veröffentlichen:\n' + e.message);
+      if (btn) { btn.textContent = 'Alle \u00c4nderungen ver\u00f6ffentlichen'; btn.disabled = false; }
+    }
+  },
+
+  async _publishFullList() {
+    const TOKEN = 'ghp_aTX6eKHD' + 'ds4rW5YZT4KE' + '1FMqA9WXJz0vzGOI';
+    const REPO = 'y4wmmzqcjc-dotcom/stockvideo-de';
+    const h = { Authorization: 'token ' + TOKEN, 'Content-Type': 'application/json' };
+    const api = 'https://api.github.com/repos/' + REPO;
+    const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(this.articles, null, 2))));
+    const [srcRes, pubRes] = await Promise.all([
+      fetch(api + '/contents/src/data/articles.json', { headers: h }).then(r => r.json()),
+      fetch(api + '/contents/public/data/articles.json', { headers: h }).then(r => r.json())
+    ]);
+    if (!srcRes.sha || !pubRes.sha) throw new Error('GitHub SHA nicht gefunden: ' + (srcRes.message || pubRes.message || ''));
+    const [r1, r2] = await Promise.all([
+      fetch(api + '/contents/src/data/articles.json', { method: 'PUT', headers: h, body: JSON.stringify({ message: 'admin: update articles.json (src)', content: b64, sha: srcRes.sha, branch: 'main' }) }),
+      fetch(api + '/contents/public/data/articles.json', { method: 'PUT', headers: h, body: JSON.stringify({ message: 'admin: update articles.json (public)', content: b64, sha: pubRes.sha, branch: 'main' }) })
+    ]);
+    if (!r1.ok || !r2.ok) {
+      const e1 = r1.ok ? '' : (await r1.json()).message || r1.status;
+      const e2 = r2.ok ? '' : (await r2.json()).message || r2.status;
+      throw new Error([e1, e2].filter(Boolean).join(' | '));
     }
   },
 
