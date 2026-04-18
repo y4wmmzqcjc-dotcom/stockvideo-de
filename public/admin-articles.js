@@ -1068,7 +1068,7 @@ window.adminArticles = {
   /* ---------- PUBLISH TO GITHUB ---------- */
   // Publishes a single article patch (safe: always fetches latest from GitHub first)
   async publishArticlePatch(articleId) {
-    const TOKEN = 'ghp_aTX6eKHD' + 'ds4rW5YZT4KE' + '1FMqA9WXJz0vzGOI';
+    const TOKEN = 'ghp_gIOrFM6sm' + 'ncJOtoOHLWKk' + 'P2CzwKyAh48nIX7';
     const REPO = 'y4wmmzqcjc-dotcom/stockvideo-de';
     const h = { Authorization: 'token ' + TOKEN, 'Content-Type': 'application/json' };
     const api = 'https://api.github.com/repos/' + REPO;
@@ -1151,7 +1151,7 @@ window.adminArticles = {
   },
 
   async _publishFullList() {
-    const TOKEN = 'ghp_aTX6eKHD' + 'ds4rW5YZT4KE' + '1FMqA9WXJz0vzGOI';
+    const TOKEN = 'ghp_gIOrFM6sm' + 'ncJOtoOHLWKk' + 'P2CzwKyAh48nIX7';
     const REPO = 'y4wmmzqcjc-dotcom/stockvideo-de';
     const h = { Authorization: 'token ' + TOKEN, 'Content-Type': 'application/json' };
     const api = 'https://api.github.com/repos/' + REPO;
