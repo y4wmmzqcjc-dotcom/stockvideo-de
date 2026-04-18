@@ -6,6 +6,23 @@
     <title>stockvideo.de - Admin Panel</title>
     <link rel="stylesheet" href="/admin.css?v=20260418C">
     <link rel="stylesheet" href="/admin-articles.css?v=20260418C">
+    <style>
+/* ── Build-Status-Widget ── */
+.bsw{display:flex;align-items:center;gap:10px;margin:12px 14px 4px;padding:9px 12px;border-radius:12px;background:rgba(52,199,89,.07);border:1px solid rgba(52,199,89,.18);transition:background .4s,border-color .4s,box-shadow .4s;user-select:none;cursor:default}
+.bsw.bsw-building{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.28);animation:bswGlow 2s ease-in-out infinite}
+.bsw.bsw-done{background:rgba(52,199,89,.18);border-color:rgba(52,199,89,.45);animation:bswPop .45s ease-out}
+@keyframes bswGlow{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,0)}50%{box-shadow:0 0 0 4px rgba(245,158,11,.18)}}
+@keyframes bswPop{0%{transform:scale(.96);box-shadow:0 0 0 0 rgba(52,199,89,.5)}45%{transform:scale(1.04);box-shadow:0 0 0 7px rgba(52,199,89,.2)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(52,199,89,0)}}
+.bsw-ring{position:relative;width:36px;height:36px;flex-shrink:0}
+.bsw-ring svg{width:36px;height:36px;transform:rotate(-90deg)}
+.bsw-track{fill:none;stroke:rgba(255,255,255,.07);stroke-width:2.8}
+.bsw-fill{fill:none;stroke:#34c759;stroke-width:2.8;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke .5s}
+.bsw-building .bsw-fill{stroke:#f59e0b}
+.bsw-inner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:#34c759;letter-spacing:-.3px;transition:color .4s,font-size .2s;font-family:-apple-system,'SF Pro Display',sans-serif}
+.bsw-building .bsw-inner{color:#f59e0b;font-size:9.5px}
+.bsw-title{font-size:12.5px;font-weight:600;color:#fff;line-height:1.25}
+.bsw-sub{font-size:10.5px;color:rgba(255,255,255,.38);margin-top:1px;line-height:1.2}
+    </style>
 </head>
 <body>
     <div id="authScreen" class="auth-screen">
@@ -57,6 +74,20 @@
             <div class="sidebar-header">
                 <div class="sidebar-title">Admin</div>
                 <div class="sidebar-subtitle">stockvideo.de</div>
+                <!-- Build-Status-Widget -->
+                <div id="bswWidget" class="bsw" title="Cloudflare Pages Build-Status">
+                  <div class="bsw-ring">
+                    <svg viewBox="0 0 36 36">
+                      <circle class="bsw-track" cx="18" cy="18" r="15.9"/>
+                      <circle class="bsw-fill"  id="bswFill"  cx="18" cy="18" r="15.9"/>
+                    </svg>
+                    <div class="bsw-inner" id="bswInner">✓</div>
+                  </div>
+                  <div>
+                    <div class="bsw-title" id="bswTitle">Live</div>
+                    <div class="bsw-sub"   id="bswSub">Seite ist aktuell</div>
+                  </div>
+                </div>
             </div>
             <nav class="sidebar-nav">
                 <div class="nav-item active" onclick="admin.switchPanel('dashboard')">
@@ -617,6 +648,87 @@ document.addEventListener("change", async function(e){
 });
 })();
 </script>
+
+    <!-- Build-Status-Widget JS -->
+    <script>
+window.buildStatus = (function () {
+  var BUILD_SEC = 90;        // Cloudflare-Build-Schätzung in Sekunden
+  var KEY       = 'svBuildStart';
+  var _tmr      = null;
+
+  function $id(id) { return document.getElementById(id); }
+
+  function render(state, secs) {
+    var w     = $id('bswWidget');
+    var fill  = $id('bswFill');
+    var inner = $id('bswInner');
+    var title = $id('bswTitle');
+    var sub   = $id('bswSub');
+    if (!w) return;
+
+    if (state === 'live') {
+      w.className               = 'bsw';
+      fill.style.strokeDashoffset = '0';
+      inner.textContent         = '✓';
+      title.textContent         = 'Live';
+      sub.textContent           = 'Seite ist aktuell';
+
+    } else if (state === 'building') {
+      w.className               = 'bsw bsw-building';
+      // Ring leert sich: offset steigt von 0 → 100 während elapsed wächst
+      var offset = ((BUILD_SEC - secs) / BUILD_SEC * 100).toFixed(1);
+      fill.style.strokeDashoffset = offset;
+      inner.textContent         = secs + 's';
+      title.textContent         = 'Deploying\u2026';
+      sub.textContent           = 'Cloudflare baut';
+
+    } else if (state === 'done') {
+      w.className               = 'bsw bsw-done';
+      fill.style.strokeDashoffset = '0';
+      inner.textContent         = '✓';
+      title.textContent         = '\u2713 Deployed!';
+      sub.textContent           = 'Seite ist live';
+      setTimeout(function () { render('live'); }, 5000);
+    }
+  }
+
+  function tick() {
+    var raw = localStorage.getItem(KEY);
+    if (!raw) { render('live'); return; }
+    var elapsed   = (Date.now() - parseInt(raw, 10)) / 1000;
+    var remaining = Math.ceil(BUILD_SEC - elapsed);
+    if (remaining <= 0) {
+      localStorage.removeItem(KEY);
+      render('done');
+    } else {
+      render('building', remaining);
+    }
+  }
+
+  function triggerBuild() {
+    localStorage.setItem(KEY, String(Date.now()));
+    tick();
+  }
+
+  function start() {
+    clearInterval(_tmr);
+    _tmr = setInterval(tick, 1000);
+    tick();
+    window.addEventListener('storage', function (e) {
+      if (e.key === KEY) tick();
+    });
+  }
+
+  // Sofort starten (DOM-Elemente existieren bereits)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+
+  return { triggerBuild: triggerBuild };
+})();
+    </script>
 
     <script>
 (function() {
