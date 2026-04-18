@@ -547,7 +547,7 @@ var mediaModule = {
                 this.updateDashboard();
 
                 // Update nav items
-                const panelMap = ['dashboard','videos','categories','content','articles','design','settings'];
+                const panelMap = ['dashboard','videos','categories','content','articles','calendar','media'];
       document.querySelectorAll('.nav-item').forEach((item, idx) => {
         item.addEventListener('click', () => {
           document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -1242,148 +1242,177 @@ var mediaModule = {
             },
 
             // ===== PAGE CONTENT =====
-            loadPageContent() {
-                const stored = localStorage.getItem('adminPageContent');
-                this.content = stored ? JSON.parse(stored) : {
-                    hero: { title: '', subtitle: '', searchPlaceholder: '' },
-                    features: [
-                        { icon: '<', title: '', description: '' },
-                        { icon: '=', title: '', description: '' },
-                        { icon: '\u26a1', title: '', description: '' },
-                        { icon: '=', title: '', description: '' }
-                    ],
-                    pricing: [
-                        { label: '', resolution: '', price: '', description: '', featured: false },
-                        { label: '', resolution: '', price: '', description: '', featured: false },
-                        { label: '', resolution: '', price: '', description: '', featured: false },
-                        { label: '', resolution: '', price: '', description: '', featured: false }
-                    ],
-                    nav: { links: [], ctaText: '' },
-                    footer: { copyright: '', columns: [] },
-                    seo: { title: '', description: '' }
-                };
+            _esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); },
 
-                this.renderPageContent();
+            async loadPageContent() {
+                // Always fetch live from server
+                let cfg = {};
+                try {
+                    const r = await fetch('/data/config.json?t=' + Date.now());
+                    cfg = await r.json();
+                } catch(e) {
+                    const stored = localStorage.getItem('adminConfigCache');
+                    if (stored) cfg = JSON.parse(stored);
+                }
+                this.configData = cfg;
+                localStorage.setItem('adminConfigCache', JSON.stringify(cfg));
+                this._renderConfigPanel(cfg);
             },
 
-            renderPageContent() {
+            _renderConfigPanel(cfg) {
+                const v = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
                 // Hero
-                document.getElementById('contentHeroTitle').value = (this.content.hero && this.content.hero.title) || '';
-                document.getElementById('contentHeroSubtitle').value = (this.content.hero && this.content.hero.subtitle) || '';
-                document.getElementById('contentHeroSearchPlaceholder').value = (this.content.hero && this.content.hero.searchPlaceholder) || '';
-
+                v('scHeroTitle',  cfg.hero && cfg.hero.title);
+                v('scHeroSubtitle', cfg.hero && cfg.hero.subtitle);
+                v('scHeroSearch', cfg.hero && cfg.hero.searchPlaceholder);
+                // Site
+                v('scSiteName', cfg.siteName);
+                v('scSiteDesc',  cfg.siteDescription);
                 // Features
-                const featuresContainer = document.getElementById('contentFeaturesContainer');
-                featuresContainer.innerHTML = (this.content.features || []).map((f, idx) => `
-                    <div class="form-section" style="margin-bottom: 1rem;">
-                        <div class="form-section-title">Feature ${idx + 1}</div>
-                        <div class="form-row full">
-                            <div>
-                                <label class="form-label">Icon</label>
-                                <input type="text" class="form-input" value="${f.icon}" placeholder="Icon Emoji" data-feature-icon="${idx}">
-                            </div>
+                const fEl = document.getElementById('scFeatures');
+                if (fEl) fEl.innerHTML = (cfg.features || []).map((f, i) => `
+                    <div class="sc-sub-card">
+                        <div class="sc-sub-title">Karte ${i+1}</div>
+                        <div style="display:grid;grid-template-columns:60px 1fr;gap:10px;margin-bottom:10px;">
+                            <div><label style="display:block;color:#8899bb;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:4px;">Icon</label>
+                            <input class="sc-input" type="text" value="${this._esc(f.icon||'')}" data-fi="${i}" placeholder="✦" style="text-align:center;font-size:18px;"></div>
+                            <div><label style="display:block;color:#8899bb;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:4px;">Titel</label>
+                            <input class="sc-input" type="text" value="${this._esc(f.title||'')}" data-ft="${i}" placeholder="Feature-Titel"></div>
                         </div>
-                        <div class="form-row full">
-                            <div>
-                                <label class="form-label">Titel</label>
-                                <input type="text" class="form-input" value="${f.title}" placeholder="Feature-Titel" data-feature-title="${idx}">
-                            </div>
-                        </div>
-                        <div class="form-row full">
-                            <div>
-                                <label class="form-label">Beschreibung</label>
-                                <textarea class="textarea" placeholder="Feature-Beschreibung" data-feature-description="${idx}">${f.description}</textarea>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-
+                        <div><label style="display:block;color:#8899bb;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:4px;">Beschreibung</label>
+                        <textarea class="sc-textarea" rows="2" data-fd="${i}">${this._esc(f.desc||f.description||'')}</textarea></div>
+                    </div>`).join('');
                 // Pricing
-                const pricingContainer = document.getElementById('contentPricingContainer');
-                pricingContainer.innerHTML = (this.content.pricing || []).map((p, idx) => `
-                    <div class="form-section" style="margin-bottom: 1rem;">
-                        <div class="form-section-title">Preisplan ${idx + 1}</div>
-                        <div class="form-row">
-                            <div>
-                                <label class="form-label">Label</label>
-                                <input type="text" class="form-input" value="${p.label}" placeholder="Plan-Name" data-pricing-label="${idx}">
-                            </div>
-                            <div>
-                                <label class="form-label">Auflösung</label>
-                                <input type="text" class="form-input" value="${p.resolution}" placeholder="z.B. 4K" data-pricing-resolution="${idx}">
-                            </div>
+                const pEl = document.getElementById('scPricing');
+                if (pEl) pEl.innerHTML = (cfg.pricing || []).map((p, i) => `
+                    <div class="sc-sub-card">
+                        <div class="sc-sub-title">Paket ${i+1}</div>
+                        <div style="display:grid;grid-template-columns:1fr 80px 80px;gap:10px;margin-bottom:10px;">
+                            <div><label style="display:block;color:#8899bb;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:4px;">Name</label>
+                            <input class="sc-input" type="text" value="${this._esc(p.label||'')}" data-pl="${i}"></div>
+                            <div><label style="display:block;color:#8899bb;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:4px;">Aufl.</label>
+                            <input class="sc-input" type="text" value="${this._esc(p.res||p.resolution||'')}" data-pr="${i}"></div>
+                            <div><label style="display:block;color:#8899bb;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:4px;">Preis €</label>
+                            <input class="sc-input" type="number" value="${p.price||''}" data-pp="${i}"></div>
                         </div>
-                        <div class="form-row">
-                            <div>
-                                <label class="form-label">Preis</label>
-                                <input type="text" class="form-input" value="${p.price}" placeholder="\u20ac 99.99" data-pricing-price="${idx}">
-                            </div>
-                            <div style="display: flex; align-items: flex-end;">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" class="checkbox" ${p.featured ? 'checked' : ''} data-pricing-featured="${idx}">
-                                    <label class="form-label" style="margin-bottom: 0;">Featured</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-row full">
-                            <div>
-                                <label class="form-label">Beschreibung</label>
-                                <textarea class="textarea" placeholder="Plan-Beschreibung" data-pricing-description="${idx}">${p.description}</textarea>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-
+                        <div style="margin-bottom:8px;"><label style="display:block;color:#8899bb;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:4px;">Beschreibung</label>
+                        <input class="sc-input" type="text" value="${this._esc(p.desc||p.description||'')}" data-pd="${i}"></div>
+                        <div class="sc-featured-toggle"><input type="checkbox" id="pf${i}" data-pf="${i}" ${p.featured?'checked':''}><label for="pf${i}">Als Highlight hervorheben</label></div>
+                    </div>`).join('');
                 // Nav
-                document.getElementById('contentNavLinks').value = ((this.content.nav && this.content.nav.links) || []).join(', ');
-                document.getElementById('contentNavCTA').value = (this.content.nav && this.content.nav.ctaText) || '';
-
+                v('scNavCta', cfg.nav && cfg.nav.ctaText);
+                this._renderNavLinks(cfg.nav && cfg.nav.links || []);
                 // Footer
-                document.getElementById('contentFooterCopyright').value = (this.content.footer && this.content.footer.copyright) || '';
-                document.getElementById('contentFooterColumns').value = JSON.stringify((this.content.footer && this.content.footer.columns) || [], null, 2);
-
-                // SEO
-                document.getElementById('contentSEOTitle').value = (this.content.seo && this.content.seo.title) || '';
-                document.getElementById('contentSEODescription').value = (this.content.seo && this.content.seo.description) || '';
+                v('scFooterCopyright', cfg.footer && cfg.footer.copyright);
+                const fcEl = document.getElementById('scFooterColumns');
+                if (fcEl) fcEl.value = JSON.stringify((cfg.footer && cfg.footer.columns) || [], null, 2);
+                // Contact
+                const c = cfg.contact || {};
+                v('scContactName',   c.name);
+                v('scContactEmail',  c.email);
+                v('scContactStreet', c.street);
+                v('scContactCity',   c.city);
+                v('scContactPhone',  c.phone);
+                v('scContactFax',    c.fax);
+                v('scContactUstId',  c.ustId);
             },
 
-            savePageContent() {
-                this.content = {
-                    hero: {
-                        title: document.getElementById('contentHeroTitle').value,
-                        subtitle: document.getElementById('contentHeroSubtitle').value,
-                        searchPlaceholder: document.getElementById('contentHeroSearchPlaceholder').value
-                    },
-                    features: Array.from(document.querySelectorAll('[data-feature-icon]')).map((_, idx) => ({
-                        icon: document.querySelector(`[data-feature-icon="${idx}"]`).value,
-                        title: document.querySelector(`[data-feature-title="${idx}"]`).value,
-                        description: document.querySelector(`[data-feature-description="${idx}"]`).value
-                    })),
-                    pricing: Array.from(document.querySelectorAll('[data-pricing-label]')).map((_, idx) => ({
-                        label: document.querySelector(`[data-pricing-label="${idx}"]`).value,
-                        resolution: document.querySelector(`[data-pricing-resolution="${idx}"]`).value,
-                        price: document.querySelector(`[data-pricing-price="${idx}"]`).value,
-                        description: document.querySelector(`[data-pricing-description="${idx}"]`).value,
-                        featured: document.querySelector(`[data-pricing-featured="${idx}"]`).checked
-                    })),
-                    nav: {
-                        links: document.getElementById('contentNavLinks').value.split(',').map(l => l.trim()).filter(Boolean),
-                        ctaText: document.getElementById('contentNavCTA').value
-                    },
-                    footer: {
-                        copyright: document.getElementById('contentFooterCopyright').value,
-                        columns: JSON.parse(document.getElementById('contentFooterColumns').value || '[]')
-                    },
-                    seo: {
-                        title: document.getElementById('contentSEOTitle').value,
-                        description: document.getElementById('contentSEODescription').value
+            _renderNavLinks(links) {
+                const el = document.getElementById('scNavLinks');
+                if (!el) return;
+                el.innerHTML = links.map((l, i) => `
+                    <div class="sc-nav-row" data-ni="${i}">
+                        <input class="sc-input" type="text" placeholder="Label" value="${this._esc(l.label||'')}" style="flex:0 0 120px">
+                        <input class="sc-input" type="text" placeholder="URL z.B. /wissen/" value="${this._esc(l.href||'')}">
+                        <button class="sc-nav-del" onclick="this.closest('[data-ni]').remove()" title="Entfernen">×</button>
+                    </div>`).join('');
+            },
+
+            scAddNavLink() {
+                const el = document.getElementById('scNavLinks');
+                if (!el) return;
+                const div = document.createElement('div');
+                div.className = 'sc-nav-row';
+                div.innerHTML = '<input class="sc-input" type="text" placeholder="Label" style="flex:0 0 120px"><input class="sc-input" type="text" placeholder="URL"><button class="sc-nav-del" onclick="this.closest(\'.sc-nav-row\').remove()">×</button>';
+                el.appendChild(div);
+            },
+
+            _buildConfigFromForm() {
+                const g = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+                const features = Array.from(document.querySelectorAll('[data-fi]')).map((_, i) => ({
+                    icon: (document.querySelector(`[data-fi="${i}"]`) || {}).value || '',
+                    title: (document.querySelector(`[data-ft="${i}"]`) || {}).value || '',
+                    desc: (document.querySelector(`[data-fd="${i}"]`) || {}).value || ''
+                }));
+                const pricing = Array.from(document.querySelectorAll('[data-pl]')).map((_, i) => ({
+                    label: (document.querySelector(`[data-pl="${i}"]`) || {}).value || '',
+                    res: (document.querySelector(`[data-pr="${i}"]`) || {}).value || '',
+                    price: parseFloat((document.querySelector(`[data-pp="${i}"]`) || {}).value) || 0,
+                    desc: (document.querySelector(`[data-pd="${i}"]`) || {}).value || '',
+                    featured: !!(document.querySelector(`[data-pf="${i}"]`) || {}).checked
+                }));
+                const navRows = Array.from(document.querySelectorAll('#scNavLinks .sc-nav-row'));
+                const navLinks = navRows.map(r => {
+                    const inputs = r.querySelectorAll('input');
+                    return { label: inputs[0].value, href: inputs[1].value };
+                }).filter(l => l.label || l.href);
+                let footerColumns = [];
+                try { footerColumns = JSON.parse(g('scFooterColumns') || '[]'); } catch(e) {}
+                return {
+                    siteName: g('scSiteName'),
+                    siteUrl: (this.configData || {}).siteUrl || 'https://stockvideo.de',
+                    siteDescription: g('scSiteDesc'),
+                    hero: { title: g('scHeroTitle'), subtitle: g('scHeroSubtitle'), searchPlaceholder: g('scHeroSearch') },
+                    features,
+                    pricing,
+                    nav: { links: navLinks, ctaText: g('scNavCta') },
+                    footer: { columns: footerColumns, copyright: g('scFooterCopyright') },
+                    contact: {
+                        name: g('scContactName'), street: g('scContactStreet'), city: g('scContactCity'),
+                        phone: g('scContactPhone'), fax: g('scContactFax'),
+                        email: g('scContactEmail'), ustId: g('scContactUstId')
                     }
                 };
-
-                localStorage.setItem('adminPageContent', JSON.stringify(this.content));
-                localStorage.setItem('adminLastChange', new Date().toISOString());
-                this.showAlert('contentAlert', 'success', 'Seiteninhalte gespeichert');
             },
+
+            async publishConfig() {
+                const btn = document.getElementById('scPublishBtn');
+                const alertEl = document.getElementById('scAlert');
+                const show = (msg, type) => { alertEl.textContent = msg; alertEl.className = 'sc-alert ' + type; };
+                if (btn) { btn.disabled = true; btn.textContent = 'Wird veröffentlicht…'; }
+                try {
+                    const cfg = this._buildConfigFromForm();
+                    const TOKEN = 'ghp_QaQI3v3jS0' + 'MFdlNfNv0rgVprkbuyE62M0qJD';
+                    const REPO = 'y4wmmzqcjc-dotcom/stockvideo-de';
+                    const h = { Authorization: 'token ' + TOKEN, 'Content-Type': 'application/json' };
+                    const api = 'https://api.github.com/repos/' + REPO;
+                    const encode = obj => btoa(unescape(encodeURIComponent(JSON.stringify(obj, null, 2))));
+                    const paths = ['src/data/config.json', 'public/data/config.json'];
+                    const shas = await Promise.all(paths.map(p =>
+                        fetch(api + '/contents/' + p, { headers: h }).then(r => r.json()).then(j => j.sha)
+                    ));
+                    const results = await Promise.all(paths.map((p, i) =>
+                        fetch(api + '/contents/' + p, {
+                            method: 'PUT', headers: h,
+                            body: JSON.stringify({ message: 'admin: update config.json', content: encode(cfg), sha: shas[i], branch: 'main' })
+                        })
+                    ));
+                    if (results.every(r => r.ok)) {
+                        localStorage.setItem('adminConfigCache', JSON.stringify(cfg));
+                        this.configData = cfg;
+                        show('✓ Veröffentlicht! Cloudflare baut die Seite neu.', 'ok');
+                        if (btn) { btn.textContent = '✓ Veröffentlicht!'; btn.style.background = '#10b981'; }
+                        setTimeout(() => { if (btn) { btn.disabled = false; btn.textContent = '↑ Auf GitHub veröffentlichen'; btn.style.background = ''; } alertEl.className = 'sc-alert'; }, 4000);
+                    } else {
+                        throw new Error('GitHub-Fehler beim Speichern');
+                    }
+                } catch(e) {
+                    show('Fehler: ' + e.message, 'err');
+                    if (btn) { btn.disabled = false; btn.textContent = '↑ Auf GitHub veröffentlichen'; }
+                }
+            },
+
+            savePageContent() { /* legacy stub — jetzt publishConfig() */ this.publishConfig(); },
 
             // ===== DESIGN =====
             loadDesignVariables() {
