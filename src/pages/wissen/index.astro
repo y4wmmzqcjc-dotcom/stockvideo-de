@@ -4,15 +4,22 @@ import Topbar from '../../components/Topbar.astro';
 import Footer from '../../components/Footer.astro';
 import articles from '../../data/articles.json';
 const now = new Date();
-const visibleArticles = articles.filter((a: any) => {
-  if (a.status === 'draft') return false;
-  if (a.scheduledDate) {
-    const timeStr = a.scheduledTime || '00:00';
-    const scheduledAt = new Date(a.scheduledDate + 'T' + timeStr + ':00');
-    return scheduledAt <= now;
-  }
-  return a.status === 'published';
-});
+const visibleArticles = articles
+  .filter((a: any) => {
+    if (a.status === 'draft') return false;
+    const dateStr = a.scheduledDate || a.publishDate;
+    if (dateStr) {
+      const timeStr = a.scheduledTime || '00:00';
+      const publishAt = new Date(dateStr + 'T' + timeStr + ':00');
+      return publishAt <= now;
+    }
+    return a.status === 'published';
+  })
+  .sort((a: any, b: any) => {
+    const da = a.publishDate || a.scheduledDate || '';
+    const db = b.publishDate || b.scheduledDate || '';
+    return db.localeCompare(da);
+  });
 
 const categories = [...new Set(visibleArticles.map(a => a.category))].sort();
 

@@ -46,6 +46,17 @@ window.adminArticles = {
     });
   },
 
+  /* Compute display status from date — matches calendarModule logic */
+  _getDisplayStatus(a) {
+    if (a.status === 'draft') return 'draft';
+    const dateStr = a.scheduledDate || a.publishDate;
+    if (!dateStr) return 'published';
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const articleDate = new Date(dateStr + 'T00:00:00');
+    return articleDate > now ? 'scheduled' : 'published';
+  },
+
   _save() {
     localStorage.setItem('adminArticles', JSON.stringify(this.articles));
   },
@@ -55,9 +66,9 @@ window.adminArticles = {
     const c = document.getElementById('panel-articles');
     if (!c) return;
 
-    const published = this.articles.filter(a => a.status === 'published').length;
-    const drafts = this.articles.filter(a => a.status === 'draft').length;
-    const scheduled = this.articles.filter(a => a.status === 'scheduled').length;
+    const published = this.articles.filter(a => this._getDisplayStatus(a) === 'published').length;
+    const drafts = this.articles.filter(a => this._getDisplayStatus(a) === 'draft').length;
+    const scheduled = this.articles.filter(a => this._getDisplayStatus(a) === 'scheduled').length;
 
     c.innerHTML = `
       <div class="aa-header">
@@ -126,18 +137,26 @@ window.adminArticles = {
 
   _renderArticleRows(filter) {
     let list = this.articles;
-    if (filter !== 'all') list = list.filter(a => a.status === filter);
+    if (filter !== 'all') list = list.filter(a => this._getDisplayStatus(a) === filter);
+    // Sort newest-first by publishDate or scheduledDate
+    list = list.slice().sort((a, b) => {
+      const da = a.publishDate || a.scheduledDate || '';
+      const db = b.publishDate || b.scheduledDate || '';
+      return db.localeCompare(da);
+    });
     if (!list.length) return '<div class="aa-empty">Keine Artikel in dieser Kategorie</div>';
 
     return list.map(a => {
-      const statusClass = a.status === 'published' ? 'aa-status-published' : a.status === 'scheduled' ? 'aa-status-scheduled' : 'aa-status-draft';
-      const statusLabel = a.status === 'published' ? '\u00d6ffentlich' : a.status === 'scheduled' ? 'Geplant' : 'Entwurf';
-      const statusIcon = a.status === 'published' ? '\u25CF' : a.status === 'scheduled' ? '\u25D0' : '\u25CB';
-      const schedInfo = a.status === 'scheduled' && a.scheduledDate ? `<span class="aa-sched-date">${this._formatDate(a.scheduledDate)}</span>` : '';
+      const displayStatus = this._getDisplayStatus(a);
+      const statusClass = displayStatus === 'published' ? 'aa-status-published' : displayStatus === 'scheduled' ? 'aa-status-scheduled' : 'aa-status-draft';
+      const statusLabel = displayStatus === 'published' ? '\u00d6ffentlich' : displayStatus === 'scheduled' ? 'Geplant' : 'Entwurf';
+      const statusIcon = displayStatus === 'published' ? '\u25CF' : displayStatus === 'scheduled' ? '\u25D0' : '\u25CB';
+      const schedDate = a.scheduledDate || a.publishDate;
+      const schedInfo = displayStatus === 'scheduled' && schedDate ? `<span class="aa-sched-date">${this._formatDate(schedDate)}</span>` : '';
       const catColor = a.categoryColor || '#1473e6';
 
       return `
-        <div class="aa-row" data-status="${a.status}" data-id="${a.id}">
+        <div class="aa-row" data-status="${displayStatus}" data-id="${a.id}">
           <div class="aa-row-status">
             <span class="${statusClass}" title="${statusLabel}">${statusIcon}</span>
           </div>
@@ -152,7 +171,7 @@ window.adminArticles = {
           <div class="aa-row-actions">
             <div class="aa-seo-badges">${this._renderSeoIcons(a)}</div>
             <label class="aa-toggle" title="\u00d6ffentlich / Entwurf">
-              <input type="checkbox" ${a.status === 'published' ? 'checked' : ''} onchange="adminArticles.toggleStatus('${a.id}', this.checked)">
+              <input type="checkbox" ${displayStatus === 'published' ? 'checked' : ''} onchange="adminArticles.toggleStatus('${a.id}', this.checked)">
               <span class="aa-toggle-slider"></span>
             </label>
             <button class="aa-btn-icon" title="Planen" onclick="adminArticles.openScheduler('${a.id}')">\uD83D\uDCC5</button>
