@@ -1539,7 +1539,24 @@ var mediaModule = {
     if(typeof window.admin==="undefined"){setTimeout(ensure,50);return;}
     window.admin.publishToGitHub=async function(){
       try{
-        var pw=prompt("Admin-Passwort zum Veroeffentlichen:","admin123");
+        // Non-blocking password modal (replaces prompt() which freezes the tab)
+        var pw=await new Promise(function(resolve){
+          var saved=localStorage.getItem("adminPublishPw")||"";
+          var ov=document.createElement("div");
+          ov.style.cssText="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);z-index:99999;display:flex;align-items:center;justify-content:center;";
+          ov.innerHTML='<div style="background:#fff;padding:28px;border-radius:10px;min-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.2);font-family:sans-serif;"><h3 style="margin:0 0 18px;font-size:16px;font-weight:600;color:#111;">Auf GitHub ver\u00f6ffentlichen</h3><input id="_ppw" type="password" placeholder="Admin-Passwort" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:6px;font-size:14px;margin-bottom:10px;box-sizing:border-box;"><label style="display:flex;align-items:center;gap:7px;margin-bottom:16px;font-size:13px;color:#555;cursor:pointer;"><input type="checkbox" id="_psave"'+(saved?' checked':'')+'>Passwort speichern</label><div style="display:flex;gap:10px;"><button id="_pok" style="flex:1;padding:10px;background:#2563eb;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:14px;font-weight:500;">Ver\u00f6ffentlichen</button><button id="_pcancel" style="flex:1;padding:10px;background:#f1f5f9;color:#374151;border:1px solid #d1d5db;border-radius:6px;cursor:pointer;font-size:14px;">Abbrechen</button></div></div>';
+          document.body.appendChild(ov);
+          var inp=document.getElementById("_ppw");
+          inp.value=saved;inp.focus();inp.select();
+          function done(v){
+            if(document.getElementById("_psave").checked&&v)localStorage.setItem("adminPublishPw",v);
+            else if(!document.getElementById("_psave").checked)localStorage.removeItem("adminPublishPw");
+            document.body.removeChild(ov);resolve(v);
+          }
+          document.getElementById("_pok").onclick=function(){done(inp.value);};
+          document.getElementById("_pcancel").onclick=function(){done("");};
+          inp.addEventListener("keydown",function(e){if(e.key==="Enter")done(inp.value);if(e.key==="Escape")done("");});
+        });
         if(!pw)return;
         var videos=JSON.parse(localStorage.getItem("adminVideos")||"[]");
         var cats=JSON.parse(localStorage.getItem("adminCategories")||"[]");
@@ -1550,7 +1567,7 @@ var mediaModule = {
         var r2=await fetch("https://stockvideo-checkout.rende.workers.dev/admin/data",{method:"POST",headers:hdr,body:JSON.stringify({kind:"categories",items:cats})});
         var j2=await r2.json();
         if(!r2.ok){alert("Categories Fehler: "+(j2.error||r2.status));return;}
-        alert("Veroeffentlicht! Cloudflare Pages rebuildet in ~60s.");
+        alert("Ver\u00f6ffentlicht! Cloudflare Pages rebuildet in ~60s.");
       }catch(e){alert("Fehler: "+e.message);}
     };
   };
