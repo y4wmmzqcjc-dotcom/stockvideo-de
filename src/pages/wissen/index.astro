@@ -3,7 +3,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Topbar from '../../components/Topbar.astro';
 import Footer from '../../components/Footer.astro';
 import articles from '../../data/articles.json';
-const visibleArticles = articles.filter((a: any) => a.status !== 'draft');
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+const visibleArticles = articles.filter((a: any) => {
+  if (a.status === 'published') return true;
+  if (a.status === 'scheduled' && a.scheduledDate) {
+    return new Date(a.scheduledDate) <= today;
+  }
+  return false;
+});
 
 const categories = [...new Set(visibleArticles.map(a => a.category))].sort();
 
