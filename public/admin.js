@@ -557,6 +557,9 @@ var mediaModule = {
             document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
             const target = document.getElementById('panel-' + panelName);
             if (target) target.classList.add('active');
+            if (panelName === 'content') admin.loadPageContent();
+            if (panelName === 'calendar' && typeof calendarModule !== 'undefined') calendarModule.render();
+            if (panelName === 'media' && typeof mediaModule !== 'undefined') mediaModule.render();
           }
         });
       });            },
@@ -1268,20 +1271,6 @@ var mediaModule = {
                 // Site
                 v('scSiteName', cfg.siteName);
                 v('scSiteDesc',  cfg.siteDescription);
-                // Features
-                const fEl = document.getElementById('scFeatures');
-                if (fEl) fEl.innerHTML = (cfg.features || []).map((f, i) => `
-                    <div class="sc-sub-card">
-                        <div class="sc-sub-title">Karte ${i+1}</div>
-                        <div style="display:grid;grid-template-columns:60px 1fr;gap:10px;margin-bottom:10px;">
-                            <div><label style="display:block;color:#8899bb;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:4px;">Icon</label>
-                            <input class="sc-input" type="text" value="${this._esc(f.icon||'')}" data-fi="${i}" placeholder="✦" style="text-align:center;font-size:18px;"></div>
-                            <div><label style="display:block;color:#8899bb;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:4px;">Titel</label>
-                            <input class="sc-input" type="text" value="${this._esc(f.title||'')}" data-ft="${i}" placeholder="Feature-Titel"></div>
-                        </div>
-                        <div><label style="display:block;color:#8899bb;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:4px;">Beschreibung</label>
-                        <textarea class="sc-textarea" rows="2" data-fd="${i}">${this._esc(f.desc||f.description||'')}</textarea></div>
-                    </div>`).join('');
                 // Pricing
                 const pEl = document.getElementById('scPricing');
                 if (pEl) pEl.innerHTML = (cfg.pricing || []).map((p, i) => `
@@ -1339,11 +1328,8 @@ var mediaModule = {
 
             _buildConfigFromForm() {
                 const g = id => { const el = document.getElementById(id); return el ? el.value : ''; };
-                const features = Array.from(document.querySelectorAll('[data-fi]')).map((_, i) => ({
-                    icon: (document.querySelector(`[data-fi="${i}"]`) || {}).value || '',
-                    title: (document.querySelector(`[data-ft="${i}"]`) || {}).value || '',
-                    desc: (document.querySelector(`[data-fd="${i}"]`) || {}).value || ''
-                }));
+                // Features are not editable in the panel UI — preserve existing values from configData
+                const features = (this.configData || {}).features || [];
                 const pricing = Array.from(document.querySelectorAll('[data-pl]')).map((_, i) => ({
                     label: (document.querySelector(`[data-pl="${i}"]`) || {}).value || '',
                     res: (document.querySelector(`[data-pr="${i}"]`) || {}).value || '',

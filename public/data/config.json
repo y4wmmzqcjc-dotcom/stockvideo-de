@@ -1,58 +1,61 @@
 {
+  "siteName": "stockvideo.de",
+  "siteUrl": "https://stockvideo.de",
+  "siteDescription": "1.000+ handverlesene, lizenzfreie Videoclips in 4K und Full HD. Einmal kaufen, unbegrenzt nutzen. Keine Abopflicht. Faire Preise made in Germany.",
   "hero": {
-    "title": "",
-    "subtitle": "",
-    "searchPlaceholder": ""
+    "title": "Lizenzfreie Stock Videos in 4K & HD",
+    "subtitle": "1.000+ handverlesene Videoclips. Einmal kaufen, unbegrenzt nutzen.\nKeine Abopflicht. Faire Preise made in Germany.",
+    "searchPlaceholder": "Suche nach Videos… z.B. Natur, Business, Drohne, Berlin"
   },
   "features": [
     {
-      "icon": "<",
-      "title": "",
-      "description": ""
+      "icon": "✦",
+      "title": "Keine Abopflicht",
+      "desc": "Einzelkauf oder Pakete. Keine monatliche Bindung, keine versteckten Kosten."
     },
     {
-      "icon": "=",
-      "title": "",
-      "description": ""
+      "icon": "§",
+      "title": "Deutsche Lizenzen",
+      "desc": "Klare Nutzungsrechte nach deutschem Recht. Einmal kaufen, unbegrenzt nutzen."
     },
     {
-      "icon": "⚡",
-      "title": "",
-      "description": ""
+      "icon": "◆",
+      "title": "Kuratierte Qualität",
+      "desc": "Jeder Clip handverlesen und qualitätsgeprüft. 4K und Full HD verfügbar."
     },
     {
-      "icon": "=",
-      "title": "",
-      "description": ""
+      "icon": "↓",
+      "title": "Sofortdownload",
+      "desc": "MP4 & MOV direkt nach Kauf. Kein Wasserzeichen, keine Wartezeit."
     }
   ],
   "pricing": [
     {
-      "label": "",
-      "resolution": "",
-      "price": "",
-      "description": "",
+      "label": "Web / Social",
+      "res": "Full HD",
+      "price": 29,
+      "desc": "Perfekt für Social Media und Websites",
       "featured": false
     },
     {
-      "label": "",
-      "resolution": "",
-      "price": "",
-      "description": "",
+      "label": "Standard",
+      "res": "Full HD",
+      "price": 49,
+      "desc": "Kommerzielle Nutzung, unbegrenzt",
       "featured": false
     },
     {
-      "label": "",
-      "resolution": "",
-      "price": "",
-      "description": "",
-      "featured": false
+      "label": "Premium",
+      "res": "4K UHD",
+      "price": 79,
+      "desc": "Höchste Qualität für professionelle Projekte",
+      "featured": true
     },
     {
-      "label": "",
-      "resolution": "",
-      "price": "",
-      "description": "",
+      "label": "10er Paket",
+      "res": "Mix",
+      "price": 249,
+      "desc": "10 Videos nach Wahl. 38% Ersparnis",
       "featured": false
     }
   ],
@@ -60,21 +63,134 @@
     "links": [
       {
         "label": "Kategorien",
-        "href": "/#kategorien"
+        "href": "/#kategorien",
+        "mobileHide": true
       },
       {
         "label": "Unternehmen",
-        "href": "/uber-uns"
+        "href": "/uber-uns",
+        "mobileHide": true
+      },
+      {
+        "label": "Wissen",
+        "href": "/wissen/"
       }
     ],
     "ctaText": "Kontakt"
   },
   "footer": {
-    "copyright": "",
-    "columns": []
+    "columns": [
+      {
+        "title": "Videos",
+        "links": [
+          {
+            "label": "Alle Videos",
+            "href": "/"
+          },
+          {
+            "label": "4K Videos",
+            "href": "/#videoGrid"
+          },
+          {
+            "label": "HD Videos",
+            "href": "/#videoGrid"
+          },
+          {
+            "label": "Neueste Videos",
+            "href": "/#videoGrid"
+          }
+        ]
+      },
+      {
+        "title": "Kategorien",
+        "links": [
+          {
+            "label": "Natur",
+            "href": "/kategorie/natur"
+          },
+          {
+            "label": "Business",
+            "href": "/kategorie/business"
+          },
+          {
+            "label": "Technologie",
+            "href": "/kategorie/tech"
+          },
+          {
+            "label": "Aerial",
+            "href": "/kategorie/aerial"
+          },
+          {
+            "label": "Menschen",
+            "href": "/kategorie/menschen"
+          }
+        ]
+      },
+      {
+        "title": "Wissen",
+        "links": [
+          {
+            "label": "Alle Artikel",
+            "href": "/wissen/"
+          },
+          {
+            "label": "Stockvideo Grundlagen",
+            "href": "/wissen/stockvideo-grundlagen-leitfaden/"
+          },
+          {
+            "label": "Lizenzen erklärt",
+            "href": "/wissen/stockvideo-lizenzen-royalty-free-rights-managed/"
+          },
+          {
+            "label": "4K vs. HD",
+            "href": "/wissen/4k-stockvideo-aufloesung-versus-hd/"
+          }
+        ]
+      },
+      {
+        "title": "Info",
+        "links": [
+          {
+            "label": "Über uns",
+            "href": "/uber-uns"
+          },
+          {
+            "label": "Lizenzbedingungen",
+            "href": "/lizenzen"
+          },
+          {
+            "label": "Kontakt",
+            "href": "/kontakt"
+          }
+        ]
+      },
+      {
+        "title": "Rechtliches",
+        "links": [
+          {
+            "label": "Impressum",
+            "href": "/impressum"
+          },
+          {
+            "label": "Datenschutz",
+            "href": "/datenschutz"
+          },
+          {
+            "label": "AGB",
+            "href": "/agb"
+          }
+        ]
+      }
+    ],
+    "copyright": "© 2026 stockvideo.de. Alle Rechte vorbehalten"
   },
-  "seo": {
-    "title": "",
-    "description": ""
+  "contact": {
+    "name": "Timo Rende",
+    "street": "Haldenstraße 16",
+    "city": "66806 Ensdorf/Saarlouis",
+    "phone": "06831 5052856",
+    "fax": "06831 5051619",
+    "email": "info@stockvideo.de",
+    "ustId": "DE291222648"
   }
 }
