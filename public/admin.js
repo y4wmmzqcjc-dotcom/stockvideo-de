@@ -904,13 +904,33 @@ var mediaModule = {
                 this.showAlert('videosAlert', 'success', 'Video gespeichert');
             },
 
-            deleteVideo(idx) {
-                if (confirm('Wirklich löschen?')) {
-                    this.videos.splice(idx, 1);
-                    localStorage.setItem('adminVideos', JSON.stringify(this.videos));
-                    localStorage.setItem('adminLastChange', new Date().toISOString());
-                    this.loadVideos();
-                    this.showAlert('videosAlert', 'success', 'Video gelöscht');
+            async deleteVideo(idx) {
+                if (!confirm('Wirklich löschen?')) return;
+                const video = this.videos[idx];
+                const slug = video.slug;
+                const r2Key = video.r2Key || null;
+                this.videos.splice(idx, 1);
+                localStorage.setItem('adminVideos', JSON.stringify(this.videos));
+                localStorage.setItem('adminLastChange', new Date().toISOString());
+                this.loadVideos();
+                this.showAlert('videosAlert', 'info', 'Lösche Video...');
+                try {
+                    const dataRes = await fetch('https://stockvideo-checkout.rende.workers.dev/admin/data', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-Admin-Password': 'admin123' },
+                        body: JSON.stringify({ kind: 'videos', items: this.videos })
+                    });
+                    if (!dataRes.ok) throw new Error('Commit fehlgeschlagen (' + dataRes.status + ')');
+                    try {
+                        await fetch('https://stockvideo-checkout.rende.workers.dev/admin/delete-video', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json', 'X-Admin-Password': 'admin123' },
+                          body: JSON.stringify({ slug, r2Key })
+                        });
+                    } catch(e2) { /* R2-Fehler nicht fatal */ }
+                    this.showAlert('videosAlert', 'success', 'Video gelöscht und veröffentlicht!');
+                } catch(e) {
+                    this.showAlert('videosAlert', 'error', 'Fehler: ' + e.message);
                 }
             },
 
