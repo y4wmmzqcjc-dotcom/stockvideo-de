@@ -1193,7 +1193,9 @@ window.adminArticles = {
       await this._publishFullList(); // throws on error
     }
 
-    // Only reached on success
+    // Only reached on success — trigger build status countdown
+    if (window.buildStatus) window.buildStatus.triggerBuild();
+
     if (btn) {
       btn.textContent = '\u2713 Ver\u00f6ffentlicht!';
       btn.style.background = '#10b981';
