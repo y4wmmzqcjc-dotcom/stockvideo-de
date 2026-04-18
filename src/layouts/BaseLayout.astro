@@ -38,6 +38,47 @@ const pageTitle = title === config.siteName ? `${config.siteName}| Lizenzfreie S
       "telephone": `+49 ${config.contact.phone}`
     }
   })} />
+  <!-- Wartungsmodus-Check: wird durch /data/maintenance.json gesteuert -->
+  <script>
+  (function () {
+    // Admin-Panel nie sperren
+    if (window.location.pathname.indexOf('/panel') === 0) return;
+    fetch('/data/maintenance.json?_mc=' + Date.now(), {
+      cache: 'no-store',
+      headers: { 'Cache-Control': 'no-store, no-cache', 'Pragma': 'no-cache' }
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (!d || !d.active) return;
+      var msg  = d.message || 'Diese Website wird gerade gewartet. Wir sind bald wieder für Sie da.';
+      var o = document.createElement('div');
+      o.id = 'maint-overlay';
+      o.innerHTML =
+        '<style>' +
+        '#maint-overlay{position:fixed;inset:0;background:#05050f;z-index:2147483647;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:-apple-system,"Segoe UI",sans-serif;padding:24px;text-align:center}' +
+        '.mo-logo{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:48px;opacity:.9}' +
+        '.mo-icon{width:72px;height:72px;border-radius:50%;border:2px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 28px;animation:mo-spin 3s linear infinite}' +
+        '@keyframes mo-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}' +
+        '.mo-title{font-size:clamp(20px,4vw,32px);font-weight:700;color:#fff;margin:0 0 14px;line-height:1.2}' +
+        '.mo-msg{font-size:16px;color:rgba(255,255,255,.55);max-width:480px;line-height:1.6;margin:0 auto 40px}' +
+        '.mo-divider{width:48px;height:2px;background:rgba(255,255,255,.1);margin:0 auto 28px;border-radius:2px}' +
+        '.mo-contact{font-size:14px;color:rgba(255,255,255,.4)}' +
+        '.mo-contact a{color:rgba(255,255,255,.6);text-decoration:none}' +
+        '.mo-contact a:hover{color:#fff}' +
+        '</style>' +
+        '<div class="mo-logo">stockvideo.de</div>' +
+        '<div class="mo-icon">⚙️</div>' +
+        '<h1 class="mo-title">Website wird gewartet</h1>' +
+        '<p class="mo-msg">' + msg.replace(/</g,'&lt;') + '</p>' +
+        '<div class="mo-divider"></div>' +
+        '<p class="mo-contact">Fragen? <a href="mailto:info@stockvideo.de">info@stockvideo.de</a> &nbsp;·&nbsp; <a href="tel:+496831 5052856">06831 5052856</a></p>';
+      document.body.appendChild(o);
+      // Seitentitel anpassen
+      document.title = 'Wartung | stockvideo.de';
+    })
+    .catch(function () { /* Fehler ignorieren, Seite normal anzeigen */ });
+  })();
+  </script>
 </head>
 <body>
   <slot />

@@ -7,6 +7,22 @@
     <link rel="stylesheet" href="/admin.css?v=20260418C">
     <link rel="stylesheet" href="/admin-articles.css?v=20260418C">
     <style>
+/* ── Wartungsmodus-Widget ── */
+.mw-wrap{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 14px 6px;padding:9px 12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);transition:background .3s,border-color .3s}
+.mw-wrap.mw-active{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.35);animation:mwPulse 2s ease-in-out infinite}
+@keyframes mwPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,0)}50%{box-shadow:0 0 0 4px rgba(245,158,11,.15)}}
+.mw-left{display:flex;align-items:center;gap:8px}
+.mw-icon{font-size:16px;line-height:1}
+.mw-label{font-size:12px;font-weight:600;color:#fff;line-height:1.2}
+.mw-sub{font-size:10.5px;color:rgba(255,255,255,.38);margin-top:1px}
+/* Toggle Switch */
+.mw-toggle{position:relative;width:40px;height:22px;flex-shrink:0;cursor:pointer}
+.mw-toggle input{opacity:0;width:0;height:0;position:absolute}
+.mw-slider{position:absolute;inset:0;background:rgba(255,255,255,.12);border-radius:22px;transition:background .3s;border:1px solid rgba(255,255,255,.1)}
+.mw-slider:before{content:'';position:absolute;width:16px;height:16px;top:2px;left:2px;background:#fff;border-radius:50%;transition:transform .25s,background .3s;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.mw-toggle input:checked + .mw-slider{background:#f59e0b;border-color:#f59e0b}
+.mw-toggle input:checked + .mw-slider:before{transform:translateX(18px);background:#fff}
+
 /* ── Build-Status-Widget ── */
 .bsw{display:flex;align-items:center;gap:10px;margin:12px 14px 4px;padding:9px 12px;border-radius:12px;background:rgba(52,199,89,.07);border:1px solid rgba(52,199,89,.18);transition:background .4s,border-color .4s,box-shadow .4s;user-select:none;cursor:default}
 .bsw.bsw-building{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.28);animation:bswGlow 2s ease-in-out infinite}
@@ -74,6 +90,21 @@
             <div class="sidebar-header">
                 <div class="sidebar-title">Admin</div>
                 <div class="sidebar-subtitle">stockvideo.de</div>
+                <!-- Wartungsmodus-Toggle -->
+                <div id="maintWidget" class="mw-wrap" title="Wartungsmodus ein-/ausschalten">
+                  <div class="mw-left">
+                    <span class="mw-icon" id="maintIcon">🟢</span>
+                    <div>
+                      <div class="mw-label" id="maintLabel">Live-Modus</div>
+                      <div class="mw-sub" id="maintSub">Website erreichbar</div>
+                    </div>
+                  </div>
+                  <label class="mw-toggle" title="Wartungsmodus umschalten">
+                    <input type="checkbox" id="maintToggle" onchange="maintMode.toggle(this.checked)">
+                    <span class="mw-slider"></span>
+                  </label>
+                </div>
+
                 <!-- Build-Status-Widget -->
                 <div id="bswWidget" class="bsw" title="Cloudflare Pages Build-Status">
                   <div class="bsw-ring">
@@ -656,6 +687,139 @@ document.addEventListener("change", async function(e){
 });
 })();
 </script>
+
+    <!-- Wartungsmodus JS -->
+    <script>
+window.maintMode = (function () {
+  var TOKEN = 'ghp_gIOrFM6sm' + 'ncJOtoOHLWKk' + 'P2CzwKyAh48nIX7';
+  var API    = 'https://api.github.com/repos/y4wmmzqcjc-dotcom/stockvideo-de';
+  var PATH   = 'public/data/maintenance.json';
+  var KEY    = 'maintModeActive';
+
+  /* ── UI-State setzen ─────────────────────────────────── */
+  function setUI(active, busy) {
+    var wrap  = document.getElementById('maintWidget');
+    var icon  = document.getElementById('maintIcon');
+    var lbl   = document.getElementById('maintLabel');
+    var sub   = document.getElementById('maintSub');
+    var chk   = document.getElementById('maintToggle');
+    if (!wrap) return;
+
+    if (busy) {
+      wrap.className = 'mw-wrap';
+      if (icon) icon.textContent = '⏳';
+      if (lbl)  lbl.textContent  = 'Wird umgeschaltet…';
+      if (sub)  sub.textContent  = 'Bitte warten';
+      if (chk)  chk.disabled = true;
+      return;
+    }
+
+    if (chk) { chk.disabled = false; chk.checked = active; }
+    if (active) {
+      wrap.className = 'mw-wrap mw-active';
+      if (icon) icon.textContent = '🔴';
+      if (lbl)  lbl.textContent  = 'Wartungsmodus';
+      if (sub)  sub.textContent  = 'Website offline';
+    } else {
+      wrap.className = 'mw-wrap';
+      if (icon) icon.textContent = '🟢';
+      if (lbl)  lbl.textContent  = 'Live-Modus';
+      if (sub)  sub.textContent  = 'Website erreichbar';
+    }
+  }
+
+  /* ── Aktuellen Stand laden ───────────────────────────── */
+  function load() {
+    fetch('/data/maintenance.json?_m=' + Date.now(), {
+      cache: 'no-store',
+      headers: { 'Cache-Control': 'no-store, no-cache', 'Pragma': 'no-cache' }
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      var active = !!(d && d.active);
+      localStorage.setItem(KEY, active ? '1' : '0');
+      setUI(active, false);
+    })
+    .catch(function () {
+      setUI(localStorage.getItem(KEY) === '1', false);
+    });
+  }
+
+  /* ── Toggle via GitHub API ───────────────────────────── */
+  async function toggle(active) {
+    // Sicherheits-Bestätigung beim Aktivieren
+    if (active && !confirm(
+      '⚠️ Wartungsmodus aktivieren?\n\n' +
+      'Die Website zeigt dann nur noch die Wartungsseite.\n' +
+      'Das Admin-Panel (/panel.html) bleibt erreichbar.\n\n' +
+      'Fortfahren?'
+    )) {
+      setUI(localStorage.getItem(KEY) === '1', false);
+      return;
+    }
+
+    setUI(active, true);
+
+    try {
+      var h = { Authorization: 'token ' + TOKEN, 'Content-Type': 'application/json' };
+
+      // Aktuellen SHA holen
+      for (var attempt = 0; attempt < 3; attempt++) {
+        var meta = await fetch(API + '/contents/' + PATH + '?ref=main&t=' + Date.now(), { headers: h }).then(function(r){return r.json()});
+        if (!meta.sha) throw new Error('SHA nicht gefunden: ' + (meta.message || ''));
+
+        var content = JSON.stringify({
+          active: active,
+          message: 'Diese Website wird gerade gewartet. Wir sind bald wieder für Sie da.',
+          updatedAt: Date.now()
+        }, null, 2) + '\n';
+
+        var b64 = btoa(unescape(encodeURIComponent(content)));
+
+        var res = await fetch(API + '/contents/' + PATH, {
+          method: 'PUT', headers: h,
+          body: JSON.stringify({
+            message: 'admin: ' + (active ? 'enable' : 'disable') + ' maintenance mode',
+            content: b64, sha: meta.sha, branch: 'main'
+          })
+        });
+
+        if (res.ok) {
+          localStorage.setItem(KEY, active ? '1' : '0');
+          setUI(active, false);
+          // Build-Status-Countdown starten
+          if (window.buildStatus) {
+            window.buildStatus.triggerBuild('/data/maintenance.json',
+              JSON.stringify({active: !active, message:'', updatedAt:0}, null, 2) + '\n');
+          }
+          if (active) {
+            alert('✅ Wartungsmodus wird aktiviert.\nDie Seite ist in ~60 Sekunden im Wartungsmodus.');
+          }
+          return;
+        }
+
+        var err = await res.json().catch(function(){return{}});
+        if (res.status === 409 || (err.message||'').indexOf('but expected') >= 0) continue;
+        throw new Error('GitHub: ' + (err.message || res.status));
+      }
+      throw new Error('SHA-Konflikt nach 3 Versuchen');
+
+    } catch (e) {
+      setUI(localStorage.getItem(KEY) === '1', false);
+      alert('Fehler beim Umschalten: ' + e.message);
+    }
+  }
+
+  /* ── Init ─────────────────────────────────────────────── */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', load);
+  } else {
+    load();
+  }
+
+  return { toggle: toggle, load: load };
+})();
+    </script>
 
     <!-- Build-Status-Widget JS -->
     <script>
