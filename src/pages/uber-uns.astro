@@ -3,17 +3,864 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Topbar from '../components/Topbar.astro';
 import Footer from '../components/Footer.astro';
 ---
-<BaseLayout title="Über uns" description="Über stockvideo.de. Lizenzfreie Stock Videos aus Deutschland">
+<BaseLayout title="Unternehmen – stockvideo.de" description="Wir sind stockvideo.de. Kuratierte Videoclips für die Filmbranche. Erfahre unsere Mission, Vision und was uns antreibt.">
   <Topbar />
-  <div class="page-content">
-    <h1>Über stockvideo.de</h1>
-    <p>stockvideo.de ist eine deutsche Stockvideoplattform mit Fokus auf kuratierte, lizenzfreie Videoclips in 4K und Full HD. Wir richten uns an Kreative, Agenturen und Unternehmen im DACH Raum.</p>
-    <h2>Unsere Mission</h2>
-    <p>Wir glauben, dass hochwertige Videoinhalte für jeden zugänglich sein sollten. ohne komplizierte Abomodelle und mit klaren Nutzungsrechten nach deutschem Recht. Jeder Clip in unserer Bibliothek ist handverlesen und qualitätsgeprüft.</p>
-    <h2>Was uns auszeichnet</h2>
-    <p>Kein Abozwang: Sie kaufen nur, was Sie brauchen. Deutsche Lizenzen: Klare Rechtssicherheit für den DACH Raum. Kuratierte Qualität: Jeder Clip wird manuell geprüft. Sofortdownload: MP4/MOV direkt nach Kauf, ohne Wasserzeichen.</p>
-    <h2>Made in Germany</h2>
-    <p>Hosting, Recht und Support. alles aus Deutschland. Unsere Server werden über Cloudflare weltweit ausgeliefert, die Daten bleiben in Europa.</p>
-  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       HERO
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="hero-section">
+    <div class="hero-bg">
+      <img src="/images/making-of/making-of-010.jpg" alt="Videograf mit RED Cinema Kamera" class="hero-img" />
+      <div class="hero-overlay"></div>
+      <div class="hero-grain"></div>
+    </div>
+
+    <!-- floating grid lines -->
+    <div class="grid-lines" aria-hidden="true">
+      <div class="gl gl1"></div>
+      <div class="gl gl2"></div>
+      <div class="gl gl3"></div>
+      <div class="gl gl4"></div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="dot-pulse"></span>
+        <span>stockvideo.de — Made in Germany</span>
+      </div>
+      <h1 class="hero-headline">
+        <span class="line-reveal">Wir liefern das</span>
+        <span class="line-reveal delay1">Rohmaterial</span>
+        <span class="line-reveal delay2 accent-line">für große Geschichten.</span>
+      </h1>
+      <p class="hero-sub">
+        Hinter jedem Film, jedem Werbespot, jedem Content-Stück steht ein Bild,
+        das alles sagt. Wir stellen sicher, dass dieses Bild existiert —
+        lizenzfrei, in 4K, bereit für den Moment, wenn er zählt.
+      </p>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num" data-target="1000">0</span><span class="stat-plus">+</span>
+          <span class="stat-label">Kuratierte Clips</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat-item">
+          <span class="stat-num" data-target="4">0</span><span class="stat-unit">K</span>
+          <span class="stat-label">Maximale Auflösung</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat-item">
+          <span class="stat-num" data-target="100">0</span><span class="stat-unit">%</span>
+          <span class="stat-label">Lizenzrechtssicher</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat-item">
+          <span class="stat-num" data-target="0">0</span><span class="stat-unit">€</span>
+          <span class="stat-label">Abokosten</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-hint" aria-hidden="true">
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       EMOTION
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="pillar-section emotion-section reveal-section">
+    <div class="pillar-inner">
+      <div class="pillar-label">
+        <span class="pillar-icon">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 6C20 6 8 13 8 22C8 28.627 13.373 34 20 34C26.627 34 32 28.627 32 22C32 13 20 6 20 6Z" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M20 14V22L25 27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="pillar-tag">01 — Emotion</span>
+      </div>
+      <div class="pillar-content">
+        <h2 class="pillar-title">Film ist Emotion.<br/>Wir liefern den Zündfunken.</h2>
+        <div class="pillar-text">
+          <p>
+            Bewegtbild bewegt Menschen. Nicht weil Pixel perfekt angeordnet sind —
+            sondern weil das richtige Bild zur richtigen Zeit eine Saite anschlägt,
+            die lange nachklingt. Dieses Wissen steckt in jedem Clip, den wir in unsere
+            Bibliothek aufnehmen.
+          </p>
+          <p>
+            Wir kuratieren nicht nach Masse. Wir kuratieren nach Wirkung.
+            Jeder Clip muss bestehen: Würde er im Schnitt einen Moment tragen,
+            der zählt? Wenn nicht, kommt er nicht rein.
+          </p>
+        </div>
+        <div class="pillar-quote">
+          <span class="quote-mark">"</span>
+          Das Bild, das nichts sagt, kostet trotzdem Geld. Das Bild, das alles sagt,
+          ist unbezahlbar — bis jetzt.
+          <span class="quote-mark">"</span>
+        </div>
+      </div>
+    </div>
+    <div class="pillar-visual emotion-visual">
+      <div class="frame-element">
+        <img src="/images/making-of/making-of-030.jpg" alt="Cinema Kamera im Einsatz" loading="lazy" />
+        <div class="frame-border"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       MOTIVATION
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="pillar-section motivation-section reveal-section alt">
+    <div class="pillar-visual motivation-visual">
+      <div class="frame-element">
+        <img src="/images/making-of/making-of-001.jpg" alt="Professionelles Filmteam bei der Arbeit" loading="lazy" />
+        <div class="frame-border"></div>
+      </div>
+      <div class="floating-badge">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <span>Handverlesen</span>
+      </div>
+    </div>
+    <div class="pillar-inner">
+      <div class="pillar-label">
+        <span class="pillar-icon">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" r="12" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M20 14V20L24 24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14 8L20 6L26 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="pillar-tag">02 — Motivation</span>
+      </div>
+      <h2 class="pillar-title">Wir hassen schlechtes Bildmaterial.<br/>Leidenschaftlich.</h2>
+      <div class="pillar-text">
+        <p>
+          Unsere Geschichte beginnt nicht in einer Konferenz — sie beginnt am Set.
+          Als Filmproduzenten wissen wir, wie es sich anfühlt, wenn die Plattform
+          zehntausend Clips hat und keiner davon stimmt. Zu generisch. Zu amerikanisch.
+          Zu gestellt. Zu teuer.
+        </p>
+        <p>
+          Stockvideo.de entstand aus dieser Frustration. Wir wollten eine Bibliothek,
+          die wir selbst täglich nutzen würden — mit echten Motiven, deutschen
+          Landschaften, echter Atmosphäre. Eine Plattform, die die Filmbranche
+          im DACH-Raum versteht.
+        </p>
+      </div>
+      <div class="feature-chips">
+        <div class="chip">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M10 2L12.39 7.26L18 8.27L14 12.14L14.95 17.8L10 15.27L5.05 17.8L6 12.14L2 8.27L7.61 7.26L10 2Z" stroke="currentColor" stroke-width="1.2"/></svg>
+          Jeder Clip manuell geprüft
+        </div>
+        <div class="chip">
+          <svg viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M7 10L9 12L13 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Deutsches Recht
+        </div>
+        <div class="chip">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M10 18C14.418 18 18 14.418 18 10C18 5.582 14.418 2 10 2C5.582 2 2 5.582 2 10C2 14.418 5.582 18 10 18Z" stroke="currentColor" stroke-width="1.2"/><path d="M10 6V10L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Sofortdownload
+        </div>
+        <div class="chip">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M3 10H17M10 3V17" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Kein Abo nötig
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       MISSION — FULL-WIDTH MANIFESTO
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="manifesto-section reveal-section">
+    <div class="manifesto-bg">
+      <img src="/images/making-of/making-of-020.jpg" alt="Filmteam bei Außenaufnahmen" loading="lazy" />
+      <div class="manifesto-overlay"></div>
+    </div>
+    <div class="manifesto-content">
+      <div class="mission-tag">
+        <span class="pillar-icon">
+          <svg viewBox="0 0 40 40" fill="none">
+            <path d="M20 4L22.8 13.6H33L24.6 19.8L27.4 29.4L20 23.2L12.6 29.4L15.4 19.8L7 13.6H17.2L20 4Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>03 — Mission</span>
+      </div>
+      <h2 class="manifesto-headline">
+        Die Filmbranche braucht<br/>
+        <em>das richtige Material.</em><br/>
+        Wir liefern es.
+      </h2>
+      <p class="manifesto-body">
+        Unsere Mission ist klar: Jeder Filmemacher, jede Agentur, jedes Unternehmen
+        im DACH-Raum soll Zugang zu Bildmaterial haben, das wirklich trägt —
+        ohne Kompromisse bei Qualität, Lizenzrecht oder Preis.
+        Wir machen erstklassiges Stockvideo zu einem fairen, verlässlichen Standard.
+      </p>
+      <div class="manifesto-pillars">
+        <div class="m-pillar">
+          <div class="m-icon">
+            <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="11" stroke="currentColor" stroke-width="1.5"/><path d="M16 10V16L20 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <strong>Zeitersparnis</strong>
+          <span>Das richtige Bild in Minuten, nicht Stunden.</span>
+        </div>
+        <div class="m-pillar">
+          <div class="m-icon">
+            <svg viewBox="0 0 32 32" fill="none"><path d="M8 16C8 11.582 11.582 8 16 8C20.418 8 24 11.582 24 16C24 20.418 20.418 24 16 24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M16 24L12 20M16 24L20 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <strong>Rechtssicherheit</strong>
+          <span>Klare Lizenzen nach deutschem Recht.</span>
+        </div>
+        <div class="m-pillar">
+          <div class="m-icon">
+            <svg viewBox="0 0 32 32" fill="none"><rect x="6" y="6" width="20" height="20" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M11 16L14.5 19.5L21 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <strong>Verlässlichkeit</strong>
+          <span>Immer verfügbar. Keine Abo-Fallen.</span>
+        </div>
+        <div class="m-pillar">
+          <div class="m-icon">
+            <svg viewBox="0 0 32 32" fill="none"><path d="M16 4L18.9 12.6H28L20.5 17.8L23.5 26.4L16 21.2L8.5 26.4L11.5 17.8L4 12.6H13.1L16 4Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          </div>
+          <strong>Kuratorische Exzellenz</strong>
+          <span>Nur Clips, die wirklich etwas sagen.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       VISION
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="vision-section reveal-section">
+    <div class="vision-inner">
+      <div class="vision-left">
+        <div class="pillar-label">
+          <span class="pillar-icon">
+            <svg viewBox="0 0 40 40" fill="none">
+              <path d="M20 8C13.373 8 8 13.373 8 20C8 26.627 13.373 32 20 32C26.627 32 32 26.627 32 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M32 8L26 14M32 8H26M32 8V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="pillar-tag">04 — Vision</span>
+        </div>
+        <h2 class="pillar-title">Die Bibliothek,<br/>die die Branche<br/>nicht mehr missen will.</h2>
+        <p class="pillar-text">
+          Wir bauen nicht einfach eine Videoplattform. Wir bauen die Infrastruktur
+          für visuelle Kommunikation im deutschsprachigen Raum — die Quelle, die
+          Redakteure, Agenturen und Filmemacher aufrufen, wenn es darauf ankommt.
+        </p>
+        <p class="pillar-text">
+          Unsere Vision: stockvideo.de wird das, was Google Maps für Navigation ist —
+          unentbehrlich. Wer visuell kommuniziert, denkt zuerst an uns.
+        </p>
+        <a href="/kontakt" class="cta-btn">
+          <span>Zusammenarbeiten</span>
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10H16M12 6L16 10L12 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+      <div class="vision-right">
+        <div class="timeline">
+          <div class="tl-item tl-done">
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <strong>Gründung & Bibliotheksaufbau</strong>
+              <span>Kuratierte Sammlung handverlesener 4K-Clips für den DACH-Markt.</span>
+            </div>
+          </div>
+          <div class="tl-item tl-done">
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <strong>Lizenzmodell & Plattform</strong>
+              <span>Klare Rechtsstruktur, Sofortdownload, faire Preise — kein Abo.</span>
+            </div>
+          </div>
+          <div class="tl-item tl-active">
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <strong>Wachstum & Kuration</strong>
+              <span>1.000+ Clips und stetig mehr. KI-gestützte Suche in Entwicklung.</span>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <strong>Enterprise & API</strong>
+              <span>Direktintegration für Agenturen, Medien und Broadcast-Partner.</span>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <strong>Die Referenz für DACH</strong>
+              <span>Jede Produktion, jede Agentur, jede Redaktion denkt zuerst an uns.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       MAKING-OF GALLERY STRIP
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="gallery-strip reveal-section">
+    <div class="gallery-label">Einblick in unsere Arbeit</div>
+    <div class="gallery-track">
+      <div class="gallery-slide"><img src="/images/making-of/making-of-010.jpg" alt="RED Cinema Kamera" loading="lazy" /></div>
+      <div class="gallery-slide"><img src="/images/making-of/making-of-020.jpg" alt="Outdoor Filmset" loading="lazy" /></div>
+      <div class="gallery-slide"><img src="/images/making-of/making-of-001.jpg" alt="Interview Filmset" loading="lazy" /></div>
+      <div class="gallery-slide"><img src="/images/making-of/making-of-050.jpg" alt="ARRI Kamera" loading="lazy" /></div>
+      <div class="gallery-slide"><img src="/images/making-of/making-of-030.jpg" alt="RED Kamera Setup" loading="lazy" /></div>
+      <div class="gallery-slide"><img src="/images/making-of/making-of-015.jpg" alt="Making of" loading="lazy" /></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       FINAL CTA
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="final-cta reveal-section">
+    <div class="fta-inner">
+      <div class="fta-glow" aria-hidden="true"></div>
+      <div class="fta-tag">Bereit anzufangen?</div>
+      <h2 class="fta-headline">Dein nächstes Projekt.<br/>Unser Bildmaterial.</h2>
+      <p class="fta-sub">Stöbere in über 1.000 kuratierten Clips — oder kontaktiere uns direkt für individuelle Anfragen.</p>
+      <div class="fta-actions">
+        <a href="/" class="btn-cta-primary">Videos entdecken</a>
+        <a href="/kontakt" class="btn-cta-secondary">Kontakt aufnehmen</a>
+      </div>
+    </div>
+  </section>
+
   <Footer />
 </BaseLayout>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STYLES
+═══════════════════════════════════════════════════════════════ -->
+<style>
+  /* ─── Reset & base ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ─── HERO ─── */
+  .hero-section {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    background: #000;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+  }
+  .hero-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+    opacity: 0.55;
+    transform: scale(1.04);
+    animation: slowZoom 20s ease-out forwards;
+  }
+  @keyframes slowZoom {
+    from { transform: scale(1.08); }
+    to   { transform: scale(1.00); }
+  }
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.3) 0%,
+      rgba(0,0,0,0.1) 30%,
+      rgba(0,0,0,0.6) 70%,
+      rgba(0,0,0,0.92) 100%
+    );
+  }
+  .hero-grain {
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  /* grid lines */
+  .grid-lines { position: absolute; inset: 0; pointer-events: none; }
+  .gl {
+    position: absolute; top: 0; bottom: 0; width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent);
+  }
+  .gl1 { left: 25%; } .gl2 { left: 50%; } .gl3 { left: 75%; }
+  .gl4 { left: 0; right: 0; top: auto; bottom: 0; height: 1px; width: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.08), transparent); }
+
+  .hero-content {
+    position: relative; z-index: 2;
+    padding: clamp(80px, 10vw, 140px) clamp(24px, 6vw, 100px) clamp(60px, 8vw, 100px);
+    max-width: 900px;
+  }
+  .hero-eyebrow {
+    display: flex; align-items: center; gap: 12px;
+    color: rgba(255,255,255,0.55);
+    font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase;
+    margin-bottom: 32px;
+    animation: fadeUp 0.8s 0.2s both;
+  }
+  .dot-pulse {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: #e8c97a;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  .hero-headline {
+    display: flex; flex-direction: column;
+    font-size: clamp(42px, 7vw, 88px);
+    font-weight: 800; line-height: 1.05;
+    color: #fff; letter-spacing: -0.02em;
+    margin-bottom: 28px;
+  }
+  .line-reveal {
+    display: block;
+    opacity: 0; transform: translateY(24px);
+    animation: fadeUp 0.7s ease-out forwards;
+  }
+  .delay1 { animation-delay: 0.3s; }
+  .delay2 { animation-delay: 0.55s; }
+  .accent-line { color: #e8c97a; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-sub {
+    font-size: clamp(15px, 1.5vw, 18px); color: rgba(255,255,255,0.65);
+    line-height: 1.7; max-width: 580px;
+    margin-bottom: 48px;
+    animation: fadeUp 0.8s 0.7s both;
+  }
+
+  .hero-stats {
+    display: flex; align-items: center; gap: 0;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s 0.9s both;
+  }
+  .stat-item {
+    display: flex; flex-direction: column;
+    padding: 0 28px 0 0;
+  }
+  .stat-item:first-child { padding-left: 0; }
+  .stat-num {
+    font-size: clamp(28px, 4vw, 44px); font-weight: 800;
+    color: #e8c97a; line-height: 1;
+    display: inline;
+  }
+  .stat-plus, .stat-unit {
+    font-size: clamp(18px, 2.5vw, 28px); font-weight: 700;
+    color: #e8c97a;
+  }
+  .stat-label {
+    font-size: 11px; color: rgba(255,255,255,0.45);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    margin-top: 6px;
+  }
+  .stat-divider {
+    width: 1px; height: 40px; background: rgba(255,255,255,0.15);
+    margin: 0 28px 20px 0;
+    align-self: flex-start; margin-top: 6px;
+  }
+
+  .scroll-hint {
+    position: absolute; bottom: 40px; right: 60px; z-index: 2;
+  }
+  .scroll-line {
+    width: 1px; height: 60px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+    animation: scrollDrop 2s infinite;
+  }
+  @keyframes scrollDrop {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* ─── SHARED PILLAR STYLES ─── */
+  .pillar-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    min-height: 600px;
+    background: #0a0a0b;
+  }
+  .pillar-section.alt { direction: rtl; }
+  .pillar-section.alt > * { direction: ltr; }
+
+  .pillar-inner {
+    padding: clamp(60px, 8vw, 110px) clamp(32px, 5vw, 80px);
+    display: flex; flex-direction: column; justify-content: center;
+    gap: 24px;
+  }
+  .pillar-label {
+    display: flex; align-items: center; gap: 10px;
+    color: #e8c97a;
+  }
+  .pillar-icon {
+    width: 28px; height: 28px; flex-shrink: 0;
+  }
+  .pillar-icon svg { width: 100%; height: 100%; }
+  .pillar-tag {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.18em;
+    color: rgba(232,201,122,0.8);
+  }
+  .pillar-title {
+    font-size: clamp(26px, 3.5vw, 44px); font-weight: 800;
+    color: #fff; line-height: 1.15; letter-spacing: -0.02em;
+  }
+  .pillar-text { color: rgba(255,255,255,0.6); font-size: 15px; line-height: 1.75; }
+  .pillar-text p + p { margin-top: 14px; }
+
+  .pillar-quote {
+    border-left: 2px solid #e8c97a;
+    padding: 14px 20px;
+    font-size: 14px; color: rgba(255,255,255,0.5);
+    font-style: italic; line-height: 1.6;
+    background: rgba(232,201,122,0.04);
+  }
+  .quote-mark { color: #e8c97a; font-style: normal; font-size: 18px; }
+
+  .pillar-visual {
+    position: relative; overflow: hidden;
+    min-height: 500px;
+    background: #111;
+  }
+  .frame-element {
+    position: absolute; inset: 0;
+  }
+  .frame-element img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: brightness(0.7) contrast(1.1);
+    transition: transform 0.8s ease;
+  }
+  .pillar-visual:hover .frame-element img { transform: scale(1.04); }
+  .frame-border {
+    position: absolute; inset: 20px;
+    border: 1px solid rgba(232,201,122,0.2);
+    pointer-events: none;
+  }
+
+  /* feature chips */
+  .feature-chips {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-top: 8px;
+  }
+  .chip {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 13px; color: rgba(255,255,255,0.7);
+  }
+  .chip svg { width: 15px; height: 15px; color: #e8c97a; }
+
+  .floating-badge {
+    position: absolute; bottom: 30px; right: 30px; z-index: 2;
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(232,201,122,0.3);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 13px; color: #e8c97a;
+  }
+  .floating-badge svg { width: 16px; height: 16px; }
+
+  /* ─── MANIFESTO ─── */
+  .manifesto-section {
+    position: relative;
+    min-height: 700px;
+    display: flex; align-items: center;
+    overflow: hidden;
+  }
+  .manifesto-bg {
+    position: absolute; inset: 0;
+  }
+  .manifesto-bg img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: brightness(0.35);
+  }
+  .manifesto-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
+  }
+  .manifesto-content {
+    position: relative; z-index: 2;
+    padding: clamp(60px, 8vw, 100px) clamp(32px, 6vw, 100px);
+    max-width: 1200px;
+    width: 100%;
+  }
+  .mission-tag {
+    display: flex; align-items: center; gap: 10px;
+    color: #e8c97a; margin-bottom: 28px;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.18em;
+  }
+  .mission-tag .pillar-icon svg { width: 28px; height: 28px; }
+  .manifesto-headline {
+    font-size: clamp(32px, 5vw, 62px); font-weight: 800;
+    color: #fff; line-height: 1.15; letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+  .manifesto-headline em { color: #e8c97a; font-style: normal; }
+  .manifesto-body {
+    font-size: clamp(15px, 1.4vw, 17px); color: rgba(255,255,255,0.65);
+    line-height: 1.75; max-width: 600px;
+    margin-bottom: 56px;
+  }
+  .manifesto-pillars {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .m-pillar {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 24px; border-radius: 8px;
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .m-pillar:hover {
+    border-color: rgba(232,201,122,0.4);
+    background: rgba(232,201,122,0.05);
+  }
+  .m-icon {
+    width: 32px; height: 32px; color: #e8c97a; margin-bottom: 4px;
+  }
+  .m-icon svg { width: 100%; height: 100%; }
+  .m-pillar strong { font-size: 14px; color: #fff; font-weight: 700; }
+  .m-pillar span { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+  /* ─── VISION ─── */
+  .vision-section {
+    background: #0a0a0b;
+    padding: clamp(70px, 9vw, 120px) clamp(32px, 6vw, 100px);
+  }
+  .vision-inner {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; max-width: 1200px; margin: 0 auto;
+    align-items: center;
+  }
+  .vision-left { display: flex; flex-direction: column; gap: 24px; }
+  .cta-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #e8c97a; color: #0a0a0b;
+    font-weight: 700; font-size: 14px; letter-spacing: 0.04em;
+    padding: 14px 28px; border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+    width: fit-content; margin-top: 8px;
+  }
+  .cta-btn:hover { background: #f0d98a; transform: translateX(4px); }
+  .cta-btn svg { width: 18px; height: 18px; }
+
+  /* Timeline */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .tl-item {
+    display: flex; gap: 20px;
+    padding: 0 0 32px 0;
+    position: relative;
+  }
+  .tl-item:not(:last-child)::after {
+    content: '';
+    position: absolute; left: 9px; top: 20px;
+    width: 2px; bottom: 0;
+    background: rgba(255,255,255,0.08);
+  }
+  .tl-item.tl-done:not(:last-child)::after { background: rgba(232,201,122,0.3); }
+  .tl-item.tl-active:not(:last-child)::after { background: linear-gradient(to bottom, rgba(232,201,122,0.5), rgba(255,255,255,0.08)); }
+
+  .tl-dot {
+    width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.15);
+    background: #0a0a0b;
+    margin-top: 2px; position: relative; z-index: 1;
+  }
+  .tl-done .tl-dot {
+    border-color: #e8c97a;
+    background: rgba(232,201,122,0.15);
+  }
+  .tl-active .tl-dot {
+    border-color: #e8c97a;
+    background: #e8c97a;
+    box-shadow: 0 0 0 4px rgba(232,201,122,0.2), 0 0 12px rgba(232,201,122,0.4);
+    animation: tlPulse 2s infinite;
+  }
+  @keyframes tlPulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(232,201,122,0.2), 0 0 12px rgba(232,201,122,0.4); }
+    50% { box-shadow: 0 0 0 7px rgba(232,201,122,0.1), 0 0 20px rgba(232,201,122,0.6); }
+  }
+  .tl-body { display: flex; flex-direction: column; gap: 4px; padding-top: 1px; }
+  .tl-body strong { font-size: 14px; font-weight: 700; color: #fff; }
+  .tl-body span { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.5; }
+  .tl-item:not(.tl-done):not(.tl-active) .tl-body strong,
+  .tl-item:not(.tl-done):not(.tl-active) .tl-body span { opacity: 0.4; }
+
+  /* ─── GALLERY STRIP ─── */
+  .gallery-strip {
+    background: #050506;
+    padding: 60px 0 70px;
+    overflow: hidden;
+  }
+  .gallery-label {
+    text-align: center;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 32px;
+  }
+  .gallery-track {
+    display: flex; gap: 16px;
+    padding: 0 clamp(24px, 5vw, 80px);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .gallery-track::-webkit-scrollbar { display: none; }
+  .gallery-slide {
+    flex: 0 0 320px; height: 200px;
+    border-radius: 6px; overflow: hidden;
+    position: relative;
+  }
+  .gallery-slide img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: grayscale(30%) brightness(0.75);
+    transition: filter 0.4s, transform 0.5s;
+  }
+  .gallery-slide:hover img {
+    filter: grayscale(0%) brightness(0.9);
+    transform: scale(1.06);
+  }
+
+  /* ─── FINAL CTA ─── */
+  .final-cta {
+    background: #050506;
+    padding: clamp(80px, 10vw, 140px) clamp(32px, 6vw, 100px);
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .fta-inner { position: relative; z-index: 2; max-width: 680px; margin: 0 auto; }
+  .fta-glow {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 400px;
+    background: radial-gradient(ellipse, rgba(232,201,122,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .fta-tag {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: #e8c97a; margin-bottom: 20px;
+  }
+  .fta-headline {
+    font-size: clamp(32px, 5vw, 56px); font-weight: 800;
+    color: #fff; line-height: 1.15; letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  .fta-sub {
+    font-size: 16px; color: rgba(255,255,255,0.5); line-height: 1.7;
+    margin-bottom: 44px;
+  }
+  .fta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-cta-primary {
+    background: #e8c97a; color: #0a0a0b;
+    font-weight: 700; font-size: 14px;
+    padding: 14px 32px; border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-cta-primary:hover { background: #f0d98a; transform: translateY(-2px); }
+  .btn-cta-secondary {
+    background: transparent; color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.2);
+    font-weight: 600; font-size: 14px;
+    padding: 14px 32px; border-radius: 6px;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, transform 0.2s;
+  }
+  .btn-cta-secondary:hover {
+    border-color: rgba(255,255,255,0.5);
+    color: #fff; transform: translateY(-2px);
+  }
+
+  /* ─── SCROLL REVEAL ─── */
+  .reveal-section {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  }
+  .reveal-section.visible {
+    opacity: 1; transform: translateY(0);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .pillar-section { grid-template-columns: 1fr; }
+    .pillar-section.alt { direction: ltr; }
+    .pillar-visual { min-height: 300px; }
+    .manifesto-pillars { grid-template-columns: 1fr 1fr; }
+    .vision-inner { grid-template-columns: 1fr; gap: 48px; }
+  }
+  @media (max-width: 600px) {
+    .hero-stats { gap: 4px; }
+    .stat-item { padding-right: 16px; }
+    .stat-divider { margin-right: 16px; }
+    .manifesto-pillars { grid-template-columns: 1fr; }
+    .fta-actions { flex-direction: column; align-items: center; }
+  }
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════════════════════ -->
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+  document.querySelectorAll('.reveal-section').forEach(el => observer.observe(el));
+
+  // Counter animation
+  function animateCounter(el) {
+    const target = parseInt(el.dataset.target, 10);
+    if (target === 0) return;
+    const duration = 1600;
+    const start = performance.now();
+    const update = (now) => {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(eased * target).toLocaleString('de-DE');
+      if (p < 1) requestAnimationFrame(update);
+    };
+    requestAnimationFrame(update);
+  }
+
+  const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.stat-num').forEach(animateCounter);
+        statsObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  const heroStats = document.querySelector('.hero-stats');
+  if (heroStats) statsObserver.observe(heroStats);
+</script>
