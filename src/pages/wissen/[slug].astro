@@ -26,9 +26,9 @@ const relatedArticles = (article.internalLinks || [])
 const heroImage = article.heroImage || '/images/making-of/making-of-01.jpg';
 const inlineImages = article.inlineImages || [];
 
-// Matching videos
-import videosData from '../../data/videos.json';
-const sidebarVideos = (videosData || []).slice(0, 3);
+// Sidebar videos – read from public/data (same source the admin writes to)
+import videosData from '../../../public/data/videos.json';
+const allSidebarVideos = (videosData || []).filter((v: any) => v.thumbnail && v.slug);
 
 // Build TOC from sections
 const toc = (article.sections || []).map((s, i) => ({
@@ -283,23 +283,10 @@ function getInlineImage(index) {
           </nav>
         </div>
 
-        <!-- Passende Videos -->
+        <!-- Vorgeschlagene Stockvideos (rotiert per JS bei jedem Seitenaufruf) -->
         <div class="sidebar-box videos-box">
-          <h3>Passende Videos</h3>
-          <div class="sidebar-videos">
-            {sidebarVideos.map((video) => (
-              <a href={`/video/${video.slug}/`} class="sidebar-video-card">
-                <img
-                  src={video.thumbnail}
-                  alt={video.title}
-                  loading="lazy"
-                  width="320"
-                  height="180"
-                />
-                <span class="video-card-title">{video.title}</span>
-              </a>
-            ))}
-          </div>
+          <h3>Vorgeschlagene Stockvideos</h3>
+          <div class="sidebar-videos" id="sidebarVideos"></div>
         </div>
 
         <!-- CTA Box -->
@@ -804,6 +791,22 @@ function getInlineImage(index) {
     }
   }
 </style>
+
+<script define:vars={{ allSidebarVideos }}>
+  // Rotate 5 random suggested videos on each page load
+  (function () {
+    const container = document.getElementById('sidebarVideos');
+    if (!container || !allSidebarVideos || !allSidebarVideos.length) return;
+    const shuffled = allSidebarVideos.slice().sort(() => Math.random() - 0.5);
+    const pick = shuffled.slice(0, 5);
+    container.innerHTML = pick.map(v =>
+      '<a href="/video/' + v.slug + '/" class="sidebar-video-card">' +
+        '<img src="' + v.thumbnail + '" alt="' + (v.title || '') + '" loading="lazy" width="100" height="56">' +
+        '<span class="video-card-title">' + (v.title || '') + '</span>' +
+      '</a>'
+    ).join('');
+  })();
+</script>
 
 <script>
   // TOC active state on scroll
