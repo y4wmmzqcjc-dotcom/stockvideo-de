@@ -16,7 +16,7 @@
 .bsw-ring{position:relative;width:36px;height:36px;flex-shrink:0}
 .bsw-ring svg{width:36px;height:36px;transform:rotate(-90deg)}
 .bsw-track{fill:none;stroke:rgba(255,255,255,.07);stroke-width:2.8}
-.bsw-fill{fill:none;stroke:#34c759;stroke-width:2.8;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke .5s}
+.bsw-fill{fill:none;stroke:#34c759;stroke-width:2.8;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:0;transition:stroke-dashoffset .9s ease-out,stroke .5s}
 .bsw-building .bsw-fill{stroke:#f59e0b}
 .bsw-inner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:#34c759;letter-spacing:-.3px;transition:color .4s,font-size .2s;font-family:-apple-system,'SF Pro Display',sans-serif}
 .bsw-building .bsw-inner{color:#f59e0b;font-size:9.5px}
@@ -652,13 +652,16 @@ document.addEventListener("change", async function(e){
     <!-- Build-Status-Widget JS -->
     <script>
 window.buildStatus = (function () {
-  var BUILD_SEC = 90;        // Cloudflare-Build-Schätzung in Sekunden
-  var KEY       = 'svBuildStart';
-  var _tmr      = null;
+  var BUILD_MAX     = 180;   // Sicherheits-Timeout in Sekunden
+  var POLL_MS       = 5000;  // Polling-Intervall
+  var KEY           = 'svBuild'; // localStorage-Key (JSON)
+  var _tickTmr      = null;
+  var _pollTmr      = null;
 
   function $id(id) { return document.getElementById(id); }
 
-  function render(state, secs) {
+  // ── Visuelles Rendering ──────────────────────────────────────────────────
+  function render(state, elapsed) {
     var w     = $id('bswWidget');
     var fill  = $id('bswFill');
     var inner = $id('bswInner');
@@ -667,59 +670,114 @@ window.buildStatus = (function () {
     if (!w) return;
 
     if (state === 'live') {
-      w.className               = 'bsw';
+      w.className                 = 'bsw';
       fill.style.strokeDashoffset = '0';
-      inner.textContent         = '✓';
-      title.textContent         = 'Live';
-      sub.textContent           = 'Seite ist aktuell';
+      inner.textContent           = '\u2713';
+      title.textContent           = 'Live';
+      sub.textContent             = 'Seite ist aktuell';
 
     } else if (state === 'building') {
-      w.className               = 'bsw bsw-building';
-      // Ring leert sich: offset steigt von 0 → 100 während elapsed wächst
-      var offset = ((BUILD_SEC - secs) / BUILD_SEC * 100).toFixed(1);
-      fill.style.strokeDashoffset = offset;
-      inner.textContent         = secs + 's';
-      title.textContent         = 'Deploying\u2026';
-      sub.textContent           = 'Cloudflare baut';
+      w.className = 'bsw bsw-building';
+      // Ring füllt sich mit der Zeit (leer → voll, max 95%)
+      var pct    = Math.min((elapsed || 0) / BUILD_MAX, 0.95);
+      fill.style.strokeDashoffset = (100 - pct * 100).toFixed(1);
+      var label  = elapsed < 60 ? elapsed + 's'
+                                : Math.floor(elapsed / 60) + 'm' + (elapsed % 60 + 's');
+      inner.textContent = label;
+      title.textContent = 'Deploying\u2026';
+      sub.textContent   = 'Cloudflare baut';
 
     } else if (state === 'done') {
-      w.className               = 'bsw bsw-done';
+      w.className                 = 'bsw bsw-done';
       fill.style.strokeDashoffset = '0';
-      inner.textContent         = '✓';
-      title.textContent         = '\u2713 Deployed!';
-      sub.textContent           = 'Seite ist live';
+      inner.textContent           = '\u2713';
+      title.textContent           = '\u2713 Live!';
+      sub.textContent             = 'Seite ist aktuell';
       setTimeout(function () { render('live'); }, 5000);
     }
   }
 
-  function tick() {
+  // ── localStorage-Helpers ────────────────────────────────────────────────
+  function getInfo() {
     var raw = localStorage.getItem(KEY);
-    if (!raw) { render('live'); return; }
-    var elapsed   = (Date.now() - parseInt(raw, 10)) / 1000;
-    var remaining = Math.ceil(BUILD_SEC - elapsed);
-    if (remaining <= 0) {
-      localStorage.removeItem(KEY);
-      render('done');
-    } else {
-      render('building', remaining);
-    }
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch (e) { localStorage.removeItem(KEY); return null; }
   }
 
-  function triggerBuild() {
-    localStorage.setItem(KEY, String(Date.now()));
+  function markDone() {
+    localStorage.removeItem(KEY);
+    clearInterval(_pollTmr); _pollTmr = null;
+    render('done');
+  }
+
+  // ── 1-s-Tick für die Anzeige ─────────────────────────────────────────────
+  function tick() {
+    var info = getInfo();
+    if (!info) { render('live'); return; }
+    var elapsed = Math.floor((Date.now() - info.start) / 1000);
+    if (elapsed >= BUILD_MAX) { markDone(); return; }
+    render('building', elapsed);
+  }
+
+  // ── Polling: Inhalt mit altem Snapshot vergleichen ───────────────────────
+  function pollCheck() {
+    var info = getInfo();
+    if (!info || !info.url || !info.snapshot) return;
+
+    fetch(info.url + '?_bp=' + Date.now(), {
+      cache: 'no-store',
+      headers: { 'Pragma': 'no-cache', 'Cache-Control': 'no-cache, no-store' }
+    })
+    .then(function (r) { return r.text(); })
+    .then(function (text) {
+      // Inhalt hat sich verändert → Deploy ist live!
+      if (text !== info.snapshot) markDone();
+    })
+    .catch(function () {/* Netzwerkfehler ignorieren */});
+  }
+
+  function startPolling() {
+    clearInterval(_pollTmr);
+    _pollTmr = setInterval(pollCheck, POLL_MS);
+  }
+
+  // ── Öffentliche API ──────────────────────────────────────────────────────
+  // url: welche JSON-Datei gepollt werden soll (z.B. '/data/articles.json')
+  async function triggerBuild(url) {
+    var checkUrl = url || '/data/articles.json';
+
+    // Sofort "building" anzeigen
+    var info = { start: Date.now(), url: checkUrl, snapshot: null };
+    localStorage.setItem(KEY, JSON.stringify(info));
     tick();
+    startPolling();
+
+    // Snapshot des AKTUELLEN Live-Standes holen (= altes Deployment)
+    // Sobald Cloudflare fertig ist, weicht der Live-Stand davon ab → done
+    try {
+      var r    = await fetch(checkUrl + '?_bs=' + Date.now(), {
+        cache: 'no-store',
+        headers: { 'Pragma': 'no-cache', 'Cache-Control': 'no-cache, no-store' }
+      });
+      var text = await r.text();
+      var cur  = getInfo();
+      if (cur) { cur.snapshot = text; localStorage.setItem(KEY, JSON.stringify(cur)); }
+    } catch (e) { /* kein Snapshot → Timer-Fallback */ }
   }
 
+  // ── Initialisierung ──────────────────────────────────────────────────────
   function start() {
-    clearInterval(_tmr);
-    _tmr = setInterval(tick, 1000);
+    clearInterval(_tickTmr);
+    _tickTmr = setInterval(tick, 1000);
+    if (getInfo()) startPolling(); // laufenden Build nach Reload fortsetzen
     tick();
     window.addEventListener('storage', function (e) {
-      if (e.key === KEY) tick();
+      if (e.key !== KEY) return;
+      tick();
+      if (getInfo()) startPolling();
     });
   }
 
-  // Sofort starten (DOM-Elemente existieren bereits)
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', start);
   } else {

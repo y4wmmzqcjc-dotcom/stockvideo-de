@@ -1193,8 +1193,8 @@ window.adminArticles = {
       await this._publishFullList(); // throws on error
     }
 
-    // Only reached on success — trigger build status countdown
-    if (window.buildStatus) window.buildStatus.triggerBuild();
+    // Only reached on success — trigger build status polling
+    if (window.buildStatus) window.buildStatus.triggerBuild('/data/articles.json');
 
     if (btn) {
       btn.textContent = '\u2713 Ver\u00f6ffentlicht!';
