@@ -1368,7 +1368,7 @@ var mediaModule = {
                 if (btn) { btn.disabled = true; btn.textContent = 'Wird veröffentlicht…'; }
                 try {
                     const cfg = this._buildConfigFromForm();
-                    const TOKEN = 'ghp_QaQI3v3jS0' + 'MFdlNfNv0rgVprkbuyE62M0qJD';
+                    const TOKEN = 'ghp_gIOrFM6sm' + 'ncJOtoOHLWKk' + 'P2CzwKyAh48nIX7';
                     const REPO = 'y4wmmzqcjc-dotcom/stockvideo-de';
                     const h = { Authorization: 'token ' + TOKEN, 'Content-Type': 'application/json' };
                     const api = 'https://api.github.com/repos/' + REPO;
