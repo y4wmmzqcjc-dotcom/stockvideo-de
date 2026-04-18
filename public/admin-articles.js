@@ -477,6 +477,19 @@ window.adminArticles = {
       .we-geo-link { color:#60a5fa; font-size:12px; text-decoration:none; }
       .we-geo-link:hover { text-decoration:underline; }
       .we-divider { border:none; border-top:1px solid #2a2a4a; margin:16px 0; }
+      /* Hero image */
+      .we-hero-section { margin:0 0 24px; padding:16px; background:#f0f0f8; border-radius:10px; border:1px solid #dde; }
+      .we-hero-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#666; margin-bottom:10px; }
+      .we-hero-preview { width:100%; max-height:220px; object-fit:cover; border-radius:7px; display:block; margin-bottom:10px; }
+      .we-hero-empty { width:100%; height:120px; background:#e0e0ec; border:2px dashed #bbb; border-radius:7px; display:flex; align-items:center; justify-content:center; color:#999; font-size:13px; margin-bottom:10px; }
+      .we-hero-inputs { display:flex; flex-direction:column; gap:6px; }
+      .we-hero-url, .we-hero-alt { width:100%; border:1px solid #ccc; background:#fff; padding:7px 10px; border-radius:6px; font-size:13px; color:#333; outline:none; font-family:monospace; }
+      .we-hero-url:focus, .we-hero-alt:focus { border-color:#2563eb; }
+      /* Intro / Conclusion */
+      .we-intro-section, .we-conclusion-section { margin:0 0 20px; }
+      .we-section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#888; padding:0 8px 6px; }
+      .we-intro-ta { width:100%; border:1px solid #ddd; background:#fff; padding:12px 14px; border-radius:8px; font-size:15px; color:#333; line-height:1.7; resize:none; outline:none; font-family:inherit; min-height:80px; overflow:hidden; }
+      .we-intro-ta:focus { border-color:#2563eb; box-shadow:0 0 0 2px rgba(37,99,235,0.12); }
     `;
     document.head.appendChild(s);
   },
@@ -547,6 +560,46 @@ window.adminArticles = {
       seoHtml += '<a class="we-geo-link" href="https://www.openstreetmap.org/?mlat=' + geo.lat + '&mlon=' + geo.lng + '#map=14/' + geo.lat + '/' + geo.lng + '" target="_blank">Auf Karte anzeigen &#x2197;</a>';
     }
 
+    // Hero image section
+    var heroSrc = a.heroImage || '';
+    var heroPreviewSrc = heroSrc ? (heroSrc.startsWith('/') ? 'https://stockvideo.de' + heroSrc : heroSrc) : '';
+    var heroHtml = '<div class="we-hero-section">';
+    heroHtml += '<div class="we-hero-label">Headerbild</div>';
+    if (heroPreviewSrc) {
+      heroHtml += '<img class="we-hero-preview" src="' + heroPreviewSrc + '" alt="Hero" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">';
+      heroHtml += '<div class="we-hero-empty" style="display:none">Bild nicht erreichbar</div>';
+    } else {
+      heroHtml += '<div class="we-hero-empty">Noch kein Headerbild</div>';
+    }
+    heroHtml += '<div class="we-hero-inputs">';
+    heroHtml += '<input class="we-hero-url" type="text" placeholder="Bild-Pfad, z.B. /images/making-of/making-of-01.jpg" value="' + (heroSrc).replace(/"/g,'&quot;') + '" onchange="adminArticles._updateMeta(\'heroImage\',this.value);adminArticles._renderBlockEditor()">';
+    heroHtml += '<input class="we-hero-alt" type="text" placeholder="Alt-Text (Bildbeschreibung)" value="' + (a.imageAlt||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateMeta(\'imageAlt\',this.value)">';
+    heroHtml += '</div>';
+    heroHtml += '</div>';
+
+    // Intro section
+    var introHtml = '<div class="we-intro-section">';
+    introHtml += '<div class="we-section-label">Einleitung</div>';
+    introHtml += '<textarea class="we-intro-ta" placeholder="Einleitungstext des Artikels..." oninput="adminArticles._autoResize(this);adminArticles._updateMeta(\'intro\',this.value)">' + (a.intro||'').replace(/</g,'&lt;') + '</textarea>';
+    introHtml += '</div>';
+
+    // Conclusion section
+    var conclusionHtml = '<div class="we-conclusion-section">';
+    conclusionHtml += '<div class="we-section-label">Fazit / Abschluss</div>';
+    conclusionHtml += '<textarea class="we-intro-ta" placeholder="Fazit oder Abschlusstext..." oninput="adminArticles._autoResize(this);adminArticles._updateMeta(\'conclusion\',this.value)">' + (a.conclusion||'').replace(/</g,'&lt;') + '</textarea>';
+    conclusionHtml += '</div>';
+
+    // Publish settings in sidebar
+    var pubHtml = '<hr class="we-divider"><h4>Veroeffentlichung</h4>';
+    pubHtml += '<div class="we-side-field"><label>Status</label><select onchange="adminArticles._updateMeta(\'status\',this.value)">';
+    pubHtml += '<option value="published"' + (a.status==='published'?' selected':'') + '>Oeffentlich</option>';
+    pubHtml += '<option value="draft"' + (a.status==='draft'?' selected':'') + '>Entwurf</option>';
+    pubHtml += '<option value="scheduled"' + (a.status==='scheduled'?' selected':'') + '>Geplant</option>';
+    pubHtml += '</select></div>';
+    pubHtml += '<div class="we-side-field"><label>Veroeffentlichungsdatum</label><input type="date" value="' + (a.publishDate||'') + '" onchange="adminArticles._updateMeta(\'publishDate\',this.value)"></div>';
+    pubHtml += '<div class="we-side-field"><label>Geplant fuer (Datum)</label><input type="date" value="' + (a.scheduledDate||'') + '" onchange="adminArticles._updateMeta(\'scheduledDate\',this.value)"></div>';
+    pubHtml += '<div class="we-side-field"><label>Lesezeit (Minuten)</label><input type="number" min="1" max="60" value="' + (a.readTime||8) + '" onchange="adminArticles._updateMeta(\'readTime\',parseInt(this.value)||8)"></div>';
+
     var html = '<div class="we-wrap">';
     html += '<div class="we-main">';
     html += '<div class="we-topbar">';
@@ -555,6 +608,9 @@ window.adminArticles = {
     html += '</div>';
     html += '<input class="we-title-input" type="text" value="' + (a.title||'').replace(/"/g,'&quot;') + '" placeholder="Titel eingeben..." onchange="adminArticles._updateMeta(\'title\',this.value)">';
     html += '<div class="we-slug-row"><span>/wissen/</span><input type="text" value="' + (a.slug||'') + '" onchange="adminArticles._updateMeta(\'slug\',this.value)"></div>';
+    html += heroHtml;
+    html += introHtml;
+    html += '<div class="we-section-label" style="padding:0 8px 6px;margin-top:20px;">Inhalt</div>';
     html += '<div class="we-blocks" style="padding-left:44px;">';
     html += blocksHtml;
     html += '</div>';
@@ -564,10 +620,12 @@ window.adminArticles = {
     html += '<button onclick="adminArticles.addBlock(\'image\')">+ Bild</button>';
     html += '<button onclick="adminArticles.addBlock(\'quote\')">+ Zitat</button>';
     html += '</div>';
+    html += conclusionHtml;
     html += '</div>';
     html += '<div class="we-side">';
     html += '<h3>SEO & Meta</h3>';
     html += seoHtml;
+    html += pubHtml;
     html += '</div>';
     html += '</div>';
 
@@ -616,7 +674,7 @@ window.adminArticles = {
   },
 
   _autoResizeAll() {
-    var tas = document.querySelectorAll('.we-block textarea');
+    var tas = document.querySelectorAll('.we-block textarea, .we-intro-ta');
     for (var i = 0; i < tas.length; i++) {
       this._autoResize(tas[i]);
     }
@@ -872,27 +930,30 @@ window.adminArticles = {
   saveArticle() {
     const a = this.articles.find(x => x.id == this.currentEditId);
     if (!a) return;
-    var titleEl = document.getElementById('editorTitle');
-    var slugEl = document.getElementById('editorSlug');
-    if (titleEl) a.title = titleEl.value;
-    if (slugEl) a.slug = slugEl.value;
+    // Read intro and conclusion from textareas in DOM
+    var introTa = document.querySelector('.we-intro-section .we-intro-ta');
+    var conclusionTa = document.querySelector('.we-conclusion-section .we-intro-ta');
+    if (introTa) a.intro = introTa.value;
+    if (conclusionTa) a.conclusion = conclusionTa.value;
+    // Rebuild sections from blocks
     a.sections = [];
     var currentSection = {heading:'', paragraphs:[], image:'', imageAlt:''};
     a.blocks.forEach(function(b) {
       if (b.type === 'heading') {
-        if (currentSection.heading || currentSection.text || currentSection.image) {
+        if (currentSection.heading || currentSection.paragraphs && currentSection.paragraphs.length || currentSection.image) {
           a.sections.push(currentSection);
           currentSection = {heading:'', paragraphs:[], image:'', imageAlt:''};
         }
         currentSection.heading = b.content || '';
       } else if (b.type === 'text' || b.type === 'quote') {
-        if (!currentSection.paragraphs) currentSection.paragraphs = []; if (b.content) currentSection.paragraphs.push(b.content);
+        if (!currentSection.paragraphs) currentSection.paragraphs = [];
+        if (b.content) currentSection.paragraphs.push(b.content);
       } else if (b.type === 'image') {
         currentSection.image = b.url || '';
         currentSection.imageAlt = b.alt || '';
       }
     });
-    if (currentSection.heading || currentSection.text || currentSection.image) {
+    if (currentSection.heading || (currentSection.paragraphs && currentSection.paragraphs.length) || currentSection.image) {
       a.sections.push(currentSection);
     }
     this._save();
@@ -914,7 +975,7 @@ window.adminArticles = {
     try {
       const json = JSON.stringify(this.articles, null, 2);
       const b64 = btoa(unescape(encodeURIComponent(json)));
-      const TOKEN = 'ghp_J3gxhc9f' + 'cRa7yxB0AUlp' + 'ERkScyIZjt19LfDh';
+      const TOKEN = 'ghp_aTX6eKHD' + 'ds4rW5YZT4KE' + '1FMqA9WXJz0vzGOI';
       const REPO = 'y4wmmzqcjc-dotcom/stockvideo-de';
       const h = { Authorization: 'token ' + TOKEN, 'Content-Type': 'application/json' };
       const api = 'https://api.github.com/repos/' + REPO;
