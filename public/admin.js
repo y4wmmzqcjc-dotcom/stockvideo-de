@@ -645,6 +645,13 @@ var mediaModule = {
             '<div style="margin-top:12px;padding:12px;background:#0d0d1a;border-radius:8px;font-size:13px;color:#888">' +
               '<strong style="color:#fff">Kostenkalkulator:</strong> 10 GB kostenlos. Danach $0.015/GB/Monat. ' +
               (ovMB > 0 ? '<span style="color:#ff9500">Aktuell: $' + ovCost + '/Monat Mehrkosten</span>' : '<span style="color:#34c759">Aktuell im Free Tier</span>') +
+            '</div>' +
+            '<div style="margin-top:16px;border-top:1px solid rgba(255,255,255,0.08);padding-top:16px;display:flex;align-items:center;justify-content:space-between">' +
+              '<div>' +
+                '<div style="color:#fff;font-size:14px;font-weight:600;margin-bottom:2px">🧹 Speicher bereinigen</div>' +
+                '<div style="color:#888;font-size:12px">Nicht mehr benötigte Dateien (gelöschte Videos) aus R2 entfernen</div>' +
+              '</div>' +
+              '<button onclick="admin.r2Cleanup()" style="padding:8px 16px;background:#1c3a5e;border:1px solid #0099ff;border-radius:8px;color:#0099ff;font-size:13px;cursor:pointer;white-space:nowrap">Analyse starten</button>' +
             '</div>';
         }).catch(function(){
           var box = document.getElementById('_r2box');
@@ -655,6 +662,177 @@ var mediaModule = {
         if (box) box.innerHTML = '<h3 style="margin:0 0 12px;color:#fff;font-size:16px">R2 Speicher</h3><div style="color:#888;font-size:13px">Passwort einmalig über "Veröffentlichen" eingeben, dann wird der Speicher angezeigt.</div>';
       }
       this.refreshDeployStatus();
+    },
+
+    // ===== R2 CLEANUP =====
+    r2Cleanup() {
+      var pw = localStorage.getItem('adminPublishPw') || '';
+      if (!pw) { alert('Bitte zuerst das Admin-Passwort über "Alle Änderungen veröffentlichen" speichern.'); return; }
+      var WORKER = 'https://stockvideo-checkout.rende.workers.dev';
+
+      // Show modal overlay
+      var overlay = document.createElement('div');
+      overlay.id = '_r2cleanup';
+      overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);z-index:99999;display:flex;align-items:center;justify-content:center;';
+      overlay.innerHTML = '<div style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:28px;width:90%;max-width:680px;max-height:80vh;overflow-y:auto">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">' +
+          '<h2 style="margin:0;color:#fff;font-size:18px">🧹 R2 Speicher bereinigen</h2>' +
+          '<button onclick="document.getElementById(\'_r2cleanup\').remove()" style="background:none;border:none;color:#888;font-size:22px;cursor:pointer;line-height:1">&times;</button>' +
+        '</div>' +
+        '<div id="_cleanup_body" style="color:#ccc;font-size:14px">Analysiere R2-Speicher…<br><br><div style="width:100%;height:4px;background:#0d0d1a;border-radius:4px;overflow:hidden"><div id="_cleanup_bar" style="width:0%;height:100%;background:#0099ff;animation:_pulsebar 1.5s ease-in-out infinite alternate"></div></div></div>' +
+      '</div>';
+
+      // Inject keyframe animation
+      if (!document.getElementById('_cleanupStyles')) {
+        var style = document.createElement('style');
+        style.id = '_cleanupStyles';
+        style.textContent = '@keyframes _pulsebar{from{width:15%}to{width:85%}}';
+        document.head.appendChild(style);
+      }
+      document.body.appendChild(overlay);
+
+      fetch(WORKER + '/admin/r2-scan', { headers: { 'X-Admin-Password': pw } })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          var body = document.getElementById('_cleanup_body');
+          if (!body) return;
+          if (!data.ok) { body.innerHTML = '<div style="color:#ff3b30">Fehler: ' + (data.error || 'Unbekannt') + '</div>'; return; }
+
+          if (data.orphanedCount === 0) {
+            body.innerHTML = '<div style="text-align:center;padding:20px">' +
+              '<div style="font-size:40px;margin-bottom:12px">✅</div>' +
+              '<div style="color:#34c759;font-size:16px;font-weight:600">Kein Müll gefunden!</div>' +
+              '<div style="color:#888;font-size:13px;margin-top:8px">Alle ' + data.totalObjects + ' Dateien im R2-Speicher werden aktiv verwendet.</div>' +
+            '</div>';
+            return;
+          }
+
+          function fmt(bytes) {
+            if (bytes >= 1048576) return (bytes/1048576).toFixed(1) + ' MB';
+            if (bytes >= 1024) return (bytes/1024).toFixed(0) + ' KB';
+            return bytes + ' B';
+          }
+
+          var rows = data.orphaned.map(function(o, i) {
+            return '<tr id="_row' + i + '">' +
+              '<td style="padding:8px 10px;width:24px"><input type="checkbox" id="_ck' + i + '" checked style="cursor:pointer" onchange="admin._r2UpdateTotal()"></td>' +
+              '<td style="padding:8px 10px;font-family:monospace;font-size:12px;color:#ccc;word-break:break-all">' + o.key + '</td>' +
+              '<td style="padding:8px 10px;color:#888;font-size:12px;white-space:nowrap;text-align:right">' + fmt(o.size) + '</td>' +
+            '</tr>';
+          }).join('');
+
+          // Store orphaned keys for purge
+          window._r2OrphanKeys = data.orphaned.map(function(o) { return o.key; });
+          window._r2OrphanSizes = data.orphaned.map(function(o) { return o.size; });
+          window._r2OrphanCount = data.orphaned.length;
+
+          body.innerHTML =
+            '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">' +
+              '<div style="background:#0d0d1a;border-radius:8px;padding:14px;text-align:center">' +
+                '<div style="font-size:22px;font-weight:700;color:#ff9500">' + data.orphanedCount + '</div>' +
+                '<div style="font-size:12px;color:#888;margin-top:4px">Verwaiste Dateien</div>' +
+              '</div>' +
+              '<div style="background:#0d0d1a;border-radius:8px;padding:14px;text-align:center">' +
+                '<div style="font-size:22px;font-weight:700;color:#ff9500">' + fmt(data.orphanedBytes) + '</div>' +
+                '<div style="font-size:12px;color:#888;margin-top:4px">Freizumachender Speicher</div>' +
+              '</div>' +
+              '<div style="background:#0d0d1a;border-radius:8px;padding:14px;text-align:center">' +
+                '<div style="font-size:22px;font-weight:700;color:#34c759">' + data.referencedCount + '</div>' +
+                '<div style="font-size:12px;color:#888;margin-top:4px">Genutzte Dateien (sicher)</div>' +
+              '</div>' +
+            '</div>' +
+            '<div style="margin-bottom:14px;display:flex;align-items:center;justify-content:space-between">' +
+              '<div style="color:#fff;font-size:14px;font-weight:600">Verwaiste Dateien auswählen:</div>' +
+              '<div style="display:flex;gap:8px">' +
+                '<button onclick="admin._r2SelectAll(true)" style="padding:4px 10px;background:#1c3a5e;border:1px solid #0099ff;border-radius:6px;color:#0099ff;font-size:12px;cursor:pointer">Alle</button>' +
+                '<button onclick="admin._r2SelectAll(false)" style="padding:4px 10px;background:#1a1a2e;border:1px solid #444;border-radius:6px;color:#888;font-size:12px;cursor:pointer">Keine</button>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:#0d0d1a;border-radius:8px;overflow:hidden;margin-bottom:18px;max-height:260px;overflow-y:auto">' +
+              '<table style="width:100%;border-collapse:collapse"><thead>' +
+                '<tr style="background:#111;border-bottom:1px solid #222">' +
+                  '<th style="padding:8px 10px;width:24px"></th>' +
+                  '<th style="padding:8px 10px;text-align:left;color:#888;font-size:12px;font-weight:500">Datei (R2-Key)</th>' +
+                  '<th style="padding:8px 10px;text-align:right;color:#888;font-size:12px;font-weight:500">Größe</th>' +
+                '</tr></thead><tbody>' + rows + '</tbody></table>' +
+            '</div>' +
+            '<div style="display:flex;align-items:center;justify-content:space-between">' +
+              '<div id="_r2deleteInfo" style="color:#ff9500;font-size:13px">' + fmt(data.orphanedBytes) + ' werden gelöscht (' + data.orphanedCount + ' Dateien)</div>' +
+              '<div style="display:flex;gap:10px">' +
+                '<button onclick="document.getElementById(\'_r2cleanup\').remove()" style="padding:10px 18px;background:#1a1a2e;border:1px solid #444;border-radius:8px;color:#888;font-size:14px;cursor:pointer">Abbrechen</button>' +
+                '<button id="_r2purgeBtn" onclick="admin._r2Purge()" style="padding:10px 18px;background:#ff3b30;border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:600;cursor:pointer">🗑 Auswahl löschen</button>' +
+              '</div>' +
+            '</div>';
+        })
+        .catch(function(e) {
+          var body = document.getElementById('_cleanup_body');
+          if (body) body.innerHTML = '<div style="color:#ff3b30">Verbindungsfehler: ' + e.message + '</div>';
+        });
+    },
+
+    _r2SelectAll(checked) {
+      var count = window._r2OrphanCount || 0;
+      for (var i = 0; i < count; i++) {
+        var ck = document.getElementById('_ck' + i);
+        if (ck) ck.checked = checked;
+      }
+      this._r2UpdateTotal();
+    },
+
+    _r2UpdateTotal() {
+      var count = window._r2OrphanCount || 0;
+      var sizes = window._r2OrphanSizes || [];
+      var total = 0, selected = 0;
+      for (var i = 0; i < count; i++) {
+        var ck = document.getElementById('_ck' + i);
+        if (ck && ck.checked) { total += sizes[i] || 0; selected++; }
+      }
+      function fmt(bytes) {
+        if (bytes >= 1048576) return (bytes/1048576).toFixed(1) + ' MB';
+        if (bytes >= 1024) return (bytes/1024).toFixed(0) + ' KB';
+        return bytes + ' B';
+      }
+      var info = document.getElementById('_r2deleteInfo');
+      if (info) info.textContent = fmt(total) + ' werden gelöscht (' + selected + ' Dateien)';
+    },
+
+    _r2Purge() {
+      var pw = localStorage.getItem('adminPublishPw') || '';
+      var keys = window._r2OrphanKeys || [];
+      var count = window._r2OrphanCount || 0;
+      var selected = [];
+      for (var i = 0; i < count; i++) {
+        var ck = document.getElementById('_ck' + i);
+        if (ck && ck.checked) selected.push(keys[i]);
+      }
+      if (selected.length === 0) { alert('Keine Dateien ausgewählt.'); return; }
+      var btn = document.getElementById('_r2purgeBtn');
+      if (btn) { btn.textContent = 'Wird gelöscht…'; btn.disabled = true; }
+
+      fetch('https://stockvideo-checkout.rende.workers.dev/admin/r2-purge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Password': pw },
+        body: JSON.stringify({ keys: selected })
+      })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          var body = document.getElementById('_cleanup_body');
+          if (!body) return;
+          if (data.ok) {
+            body.innerHTML = '<div style="text-align:center;padding:24px">' +
+              '<div style="font-size:40px;margin-bottom:12px">✅</div>' +
+              '<div style="color:#34c759;font-size:16px;font-weight:600">' + data.deletedCount + ' Dateien erfolgreich gelöscht!</div>' +
+              '<div style="color:#888;font-size:13px;margin-top:8px">Der R2-Speicher ist jetzt bereinigt.</div>' +
+              '<button onclick="document.getElementById(\'_r2cleanup\').remove();admin.updateDashboard()" style="margin-top:20px;padding:10px 20px;background:#34c759;border:none;border-radius:8px;color:#fff;font-size:14px;cursor:pointer">Fertig</button>' +
+            '</div>';
+          } else {
+            body.innerHTML = '<div style="color:#ff3b30">Fehler beim Löschen. Bitte erneut versuchen.</div>';
+          }
+        })
+        .catch(function(e) {
+          var body = document.getElementById('_cleanup_body');
+          if (body) body.innerHTML = '<div style="color:#ff3b30">Verbindungsfehler: ' + e.message + '</div>';
+        });
     },
 
     refreshDeployStatus() {
