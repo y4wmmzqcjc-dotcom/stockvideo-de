@@ -1629,6 +1629,18 @@ var calendarModule = {
         }
     },
 
+    // Compute display status based on date, not stored status field
+    // (real articles all have status:'published' even if future-dated)
+    getDisplayStatus(article) {
+        if (article.status === 'draft') return 'draft';
+        const dateStr = article.scheduledDate || article.publishDate;
+        if (!dateStr) return 'published';
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+        const articleDate = new Date(dateStr + 'T00:00:00');
+        return articleDate > now ? 'scheduled' : 'published';
+    },
+
     render() {
         this.loadArticles();
         const grid = document.getElementById('calendar-grid');
@@ -1659,13 +1671,18 @@ var calendarModule = {
         for (let d = 1; d <= lastDay.getDate(); d++) {
             const dateStr = year + '-' + String(month+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
             const isToday = dateStr === todayStr;
-            const dayArticles = this.articles.filter(a => a.publishDate === dateStr);
-            
+            // Match on scheduledDate first, fallback to publishDate
+            const dayArticles = this.articles.filter(a => {
+                const aDate = a.scheduledDate || a.publishDate;
+                return aDate === dateStr;
+            });
+
             let cellHtml = '<div class="calendar-cell' + (isToday ? ' today' : '') + '" onclick="calendarModule.selectDay(\'' + dateStr + '\')">';
             cellHtml += '<div class="calendar-cell-day">' + d + '</div>';
             dayArticles.forEach(a => {
-                const status = a.status || 'draft';
-                cellHtml += '<div class="calendar-article-pill status-' + status + '" title="' + a.title + '" data-id="' + a.id + '" style="cursor:pointer" onclick="admin.switchPanel(\'articles\');setTimeout(function(){adminArticles.openEditor(\'' + a.id + '\')},100)">' + a.title + '</div>';
+                const displayStatus = this.getDisplayStatus(a);
+                const safeTitle = (a.title || '').replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+                cellHtml += '<div class="calendar-article-pill status-' + displayStatus + '" title="' + safeTitle + '" data-id="' + (a.id||'') + '" onclick="event.stopPropagation();admin.switchPanel(\'articles\');setTimeout(function(){adminArticles.openEditor(\'' + (a.id||'') + '\')},100)">' + (a.title||'') + '</div>';
             });
             cellHtml += '</div>';
             html += cellHtml;
@@ -1694,7 +1711,10 @@ var calendarModule = {
     },
 
     selectDay(dateStr) {
-        const dayArticles = this.articles.filter(a => a.publishDate === dateStr);
+        const dayArticles = this.articles.filter(a => {
+            const aDate = a.scheduledDate || a.publishDate;
+            return aDate === dateStr;
+        });
         const detail = document.getElementById('calendar-day-detail');
         const titleEl = document.getElementById('calendar-detail-title');
         const listEl = document.getElementById('calendar-detail-articles');
@@ -1704,17 +1724,20 @@ var calendarModule = {
             return;
         }
 
-        const d = new Date(dateStr);
-        const opts = { day: 'numeric', month: 'long', year: 'numeric' };
+        const d = new Date(dateStr + 'T12:00:00');
+        const opts = { day: 'numeric', month: 'long', year: 'numeric', weekday: 'long' };
         titleEl.textContent = d.toLocaleDateString('de-DE', opts);
 
         listEl.innerHTML = dayArticles.map(a => {
+            const displayStatus = this.getDisplayStatus(a);
             const colors = { published: '#34c759', scheduled: '#007aff', draft: '#8e8e93' };
-            const labels = { published: 'Veröffentlicht', scheduled: 'Geplant', draft: 'Entwurf' };
-            return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #333;">' +
-                '<span style="width:8px;height:8px;border-radius:50%;background:' + (colors[a.status]||'#888') + ';flex-shrink:0;"></span>' +
-                '<div style="flex:1;"><div style="color:#fff;font-size:14px;">' + a.title + '</div>' +
-                '<div style="color:#888;font-size:12px;">' + (labels[a.status]||'Entwurf') + '</div></div></div>';
+            const labels = { published: 'Live', scheduled: 'Geplant', draft: 'Entwurf' };
+            return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #2a2a2a;cursor:pointer;" onclick="admin.switchPanel(\'articles\');setTimeout(function(){adminArticles.openEditor(\'' + (a.id||'') + '\')},100)">' +
+                '<span style="width:8px;height:8px;border-radius:50%;background:' + (colors[displayStatus]||'#888') + ';flex-shrink:0;"></span>' +
+                '<div style="flex:1;min-width:0;">' +
+                '<div style="color:#fff;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (a.title||'') + '</div>' +
+                '<div style="color:#888;font-size:12px;margin-top:2px;">' + (labels[displayStatus]||'Entwurf') + (a.scheduledTime ? ' &bull; ' + a.scheduledTime + ' Uhr' : '') + '</div>' +
+                '</div><span style="color:#444;font-size:18px;flex-shrink:0;">›</span></div>';
         }).join('');
         detail.style.display = 'block';
     }
