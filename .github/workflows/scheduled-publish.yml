@@ -1,0 +1,35 @@
+name: Scheduled Publish
+
+# Läuft täglich mehrmals, damit Artikel zu verschiedenen Uhrzeiten live gehen.
+# Cloudflare Pages deployt automatisch bei jedem Push auf main.
+# CET (UTC+2 im Sommer):
+#   07:00 UTC = 09:00 CET
+#   11:00 UTC = 13:00 CET
+#   16:00 UTC = 18:00 CET
+
+on:
+  schedule:
+    - cron: '0 7 * * *'   # 09:00 CET
+    - cron: '0 11 * * *'  # 13:00 CET
+    - cron: '0 16 * * *'  # 18:00 CET
+  workflow_dispatch:       # Manuell auslösbar im GitHub Actions Tab
+
+permissions:
+  contents: write
+
+jobs:
+  trigger-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update build timestamp
+        run: |
+          echo "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" > public/last-build.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/last-build.txt
+          git commit -m "chore: scheduled deploy $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push
