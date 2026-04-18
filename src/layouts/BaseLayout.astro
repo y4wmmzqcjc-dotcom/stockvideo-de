@@ -41,42 +41,112 @@ const pageTitle = title === config.siteName ? `${config.siteName}| Lizenzfreie S
   <!-- Wartungsmodus-Check: wird durch /data/maintenance.json gesteuert -->
   <script>
   (function () {
-    // Admin-Panel nie sperren
     if (window.location.pathname.indexOf('/panel') === 0) return;
     fetch('/data/maintenance.json?_mc=' + Date.now(), {
       cache: 'no-store',
       headers: { 'Cache-Control': 'no-store, no-cache', 'Pragma': 'no-cache' }
     })
-    .then(function (r) { return r.json(); })
-    .then(function (d) {
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
       if (!d || !d.active) return;
-      var msg  = d.message || 'Diese Website wird gerade gewartet. Wir sind bald wieder für Sie da.';
+      var msg = (d.message || 'Diese Website wird gerade gewartet. Wir sind bald wieder für Sie da.').replace(/</g,'&lt;');
+
+      /* ── Styles ────────────────────────────────────────────── */
+      var st = document.createElement('style');
+      st.textContent =
+        /* overlay */
+        '#mo{position:fixed;inset:0;z-index:2147483647;background:#05050f;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:-apple-system,"Segoe UI",sans-serif;overflow:hidden;padding:32px 24px;text-align:center}' +
+        /* grid lines */
+        '.mo-gl{position:absolute;inset:0;pointer-events:none}' +
+        '.mo-gl i{position:absolute;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,.05) 20%,rgba(255,255,255,.05) 80%,transparent)}' +
+        '.mo-gl i:nth-child(1){left:25%}.mo-gl i:nth-child(2){left:50%}.mo-gl i:nth-child(3){left:75%}' +
+        '.mo-gl b{position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(to right,transparent,rgba(255,255,255,.06),transparent)}' +
+        /* grain */
+        '.mo-grain{position:absolute;inset:0;pointer-events:none;opacity:.35;background-image:url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'.85\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\' opacity=\'.05\'/%3E%3C/svg%3E")}' +
+        /* scan line */
+        '.mo-scan{position:absolute;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,rgba(232,201,122,.18) 40%,rgba(232,201,122,.18) 60%,transparent);pointer-events:none;animation:moScan 7s ease-in-out infinite}' +
+        '@keyframes moScan{0%,100%{top:0;opacity:0}5%{opacity:1}95%{opacity:.6}99%{top:100%;opacity:0}}' +
+        /* glow */
+        '.mo-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(232,201,122,.06) 0%,transparent 65%);pointer-events:none}' +
+        /* logo */
+        '.mo-logo{position:relative;z-index:2;display:flex;align-items:center;gap:11px;margin-bottom:52px;animation:moUp .8s .1s both}' +
+        '.mo-logo-box{width:42px;height:42px;background:#1555f0;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;letter-spacing:-.5px;flex-shrink:0}' +
+        '.mo-logo-text{font-size:24px;font-weight:800;letter-spacing:-.5px;line-height:1}' +
+        '.mo-logo-text em{color:#fff;font-style:normal}.mo-logo-text b{color:#1555f0}' +
+        /* ring */
+        '.mo-ring-wrap{position:relative;z-index:2;width:148px;height:148px;margin-bottom:36px;animation:moUp .8s .25s both}' +
+        '.mo-ring-wrap svg{width:100%;height:100%}' +
+        '.mo-r1{transform-origin:74px 74px;animation:moSpin 16s linear infinite}' +
+        '.mo-r2{transform-origin:74px 74px;animation:moSpin 9s linear infinite reverse}' +
+        '.mo-r3{transform-origin:74px 74px;animation:moSpin 3.5s ease-in-out infinite}' +
+        '.mo-cdot{animation:moCdot 2s ease-in-out infinite}' +
+        '@keyframes moSpin{to{transform:rotate(360deg)}}' +
+        '@keyframes moCdot{0%,100%{opacity:1}50%{opacity:.35}}' +
+        /* badge */
+        '.mo-badge{position:relative;z-index:2;display:inline-flex;align-items:center;gap:8px;background:rgba(232,201,122,.08);border:1px solid rgba(232,201,122,.22);border-radius:100px;padding:5px 16px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(232,201,122,.85);margin-bottom:18px;animation:moUp .8s .4s both}' +
+        '.mo-bd{width:6px;height:6px;border-radius:50%;background:#e8c97a;animation:moBd 1.4s ease-in-out infinite}' +
+        '@keyframes moBd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.5)}}' +
+        /* title */
+        '.mo-title{position:relative;z-index:2;font-size:clamp(22px,3.5vw,38px);font-weight:800;color:#fff;letter-spacing:-.02em;line-height:1.15;margin:0 0 16px;animation:moUp .8s .55s both}' +
+        /* msg */
+        '.mo-msg{position:relative;z-index:2;font-size:15px;color:rgba(255,255,255,.5);max-width:460px;line-height:1.75;margin:0 auto 36px;animation:moUp .8s .68s both}' +
+        /* divider */
+        '.mo-div{position:relative;z-index:2;width:40px;height:2px;background:rgba(232,201,122,.28);border-radius:2px;margin:0 auto 28px;animation:moUp .8s .78s both}' +
+        /* contact */
+        '.mo-ct{position:relative;z-index:2;font-size:13px;color:rgba(255,255,255,.3);animation:moUp .8s .88s both}' +
+        '.mo-ct a{color:rgba(255,255,255,.48);text-decoration:none;transition:color .2s}' +
+        '.mo-ct a:hover{color:#fff}' +
+        '@keyframes moUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}';
+      document.head.appendChild(st);
+
+      /* ── HTML ──────────────────────────────────────────────── */
       var o = document.createElement('div');
-      o.id = 'maint-overlay';
+      o.id = 'mo';
       o.innerHTML =
-        '<style>' +
-        '#maint-overlay{position:fixed;inset:0;background:#05050f;z-index:2147483647;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:-apple-system,"Segoe UI",sans-serif;padding:24px;text-align:center}' +
-        '.mo-logo{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:48px;opacity:.9}' +
-        '.mo-icon{width:72px;height:72px;border-radius:50%;border:2px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 28px;animation:mo-spin 3s linear infinite}' +
-        '@keyframes mo-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}' +
-        '.mo-title{font-size:clamp(20px,4vw,32px);font-weight:700;color:#fff;margin:0 0 14px;line-height:1.2}' +
-        '.mo-msg{font-size:16px;color:rgba(255,255,255,.55);max-width:480px;line-height:1.6;margin:0 auto 40px}' +
-        '.mo-divider{width:48px;height:2px;background:rgba(255,255,255,.1);margin:0 auto 28px;border-radius:2px}' +
-        '.mo-contact{font-size:14px;color:rgba(255,255,255,.4)}' +
-        '.mo-contact a{color:rgba(255,255,255,.6);text-decoration:none}' +
-        '.mo-contact a:hover{color:#fff}' +
-        '</style>' +
-        '<div class="mo-logo">stockvideo.de</div>' +
-        '<div class="mo-icon">⚙️</div>' +
+        /* grid + grain + scan + glow */
+        '<div class="mo-gl"><i></i><i></i><i></i><b></b></div>' +
+        '<div class="mo-grain"></div>' +
+        '<div class="mo-scan"></div>' +
+        '<div class="mo-glow"></div>' +
+        /* logo */
+        '<div class="mo-logo">' +
+          '<div class="mo-logo-box">sv</div>' +
+          '<div class="mo-logo-text"><em>stockvideo</em><b>.de</b></div>' +
+        '</div>' +
+        /* animated concentric rings */
+        '<div class="mo-ring-wrap">' +
+          '<svg viewBox="0 0 148 148" xmlns="http://www.w3.org/2000/svg">' +
+            /* outer track */
+            '<circle cx="74" cy="74" r="68" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="1"/>' +
+            /* outer dashed spinner */
+            '<circle class="mo-r1" cx="74" cy="74" r="68" fill="none" stroke="rgba(232,201,122,.28)" stroke-width="1" stroke-dasharray="5 13"/>' +
+            /* mid track */
+            '<circle cx="74" cy="74" r="52" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1"/>' +
+            /* mid dotted spinner */
+            '<circle class="mo-r2" cx="74" cy="74" r="52" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="1" stroke-dasharray="3 22"/>' +
+            /* inner track */
+            '<circle cx="74" cy="74" r="36" fill="none" stroke="rgba(232,201,122,.1)" stroke-width="1.5"/>' +
+            /* inner arc spinner — the prominent one */
+            '<circle class="mo-r3" cx="74" cy="74" r="36" fill="none" stroke="#e8c97a" stroke-width="2.5" stroke-dasharray="52 174" stroke-linecap="round"/>' +
+            /* center dot */
+            '<circle class="mo-cdot" cx="74" cy="74" r="4.5" fill="#e8c97a"/>' +
+          '</svg>' +
+        '</div>' +
+        /* status badge */
+        '<div class="mo-badge"><span class="mo-bd"></span>Wartung aktiv</div>' +
+        /* headline */
         '<h1 class="mo-title">Website wird gewartet</h1>' +
-        '<p class="mo-msg">' + msg.replace(/</g,'&lt;') + '</p>' +
-        '<div class="mo-divider"></div>' +
-        '<p class="mo-contact">Fragen? <a href="mailto:info@stockvideo.de">info@stockvideo.de</a> &nbsp;·&nbsp; <a href="tel:+496831 5052856">06831 5052856</a></p>';
+        /* message */
+        '<p class="mo-msg">' + msg + '</p>' +
+        /* gold divider */
+        '<div class="mo-div"></div>' +
+        /* contact */
+        '<p class="mo-ct">Fragen? <a href="mailto:info@stockvideo.de">info@stockvideo.de</a> &nbsp;·&nbsp; <a href="tel:+4968315052856">06831\u202f5052856</a></p>';
+
       document.body.appendChild(o);
-      // Seitentitel anpassen
       document.title = 'Wartung | stockvideo.de';
     })
-    .catch(function () { /* Fehler ignorieren, Seite normal anzeigen */ });
+    .catch(function() {});
   })();
   </script>
 </head>
