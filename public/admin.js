@@ -1293,8 +1293,7 @@ var mediaModule = {
                 this._renderNavLinks(cfg.nav && cfg.nav.links || []);
                 // Footer
                 v('scFooterCopyright', cfg.footer && cfg.footer.copyright);
-                const fcEl = document.getElementById('scFooterColumns');
-                if (fcEl) fcEl.value = JSON.stringify((cfg.footer && cfg.footer.columns) || [], null, 2);
+                this._renderFooterCols((cfg.footer && cfg.footer.columns) || []);
                 // Contact
                 const c = cfg.contact || {};
                 v('scContactName',   c.name);
@@ -1315,6 +1314,53 @@ var mediaModule = {
                         <input class="sc-input" type="text" placeholder="URL z.B. /wissen/" value="${this._esc(l.href||'')}">
                         <button class="sc-nav-del" onclick="this.closest('[data-ni]').remove()" title="Entfernen">×</button>
                     </div>`).join('');
+            },
+
+            _renderFooterCols(cols) {
+                const el = document.getElementById('scFooterCols');
+                if (!el) return;
+                el.innerHTML = cols.map((col, ci) => `
+                    <div class="sc-footer-col" data-ci="${ci}">
+                        <div class="sc-footer-col-head">
+                            <input class="sc-input" type="text" placeholder="Spalten-Titel" value="${this._esc(col.title||'')}">
+                            <button class="sc-col-del" onclick="this.closest('[data-ci]').remove()">× Spalte</button>
+                        </div>
+                        <div class="sc-footer-col-links">
+                            ${(col.links||[]).map(l => `
+                            <div class="sc-nav-row">
+                                <input class="sc-input" type="text" placeholder="Label" value="${this._esc(l.label||'')}" style="flex:0 0 140px">
+                                <input class="sc-input" type="text" placeholder="URL" value="${this._esc(l.href||'')}">
+                                <button class="sc-nav-del" onclick="this.closest('.sc-nav-row').remove()">×</button>
+                            </div>`).join('')}
+                        </div>
+                        <button class="sc-add-btn" onclick="admin.scAddFooterColLink(this)">+ Link</button>
+                    </div>`).join('');
+            },
+
+            scAddFooterCol() {
+                const el = document.getElementById('scFooterCols');
+                if (!el) return;
+                const ci = Date.now();
+                const div = document.createElement('div');
+                div.className = 'sc-footer-col';
+                div.setAttribute('data-ci', ci);
+                div.innerHTML = `
+                    <div class="sc-footer-col-head">
+                        <input class="sc-input" type="text" placeholder="Spalten-Titel">
+                        <button class="sc-col-del" onclick="this.closest('[data-ci]').remove()">× Spalte</button>
+                    </div>
+                    <div class="sc-footer-col-links"></div>
+                    <button class="sc-add-btn" onclick="admin.scAddFooterColLink(this)">+ Link</button>`;
+                el.appendChild(div);
+            },
+
+            scAddFooterColLink(btn) {
+                const linksEl = btn.closest('[data-ci]').querySelector('.sc-footer-col-links');
+                if (!linksEl) return;
+                const div = document.createElement('div');
+                div.className = 'sc-nav-row';
+                div.innerHTML = '<input class="sc-input" type="text" placeholder="Label" style="flex:0 0 140px"><input class="sc-input" type="text" placeholder="URL"><button class="sc-nav-del" onclick="this.closest(\'.sc-nav-row\').remove()">×</button>';
+                linksEl.appendChild(div);
             },
 
             scAddNavLink() {
@@ -1342,8 +1388,15 @@ var mediaModule = {
                     const inputs = r.querySelectorAll('input');
                     return { label: inputs[0].value, href: inputs[1].value };
                 }).filter(l => l.label || l.href);
-                let footerColumns = [];
-                try { footerColumns = JSON.parse(g('scFooterColumns') || '[]'); } catch(e) {}
+                const footerColumns = Array.from(document.querySelectorAll('#scFooterCols [data-ci]')).map(col => {
+                    const titleEl = col.querySelector('input[type="text"]');
+                    const title = titleEl ? titleEl.value : '';
+                    const links = Array.from(col.querySelectorAll('.sc-nav-row')).map(row => {
+                        const inputs = row.querySelectorAll('input');
+                        return { label: inputs[0] ? inputs[0].value : '', href: inputs[1] ? inputs[1].value : '' };
+                    }).filter(l => l.label || l.href);
+                    return { title, links };
+                }).filter(col => col.title || col.links.length > 0);
                 return {
                     siteName: g('scSiteName'),
                     siteUrl: (this.configData || {}).siteUrl || 'https://stockvideo.de',
