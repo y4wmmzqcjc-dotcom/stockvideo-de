@@ -209,7 +209,7 @@ export default {
       if (path.startsWith('/admin/')) {
         if (request.method === 'OPTIONS') { return new Response(null, { headers: { ...CORS_HEADERS } }); }
         const ADMIN_HASH = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';
-        const GH_TOKEN = 'ghp_aTX6eKHDds4rW5YZT4KE1FMqA9WXJz0vzGOI';
+        const GH_TOKEN = env.GH_TOKEN || '';
         const GH_REPO = 'y4wmmzqcjc-dotcom/stockvideo-de';
         const GH_BRANCH = 'main';
         const sha256hex = async (s) => { const b = new TextEncoder().encode(s); const h = await crypto.subtle.digest('SHA-256', b); return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join(''); };
