@@ -4,31 +4,214 @@ import Topbar from '../components/Topbar.astro';
 import Footer from '../components/Footer.astro';
 import config from '../data/config.json';
 ---
-<BaseLayout title="Datenschutz" description="Datenschutzerklärung von stockvideo.de">
+<BaseLayout title="Datenschutzerklärung" description="Datenschutzerklärung von stockvideo.de – Informationen zur Verarbeitung personenbezogener Daten gemäß DSGVO.">
   <Topbar />
-  <div class="page-content">
+  <div class="page-content dse">
+
     <h1>Datenschutzerklärung</h1>
+    <p class="dse-intro">Stand: April 2026 &nbsp;|&nbsp; Verantwortlicher: {config.contact.name}, {config.contact.street}, {config.contact.city}</p>
+
+    <!-- ===== 1. ÜBERBLICK ===== -->
     <h2>1. Datenschutz auf einen Blick</h2>
-    <h3>Allgemeine Hinweise</h3>
-    <p>Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können.</p>
+    <p>Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können. Ausführliche Informationen zum Thema Datenschutz entnehmen Sie den nachfolgenden Abschnitten.</p>
+
     <h3>Datenerfassung auf dieser Website</h3>
-    <p>Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber: {config.contact.name}, {config.contact.street}, {config.contact.city}. Email: <a href={`mailto:${config.contact.email}`}>{config.contact.email}</a></p>
-    <h2>2. Hosting</h2>
-    <p>Diese Website wird bei Cloudflare, Inc. gehostet. Details entnehmen Sie der Datenschutzerklärung von Cloudflare: <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">https://www.cloudflare.com/privacypolicy/</a></p>
-    <h2>3. Allgemeine Hinweise und Pflichtinformationen</h2>
-    <h3>Datenschutz</h3>
-    <p>Die Betreiber dieser Seiten nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend der gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.</p>
-    <h3>Hinweis zur verantwortlichen Stelle</h3>
-    <p>Verantwortlich: {config.contact.name}, {config.contact.street}, {config.contact.city}. Telefon: {config.contact.phone}. Email: {config.contact.email}</p>
-    <h2>4. Datenerfassung auf dieser Website</h2>
-    <h3>Server Logdateien</h3>
-    <p>Der Provider der Seiten erhebt und speichert automatisch Informationen in sogenannten Server Logdateien, die Ihr Browser automatisch an uns übermittelt. Dies sind: Browsertyp und Browserversion, verwendetes Betriebssystem, Referrer URL, Hostname des zugreifenden Rechners, Uhrzeit der Serveranfrage und IP Adresse.</p>
+    <p>Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber. Dessen Kontaktdaten entnehmen Sie dem Abschnitt „Verantwortliche Stelle" dieser Datenschutzerklärung. Personenbezogene Daten werden erhoben, wenn Sie uns diese von sich aus mitteilen (z.&nbsp;B. beim Kaufvorgang oder per Kontaktformular) oder wenn bestimmte Daten beim Seitenaufruf automatisch durch technische Systeme erfasst werden (z.&nbsp;B. Ihre IP-Adresse, Browsertyp, aufgerufene Seiten).</p>
+
+    <h3>Ihre Rechte</h3>
+    <p>Sie haben jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten, deren Herkunft und Empfänger sowie den Zweck der Datenverarbeitung. Darüber hinaus haben Sie ein Recht auf Berichtigung, Einschränkung oder Löschung dieser Daten, auf Datenübertragbarkeit sowie das Recht, Widerspruch gegen die Verarbeitung einzulegen. Liegen die gesetzlichen Voraussetzungen vor, können Sie außerdem eine erteilte Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen. Bei Fragen zu diesem Thema und zu weiteren Datenschutzfragen wenden Sie sich bitte an die im Impressum genannte Kontaktadresse.</p>
+
+    <!-- ===== 2. VERANTWORTLICHE STELLE ===== -->
+    <h2>2. Verantwortliche Stelle</h2>
+    <p>Verantwortlich für die Datenverarbeitung auf dieser Website ist:</p>
+    <p>
+      <strong>{config.contact.name}</strong><br />
+      {config.contact.street}<br />
+      {config.contact.city}<br />
+      Telefon: <a href={`tel:+49${config.contact.phone.replace(/\s/g,'')}`}>{config.contact.phone}</a><br />
+      E-Mail: <a href={`mailto:${config.contact.email}`}>{config.contact.email}</a>
+    </p>
+    <p>Verantwortliche Stelle ist die natürliche oder juristische Person, die allein oder gemeinsam mit anderen über die Zwecke und Mittel der Verarbeitung von personenbezogenen Daten entscheidet.</p>
+
+    <!-- ===== 3. HOSTING & CDN ===== -->
+    <h2>3. Hosting und Content Delivery</h2>
+
+    <h3>Cloudflare Pages (Website-Hosting)</h3>
+    <p>Diese Website wird als statische Website auf den Servern von <strong>Cloudflare, Inc., 101 Townsend St., San Francisco, CA 94107, USA</strong> bereitgestellt (Dienst: Cloudflare Pages). Cloudflare betreibt ein weltweit verteiltes Content-Delivery-Network (CDN). Beim Aufruf unserer Website stellt Cloudflare die HTML-, CSS- und JavaScript-Dateien aus dem Rechenzentrum aus, das Ihnen geografisch am nächsten liegt. Dabei werden technisch notwendige Verbindungsdaten verarbeitet, insbesondere Ihre IP-Adresse, der aufgerufene Pfad, Datum und Uhrzeit des Zugriffs sowie Browser- und Gerätetyp.</p>
+    <p>Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einem sicheren und leistungsfähigen Betrieb der Website). Zwischen uns und Cloudflare besteht ein Auftragsverarbeitungsvertrag (AVV) gemäß Art. 28 DSGVO. Datenschutzerklärung von Cloudflare: <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">cloudflare.com/privacypolicy</a>.</p>
+    <p><strong>Drittlandübermittlung:</strong> Cloudflare hat seinen Sitz in den USA. Die Datenübermittlung erfolgt auf Grundlage der EU-Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO). Cloudflare ist außerdem nach dem EU-U.S. Data Privacy Framework zertifiziert.</p>
+
+    <h3>Cloudflare R2 (Video- und Medienspeicher)</h3>
+    <p>Video- und Mediendateien (Vorschaubilder, Trailer, gekaufte Clips) werden in <strong>Cloudflare R2</strong>, einem Objektspeicher von Cloudflare, Inc., vorgehalten und über das Cloudflare-Netzwerk ausgeliefert. Beim Abruf eines Videos oder Vorschaubilds stellt Ihr Browser eine direkte Verbindung zu einem Cloudflare-Endpunkt her (Domain: <code>pub-*.r2.dev</code>). Dabei werden Ihre IP-Adresse und technische Verbindungsdaten an Cloudflare übermittelt.</p>
+    <p>Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung, soweit Sie ein Video abgerufen haben) bzw. Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse, Medieninhalte bereitstellen zu können). Es gelten dieselben Drittlandübermittlungs-Garantien wie unter „Cloudflare Pages" beschrieben.</p>
+
+    <h3>Cloudflare Workers (Checkout-Backend)</h3>
+    <p>Der Bestellprozess (Auswahl, Warenkorb, Kaufabschluss, Lizenzauslieferung) wird durch eine serverseitige Anwendung auf Basis von <strong>Cloudflare Workers</strong> (Cloudflare, Inc.) verarbeitet. Dabei werden folgende Daten verarbeitet: Name, E-Mail-Adresse, gekaufte Produkte, Bestellsumme, Zahlungsstatus sowie eine technisch zugewiesene Bestell-ID. Die Daten werden für die Vertragserfüllung (Kaufabwicklung, Bereitstellung des Download-Links) benötigt und für die gesetzlich vorgeschriebene Mindestaufbewahrungsdauer (in der Regel zehn Jahre für steuerrelevante Unterlagen gemäß § 147 AO) gespeichert.</p>
+    <p>Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung) und Art. 6 Abs. 1 lit. c DSGVO (rechtliche Verpflichtung). Es besteht ein AVV mit Cloudflare. Drittlandübermittlungs-Garantien: siehe „Cloudflare Pages".</p>
+
+    <!-- ===== 4. WEBFONTS ===== -->
+    <h2>4. Web-Schriftarten (Google Fonts)</h2>
+    <p>Diese Website verwendet <strong>Google Fonts</strong>, einen Dienst der <strong>Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA</strong> (in der EU: Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland). Google Fonts werden direkt von Google-Servern geladen. Beim Aufruf einer Seite mit Google Fonts überträgt Ihr Browser Ihre IP-Adresse und Informationen über Ihren Browser automatisch an Google, damit die Schriftarten ausgeliefert werden können. Wir haben keinen Einfluss auf diese Datenübermittlung.</p>
+    <p>Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer einheitlichen und ansprechenden Darstellung der Website). <strong>Drittlandübermittlung:</strong> Google LLC hat seinen Sitz in den USA. Die Datenübermittlung erfolgt auf Grundlage der EU-Standardvertragsklauseln. Google ist nach dem EU-U.S. Data Privacy Framework zertifiziert. Datenschutzerklärung von Google: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">policies.google.com/privacy</a>. Möchten Sie die Übermittlung vermeiden, können Sie Google Fonts in Ihrem Browser blockieren oder einen Browser verwenden, der Google Fonts lokal zwischenspeichert.</p>
+
+    <!-- ===== 5. ZAHLUNGSANBIETER ===== -->
+    <h2>5. Zahlungsabwicklung</h2>
+
+    <h3>Mollie B.V.</h3>
+    <p>Für die Abwicklung von Zahlungen nutzen wir den Dienst <strong>Mollie B.V., Keizersgracht 313, 1016 EE Amsterdam, Niederlande</strong>. Bei einer Bestellung werden Ihre zur Zahlung erforderlichen Daten (z.&nbsp;B. Kreditkartendaten, Bankverbindung) direkt an Mollie übertragen. Wir selbst speichern keine vollständigen Zahlungsdaten. Mollie verarbeitet die Daten zur Zahlungsabwicklung und auf Grundlage der für Zahlungsdienstleister geltenden regulatorischen Anforderungen.</p>
+    <p>Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung). Zwischen uns und Mollie besteht ein AVV. Datenschutzerklärung von Mollie: <a href="https://www.mollie.com/privacy" target="_blank" rel="noopener noreferrer">mollie.com/privacy</a>.</p>
+
+    <!-- ===== 6. ANALYSE & HEATMAPS ===== -->
+    <h2>6. Analyse und Nutzerverhalten</h2>
+
+    <h3>Microsoft Clarity (Heatmaps und Session-Aufzeichnungen)</h3>
+    <p>Diese Website kann <strong>Microsoft Clarity</strong>, einen Webanalysedienst der <strong>Microsoft Corporation, One Microsoft Way, Redmond, WA 98052-6399, USA</strong>, einsetzen. Microsoft Clarity erstellt Heatmaps (grafische Darstellungen von Mausklicks und Scrollverhalten) und kann anonymisierte Sitzungsaufzeichnungen anfertigen, um die Benutzerfreundlichkeit der Website zu verbessern. Dabei werden unter anderem folgende Daten erhoben: besuchte Seiten, Klick- und Scrollverhalten, Gerättyp, Browser, ungefährer Standort (Land/Region) sowie eine pseudonyme Nutzer-ID.</p>
+    <p><strong>Microsoft Clarity wird nur eingesetzt, wenn eine entsprechende Konfiguration im Verwaltungsbereich der Website vorgenommen wurde. Bis dahin werden durch Microsoft Clarity keine Daten erhoben.</strong> Soweit Microsoft Clarity aktiv ist, erfolgt die Verarbeitung auf Grundlage Ihrer <strong>Einwilligung gemäß Art. 6 Abs. 1 lit. a DSGVO</strong>, die Sie über unser Cookie-Einwilligungstool erteilen können. Sie können Ihre Einwilligung jederzeit für die Zukunft widerrufen.</p>
+    <p><strong>Drittlandübermittlung:</strong> Microsoft Corporation hat seinen Sitz in den USA. Die Datenübermittlung erfolgt auf Grundlage der EU-Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO). Microsoft ist nach dem EU-U.S. Data Privacy Framework zertifiziert. Zwischen uns und Microsoft besteht ein AVV. Datenschutzerklärung von Microsoft: <a href="https://privacy.microsoft.com/de-de/privacystatement" target="_blank" rel="noopener noreferrer">privacy.microsoft.com</a>. Opt-out über Microsoft: <a href="https://account.microsoft.com/privacy" target="_blank" rel="noopener noreferrer">account.microsoft.com/privacy</a>.</p>
+
+    <!-- ===== 7. ADMIN-WERKZEUGE ===== -->
+    <h2>7. Werkzeuge im Verwaltungsbereich (nur für Administratoren)</h2>
+    <p>Der passwortgeschützte Verwaltungsbereich dieser Website nutzt externe Dienste zur Analyse und Optimierung. Diese Dienste werden ausschließlich von autorisierten Administratoren genutzt und verarbeiten keine Daten regulärer Website-Besucher.</p>
+
+    <h3>Google PageSpeed Insights API</h3>
+    <p>Im Verwaltungsbereich können Seitengeschwindigkeitstests über die <strong>Google PageSpeed Insights API</strong> (Google LLC, USA) ausgeführt werden. Dabei werden die zu prüfenden URL(s) dieser Website an die Google-API übermittelt. Es werden keine personenbezogenen Daten von Website-Besuchern an Google übermittelt.</p>
+    <p>Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse des Betreibers an der technischen Optimierung der Website). <strong>Drittlandübermittlung:</strong> USA, auf Grundlage der EU-Standardvertragsklauseln. Datenschutzerklärung: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">policies.google.com/privacy</a>.</p>
+
+    <h3>Google Search Console</h3>
+    <p>Der Verwaltungsbereich bietet eine optionale Verknüpfung mit der <strong>Google Search Console</strong> (Google LLC, USA), einem kostenlosen Webmaster-Dienst von Google. Bei aktiver Verknüpfung werden aggregierte Suchdaten (Impressionen, Klicks, Positionen für bestimmte Suchbegriffe) für die Domain stockvideo.de abgerufen. Dieser Zugriff erfolgt ausschließlich durch den Administrator über OAuth 2.0 und verarbeitet keine personenbezogenen Daten von Website-Besuchern.</p>
+    <p>Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Suchmaschinenoptimierung). <strong>Drittlandübermittlung:</strong> USA, auf Grundlage der EU-Standardvertragsklauseln. Datenschutzerklärung: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">policies.google.com/privacy</a>.</p>
+
+    <!-- ===== 8. SERVER-LOGS & COOKIES ===== -->
+    <h2>8. Server-Logdateien und Cookies</h2>
+
+    <h3>Server-Logdateien</h3>
+    <p>Beim Aufruf dieser Website erhebt und speichert der Hosting-Anbieter (Cloudflare) automatisch Informationen in sogenannten Server-Logdateien, die Ihr Browser übermittelt. Dazu gehören: Browsertyp und -version, verwendetes Betriebssystem, Referrer-URL, Hostname des zugreifenden Rechners, Datum und Uhrzeit der Serveranfrage sowie die IP-Adresse. Diese Daten werden nicht mit anderen Datenquellen zusammengeführt und nach kurzer Zeit automatisch gelöscht.</p>
+    <p>Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einem sicheren und fehlerfreien Betrieb der Website).</p>
+
     <h3>Cookies</h3>
-    <p>Diese Website verwendet keine Trackingcookies. Es werden ausschließlich technisch notwendige Cookies eingesetzt.</p>
-    <h2>5. Zahlungsanbieter</h2>
-    <p>Wir nutzen Mollie B.V. als Zahlungsdienstleister. Bei einer Bestellung werden Ihre Zahlungsdaten direkt an Mollie übermittelt. Weitere Informationen: <a href="https://www.mollie.com/privacy" target="_blank" rel="noopener">https://www.mollie.com/privacy</a></p>
-    <h2>6. Ihre Rechte</h2>
-    <p>Sie haben jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten, deren Herkunft und Empfänger und den Zweck der Datenverarbeitung sowie ein Recht auf Berichtigung oder Löschung dieser Daten. Hierzu sowie zu weiteren Fragen zum Thema Datenschutz können Sie sich jederzeit an uns wenden.</p>
+    <p>Diese Website verwendet keine Tracking- oder Marketing-Cookies. Es werden ausschließlich technisch notwendige Cookies eingesetzt, die für den Betrieb der Website (z.&nbsp;B. Warenkorb, Sitzungsverwaltung) erforderlich sind. Für technisch notwendige Cookies ist keine Einwilligung erforderlich (§ 25 Abs. 2 TTDSG). Sofern zukünftig Analyse-Dienste wie Microsoft Clarity dauerhaft aktiviert werden, wird zuvor Ihre ausdrückliche Einwilligung eingeholt.</p>
+
+    <!-- ===== 9. DRITTLANDÜBERMITTLUNGEN ===== -->
+    <h2>9. Datenübermittlung in Drittländer</h2>
+    <p>Mehrere der auf dieser Website eingesetzten Dienstleister haben ihren Sitz in den Vereinigten Staaten von Amerika (USA), einem Drittland außerhalb des Europäischen Wirtschaftsraums (EWR). Die Übermittlung Ihrer personenbezogenen Daten in die USA erfolgt in diesen Fällen auf Grundlage geeigneter Garantien gemäß Art. 46 Abs. 2 lit. c DSGVO in Form von <strong>EU-Standardvertragsklauseln</strong> (Standard Contractual Clauses, SCC), die von der Europäischen Kommission genehmigt wurden. Zusätzlich sind Cloudflare, Google und Microsoft nach dem <strong>EU-U.S. Data Privacy Framework</strong> zertifiziert, das von der EU-Kommission als angemessenes Schutzniveau anerkannt wurde (Angemessenheitsbeschluss vom 10. Juli 2023). Mollie B.V. hat seinen Sitz in den Niederlanden und unterliegt unmittelbar der DSGVO.</p>
+
+    <p>Eine Übersicht der eingesetzten Dienstleister und ihrer Garantien:</p>
+    <table class="dse-table">
+      <thead>
+        <tr><th>Dienstleister</th><th>Sitz</th><th>Garantie</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Cloudflare, Inc.</td><td>USA</td><td>SCC + EU-U.S. DPF</td></tr>
+        <tr><td>Google LLC / Google Ireland Ltd.</td><td>USA / Irland</td><td>SCC + EU-U.S. DPF</td></tr>
+        <tr><td>Microsoft Corporation</td><td>USA</td><td>SCC + EU-U.S. DPF</td></tr>
+        <tr><td>Mollie B.V.</td><td>Niederlande (EU)</td><td>DSGVO unmittelbar anwendbar</td></tr>
+      </tbody>
+    </table>
+
+    <!-- ===== 10. AUFTRAGSVERARBEITUNG ===== -->
+    <h2>10. Auftragsverarbeitung (AVV)</h2>
+    <p>Wir haben mit allen Dienstleistern, die in unserem Auftrag personenbezogene Daten verarbeiten, einen Vertrag zur Auftragsverarbeitung (AVV) gemäß Art. 28 DSGVO geschlossen. Dies stellt sicher, dass die Verarbeitung Ihrer personenbezogenen Daten nur auf unsere dokumentierten Weisung hin erfolgt und die Daten vertraulich behandelt werden. Die AVV-Vorlagen von Cloudflare und Google werden über die jeweiligen Datenschutz-Portale bereitgestellt; Mollie bietet einen AVV über das Mollie-Dashboard an.</p>
+
+    <!-- ===== 11. KAUFVORGANG & KUNDENDATEN ===== -->
+    <h2>11. Kaufvorgang und Kundendaten</h2>
+    <p>Wenn Sie auf stockvideo.de ein Video oder Paket kaufen, erheben wir die für die Vertragserfüllung notwendigen Daten: Vor- und Nachname, E-Mail-Adresse, gekaufte Produkte, Bestellsumme sowie Zahlungsreferenznummer. Diese Daten werden verwendet, um den Kauf abzuwickeln, den Download-Link bereitzustellen und – soweit gesetzlich vorgeschrieben – Buchungsunterlagen aufzubewahren.</p>
+    <p>Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung) und Art. 6 Abs. 1 lit. c DSGVO (Erfüllung steuerrechtlicher Aufbewahrungspflichten gemäß §§ 146, 147 AO: zehn Jahre). Ihre E-Mail-Adresse wird ausschließlich für die Übermittlung des Download-Links und transaktionale Mitteilungen (z.&nbsp;B. Kaufbestätigung) verwendet. Eine Weitergabe an Dritte zu Werbezwecken erfolgt nicht.</p>
+
+    <!-- ===== 12. IHRE RECHTE ===== -->
+    <h2>12. Ihre Rechte als betroffene Person</h2>
+    <p>Sie haben gegenüber uns folgende Rechte hinsichtlich Ihrer personenbezogenen Daten:</p>
+    <p><strong>Auskunft (Art. 15 DSGVO):</strong> Sie können jederzeit Auskunft darüber verlangen, welche personenbezogenen Daten wir über Sie speichern, zu welchem Zweck und auf welcher Rechtsgrundlage.</p>
+    <p><strong>Berichtigung (Art. 16 DSGVO):</strong> Sind Ihre bei uns gespeicherten Daten unrichtig oder unvollständig, haben Sie das Recht auf unverzügliche Berichtigung.</p>
+    <p><strong>Löschung (Art. 17 DSGVO):</strong> Sie können die Löschung Ihrer personenbezogenen Daten verlangen, sofern keine gesetzlichen Aufbewahrungspflichten entgegenstehen.</p>
+    <p><strong>Einschränkung der Verarbeitung (Art. 18 DSGVO):</strong> Unter bestimmten Voraussetzungen können Sie verlangen, dass wir die Verarbeitung Ihrer Daten einschränken.</p>
+    <p><strong>Datenübertragbarkeit (Art. 20 DSGVO):</strong> Sie haben das Recht, Ihre Daten in einem strukturierten, gängigen und maschinenlesbaren Format zu erhalten und an einen anderen Verantwortlichen zu übermitteln.</p>
+    <p><strong>Widerspruch (Art. 21 DSGVO):</strong> Sie können der Verarbeitung Ihrer Daten, die auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse) erfolgt, jederzeit widersprechen. Wir verarbeiten Ihre Daten dann nicht mehr, es sei denn, wir können zwingende schutzwürdige Gründe für die Verarbeitung nachweisen.</p>
+    <p><strong>Widerruf einer Einwilligung (Art. 7 Abs. 3 DSGVO):</strong> Soweit die Verarbeitung auf Ihrer Einwilligung beruht, können Sie diese jederzeit mit Wirkung für die Zukunft widerrufen. Die Rechtmäßigkeit der bis zum Widerruf erfolgten Verarbeitung bleibt davon unberührt.</p>
+    <p>Zur Ausübung Ihrer Rechte wenden Sie sich bitte an: <a href={`mailto:${config.contact.email}`}>{config.contact.email}</a></p>
+
+    <!-- ===== 13. BESCHWERDERECHT ===== -->
+    <h2>13. Beschwerderecht bei der Aufsichtsbehörde</h2>
+    <p>Wenn Sie der Ansicht sind, dass die Verarbeitung Ihrer personenbezogenen Daten gegen die DSGVO verstößt, haben Sie das Recht auf Beschwerde bei einer Datenschutz-Aufsichtsbehörde (Art. 77 DSGVO). Die für uns zuständige Aufsichtsbehörde ist das <strong>Unabhängige Datenschutzzentrum Saarland</strong>:</p>
+    <p>
+      Unabhängiges Datenschutzzentrum Saarland<br />
+      Fritz-Dobisch-Straße 12<br />
+      66111 Saarbrücken<br />
+      Telefon: +49 (0)681 94781-0<br />
+      E-Mail: <a href="mailto:poststelle@datenschutz.saarland.de">poststelle@datenschutz.saarland.de</a><br />
+      Web: <a href="https://www.datenschutz.saarland.de" target="_blank" rel="noopener noreferrer">www.datenschutz.saarland.de</a>
+    </p>
+
+    <!-- ===== 14. AKTUALITÄT ===== -->
+    <h2>14. Aktualität und Änderungen dieser Datenschutzerklärung</h2>
+    <p>Diese Datenschutzerklärung hat den Stand vom April 2026. Durch die Weiterentwicklung unserer Website oder durch geänderte gesetzliche bzw. behördliche Vorgaben kann es notwendig werden, diese Datenschutzerklärung zu ändern. Die jeweils aktuelle Version ist stets unter <a href="/datenschutz">/datenschutz</a> abrufbar.</p>
+
   </div>
   <Footer />
 </BaseLayout>
+
+<style>
+  .dse {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+    color: var(--text, #e8e8f0);
+    line-height: 1.75;
+  }
+  .dse h1 {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+  .dse-intro {
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: 1.25rem;
+  }
+  .dse h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 2.5rem 0 0.6rem;
+    color: #fff;
+    border-left: 3px solid rgba(255,255,255,0.2);
+    padding-left: 0.75rem;
+  }
+  .dse h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.4rem;
+    color: rgba(255,255,255,0.85);
+  }
+  .dse p {
+    margin: 0 0 1rem;
+    color: rgba(255,255,255,0.65);
+    font-size: 0.925rem;
+  }
+  .dse a {
+    color: rgba(255,255,255,0.75);
+    text-decoration: underline;
+    text-decoration-color: rgba(255,255,255,0.25);
+  }
+  .dse a:hover { color: #fff; }
+  .dse-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    margin: 1rem 0 1.5rem;
+  }
+  .dse-table th {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.7);
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .dse-table td {
+    padding: 0.5rem 0.75rem;
+    color: rgba(255,255,255,0.6);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .dse-table tr:last-child td { border-bottom: none; }
+</style>
