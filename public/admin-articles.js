@@ -187,7 +187,8 @@ window.adminArticles = {
       const statusLabel = displayStatus === 'published' ? '\u00d6ffentlich' : displayStatus === 'scheduled' ? 'Geplant' : 'Entwurf';
       const statusIcon = displayStatus === 'published' ? '\u25CF' : displayStatus === 'scheduled' ? '\u25D0' : '\u25CB';
       const schedDate = a.scheduledDate || a.publishDate;
-      const schedInfo = displayStatus === 'scheduled' && schedDate ? `<span class="aa-sched-date">${this._formatDate(schedDate)}</span>` : '';
+      const schedTime = a.scheduledTime ? ` · ${a.scheduledTime} Uhr` : '';
+      const schedInfo = displayStatus === 'scheduled' && schedDate ? `<span class="aa-sched-date">${this._formatDate(schedDate)}${schedTime}</span>` : '';
       const catColor = a.categoryColor || '#1473e6';
 
       return `
@@ -262,7 +263,8 @@ window.adminArticles = {
   openScheduler(id) {
     const a = this.articles.find(x => x.id == id);
     if (!a) return;
-    const current = a.scheduledDate || '';
+    const currentDate = a.scheduledDate || '';
+    const currentTime = a.scheduledTime || this._randomTime();
     const overlay = document.createElement('div');
     overlay.className = 'aa-overlay';
     overlay.innerHTML = `
@@ -271,11 +273,11 @@ window.adminArticles = {
         <p class="aa-modal-title">${a.title || a.seoTitle}</p>
         <div class="aa-modal-field">
           <label>Veröffentlichungsdatum:</label>
-          <input type="date" id="aa-sched-input" value="${current}" min="${new Date().toISOString().split('T')[0]}">
+          <input type="date" id="aa-sched-input" value="${currentDate}" min="${new Date().toISOString().split('T')[0]}">
         </div>
         <div class="aa-modal-field">
           <label>Uhrzeit:</label>
-          <input type="time" id="aa-sched-time" value="09:00">
+          <input type="time" id="aa-sched-time" value="${currentTime}">
         </div>
         <div class="aa-modal-actions">
           <button class="aa-btn" onclick="this.closest('.aa-overlay').remove()">Abbrechen</button>
@@ -286,12 +288,23 @@ window.adminArticles = {
     document.body.appendChild(overlay);
   },
 
+  /* Returns a random natural-looking time */
+  _randomTime() {
+    const morning = ['07:05','07:23','07:41','07:58','08:02','08:17','08:33','08:51','09:00','09:09','09:27','09:44','10:03','10:18','10:35','10:52','11:01','11:17','11:34','11:48'];
+    const evening = ['13:07','13:24','13:41','13:58','14:12','14:31','14:47','15:03','15:22','15:38','15:55','16:11','16:29','16:44','17:00','17:18','17:35','17:51','18:08','18:22','18:39','18:57','19:14','19:31','19:48','20:03','20:17','20:33','20:46','21:00'];
+    const pool = Math.random() < 0.5 ? morning : evening;
+    return pool[Math.floor(Math.random() * pool.length)];
+  },
+
   setSchedule(id) {
     const a = this.articles.find(x => x.id == id);
     if (!a) return;
     const dateVal = document.getElementById('aa-sched-input').value;
     if (!dateVal) { alert('Bitte Datum wählen'); return; }
+    const timeVal = document.getElementById('aa-sched-time').value || this._randomTime();
     a.scheduledDate = dateVal;
+    a.publishDate   = dateVal;
+    a.scheduledTime = timeVal;
     a.status = 'scheduled';
     this._save();
     document.querySelector('.aa-overlay')?.remove();
