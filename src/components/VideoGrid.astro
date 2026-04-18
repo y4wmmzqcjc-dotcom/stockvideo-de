@@ -1,21 +1,20 @@
 ---
 import videos from '../../public/data/videos.json';
+import categoriesData from '../../public/data/categories.json';
 ---
 <section>
   <div class="video-grid" id="videoGrid"></div>
   <div class="no-results" id="noResults">
     <div class="no-results-icon">&#x2315;</div>
     <h3>Keine Ergebnisse</h3>
-    <p>Versuch einen anderen Suchbegriff oder wÃ¤hle eine Kategorie.</p>
+    <p>Versuch einen anderen Suchbegriff oder wähle eine Kategorie.</p>
   </div>
 </section>
 
-<script define:vars={{ videos }}>
-const catLabels = {
-  all:"Alle Videos", natur:"Natur & Landschaft", business:"Business & BÃ¼ro",
-  tech:"Technologie", aerial:"Aerial & Drohne", urban:"Stadt & Architektur",
-  menschen:"Menschen & Lifestyle", abstrakt:"Abstrakt & Motion", timelapse:"Timelapse"
-};
+<script define:vars={{ videos, categoriesData }}>
+// Build catLabels dynamically from categories.json
+const catLabels = { all: "Alle Videos" };
+(categoriesData || []).forEach(c => { if (c.dataCat || c.slug) catLabels[c.dataCat || c.slug] = c.label; });
 
 let state = { search:"", cat:"all", res:"all", sort:"relevant" };
 
