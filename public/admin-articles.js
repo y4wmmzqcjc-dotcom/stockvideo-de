@@ -39,6 +39,7 @@ window.adminArticles = {
           this.articles = [];
         }
         this._ensureStatusFields();
+        this._initialized = true;
         this.renderList();
       });
   },
@@ -1023,15 +1024,27 @@ window.adminArticles = {
     this.renderList();
   },
 
-  saveArticle() {
+  async saveArticle() {
     const a = this.articles.find(x => x.id == this.currentEditId);
     if (!a) return;
-    // Read intro and conclusion from textareas in DOM
+
+    // 1. Flush contenteditable blocks from the DOM into a.blocks
+    //    (oninput fires on every keystroke, but this catches any edge cases
+    //    e.g. paste / drag-drop that might race with the button click)
+    var self = this;
+    document.querySelectorAll('.we-block[data-idx]').forEach(function(blockEl) {
+      var idx = parseInt(blockEl.getAttribute('data-idx'));
+      var ce = blockEl.querySelector('.we-ce');
+      if (ce && !isNaN(idx)) self._updateBlock(idx, 'content', ce.innerHTML);
+    });
+
+    // 2. Read intro and conclusion from textareas in DOM
     var introTa = document.querySelector('.we-intro-section .we-intro-ta');
     var conclusionTa = document.querySelector('.we-conclusion-section .we-intro-ta');
     if (introTa) a.intro = introTa.value;
     if (conclusionTa) a.conclusion = conclusionTa.value;
-    // Rebuild sections from blocks
+
+    // 3. Rebuild sections from blocks
     a.sections = [];
     var currentSection = {heading:'', paragraphs:[], image:'', imageAlt:''};
     a.blocks.forEach(function(b) {
@@ -1052,17 +1065,40 @@ window.adminArticles = {
     if (currentSection.heading || (currentSection.paragraphs && currentSection.paragraphs.length) || currentSection.image) {
       a.sections.push(currentSection);
     }
+
+    // 4. Persist to localStorage immediately
     this._save();
-    this.showAlert('Artikel gespeichert! Wird veröffentlicht…', 'success');
-    this.publishToGitHub();
+
+    // 5. Update save button to show progress
+    var saveBtn = document.querySelector('.we-save');
+    if (saveBtn) { saveBtn.textContent = 'Wird veröffentlicht…'; saveBtn.disabled = true; saveBtn.style.background = '#f59e0b'; }
+
+    // 6. Push to GitHub and wait for the result
+    try {
+      await this.publishToGitHub();
+      if (saveBtn) {
+        saveBtn.textContent = '✓ Gespeichert';
+        saveBtn.style.background = '#34c759';
+        setTimeout(function() {
+          if (saveBtn) { saveBtn.textContent = 'Speichern & Veröffentlichen'; saveBtn.disabled = false; saveBtn.style.background = ''; }
+        }, 3000);
+      }
+      this.showAlert('Artikel erfolgreich veröffentlicht!', 'success');
+    } catch (e) {
+      if (saveBtn) { saveBtn.textContent = 'Speichern & Veröffentlichen'; saveBtn.disabled = false; saveBtn.style.background = ''; }
+      this.showAlert('Fehler beim Veröffentlichen: ' + e.message, 'error');
+    }
   },
 
   showAlert(msg, type) {
     const el = document.createElement('div');
-    el.style.cssText = 'position:fixed;top:20px;right:20px;padding:12px 20px;border-radius:8px;color:#fff;font-size:14px;z-index:10000;transition:opacity 0.3s;' + (type === 'success' ? 'background:#34c759' : 'background:#ff3b30');
+    // Errors stay 6 s so they're actually readable; success fades after 3 s
+    const duration = (type === 'success') ? 3000 : 6000;
+    el.style.cssText = 'position:fixed;top:20px;right:20px;padding:14px 22px;border-radius:8px;color:#fff;font-size:14px;z-index:10000;transition:opacity 0.4s;max-width:420px;line-height:1.4;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.3);' + (type === 'success' ? 'background:#34c759' : 'background:#ff3b30');
     el.textContent = msg;
+    el.addEventListener('click', function() { el.style.opacity = '0'; setTimeout(() => el.remove(), 400); });
     document.body.appendChild(el);
-    setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 2000);
+    setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 400); }, duration);
   },
 
   /* ---------- PUBLISH TO GITHUB ---------- */
@@ -1146,22 +1182,24 @@ window.adminArticles = {
   },
 
   async publishToGitHub() {
+    // When called from the list-view "Alle Änderungen veröffentlichen" button
     const btn = document.querySelector('.aa-btn-save');
     if (btn) { btn.textContent = 'Wird veröffentlicht...'; btn.disabled = true; }
-    try {
-      const id = this.currentEditId;
-      if (id) {
-        await this.publishArticlePatch(id);
-      } else {
-        await this._publishFullList();
-      }
-      if (btn) { btn.textContent = '\u2713 Veröffentlicht!'; btn.style.background = '#10b981'; }
+
+    const id = this.currentEditId;
+    if (id) {
+      await this.publishArticlePatch(id); // throws on error
+    } else {
+      await this._publishFullList(); // throws on error
+    }
+
+    // Only reached on success
+    if (btn) {
+      btn.textContent = '\u2713 Ver\u00f6ffentlicht!';
+      btn.style.background = '#10b981';
       setTimeout(() => {
         if (btn) { btn.textContent = 'Alle \u00c4nderungen ver\u00f6ffentlichen'; btn.disabled = false; btn.style.background = ''; }
       }, 3000);
-    } catch (e) {
-      alert('Fehler beim Veröffentlichen:\n' + e.message);
-      if (btn) { btn.textContent = 'Alle \u00c4nderungen ver\u00f6ffentlichen'; btn.disabled = false; }
     }
   },
 
@@ -1240,9 +1278,16 @@ window.adminArticles = {
       });
     }
 
-    // Init articles module when switching to articles
+    // Init articles module when switching to articles.
+    // Only do the full server-fetch init once per page load.
+    // After that, just re-render from memory so in-flight edits are never
+    // overwritten by a stale /data/articles.json from the CDN.
     if (name === 'articles') {
-      adminArticles.init();
+      if (!adminArticles._initialized) {
+        adminArticles.init();
+      } else {
+        adminArticles.renderList();
+      }
     }
   };
 })();
