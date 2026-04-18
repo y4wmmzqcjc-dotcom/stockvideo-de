@@ -765,35 +765,44 @@
 }
 .calendar-grid {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 1px;
     background: #333;
     border-radius: 8px;
     overflow: hidden;
     margin-bottom: 20px;
+    width: 100%;
+    table-layout: fixed;
 }
 .calendar-header-cell {
     background: #252525;
-    padding: 10px;
+    padding: 10px 4px;
     text-align: center;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     color: #999;
     text-transform: uppercase;
+    min-width: 0;
 }
 .calendar-cell {
     background: #1e1e1e;
     min-height: 90px;
-    padding: 8px;
+    max-height: 160px;
+    padding: 8px 6px;
     cursor: pointer;
     transition: background 0.2s;
     position: relative;
+    min-width: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 .calendar-cell:hover {
     background: #252525;
 }
 .calendar-cell.today {
     background: rgba(0,122,255,0.08);
+    border: 1px solid rgba(0,122,255,0.25);
 }
 .calendar-cell.other-month {
     opacity: 0.3;
@@ -802,32 +811,38 @@
     font-size: 12px;
     font-weight: 600;
     color: #ccc;
-    margin-bottom: 6px;
+    margin-bottom: 5px;
+    flex-shrink: 0;
 }
 .calendar-cell.today .calendar-cell-day {
     color: #007aff;
+    font-size: 13px;
 }
 .calendar-article-pill {
     font-size: 10px;
-    padding: 3px 6px;
+    padding: 2px 5px;
     border-radius: 4px;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     color: #fff;
     cursor: pointer;
+    min-width: 0;
+    max-width: 100%;
+    display: block;
+    line-height: 1.5;
 }
 .calendar-article-pill.status-published {
-    background: rgba(52,199,89,0.3);
+    background: rgba(52,199,89,0.25);
     border-left: 3px solid #34c759;
 }
 .calendar-article-pill.status-scheduled {
-    background: rgba(0,122,255,0.3);
+    background: rgba(0,122,255,0.25);
     border-left: 3px solid #007aff;
 }
 .calendar-article-pill.status-draft {
-    background: rgba(142,142,147,0.3);
+    background: rgba(142,142,147,0.2);
     border-left: 3px solid #8e8e93;
 }
 .calendar-day-detail {
@@ -835,6 +850,12 @@
     border-radius: 8px;
     padding: 20px;
     margin-top: 12px;
+}
+@media (max-width: 768px) {
+    .calendar-header-cell { font-size: 9px; padding: 6px 2px; }
+    .calendar-cell { min-height: 60px; padding: 5px 3px; }
+    .calendar-cell-day { font-size: 11px; }
+    .calendar-article-pill { font-size: 9px; padding: 1px 3px; }
 }
 
 /* ===== MEDIENDATENBANK ===== */
