@@ -103,7 +103,7 @@ var mediaModule = {
         if (!grid) return;
 
         let filtered = this.items;
-        const search = (document.getElementById('media-search')?.value || '').toLowerCase();
+        const search = ((document.getElementById('media-search') ? document.getElementById('media-search').value : '') || '').toLowerCase();
 
         if (this.currentFilter !== 'alle') {
             if (this.currentFilter === 'unbenutzt') {
@@ -374,21 +374,26 @@ var mediaModule = {
 
             verifyPassword() {
                 const password = document.getElementById('passwordInput').value;
-                const alert = document.getElementById('passwordAlert');
+                const alertEl = document.getElementById('passwordAlert');
 
                 if (!password) {
-                    alert.innerHTML = '<div class="alert alert-error">Bitte geben Sie ein Passwort ein</div>';
+                    if (alertEl) alertEl.innerHTML = '<div class="alert alert-error">Bitte geben Sie ein Passwort ein</div>';
                     return;
                 }
 
-                const hash = CryptoJS.SHA256(password).toString();
-                const correctHash = localStorage.getItem('adminPasswordHash');
+                try {
+                    const hash = CryptoJS.SHA256(password).toString();
+                    const correctHash = localStorage.getItem('adminPasswordHash');
 
-                if (hash === correctHash) {
-                    alert.innerHTML = '';
-                    this.startOTPProcess();
-                } else {
-                    alert.innerHTML = '<div class="alert alert-error">Falsches Passwort</div>';
+                    if (hash === correctHash) {
+                        if (alertEl) alertEl.innerHTML = '';
+                        this.startOTPProcess();
+                    } else {
+                        if (alertEl) alertEl.innerHTML = '<div class="alert alert-error">Falsches Passwort</div>';
+                    }
+                } catch(e) {
+                    if (alertEl) alertEl.innerHTML = '<div class="alert alert-error">Fehler: ' + e.message + '</div>';
+                    console.error('verifyPassword error:', e);
                 }
             },
 
@@ -863,7 +868,7 @@ var mediaModule = {
 
                 const gradientInputs = document.querySelectorAll('#videoModalGradients .form-row');
                 const gradient = Array.from(gradientInputs).map((row, idx) => ({
-                    color: row.querySelector(`.gradient-color-${idx}`)?.value || '#1473e6',
+                    color: row.querySelector(`.gradient-color-${idx}`) ? document.getElementById(`gradient-color-${idx}`).value : '#1473e6',
                     position: parseInt(row.querySelector('input[type="number"]').value) || 0
                 }));
 
@@ -1072,9 +1077,9 @@ var mediaModule = {
 
             renderPageContent() {
                 // Hero
-                document.getElementById('contentHeroTitle').value = this.content.hero?.title || '';
-                document.getElementById('contentHeroSubtitle').value = this.content.hero?.subtitle || '';
-                document.getElementById('contentHeroSearchPlaceholder').value = this.content.hero?.searchPlaceholder || '';
+                document.getElementById('contentHeroTitle').value = (this.content.hero && this.content.hero.title) || '';
+                document.getElementById('contentHeroSubtitle').value = (this.content.hero && this.content.hero.subtitle) || '';
+                document.getElementById('contentHeroSearchPlaceholder').value = (this.content.hero && this.content.hero.searchPlaceholder) || '';
 
                 // Features
                 const featuresContainer = document.getElementById('contentFeaturesContainer');
@@ -1139,16 +1144,16 @@ var mediaModule = {
                 `).join('');
 
                 // Nav
-                document.getElementById('contentNavLinks').value = (this.content.nav?.links || []).join(', ');
-                document.getElementById('contentNavCTA').value = this.content.nav?.ctaText || '';
+                document.getElementById('contentNavLinks').value = ((this.content.nav && this.content.nav.links) || []).join(', ');
+                document.getElementById('contentNavCTA').value = (this.content.nav && this.content.nav.ctaText) || '';
 
                 // Footer
-                document.getElementById('contentFooterCopyright').value = this.content.footer?.copyright || '';
-                document.getElementById('contentFooterColumns').value = JSON.stringify(this.content.footer?.columns || [], null, 2);
+                document.getElementById('contentFooterCopyright').value = (this.content.footer && this.content.footer.copyright) || '';
+                document.getElementById('contentFooterColumns').value = JSON.stringify((this.content.footer && this.content.footer.columns) || [], null, 2);
 
                 // SEO
-                document.getElementById('contentSEOTitle').value = this.content.seo?.title || '';
-                document.getElementById('contentSEODescription').value = this.content.seo?.description || '';
+                document.getElementById('contentSEOTitle').value = (this.content.seo && this.content.seo.title) || '';
+                document.getElementById('contentSEODescription').value = (this.content.seo && this.content.seo.description) || '';
             },
 
             savePageContent() {
@@ -1285,14 +1290,14 @@ var mediaModule = {
             loadSettings() {
                 const settings = auth.loadSettings();
 
-                document.getElementById('settings2faServiceId').value = settings.emailJS?.serviceId || '';
-                document.getElementById('settings2faTemplateId').value = settings.emailJS?.templateId || '';
-                document.getElementById('settings2faPublicKey').value = settings.emailJS?.publicKey || '';
+                document.getElementById('settings2faServiceId').value = settings.emailJS.serviceId || '';
+                document.getElementById('settings2faTemplateId').value = settings.emailJS.templateId || '';
+                document.getElementById('settings2faPublicKey').value = settings.emailJS.publicKey || '';
                 document.getElementById('settings2faEmail').value = settings.adminEmail || '';
 
-                document.getElementById('settingsGitHubToken').value = settings.gitHub?.token || '';
-                document.getElementById('settingsGitHubRepo').value = settings.gitHub?.repo || 'y4wmmzqcjc-dotcom/stockvideo-de';
-                document.getElementById('settingsGitHubBranch').value = settings.gitHub?.branch || 'main';
+                document.getElementById('settingsGitHubToken').value = settings.gitHub.token || '';
+                document.getElementById('settingsGitHubRepo').value = settings.gitHub.repo || 'y4wmmzqcjc-dotcom/stockvideo-de';
+                document.getElementById('settingsGitHubBranch').value = settings.gitHub.branch || 'main';
             },
 
             changePassword() {
