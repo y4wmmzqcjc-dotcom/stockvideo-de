@@ -81,9 +81,22 @@
   window.makeWatermarkPng=makeWatermarkPng;
 
   function pickMime(){
+    if(typeof MediaRecorder==='undefined') return '';
+    // Safari throws "The string did not match the expected pattern." when mimeType is
+    // specified but the encoder rejects it at construction time — even if isTypeSupported()
+    // returned true.  Work around by verifying via a dummy constructor.
     const cands=['video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm'];
-    for(const m of cands) if(MediaRecorder.isTypeSupported(m)) return m;
-    return 'video/webm';
+    for(const m of cands){
+      if(!MediaRecorder.isTypeSupported(m)) continue;
+      try{
+        // Verify the mimeType actually works at construction time
+        const s=document.createElement('canvas').captureStream();
+        const r=new MediaRecorder(s,{mimeType:m});
+        r.stop();
+        return m;
+      }catch(e){}
+    }
+    return ''; // Let the browser choose (Safari default — mp4 on macOS/iOS)
   }
 
   async function recordPreview(file, targetH, hoverDur, videoId, onStatus){
@@ -105,15 +118,22 @@
     v.currentTime=0;
     await new Promise(r=>{v.onseeked=r;});
 
-    const stream=c.captureStream(24);
+    const stream=(c.captureStream||c.mozCaptureStream).call(c,24);
     const mime=pickMime();
     const bps = targetH===480 ? 1500000 : 700000;
-    const rec=new MediaRecorder(stream,{mimeType:mime, videoBitsPerSecond:bps});
+    let rec;
+    try{
+      rec=new MediaRecorder(stream, mime ? {mimeType:mime, videoBitsPerSecond:bps} : {videoBitsPerSecond:bps});
+    }catch(e){
+      // Final fallback: no options at all (Safari mp4 default)
+      rec=new MediaRecorder(stream);
+    }
     const chunks=[];
     rec.ondataavailable=function(e){if(e.data && e.data.size) chunks.push(e.data);};
 
     const limit=hoverDur ? hoverDur*1000 : Math.min(dur*1000, 60000);
-    const stopP=new Promise(res=>{rec.onstop=function(){res(new Blob(chunks,{type:mime}));};});
+    // Use the recorder's actual mimeType (may differ from requested, esp. on Safari)
+    const stopP=new Promise(res=>{rec.onstop=function(){const actualMime=rec.mimeType||mime||'video/mp4';res(new Blob(chunks,{type:actualMime}));};});
 
     // SKIP BLACK INTRO: scan source for first non-dark frame, seek there before recording
     await new Promise((R)=>{
@@ -156,7 +176,7 @@
         }else{
           try{v.pause();}catch(e){}
           rec.stop();
-          stopP.then(b=>{URL.revokeObjectURL(wmUrl);URL.revokeObjectURL(meta.url);resolve({blob:b,mime:mime});});
+          stopP.then(b=>{URL.revokeObjectURL(wmUrl);URL.revokeObjectURL(meta.url);resolve({blob:b,mime:b.type||mime||'video/mp4'});});
         }
       }
       requestAnimationFrame(tick);
