@@ -63,11 +63,13 @@
     "links": [
       {
         "label": "Kategorien",
-        "href": "/#kategorien"
+        "href": "/#kategorien",
+        "mobileHide": true
       },
       {
         "label": "Unternehmen",
-        "href": "/uber-uns"
+        "href": "/uber-uns",
+        "mobileHide": true
       },
       {
         "label": "Wissen",
