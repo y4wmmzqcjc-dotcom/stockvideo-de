@@ -1,3 +1,4 @@
+// v20260418E
 const CORS_HEADERS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, GET, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type', };
 const MOLLIE_API_KEY = 'test_A7njP8NN7AHtBVdxUPF96ccCErfQdS';
 const SITE_URL = 'https://stockvideo.de';
@@ -215,7 +216,7 @@ export default {
         const sha256hex = async (s) => { const b = new TextEncoder().encode(s); const h = await crypto.subtle.digest('SHA-256', b); return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join(''); };
         const getPw = async (req) => { let pw = req.headers.get('X-Admin-Password'); if (!pw) { try { const b = await req.clone().json(); pw = b && b.password; } catch(e){} } return pw; };
         const verify = async (req) => { const pw = await getPw(req); if (!pw) return false; return (await sha256hex(pw)) === ADMIN_HASH; };
-        const ghHeaders = { 'Authorization': 'token ' + GH_TOKEN, 'User-Agent': 'stockvideo-worker', 'Accept': 'application/vnd.github.v3)êson' };
+        const ghHeaders = { 'Authorization': 'token ' + GH_TOKEN, 'User-Agent': 'stockvideo-worker', 'Accept': 'application/vnd.github.v3)ï¿½son' };
         const ghGet = async (p) => { const r = await fetch('https://api.github.com/repos/' + GH_REPO + '/contents/' + p + '?ref=' + GH_BRANCH, { headers: ghHeaders }); if (!r.ok) return null; const j = await r.json(); return { sha: j.sha, content: atob(j.content.replace(/\n/g,'')) }; };
         const ghPut = async (p, content, msg, sha) => { const body = { message: msg, content: btoa(unescape(encodeURIComponent(content))), branch: GH_BRANCH }; if (sha) body.sha = sha; const r = await fetch('https://api.github.com/repos/' + GH_REPO + '/contents/' + p, { method: 'PUT', headers: { ...ghHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); const j = await r.json(); return { status: r.status, json: j }; };
         if (path === '/admin/verify' && request.method === 'POST') { const ok = await verify(request); return jsonResponse({ ok: ok }, ok ? 200 : 401); }
