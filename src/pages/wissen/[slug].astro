@@ -5,13 +5,11 @@ import Footer from '../../components/Footer.astro';
 import articles from '../../data/articles.json';
 
 function isVisible(a: any) {
-  if (a.status === 'published') return true;
-  if (a.status === 'scheduled' && a.scheduledDate) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return new Date(a.scheduledDate) <= today;
-  }
-  return false;
+  if (a.status === 'draft') return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  if (a.scheduledDate) return new Date(a.scheduledDate) <= today;
+  return a.status === 'published';
 }
 
 export function getStaticPaths() {
