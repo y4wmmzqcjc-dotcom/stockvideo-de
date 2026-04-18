@@ -858,6 +858,16 @@ var mediaModule = {
                 const stored = localStorage.getItem('adminVideos');
                 this.videos = stored ? JSON.parse(stored) : [];
                 this.renderVideosList();
+                // Always refresh from GitHub (source of truth) in the background
+                fetch('https://stockvideo-checkout.rende.workers.dev/admin/data?kind=videos', {
+                    headers: { 'X-Admin-Password': 'admin123' }
+                }).then(r => r.ok ? r.json() : null).then(data => {
+                    if (data && Array.isArray(data.items)) {
+                        this.videos = data.items;
+                        localStorage.setItem('adminVideos', JSON.stringify(this.videos));
+                        this.renderVideosList();
+                    }
+                }).catch(() => {});
             },
 
             renderVideosList() {
@@ -921,13 +931,8 @@ var mediaModule = {
                 if (this.renderCategories) this.renderCategories();
               }
             }
-            if (vr.ok) {
-              const vids = await vr.json();
-              if (Array.isArray(vids) && vids.length > this.videos.length) {
-                this.videos = vids;
-                if (this.renderVideos) this.renderVideos();
-              }
-            }
+            // Videos come from GitHub via worker — don't overwrite with stale CDN version
+            // if (vr.ok) { ... } // disabled: loadVideos() handles this from source of truth
           } catch(e) { console.warn('syncFromLive failed', e); }
         },
         openVideoModal() {
