@@ -1023,7 +1023,15 @@ var mediaModule = {
                 localStorage.setItem('adminCategories', JSON.stringify(this.categories));
                 localStorage.setItem('adminLastChange', new Date().toISOString());
                 this.loadCategories();
-                this.closeCategoryModal(); if(this.publishToGitHub)this.publishToGitHub();
+                this.closeCategoryModal();
+                // Auto-publish categories to GitHub
+                fetch('https://stockvideo-checkout.rende.workers.dev/admin/data', {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json','X-Admin-Password':'admin123'},
+                    body: JSON.stringify({kind:'categories', items:this.categories})
+                }).then(r => {
+                    if (r.ok) this.showAlert('categoriesAlert', 'success', 'Kategorie gespeichert und verÃ¶ffentlicht!');
+                }).catch(()=>{});
                 this.showAlert('categoriesAlert', 'success', 'Kategorie gespeichert');
             },
 
@@ -1531,10 +1539,10 @@ var mediaModule = {
         var videos=JSON.parse(localStorage.getItem("adminVideos")||"[]");
         var cats=JSON.parse(localStorage.getItem("adminCategories")||"[]");
         var hdr={"Content-Type":"application/json","X-Admin-Password":pw};
-        var r1=await fetch("/admin/data",{method:"POST",headers:hdr,body:JSON.stringify({kind:"videos",items:videos})});
+        var r1=await fetch("https://stockvideo-checkout.rende.workers.dev/admin/data",{method:"POST",headers:hdr,body:JSON.stringify({kind:"videos",items:videos})});
         var j1=await r1.json();
         if(!r1.ok){alert("Videos Fehler: "+(j1.error||r1.status));return;}
-        var r2=await fetch("/admin/data",{method:"POST",headers:hdr,body:JSON.stringify({kind:"categories",items:cats})});
+        var r2=await fetch("https://stockvideo-checkout.rende.workers.dev/admin/data",{method:"POST",headers:hdr,body:JSON.stringify({kind:"categories",items:cats})});
         var j2=await r2.json();
         if(!r2.ok){alert("Categories Fehler: "+(j2.error||r2.status));return;}
         alert("Veroeffentlicht! Cloudflare Pages rebuildet in ~60s.");
