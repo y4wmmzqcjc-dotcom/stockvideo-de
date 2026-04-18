@@ -285,23 +285,35 @@ export default {
           const referencedKeys = new Set();
           for (const v of videos) {
             const slug = v.slug;
-            // Main video key
-            referencedKeys.add(v.r2Key || ('videos/' + slug + '.mp4'));
-            // Preview keys
-            if (v.r2Preview) referencedKeys.add(v.r2Preview);
-            else referencedKeys.add('previews/' + slug + '.mp4');
-            // Hover preview
-            if (v.r2Hover) referencedKeys.add(v.r2Hover);
-            else referencedKeys.add('previews/' + slug + '-hover.mp4');
-            // Thumbnail
+            // Main video key — use explicit r2Key, fall back with both .mp4 and .mov
+            const mainKey = v.r2Key || ('videos/' + slug + '.mp4');
+            referencedKeys.add(mainKey);
+            // Derive extension from main key for consistent preview naming
+            const ext = mainKey.split('.').pop() || 'mp4';
+            // Preview keys — try explicit field first, then both .mp4 AND .<ext> variants
+            if (v.r2Preview) {
+              referencedKeys.add(v.r2Preview);
+            } else {
+              referencedKeys.add('previews/' + slug + '.mp4');
+              referencedKeys.add('previews/' + slug + '.' + ext);
+            }
+            // Hover preview — same strategy
+            if (v.r2Hover) {
+              referencedKeys.add(v.r2Hover);
+            } else {
+              referencedKeys.add('previews/' + slug + '-hover.mp4');
+              referencedKeys.add('previews/' + slug + '-hover.' + ext);
+            }
+            // Thumbnail — extract from URL and also add slug-based fallback
             if (v.thumbnail) {
-              // thumbnail is usually a full URL — extract the path
               try {
                 const u = new URL(v.thumbnail);
                 referencedKeys.add(u.pathname.replace(/^\//, ''));
               } catch(e) {}
             }
             referencedKeys.add('thumbs/' + slug + '.jpg');
+            referencedKeys.add('thumbs/' + slug + '.png');
+            referencedKeys.add('thumbs/' + slug + '.webp');
           }
 
           // 3. Split into referenced and orphaned

@@ -651,7 +651,7 @@ var mediaModule = {
                 '<div style="color:#fff;font-size:14px;font-weight:600;margin-bottom:2px">🧹 Speicher bereinigen</div>' +
                 '<div style="color:#888;font-size:12px">Nicht mehr benötigte Dateien (gelöschte Videos) aus R2 entfernen</div>' +
               '</div>' +
-              '<button onclick="admin.r2Cleanup()" style="padding:8px 16px;background:#1c3a5e;border:1px solid #0099ff;border-radius:8px;color:#0099ff;font-size:13px;cursor:pointer;white-space:nowrap">Analyse starten</button>' +
+              '<button onclick="admin.r2Cleanup()" style="padding:8px 16px;background:#3a1c1c;border:1px solid #ff453a;border-radius:8px;color:#ff453a;font-size:13px;cursor:pointer;white-space:nowrap" title="Achtung: Nur echte Waisendateien löschen!">⚠ Analyse starten</button>' +
             '</div>';
         }).catch(function(){
           var box = document.getElementById('_r2box');
