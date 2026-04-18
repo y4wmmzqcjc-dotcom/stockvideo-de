@@ -6,6 +6,8 @@
 window.adminArticles = {
   articles: [],
   currentEditId: null,
+  currentFilter: 'all',
+  searchQuery: '',
   calendarMonth: new Date().getMonth(),
   calendarYear: new Date().getFullYear(),
 
@@ -13,6 +15,8 @@ window.adminArticles = {
   init() {
     const container = document.getElementById('panel-articles');
     if (!container) return;
+    this.searchQuery = '';
+    this.currentFilter = 'all';
     // Always fetch from server, use localStorage only if article count matches
     const stored = localStorage.getItem('adminArticles');
     let localArticles = [];
@@ -71,6 +75,16 @@ window.adminArticles = {
     const scheduled = this.articles.filter(a => this._getDisplayStatus(a) === 'scheduled').length;
 
     c.innerHTML = `
+      <style>
+        .aa-filter-bar { display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:12px 0 8px; }
+        .aa-search-wrap { margin-left:auto; display:flex; align-items:center; position:relative; }
+        .aa-search-input { background:#1e1e3a; border:1px solid #3a3a5a; color:#e0e0ff; padding:7px 32px 7px 34px; border-radius:8px; font-size:13px; outline:none; width:220px; transition:border-color 0.2s, width 0.2s; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:10px center; }
+        .aa-search-input:focus { border-color:#5b6ef5; width:280px; }
+        .aa-search-input::placeholder { color:#666; }
+        .aa-search-clear { position:absolute; right:8px; background:none; border:none; color:#666; font-size:13px; cursor:pointer; padding:2px 4px; line-height:1; }
+        .aa-search-clear:hover { color:#ccc; }
+        .aa-search-count { font-size:12px; color:#888; padding:4px 0 8px; font-style:italic; }
+      </style>
       <div class="aa-header">
         <div class="aa-header-top">
           <h2>Wissen / Artikel</h2>
@@ -87,13 +101,17 @@ window.adminArticles = {
       <div class="aa-layout">
         <div class="aa-list-section">
           <div class="aa-filter-bar">
-            <button class="aa-filter active" data-filter="all" onclick="adminArticles.filterList('all',this)">Alle</button>
-            <button class="aa-filter" data-filter="published" onclick="adminArticles.filterList('published',this)">\u00d6ffentlich</button>
-            <button class="aa-filter" data-filter="scheduled" onclick="adminArticles.filterList('scheduled',this)">Geplant</button>
-            <button class="aa-filter" data-filter="draft" onclick="adminArticles.filterList('draft',this)">Entwurf</button>
+            <button class="aa-filter ${this.currentFilter==='all'?'active':''}" data-filter="all" onclick="adminArticles.filterList('all',this)">Alle</button>
+            <button class="aa-filter ${this.currentFilter==='published'?'active':''}" data-filter="published" onclick="adminArticles.filterList('published',this)">\u00d6ffentlich</button>
+            <button class="aa-filter ${this.currentFilter==='scheduled'?'active':''}" data-filter="scheduled" onclick="adminArticles.filterList('scheduled',this)">Geplant</button>
+            <button class="aa-filter ${this.currentFilter==='draft'?'active':''}" data-filter="draft" onclick="adminArticles.filterList('draft',this)">Entwurf</button>
+            <div class="aa-search-wrap">
+              <input type="text" id="aa-search" class="aa-search-input" placeholder="Artikel suchen…" value="${this._esc(this.searchQuery)}" oninput="adminArticles.searchList(this.value)" autocomplete="off" spellcheck="false">
+              ${this.searchQuery ? '<button class="aa-search-clear" onclick="adminArticles.searchList(\'\')" title="Suche leeren">✕</button>' : ''}
+            </div>
           </div>
           <div class="aa-article-list" id="aa-article-list">
-            ${this._renderArticleRows('all')}
+            ${this._renderArticleRows(this.currentFilter)}
           </div>
         </div>
 
@@ -138,15 +156,32 @@ window.adminArticles = {
   _renderArticleRows(filter) {
     let list = this.articles;
     if (filter !== 'all') list = list.filter(a => this._getDisplayStatus(a) === filter);
+    // Apply search filter
+    const q = (this.searchQuery || '').trim().toLowerCase();
+    if (q) {
+      list = list.filter(a =>
+        (a.title || '').toLowerCase().includes(q) ||
+        (a.seoTitle || '').toLowerCase().includes(q) ||
+        (a.keyphrase || '').toLowerCase().includes(q) ||
+        (a.slug || '').toLowerCase().includes(q) ||
+        (a.category || '').toLowerCase().includes(q)
+      );
+    }
     // Sort newest-first by publishDate or scheduledDate
     list = list.slice().sort((a, b) => {
       const da = a.publishDate || a.scheduledDate || '';
       const db = b.publishDate || b.scheduledDate || '';
       return db.localeCompare(da);
     });
-    if (!list.length) return '<div class="aa-empty">Keine Artikel in dieser Kategorie</div>';
+    if (!list.length) {
+      return q
+        ? `<div class="aa-empty">Kein Artikel gefunden für „${this._esc(q)}"</div>`
+        : '<div class="aa-empty">Keine Artikel in dieser Kategorie</div>';
+    }
+    const total = this.articles.length;
+    const countHint = q ? `<div class="aa-search-count">${list.length} von ${total} Artikeln</div>` : '';
 
-    return list.map(a => {
+    const rows = list.map(a => {
       const displayStatus = this._getDisplayStatus(a);
       const statusClass = displayStatus === 'published' ? 'aa-status-published' : displayStatus === 'scheduled' ? 'aa-status-scheduled' : 'aa-status-draft';
       const statusLabel = displayStatus === 'published' ? '\u00d6ffentlich' : displayStatus === 'scheduled' ? 'Geplant' : 'Entwurf';
@@ -180,12 +215,37 @@ window.adminArticles = {
           </div>
         </div>`;
     }).join('');
+
+    return countHint + rows;
   },
 
   filterList(filter, btn) {
+    this.currentFilter = filter;
     document.querySelectorAll('.aa-filter').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
     document.getElementById('aa-article-list').innerHTML = this._renderArticleRows(filter);
+  },
+
+  searchList(query) {
+    this.searchQuery = query;
+    document.getElementById('aa-article-list').innerHTML = this._renderArticleRows(this.currentFilter);
+    // Update clear button visibility without full re-render
+    const wrap = document.querySelector('.aa-search-wrap');
+    if (wrap) {
+      const existing = wrap.querySelector('.aa-search-clear');
+      if (query && !existing) {
+        const btn = document.createElement('button');
+        btn.className = 'aa-search-clear';
+        btn.title = 'Suche leeren';
+        btn.textContent = '✕';
+        btn.onclick = () => adminArticles.searchList('');
+        wrap.appendChild(btn);
+      } else if (!query && existing) {
+        existing.remove();
+        const inp = wrap.querySelector('.aa-search-input');
+        if (inp) inp.value = '';
+      }
+    }
   },
 
   /* ---------- STATUS TOGGLE ---------- */
