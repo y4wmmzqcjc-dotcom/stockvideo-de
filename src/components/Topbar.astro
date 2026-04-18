@@ -9,7 +9,7 @@ import config from '../data/config.json';
     </a>
     <div class="nav-links">
       {config.nav.links.map(link => (
-        <a class="nav-link" href={link.href}>{link.label}</a>
+        <a class={`nav-link${link.mobileHide ? ' nav-desktop' : ''}`} href={link.href}>{link.label}</a>
       ))}
       <a class="btn-primary" href="/kontakt">{config.nav.ctaText}</a>
     </div>
