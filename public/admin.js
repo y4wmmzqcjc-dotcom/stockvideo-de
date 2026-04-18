@@ -854,11 +854,12 @@ var mediaModule = {
     },
 
             // ===== VIDEOS =====
-            loadVideos() {
+            loadVideos(fromServer = true) {
                 const stored = localStorage.getItem('adminVideos');
                 this.videos = stored ? JSON.parse(stored) : [];
                 this.renderVideosList();
-                // Always refresh from GitHub (source of truth) in the background
+                // Only fetch from GitHub on page init — NOT after save/delete (race condition)
+                if (!fromServer) return;
                 fetch('https://stockvideo-checkout.rende.workers.dev/admin/data?kind=videos', {
                     headers: { 'X-Admin-Password': 'admin123' }
                 }).then(r => r.ok ? r.json() : null).then(data => {
@@ -1094,7 +1095,7 @@ var mediaModule = {
 
                 localStorage.setItem('adminVideos', JSON.stringify(this.videos));
                 localStorage.setItem('adminLastChange', new Date().toISOString());
-                this.loadVideos();
+                this.loadVideos(false); // no server fetch — we just saved, avoid race condition
                 this.closeVideoModal();
                 this.showAlert('videosAlert', 'success', 'Video gespeichert');
             },
@@ -1107,7 +1108,7 @@ var mediaModule = {
                 this.videos.splice(idx, 1);
                 localStorage.setItem('adminVideos', JSON.stringify(this.videos));
                 localStorage.setItem('adminLastChange', new Date().toISOString());
-                this.loadVideos();
+                this.loadVideos(false); // no server fetch — we just deleted, avoid race condition
                 this.showAlert('videosAlert', 'info', 'Lösche Video...');
                 try {
                     const dataRes = await fetch('https://stockvideo-checkout.rende.workers.dev/admin/data', {
