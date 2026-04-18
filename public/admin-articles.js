@@ -600,6 +600,7 @@ window.adminArticles = {
     pubHtml += '</select></div>';
     pubHtml += '<div class="we-side-field"><label>Veroeffentlichungsdatum</label><input type="date" value="' + (a.publishDate||'') + '" onchange="adminArticles._updateMeta(\'publishDate\',this.value)"></div>';
     pubHtml += '<div class="we-side-field"><label>Geplant fuer (Datum)</label><input type="date" value="' + (a.scheduledDate||'') + '" onchange="adminArticles._updateMeta(\'scheduledDate\',this.value)"></div>';
+    pubHtml += '<div class="we-side-field"><label>Uhrzeit (z.B. 09:00 oder 14:30)</label><input type="time" value="' + (a.scheduledTime||'') + '" onchange="adminArticles._updateMeta(\'scheduledTime\',this.value)" placeholder="09:00"></div>';
     pubHtml += '<div class="we-side-field"><label>Lesezeit (Minuten)</label><input type="number" min="1" max="60" value="' + (a.readTime||8) + '" onchange="adminArticles._updateMeta(\'readTime\',parseInt(this.value)||8)"></div>';
 
     var html = '<div class="we-wrap">';

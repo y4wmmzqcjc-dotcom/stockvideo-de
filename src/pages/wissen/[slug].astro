@@ -6,9 +6,11 @@ import articles from '../../data/articles.json';
 
 function isVisible(a: any) {
   if (a.status === 'draft') return false;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  if (a.scheduledDate) return new Date(a.scheduledDate) <= today;
+  if (a.scheduledDate) {
+    const timeStr = a.scheduledTime || '00:00';
+    const scheduledAt = new Date(a.scheduledDate + 'T' + timeStr + ':00');
+    return scheduledAt <= new Date();
+  }
   return a.status === 'published';
 }
 

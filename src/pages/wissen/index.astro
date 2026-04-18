@@ -3,11 +3,14 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Topbar from '../../components/Topbar.astro';
 import Footer from '../../components/Footer.astro';
 import articles from '../../data/articles.json';
-const today = new Date();
-today.setHours(0, 0, 0, 0);
+const now = new Date();
 const visibleArticles = articles.filter((a: any) => {
   if (a.status === 'draft') return false;
-  if (a.scheduledDate) return new Date(a.scheduledDate) <= today;
+  if (a.scheduledDate) {
+    const timeStr = a.scheduledTime || '00:00';
+    const scheduledAt = new Date(a.scheduledDate + 'T' + timeStr + ':00');
+    return scheduledAt <= now;
+  }
   return a.status === 'published';
 });
 
