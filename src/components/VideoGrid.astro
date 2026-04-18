@@ -55,11 +55,8 @@ function render() {
           radial-gradient(circle at 75% 65%,rgba(255,255,255,0.04) 0%,transparent 35%),
           radial-gradient(circle at 50% 80%,rgba(255,255,255,0.02) 0%,transparent 50%)
         "></div>
-        <div class="play-btn">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="#1b1b1b"><path d="M4 2l10 6-10 6z"/></svg>
-        </div>
         <span class="res-badge ${v.resolution === '4K' ? 'res-4k' : 'res-hd'}">${v.resolution}</span>
-        <span class="dur-badge">${v.duration}</span>
+        <span class="dur-badge">${v.duration} sek</span>
       </div>
       <div class="card-info">
         <span class="card-title">${v.title}</span>
