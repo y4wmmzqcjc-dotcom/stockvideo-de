@@ -656,24 +656,18 @@ function getInlineImage(index) {
     border-left-color: #3B82F6;
   }
 
-  /* Sidebar Videos */
+  /* Sidebar Videos – full video-card layout */
   .sidebar-videos {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-  }
-  .sidebar-video-card {
-    display: flex;
     gap: 10px;
-    align-items: center;
-    text-decoration: none;
-    color: #ccc;
-    padding: 6px;
-    border-radius: 8px;
-    transition: background 0.2s;
   }
-  .sidebar-video-card:hover {
-    background: #1a1a1a;
+  /* Reset animation for sidebar cards so they appear immediately */
+  .sidebar-videos .video-card {
+    opacity: 1;
+    transform: none;
+    animation: none;
+    border-radius: 8px;
   }
   .sidebar-video-card img {
     width: 100px;
@@ -793,19 +787,77 @@ function getInlineImage(index) {
 </style>
 
 <script define:vars={{ allSidebarVideos }}>
-  // Rotate 5 random suggested videos on each page load
-  (function () {
-    const container = document.getElementById('sidebarVideos');
-    if (!container || !allSidebarVideos || !allSidebarVideos.length) return;
-    const shuffled = allSidebarVideos.slice().sort(() => Math.random() - 0.5);
-    const pick = shuffled.slice(0, 5);
-    container.innerHTML = pick.map(v =>
-      '<a href="/video/' + v.slug + '/" class="sidebar-video-card">' +
-        '<img src="' + v.thumbnail + '" alt="' + (v.title || '') + '" loading="lazy" width="100" height="56">' +
-        '<span class="video-card-title">' + (v.title || '') + '</span>' +
-      '</a>'
-    ).join('');
-  })();
+(function () {
+  var R2 = 'https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/';
+  var container = document.getElementById('sidebarVideos');
+  if (!container || !allSidebarVideos || !allSidebarVideos.length) return;
+
+  // Shuffle and pick 5
+  var shuffled = allSidebarVideos.slice().sort(function(){ return Math.random() - 0.5; });
+  var pick = shuffled.slice(0, 5);
+
+  // Render full video-card HTML (same structure as homepage grid)
+  container.innerHTML = pick.map(function(v) {
+    var hov = v.r2Hover
+      ? '<video class="hov-prev" muted playsinline preload="none" data-src="' + R2 + v.r2Hover + '" style="visibility:hidden;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;"></video>'
+      : '';
+    var img = v.thumbnail
+      ? '<img src="' + v.thumbnail + '" loading="lazy" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;z-index:1;">'
+      : '<div style="position:absolute;inset:0;background:#1a1a1a;"></div>';
+    var res = v.resolution
+      ? '<span class="res-badge ' + (v.resolution === '4K' ? 'res-4k' : 'res-hd') + '">' + v.resolution + '</span>'
+      : '';
+    var dur = v.duration ? '<span class="dur-badge">' + v.duration + ' sek</span>' : '';
+    var price = v.price || (v.prices && v.prices.web) || 0;
+    return '<a href="/video/' + v.slug + '/" style="text-decoration:none;color:inherit;display:block;">'
+      + '<div class="video-card" style="border-radius:8px;overflow:hidden;margin-bottom:0;">'
+      + '<div class="video-thumb">' + img + hov
+      + '<div class="thumb-texture" style="position:absolute;inset:0;z-index:1;opacity:0.35;background:radial-gradient(circle at 25% 35%,rgba(255,255,255,0.06) 0%,transparent 45%),radial-gradient(circle at 75% 65%,rgba(255,255,255,0.04) 0%,transparent 35%);"></div>'
+      + res + dur + '</div>'
+      + '<div class="card-info"><span class="card-title">' + (v.title || '') + '</span>'
+      + '<span class="card-price">' + price + ' \u20ac</span></div>'
+      + '</div></a>';
+  }).join('');
+
+  // Hover-video logic (identical to VideoGrid)
+  var bcanv = document.createElement('canvas'); bcanv.width = 32; bcanv.height = 18;
+  var bctx = bcanv.getContext('2d', { willReadFrequently: true });
+  function bright(v) { try { bctx.drawImage(v,0,0,32,18); var d=bctx.getImageData(0,0,32,18).data,s=0; for(var i=0;i<d.length;i+=4)s+=d[i]+d[i+1]+d[i+2]; return s/(d.length/4*3); } catch(e){ return 999; } }
+  function setup(v) { if(v._s)return; v._s=1; v.muted=true; v.playsInline=true; v.removeAttribute('loop'); v.style.visibility='hidden'; v.addEventListener('ended',function(){ try{v.currentTime=0.05;}catch(e){} var p=v.play(); if(p&&p.catch)p.catch(function(){}); }); }
+  function enter(card) {
+    var v=card.querySelector('video.hov-prev'); if(!v)return;
+    setup(v);
+    var tok=(card._tk=(card._tk||0)+1);
+    v.style.visibility='hidden';
+    if(!v.src&&v.dataset.src){ v.src=v.dataset.src; try{v.load();}catch(e){} }
+    function begin() {
+      if(card._tk!==tok)return;
+      var p=v.play(); if(p&&p.catch)p.catch(function(){});
+      var done=false,lastT=-1,stall=0,raf=null;
+      function reveal(){ if(done||card._tk!==tok)return; done=true; v.style.visibility='visible'; }
+      function tick() {
+        if(card._tk!==tok)return;
+        if(!v.paused){ if(v.currentTime===lastT){ stall++; if(stall>10){ stall=0; try{v.currentTime+=0.05;}catch(e){} var pp=v.play(); if(pp&&pp.catch)pp.catch(function(){}); } } else { stall=0; lastT=v.currentTime; } }
+        if(!done){ if(v.readyState>=2){ var b=bright(v); if(b>=40){reveal();} else if(v.currentTime<(v.duration||9)-0.2){ try{v.currentTime=Math.min((v.duration||9)-0.2,v.currentTime+0.2);}catch(e){} } } }
+        raf=requestAnimationFrame(tick);
+      }
+      raf=requestAnimationFrame(tick);
+      card._stop=function(){ if(raf)cancelAnimationFrame(raf); raf=null; };
+      setTimeout(function(){ if(card._tk===tok)reveal(); }, 1200);
+    }
+    if(v.readyState>=1)begin(); else v.addEventListener('loadedmetadata',begin,{once:true});
+  }
+  function leave(card) {
+    var v=card.querySelector('video.hov-prev'); if(!v)return;
+    card._tk=(card._tk||0)+1;
+    if(card._stop){ card._stop(); card._stop=null; }
+    try{v.pause();}catch(e){}
+    v.style.visibility='hidden';
+    try{v.currentTime=0.05;}catch(e){}
+  }
+  container.addEventListener('mouseover', function(e){ var c=e.target.closest&&e.target.closest('.video-card'); if(!c||c._hov)return; c._hov=1; enter(c); });
+  container.addEventListener('mouseout',  function(e){ var c=e.target.closest&&e.target.closest('.video-card'); if(!c)return; var t=e.relatedTarget; if(t&&c.contains(t))return; c._hov=0; leave(c); });
+})();
 </script>
 
 <script>
