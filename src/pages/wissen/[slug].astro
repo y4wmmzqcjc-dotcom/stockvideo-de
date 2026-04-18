@@ -45,10 +45,6 @@ const relatedArticles = (article.internalLinks || [])
 const heroImage = article.heroImage || '/images/making-of/making-of-01.jpg';
 const inlineImages = article.inlineImages || [];
 
-// Sidebar videos – read from public/data (same source the admin writes to)
-import videosData from '../../../public/data/videos.json';
-const allSidebarVideos = (videosData || []).filter((v: any) => v.thumbnail && v.slug);
-
 // Build TOC from sections
 const toc = (article.sections || []).map((s, i) => ({
   id: 'section-' + (i + 1),
@@ -302,9 +298,9 @@ function getInlineImage(index) {
           </nav>
         </div>
 
-        <!-- Vorgeschlagene Stockvideos (rotiert per JS bei jedem Seitenaufruf) -->
-        <div class="sidebar-box videos-box">
-          <h3>Vorgeschlagene Stockvideos</h3>
+        <!-- Vorgeschlagene Stockvideos (lädt live beim Seitenaufruf) -->
+        <div class="sidebar-box videos-box" id="sidebarVideosBox">
+          <h3>Passende Stockvideos</h3>
           <div class="sidebar-videos" id="sidebarVideos"></div>
         </div>
 
@@ -805,14 +801,30 @@ function getInlineImage(index) {
   }
 </style>
 
-<script define:vars={{ allSidebarVideos }}>
+<script>
 (function () {
   var R2 = 'https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/';
   var container = document.getElementById('sidebarVideos');
-  if (!container || !allSidebarVideos || !allSidebarVideos.length) return;
+  var box = document.getElementById('sidebarVideosBox');
+  if (!container) return;
+
+  // Load videos fresh at runtime (always current, not build-time snapshot)
+  fetch('/data/videos.json?t=' + Date.now())
+    .then(function(r) { return r.json(); })
+    .then(function(all) { render(all); })
+    .catch(function() { if (box) box.style.display = 'none'; });
+
+  function render(allSidebarVideos) {
+  // Filter: must have thumbnail + slug + title (no test data)
+  var valid = (allSidebarVideos || []).filter(function(v) {
+    return v.thumbnail && v.slug && v.title && v.title.length > 2;
+  });
+
+  // Hide box if fewer than 3 real videos
+  if (valid.length < 3) { if (box) box.style.display = 'none'; return; }
 
   // Shuffle and pick 5
-  var shuffled = allSidebarVideos.slice().sort(function(){ return Math.random() - 0.5; });
+  var shuffled = valid.slice().sort(function(){ return Math.random() - 0.5; });
   var pick = shuffled.slice(0, 5);
 
   // Render full video-card HTML (same structure as homepage grid)
@@ -876,6 +888,7 @@ function getInlineImage(index) {
   }
   container.addEventListener('mouseover', function(e){ var c=e.target.closest&&e.target.closest('.video-card'); if(!c||c._hov)return; c._hov=1; enter(c); });
   container.addEventListener('mouseout',  function(e){ var c=e.target.closest&&e.target.closest('.video-card'); if(!c)return; var t=e.relatedTarget; if(t&&c.contains(t))return; c._hov=0; leave(c); });
+  } // end render
 })();
 </script>
 
