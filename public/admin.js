@@ -583,7 +583,7 @@ var mediaModule = {
       const cCount = this.categories.length;
       const articles = JSON.parse(localStorage.getItem('adminArticles') || '[]');
       const aCount = articles.length;
-      const mediaItems = JSON.parse(localStorage.getItem('mediaItems') || '[]');
+      const mediaItems = JSON.parse(localStorage.getItem('mediaItems_v2') || '[]');
       const mCount = mediaItems.length;
       const lastDeploy = localStorage.getItem('lastDeployTime') || 'Unbekannt';
 
