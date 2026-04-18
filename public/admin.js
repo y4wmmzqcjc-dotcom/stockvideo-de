@@ -123,7 +123,7 @@ var mediaModule = {
             (this.selectedIds.has(item.id) ? '\u2713' : '') + '</div>' +
             '<div class="media-card-thumb"><img src="' + item.url + '" alt="' + (item.alt||item.name) + '" loading="lazy" ' +
             'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'+
-            '<div class="media-placeholder" style="display:none;align-items:center;justify-content:center;flex-direction:column;gap:6px;width:100%;height:100%;background:linear-gradient(135deg,#1a1a2e,#2a2a4e);color:#8888aa;font-size:11px;text-align:center;padding:8px"><span style="font-size:24px;opacity:0.5">🖼</span><span style="word-break:break-all;line-height:1.3">' + (item.name||'Bild') + '</span></div></div>' +
+            '<div class="media-placeholder" style="display:none;align-items:center;justify-content:center;flex-direction:column;gap:6px;width:100%;height:100%;background:linear-gradient(135deg,#1a1a2e,#2a2a4e);color:#8888aa;font-size:11px;text-align:center;padding:8px"><span style="font-size:24px;opacity:0.5">ð¼</span><span style="word-break:break-all;line-height:1.3">' + (item.name||'Bild') + '</span></div></div>' +
             '<div class="media-card-info"><div class="media-card-name">' + item.name + '</div>' +
             '<div class="media-card-meta"><span>' + item.size + '</span><span>' +
             (item.usedIn && item.usedIn.length > 0 ? '\u2713 Verwendet' : 'Frei') + '</span></div></div></div>'
@@ -139,7 +139,7 @@ var mediaModule = {
         const bar = document.getElementById('media-bulk-bar');
         if (this.selectedIds.size > 0) {
             bar.style.display = 'flex';
-            document.getElementById('media-selected-count').textContent = this.selectedIds.size + ' ausgewählt';
+            document.getElementById('media-selected-count').textContent = this.selectedIds.size + ' ausgewÃ¤hlt';
         } else {
             bar.style.display = 'none';
         }
@@ -252,7 +252,7 @@ var mediaModule = {
         this.saveItems();
         this.closeDetail();
         this.render();
-        admin.showAlert('mediaAlert', 'Bild gelöscht', 'success');
+        admin.showAlert('mediaAlert', 'Bild gelÃ¶scht', 'success');
     },
 
     bulkDelete() {
@@ -261,7 +261,7 @@ var mediaModule = {
         this.selectedIds.clear();
         this.saveItems();
         this.render();
-        admin.showAlert('mediaAlert', count + ' Bilder gelöscht', 'success');
+        admin.showAlert('mediaAlert', count + ' Bilder gelÃ¶scht', 'success');
     },
 
     formatSize(bytes) {
@@ -476,7 +476,7 @@ var mediaModule = {
                         this.showLockout();
                         this.startLockoutTimer();
                     } else {
-                        alert.innerHTML = '<div class="alert alert-error">Ungültiger Code. Bitte versuchen Sie es erneut.</div>';
+                        alert.innerHTML = '<div class="alert alert-error">UngÃ¼ltiger Code. Bitte versuchen Sie es erneut.</div>';
                     }
                 }
             },
@@ -718,7 +718,7 @@ var mediaModule = {
           '<div style="flex:1;min-width:0"><div style="color:#fff;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (v.title||'Ohne Titel') + '</div>' +
           '<div style="color:#888;font-size:12px;margin-top:2px">' + (v.category||'Keine Kategorie') + '</div></div>' +
           '<button onclick="event.stopPropagation();admin.editVideo(' + origIdx + ')" style="background:rgba(255,255,255,0.07);color:#ccc;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px;margin-right:6px">Bearbeiten</button>' +
-                '<button onclick="event.stopPropagation();admin.deleteVideo(' + origIdx + ')" style="background:rgba(255,59,48,0.1);color:#ff3b30;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px">Löschen</button>' +
+                '<button onclick="event.stopPropagation();admin.deleteVideo(' + origIdx + ')" style="background:rgba(255,59,48,0.1);color:#ff3b30;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px">LÃ¶schen</button>' +
           '</div>';
       }).join('');
     },
@@ -815,7 +815,7 @@ var mediaModule = {
                     .catch(() => [])
                     .then(list => {
                         const cats = (Array.isArray(list) && list.length) ? list : (this.categories || []);
-                        dropdown.innerHTML = '<option value="">-- Wählen Sie eine Kategorie --</option>' +
+                        dropdown.innerHTML = '<option value="">-- WÃ¤hlen Sie eine Kategorie --</option>' +
                             cats.map(c => '<option value="' + (c.slug || c.id) + '">' + (c.label || c.name || c.slug) + '</option>').join('');
                         if (this.currentVideo && this.currentVideo.category) dropdown.value = this.currentVideo.category;
                     });
@@ -868,7 +868,7 @@ var mediaModule = {
 
                 const gradientInputs = document.querySelectorAll('#videoModalGradients .form-row');
                 const gradient = Array.from(gradientInputs).map((row, idx) => ({
-                    color: row.querySelector(`.gradient-color-${idx}`) ? document.getElementById(`gradient-color-${idx}`).value : '#1473e6',
+                    color: row.querySelector(`.gradient-color-${idx}`) ? row.querySelector(`.gradient-color-${idx}`).value : '#1473e6',
                     position: parseInt(row.querySelector('input[type="number"]').value) || 0
                 }));
 
@@ -910,7 +910,7 @@ var mediaModule = {
             },
 
             async deleteVideo(idx) {
-                if (!confirm('Wirklich löschen?')) return;
+                if (!confirm('Wirklich lÃ¶schen?')) return;
                 const video = this.videos[idx];
                 const slug = video.slug;
                 const r2Key = video.r2Key || null;
@@ -918,7 +918,7 @@ var mediaModule = {
                 localStorage.setItem('adminVideos', JSON.stringify(this.videos));
                 localStorage.setItem('adminLastChange', new Date().toISOString());
                 this.loadVideos();
-                this.showAlert('videosAlert', 'info', 'Lösche Video...');
+                this.showAlert('videosAlert', 'info', 'LÃ¶sche Video...');
                 try {
                     const dataRes = await fetch('https://stockvideo-checkout.rende.workers.dev/admin/data', {
                         method: 'POST',
@@ -933,7 +933,7 @@ var mediaModule = {
                           body: JSON.stringify({ slug, r2Key })
                         });
                     } catch(e2) { /* R2-Fehler nicht fatal */ }
-                    this.showAlert('videosAlert', 'success', 'Video gelöscht und veröffentlicht!');
+                    this.showAlert('videosAlert', 'success', 'Video gelÃ¶scht und verÃ¶ffentlicht!');
                 } catch(e) {
                     this.showAlert('videosAlert', 'error', 'Fehler: ' + e.message);
                 }
@@ -966,7 +966,7 @@ var mediaModule = {
                         </div>
                         <div class="list-item-actions">
                             <button class="button button-small button-secondary" onclick="admin.editCategory(${idx})">Bearbeiten</button>
-                            <button class="button button-small button-danger" onclick="admin.deleteCategory(${idx})">Löschen</button>
+                            <button class="button button-small button-danger" onclick="admin.deleteCategory(${idx})">LÃ¶schen</button>
                         </div>
                     </div>
                 `).join('');
@@ -1035,18 +1035,18 @@ var mediaModule = {
                     headers: {'Content-Type':'application/json','X-Admin-Password':'admin123'},
                     body: JSON.stringify({kind:'categories', items:this.categories})
                 }).then(r => {
-                    if (r.ok) this.showAlert('categoriesAlert', 'success', 'Kategorie gespeichert und verÃ¶ffentlicht!');
+                    if (r.ok) this.showAlert('categoriesAlert', 'success', 'Kategorie gespeichert und verÃÂ¶ffentlicht!');
                 }).catch(()=>{});
                 this.showAlert('categoriesAlert', 'success', 'Kategorie gespeichert');
             },
 
             deleteCategory(idx) {
-                if (confirm('Wirklich löschen?')) {
+                if (confirm('Wirklich lÃ¶schen?')) {
                     this.categories.splice(idx, 1);
                     localStorage.setItem('adminCategories', JSON.stringify(this.categories));
                     localStorage.setItem('adminLastChange', new Date().toISOString());
                     this.loadCategories();
-                    this.showAlert('categoriesAlert', 'success', 'Kategorie gelöscht');
+                    this.showAlert('categoriesAlert', 'success', 'Kategorie gelÃ¶scht');
                 }
             },
 
@@ -1118,7 +1118,7 @@ var mediaModule = {
                                 <input type="text" class="form-input" value="${p.label}" placeholder="Plan-Name" data-pricing-label="${idx}">
                             </div>
                             <div>
-                                <label class="form-label">Auflösung</label>
+                                <label class="form-label">AuflÃ¶sung</label>
                                 <input type="text" class="form-input" value="${p.resolution}" placeholder="z.B. 4K" data-pricing-resolution="${idx}">
                             </div>
                         </div>
@@ -1280,7 +1280,7 @@ var mediaModule = {
             },
 
             resetDesignToDefault() {
-                if (confirm('Wirklich zurücksetzen?')) {
+                if (confirm('Wirklich zurÃ¼cksetzen?')) {
                     localStorage.removeItem('adminDesignVariables');
                     location.reload();
                 }
@@ -1310,7 +1310,7 @@ var mediaModule = {
                 }
 
                 if (newPassword !== confirmPassword) {
-                    this.showAlert('settingsAlert', 'error', 'Passwörter stimmen nicht überein');
+                    this.showAlert('settingsAlert', 'error', 'PasswÃ¶rter stimmen nicht Ã¼berein');
                     return;
                 }
 
@@ -1320,7 +1320,7 @@ var mediaModule = {
                 document.getElementById('settingsNewPassword').value = '';
                 document.getElementById('settingsConfirmPassword').value = '';
 
-                this.showAlert('settingsAlert', 'success', 'Passwort geändert');
+                this.showAlert('settingsAlert', 'success', 'Passwort geÃ¤ndert');
             },
 
             save2FASettings() {
@@ -1358,7 +1358,7 @@ var mediaModule = {
 
                 const button = event.target;
                 button.disabled = true;
-                button.textContent = 'Veröffentlichung...';
+                button.textContent = 'VerÃ¶ffentlichung...';
 
                 const config = {
                     videos: this.videos,
@@ -1368,18 +1368,18 @@ var mediaModule = {
 
                 this.createGitHubCommit(settings, config)
                     .then(() => {
-                        this.showAlert('dashboardAlert', 'success', 'Erfolgreich veröffentlicht! Cloudflare Pages wird neu gebaut...');
+                        this.showAlert('dashboardAlert', 'success', 'Erfolgreich verÃ¶ffentlicht! Cloudflare Pages wird neu gebaut...');
                         setTimeout(() => {
                             this.refreshDeployStatus();
                         }, 3000);
                     })
                     .catch(err => {
                         console.error('Publish Error:', err);
-                        this.showAlert('dashboardAlert', 'error', 'Fehler beim Veröffentlichen: ' + err.message);
+                        this.showAlert('dashboardAlert', 'error', 'Fehler beim VerÃ¶ffentlichen: ' + err.message);
                     })
                     .finally(() => {
                         button.disabled = false;
-                        button.textContent = 'Veröffentlichen';
+                        button.textContent = 'VerÃ¶ffentlichen';
                     });
             },
 
@@ -1592,9 +1592,9 @@ var calendarModule = {
         if (!this.articles || this.articles.length === 0) {
             this.articles = [
                 { title: 'Professionelle Stockvideo Produktion', publishDate: '2026-03-15', status: 'published' },
-                { title: 'Stockvideo Qualität', publishDate: '2026-03-20', status: 'published' },
+                { title: 'Stockvideo QualitÃ¤t', publishDate: '2026-03-20', status: 'published' },
                 { title: 'Stockvideos lizenzieren', publishDate: '2026-03-25', status: 'published' },
-                { title: 'Stockvideos für Social Media', publishDate: '2026-04-01', status: 'published' },
+                { title: 'Stockvideos fÃ¼r Social Media', publishDate: '2026-04-01', status: 'published' },
                 { title: 'Stockvideo Marketing', publishDate: '2026-04-05', status: 'published' },
                 { title: 'Stockvideo Trends 2026', publishDate: '2026-04-15', status: 'scheduled' },
                 { title: 'Drohnen Stockvideos', publishDate: '2026-04-22', status: 'scheduled' },
@@ -1616,7 +1616,7 @@ var calendarModule = {
         const lastDay = new Date(year, month + 1, 0);
         const startDow = (firstDay.getDay() + 6) % 7; // Monday = 0
 
-        const monthNames = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+        const monthNames = ['Januar','Februar','MÃ¤rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
         document.getElementById('calendar-month-title').textContent = monthNames[month] + ' ' + year;
 
         const days = ['Mo','Di','Mi','Do','Fr','Sa','So'];
@@ -1686,7 +1686,7 @@ var calendarModule = {
 
         listEl.innerHTML = dayArticles.map(a => {
             const colors = { published: '#34c759', scheduled: '#007aff', draft: '#8e8e93' };
-            const labels = { published: 'Veröffentlicht', scheduled: 'Geplant', draft: 'Entwurf' };
+            const labels = { published: 'VerÃ¶ffentlicht', scheduled: 'Geplant', draft: 'Entwurf' };
             return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #333;">' +
                 '<span style="width:8px;height:8px;border-radius:50%;background:' + (colors[a.status]||'#888') + ';flex-shrink:0;"></span>' +
                 '<div style="flex:1;"><div style="color:#fff;font-size:14px;">' + a.title + '</div>' +
