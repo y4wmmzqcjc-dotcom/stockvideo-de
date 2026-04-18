@@ -1,5 +1,5 @@
-// v20260418G
-const CORS_HEADERS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, GET, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type', };
+// v20260418H
+const CORS_HEADERS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, GET, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Password', };
 const MOLLIE_API_KEY = 'test_A7njP8NN7AHtBVdxUPF96ccCErfQdS';
 const SITE_URL = 'https://stockvideo.de';
 const WORKER_URL = 'https://stockvideo-checkout.rende.workers.dev';
@@ -99,7 +99,7 @@ async function _resend_sendDownload(order,downloadUrl,licenseUrl){
     +'<p style="color:#e1e1e1"><strong style="color:#fff">Video:</strong> '+_html_escape(title)+'<br><strong style="color:#fff">Bestellnummer:</strong> '+_html_escape(order.id)+'</p>'
     +'<p style="margin:28px 0 12px"><a href="'+downloadUrl+'" style="display:inline-block;background:#2563eb;color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:700">Video herunterladen</a></p>'
     +'<p style="margin:0 0 24px"><a href="'+licenseUrl+'" style="display:inline-block;background:transparent;color:#2563eb;padding:10px 0;text-decoration:none;font-weight:600">📄 Lizenzurkunde (PDF) herunterladen</a></p>'
-    +'<p style="color:#9a9a9a;font-size:14px">Der Video-Download-Link ist 7 Tage gøltig. Die Lizenzurkunde steht Ihnen dauerhaft unter obigem Link zur Verfügung.</p>'
+    +'<p style="color:#9a9a9a;font-size:14px">Der Video-Download-Link ist 7 Tage gültig. Die Lizenzurkunde steht Ihnen dauerhaft unter obigem Link zur Verfügung.</p>'
     +'<p style="color:#9a9a9a;font-size:14px">Ihre Rechnung erhalten Sie in den kommenden Tagen per E-Mail.</p>'
     +'<hr style="border:none;border-top:1px solid #333;margin:28px 0">'
     +'<p style="color:#666;font-size:12px">stockvideo.de · Lizenzfreie Stock-Videos in 4K &amp; HD</p>'
@@ -210,17 +210,19 @@ export default {
       if (path.startsWith('/admin/')) {
         if (request.method === 'OPTIONS') { return new Response(null, { headers: { ...CORS_HEADERS } }); }
         const ADMIN_HASH = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';
-        const GH_TOKEN = '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';
+        const GH_TOKEN = 'ghp_aTX6eKHDds4rW5YZT4KE1FMqA9WXJz0vzGOI';
         const GH_REPO = 'y4wmmzqcjc-dotcom/stockvideo-de';
         const GH_BRANCH = 'main';
         const sha256hex = async (s) => { const b = new TextEncoder().encode(s); const h = await crypto.subtle.digest('SHA-256', b); return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join(''); };
         const getPw = async (req) => { let pw = req.headers.get('X-Admin-Password'); if (!pw) { try { const b = await req.clone().json(); pw = b && b.password; } catch(e){} } return pw; };
         const verify = async (req) => { const pw = await getPw(req); if (!pw) return false; return (await sha256hex(pw)) === ADMIN_HASH; };
-        const ghHeaders = { 'Authorization': 'token ' + GH_TOKEN, 'User-Agent': 'stockvideo-worker', 'Accept': 'application/vnd.github.v3)�son' };
+        const ghHeaders = { 'Authorization': 'token ' + GH_TOKEN, 'User-Agent': 'stockvideo-worker', 'Accept': 'application/vnd.github.v3+json' };
         const ghGet = async (p) => { const r = await fetch('https://api.github.com/repos/' + GH_REPO + '/contents/' + p + '?ref=' + GH_BRANCH, { headers: ghHeaders }); if (!r.ok) return null; const j = await r.json(); return { sha: j.sha, content: atob(j.content.replace(/\n/g,'')) }; };
         const ghPut = async (p, content, msg, sha) => { const body = { message: msg, content: btoa(unescape(encodeURIComponent(content))), branch: GH_BRANCH }; if (sha) body.sha = sha; const r = await fetch('https://api.github.com/repos/' + GH_REPO + '/contents/' + p, { method: 'PUT', headers: { ...ghHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); const j = await r.json(); return { status: r.status, json: j }; };
         if (path === '/admin/verify' && request.method === 'POST') { const ok = await verify(request); return jsonResponse({ ok: ok }, ok ? 200 : 401); }
         if (!(await verify(request))) { return jsonResponse({ error: 'unauthorized' }, 401); }
+        if (path === '/admin/r2-stats' && request.method === 'GET') { if (!env.R2) return jsonResponse({ error: 'R2 not bound' }, 500); let total = 0, count = 0, cursor; do { const listed = await env.R2.list({ cursor, limit: 1000 }); for (const obj of listed.objects) { total += obj.size; count++; } cursor = listed.truncated ? listed.cursor : undefined; } while (cursor); return jsonResponse({ totalBytes: total, objectCount: count }); }
+        if (path === '/admin/last-commit' && request.method === 'GET') { const r = await fetch('https://api.github.com/repos/' + GH_REPO + '/commits/' + GH_BRANCH, { headers: ghHeaders }); if (!r.ok) return jsonResponse({ error: 'github', status: r.status }, 502); const j = await r.json(); return jsonResponse({ sha: j.sha ? j.sha.slice(0,7) : null, date: j.commit && j.commit.author ? j.commit.author.date : null, message: j.commit && j.commit.message ? j.commit.message.split('\n')[0] : null }); }
         if (path === '/admin/data' && request.method === 'GET') { const kind = url.searchParams.get('kind'); if (kind !== 'videos' && kind !== 'categories') return jsonResponse({ error: 'bad kind' }, 400); const f = await ghGet('public/data/' + kind + '.json'); if (!f) return jsonResponse({ items: [], sha: null }); let arr = []; try { arr = JSON.parse(f.content); } catch(e){} return jsonResponse({ items: arr, sha: f.sha }); }
         if (path === '/admin/data' && request.method === 'POST') { const body = await request.json(); const kind = body.kind; if (kind !== 'videos' && kind !== 'categories') return jsonResponse({ error: 'bad kind' }, 400); if (!Array.isArray(body.items)) return jsonResponse({ error: 'items must be array' }, 400); const p = 'public/data/' + kind + '.json'; const existing = await ghGet(p); const content = JSON.stringify(body.items, null, 2); const res = await ghPut(p, content, 'admin: update ' + kind + '.json (' + body.items.length + ' items)', existing && existing.sha); if (res.status >= 300) return jsonResponse({ error: 'github', status: res.status, msg: res.json.message }, 502); return jsonResponse({ ok: true, commit: res.json.commit && res.json.commit.sha }); }
         if (path === '/admin/commit' && request.method === 'POST') { const body = await request.json(); if (!body.path || typeof body.content !== 'string') return jsonResponse({ error: 'path+content required' }, 400); const existing = await ghGet(body.path); const res = await ghPut(body.path, body.content, body.message || ('admin: update ' + body.path), existing && existing.sha); if (res.status >= 300) return jsonResponse({ error: 'github', status: res.status, msg: res.json.message }, 502); return jsonResponse({ ok: true, commit: res.json.commit && res.json.commit.sha }); }
@@ -241,8 +243,116 @@ export default {
             try { await env.R2.delete(key); results.push({ key, ok: true }); }
             catch(e2) { results.push({ key, ok: false, error: e2.message }); }
           }
-          return jsonResponse({ ok: true, deleted: results });
+          // Remove entry from videos.json in GitHub
+          let jsonUpdate = null;
+          try {
+            const vf = await ghGet('public/data/videos.json');
+            if (vf) {
+              const arr = JSON.parse(vf.content);
+              const filtered = arr.filter(v => v.slug !== slug);
+              if (filtered.length < arr.length) {
+                const res = await ghPut('public/data/videos.json', JSON.stringify(filtered, null, 2), 'admin: delete video ' + slug, vf.sha);
+                jsonUpdate = { ok: res.status < 300, status: res.status };
+              } else {
+                jsonUpdate = { ok: true, note: 'not in videos.json' };
+              }
+            }
+          } catch(e3) {
+            jsonUpdate = { ok: false, error: e3.message };
+          }
+          return jsonResponse({ ok: true, deleted: results, jsonUpdate });
         }
+
+        // === R2 CLEANUP SCAN ===
+        // Lists all R2 objects and compares against videos.json to find orphans
+        if (path === '/admin/r2-scan' && request.method === 'GET') {
+          if (!env.R2) return jsonResponse({ error: 'R2 not bound' }, 500);
+
+          // 1. Collect all R2 keys
+          const r2Objects = [];
+          let cursor;
+          do {
+            const listed = await env.R2.list({ cursor, limit: 1000 });
+            for (const obj of listed.objects) {
+              r2Objects.push({ key: obj.key, size: obj.size, uploaded: obj.uploaded });
+            }
+            cursor = listed.truncated ? listed.cursor : undefined;
+          } while (cursor);
+
+          // 2. Fetch current videos.json to build set of referenced keys
+          const vf = await ghGet('public/data/videos.json');
+          const videos = vf ? JSON.parse(vf.content) : [];
+
+          const referencedKeys = new Set();
+          for (const v of videos) {
+            const slug = v.slug;
+            // Main video key
+            referencedKeys.add(v.r2Key || ('videos/' + slug + '.mp4'));
+            // Preview keys
+            if (v.r2Preview) referencedKeys.add(v.r2Preview);
+            else referencedKeys.add('previews/' + slug + '.mp4');
+            // Hover preview
+            if (v.r2Hover) referencedKeys.add(v.r2Hover);
+            else referencedKeys.add('previews/' + slug + '-hover.mp4');
+            // Thumbnail
+            if (v.thumbnail) {
+              // thumbnail is usually a full URL — extract the path
+              try {
+                const u = new URL(v.thumbnail);
+                referencedKeys.add(u.pathname.replace(/^\//, ''));
+              } catch(e) {}
+            }
+            referencedKeys.add('thumbs/' + slug + '.jpg');
+          }
+
+          // 3. Split into referenced and orphaned
+          const orphaned = [];
+          const referenced = [];
+          for (const obj of r2Objects) {
+            if (referencedKeys.has(obj.key)) {
+              referenced.push(obj);
+            } else {
+              orphaned.push(obj);
+            }
+          }
+
+          const totalOrphanedBytes = orphaned.reduce((s, o) => s + o.size, 0);
+          const totalReferencedBytes = referenced.reduce((s, o) => s + o.size, 0);
+
+          return jsonResponse({
+            ok: true,
+            totalObjects: r2Objects.length,
+            referencedCount: referenced.length,
+            orphanedCount: orphaned.length,
+            orphanedBytes: totalOrphanedBytes,
+            referencedBytes: totalReferencedBytes,
+            orphaned: orphaned.sort((a, b) => b.size - a.size),
+            referenced: referenced.map(o => o.key),
+          });
+        }
+
+        // === R2 CLEANUP PURGE ===
+        // Deletes a list of R2 keys (must be confirmed orphans from r2-scan)
+        if (path === '/admin/r2-purge' && request.method === 'POST') {
+          if (!env.R2) return jsonResponse({ error: 'R2 not bound' }, 500);
+          const body = await request.json();
+          const keys = body.keys;
+          if (!Array.isArray(keys) || keys.length === 0) {
+            return jsonResponse({ error: 'keys array required' }, 400);
+          }
+          const results = [];
+          for (const key of keys) {
+            try {
+              await env.R2.delete(key);
+              results.push({ key, ok: true });
+            } catch(e) {
+              results.push({ key, ok: false, error: e.message });
+            }
+          }
+          const deletedCount = results.filter(r => r.ok).length;
+          return jsonResponse({ ok: true, deletedCount, results });
+        }
+
         return jsonResponse({ error: 'admin endpoint not found' }, 404);
       }
 
