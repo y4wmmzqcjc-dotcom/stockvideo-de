@@ -261,6 +261,97 @@ export default {
           }
           return jsonResponse({ ok: true, deleted: results, jsonUpdate });
         }
+
+        // === R2 CLEANUP SCAN ===
+        // Lists all R2 objects and compares against videos.json to find orphans
+        if (path === '/admin/r2-scan' && request.method === 'GET') {
+          if (!env.R2) return jsonResponse({ error: 'R2 not bound' }, 500);
+
+          // 1. Collect all R2 keys
+          const r2Objects = [];
+          let cursor;
+          do {
+            const listed = await env.R2.list({ cursor, limit: 1000 });
+            for (const obj of listed.objects) {
+              r2Objects.push({ key: obj.key, size: obj.size, uploaded: obj.uploaded });
+            }
+            cursor = listed.truncated ? listed.cursor : undefined;
+          } while (cursor);
+
+          // 2. Fetch current videos.json to build set of referenced keys
+          const vf = await ghGet('public/data/videos.json');
+          const videos = vf ? JSON.parse(vf.content) : [];
+
+          const referencedKeys = new Set();
+          for (const v of videos) {
+            const slug = v.slug;
+            // Main video key
+            referencedKeys.add(v.r2Key || ('videos/' + slug + '.mp4'));
+            // Preview keys
+            if (v.r2Preview) referencedKeys.add(v.r2Preview);
+            else referencedKeys.add('previews/' + slug + '.mp4');
+            // Hover preview
+            if (v.r2Hover) referencedKeys.add(v.r2Hover);
+            else referencedKeys.add('previews/' + slug + '-hover.mp4');
+            // Thumbnail
+            if (v.thumbnail) {
+              // thumbnail is usually a full URL — extract the path
+              try {
+                const u = new URL(v.thumbnail);
+                referencedKeys.add(u.pathname.replace(/^\//, ''));
+              } catch(e) {}
+            }
+            referencedKeys.add('thumbs/' + slug + '.jpg');
+          }
+
+          // 3. Split into referenced and orphaned
+          const orphaned = [];
+          const referenced = [];
+          for (const obj of r2Objects) {
+            if (referencedKeys.has(obj.key)) {
+              referenced.push(obj);
+            } else {
+              orphaned.push(obj);
+            }
+          }
+
+          const totalOrphanedBytes = orphaned.reduce((s, o) => s + o.size, 0);
+          const totalReferencedBytes = referenced.reduce((s, o) => s + o.size, 0);
+
+          return jsonResponse({
+            ok: true,
+            totalObjects: r2Objects.length,
+            referencedCount: referenced.length,
+            orphanedCount: orphaned.length,
+            orphanedBytes: totalOrphanedBytes,
+            referencedBytes: totalReferencedBytes,
+            orphaned: orphaned.sort((a, b) => b.size - a.size),
+            referenced: referenced.map(o => o.key),
+          });
+        }
+
+        // === R2 CLEANUP PURGE ===
+        // Deletes a list of R2 keys (must be confirmed orphans from r2-scan)
+        if (path === '/admin/r2-purge' && request.method === 'POST') {
+          if (!env.R2) return jsonResponse({ error: 'R2 not bound' }, 500);
+          const body = await request.json();
+          const keys = body.keys;
+          if (!Array.isArray(keys) || keys.length === 0) {
+            return jsonResponse({ error: 'keys array required' }, 400);
+          }
+          const results = [];
+          for (const key of keys) {
+            try {
+              await env.R2.delete(key);
+              results.push({ key, ok: true });
+            } catch(e) {
+              results.push({ key, ok: false, error: e.message });
+            }
+          }
+          const deletedCount = results.filter(r => r.ok).length;
+          return jsonResponse({ ok: true, deletedCount, results });
+        }
+
         return jsonResponse({ error: 'admin endpoint not found' }, 404);
       }
 
