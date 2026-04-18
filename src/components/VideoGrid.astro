@@ -83,7 +83,7 @@ document.getElementById("resFilterBtn")?.addEventListener("click", e => {
   const btn = e.target;
   const cycle = { all:"4k", "4k":"hd", hd:"all" };
   state.res = cycle[state.res];
-  btn.textContent = state.res === "all" ? "AuflÃ¶sung" : state.res === "4k" ? "Nur 4K" : "Nur HD";
+  btn.textContent = state.res === "all" ? "Auflösung" : state.res === "4k" ? "Nur 4K" : "Nur HD";
   btn.classList.toggle("active", state.res !== "all");
   render();
 });
