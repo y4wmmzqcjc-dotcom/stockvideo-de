@@ -1490,7 +1490,7 @@
     "status": "scheduled",
     "scheduledDate": "2026-05-31",
     "publishDate": "2026-05-31",
-    "scheduledTime": "15:30"
+    "scheduledTime": "08:51"
   },
   {
     "id": 13,
@@ -1569,7 +1569,7 @@
     "status": "scheduled",
     "scheduledDate": "2026-06-01",
     "publishDate": "2026-06-01",
-    "scheduledTime": "10:00"
+    "scheduledTime": "15:22"
   },
   {
     "id": 58,
@@ -1648,7 +1648,7 @@
     "status": "scheduled",
     "scheduledDate": "2026-06-01",
     "publishDate": "2026-06-01",
-    "scheduledTime": "19:00"
+    "scheduledTime": "11:17"
   },
   {
     "id": 22,
@@ -1727,7 +1727,7 @@
     "status": "published",
     "scheduledDate": "2026-04-19",
     "publishDate": "2026-04-19",
-    "scheduledTime": "08:00"
+    "scheduledTime": "13:41"
   },
   {
     "id": 47,
@@ -1806,7 +1806,7 @@
     "status": "published",
     "scheduledDate": "2026-04-19",
     "publishDate": "2026-04-19",
-    "scheduledTime": "17:00"
+    "scheduledTime": "09:44"
   },
   {
     "id": 68,
@@ -1885,7 +1885,7 @@
     "status": "published",
     "scheduledDate": "2026-04-20",
     "publishDate": "2026-04-20",
-    "scheduledTime": "09:30"
+    "scheduledTime": "07:23"
   },
   {
     "id": 37,
@@ -1964,7 +1964,7 @@
     "status": "published",
     "scheduledDate": "2026-04-21",
     "publishDate": "2026-04-21",
-    "scheduledTime": "07:00"
+    "scheduledTime": "16:44"
   },
   {
     "id": 14,
@@ -2043,7 +2043,7 @@
     "status": "published",
     "scheduledDate": "2026-04-20",
     "publishDate": "2026-04-20",
-    "scheduledTime": "18:00"
+    "scheduledTime": "19:14"
   },
   {
     "id": 59,
@@ -2122,7 +2122,7 @@
     "status": "published",
     "scheduledDate": "2026-04-22",
     "publishDate": "2026-04-22",
-    "scheduledTime": "10:00"
+    "scheduledTime": "07:05"
   },
   {
     "id": 23,
@@ -2201,7 +2201,7 @@
     "status": "published",
     "scheduledDate": "2026-04-21",
     "publishDate": "2026-04-21",
-    "scheduledTime": "15:30"
+    "scheduledTime": "09:27"
   },
   {
     "id": 48,
@@ -2280,7 +2280,7 @@
     "status": "published",
     "scheduledDate": "2026-04-22",
     "publishDate": "2026-04-22",
-    "scheduledTime": "19:00"
+    "scheduledTime": "15:22"
   },
   {
     "id": 69,
@@ -2359,7 +2359,7 @@
     "status": "published",
     "scheduledDate": "2026-04-23",
     "publishDate": "2026-04-23",
-    "scheduledTime": "08:30"
+    "scheduledTime": "13:07"
   },
   {
     "id": 38,
@@ -2438,7 +2438,7 @@
     "status": "published",
     "scheduledDate": "2026-04-24",
     "publishDate": "2026-04-24",
-    "scheduledTime": "11:00"
+    "scheduledTime": "09:44"
   },
   {
     "id": 15,
@@ -2517,7 +2517,7 @@
     "status": "published",
     "scheduledDate": "2026-04-23",
     "publishDate": "2026-04-23",
-    "scheduledTime": "16:00"
+    "scheduledTime": "10:52"
   },
   {
     "id": 60,
@@ -2596,7 +2596,7 @@
     "status": "published",
     "scheduledDate": "2026-04-25",
     "publishDate": "2026-04-25",
-    "scheduledTime": "09:00"
+    "scheduledTime": "07:05"
   },
   {
     "id": 24,
@@ -2675,7 +2675,7 @@
     "status": "published",
     "scheduledDate": "2026-04-24",
     "publishDate": "2026-04-24",
-    "scheduledTime": "20:00"
+    "scheduledTime": "20:17"
   },
   {
     "id": 49,
@@ -2754,7 +2754,7 @@
     "status": "published",
     "scheduledDate": "2026-04-25",
     "publishDate": "2026-04-25",
-    "scheduledTime": "14:30"
+    "scheduledTime": "18:57"
   },
   {
     "id": 70,
@@ -2833,7 +2833,7 @@
     "status": "published",
     "scheduledDate": "2026-04-26",
     "publishDate": "2026-04-26",
-    "scheduledTime": "07:30"
+    "scheduledTime": "20:33"
   },
   {
     "id": 39,
@@ -2912,7 +2912,7 @@
     "status": "published",
     "scheduledDate": "2026-04-27",
     "publishDate": "2026-04-27",
-    "scheduledTime": "10:30"
+    "scheduledTime": "07:41"
   },
   {
     "id": 16,
@@ -2991,7 +2991,7 @@
     "status": "published",
     "scheduledDate": "2026-04-26",
     "publishDate": "2026-04-26",
-    "scheduledTime": "17:30"
+    "scheduledTime": "11:01"
   },
   {
     "id": 61,
@@ -3070,7 +3070,7 @@
     "status": "published",
     "scheduledDate": "2026-04-28",
     "publishDate": "2026-04-28",
-    "scheduledTime": "08:00"
+    "scheduledTime": "13:07"
   },
   {
     "id": 25,
@@ -3149,7 +3149,7 @@
     "status": "published",
     "scheduledDate": "2026-04-27",
     "publishDate": "2026-04-27",
-    "scheduledTime": "18:30"
+    "scheduledTime": "18:39"
   },
   {
     "id": 50,
@@ -3228,7 +3228,7 @@
     "status": "published",
     "scheduledDate": "2026-04-28",
     "publishDate": "2026-04-28",
-    "scheduledTime": "13:00"
+    "scheduledTime": "08:51"
   },
   {
     "id": 71,
@@ -3307,7 +3307,7 @@
     "status": "published",
     "scheduledDate": "2026-04-29",
     "publishDate": "2026-04-29",
-    "scheduledTime": "09:00"
+    "scheduledTime": "17:35"
   },
   {
     "id": 40,
@@ -3386,7 +3386,7 @@
     "status": "published",
     "scheduledDate": "2026-04-30",
     "publishDate": "2026-04-30",
-    "scheduledTime": "07:30"
+    "scheduledTime": "10:18"
   },
   {
     "id": 17,
@@ -3465,7 +3465,7 @@
     "status": "published",
     "scheduledDate": "2026-04-29",
     "publishDate": "2026-04-29",
-    "scheduledTime": "16:30"
+    "scheduledTime": "10:18"
   },
   {
     "id": 62,
@@ -3544,7 +3544,7 @@
     "status": "published",
     "scheduledDate": "2026-05-01",
     "publishDate": "2026-05-01",
-    "scheduledTime": "10:00"
+    "scheduledTime": "20:17"
   },
   {
     "id": 26,
@@ -3623,7 +3623,7 @@
     "scheduledDate": "2026-04-30",
     "publishDate": "2026-04-30",
     "conclusion": "Der Unterschied zwischen Royalty Free Editorial Use entscheidet darüber, wo und wie ihr Stockvideos einsetzen dürft. Mit dem richtigen Wissen und einer sorgfältigen Prüfung schützt ihr euch vor rechtlichen Problemen und nutzt euer Material optimal. Macht die Lizenzkontrolle zum festen Bestandteil eures Workflows und sichert so jedes Projekt von Anfang an ab.",
-    "scheduledTime": "15:00"
+    "scheduledTime": "19:48"
   },
   {
     "id": 51,
@@ -3702,7 +3702,7 @@
     "status": "published",
     "scheduledDate": "2026-05-01",
     "publishDate": "2026-05-01",
-    "scheduledTime": "20:00"
+    "scheduledTime": "10:52"
   },
   {
     "id": 72,
@@ -3781,7 +3781,7 @@
     "status": "published",
     "scheduledDate": "2026-05-02",
     "publishDate": "2026-05-02",
-    "scheduledTime": "08:30"
+    "scheduledTime": "10:35"
   },
   {
     "id": 41,
@@ -3860,7 +3860,7 @@
     "status": "published",
     "scheduledDate": "2026-05-03",
     "publishDate": "2026-05-03",
-    "scheduledTime": "11:30"
+    "scheduledTime": "14:31"
   },
   {
     "id": 18,
@@ -3939,7 +3939,7 @@
     "status": "published",
     "scheduledDate": "2026-05-02",
     "publishDate": "2026-05-02",
-    "scheduledTime": "18:00"
+    "scheduledTime": "20:17"
   },
   {
     "id": 63,
@@ -4018,7 +4018,7 @@
     "status": "published",
     "scheduledDate": "2026-05-04",
     "publishDate": "2026-05-04",
-    "scheduledTime": "09:00"
+    "scheduledTime": "10:18"
   },
   {
     "id": 27,
@@ -4097,7 +4097,7 @@
     "scheduledDate": "2026-05-03",
     "publishDate": "2026-05-03",
     "conclusion": "NFT Stockvideos rechtssicher zu gestalten, erfordert gründliche Kenntnisse der Lizenz und Urheberrechtslage. Prüft eure Lizenzen sorgfältig, holt bei Bedarf erweiterte Freigaben ein und setzt im Zweifel auf eigenes Material. So schützt ihr euch vor rechtlichen Problemen und nutzt die Chancen dieses wachsenden Marktes verantwortungsvoll.",
-    "scheduledTime": "19:30"
+    "scheduledTime": "10:35"
   },
   {
     "id": 52,
@@ -4176,7 +4176,7 @@
     "status": "published",
     "scheduledDate": "2026-05-04",
     "publishDate": "2026-05-04",
-    "scheduledTime": "17:00"
+    "scheduledTime": "15:03"
   },
   {
     "id": 73,
@@ -4255,7 +4255,7 @@
     "status": "published",
     "scheduledDate": "2026-05-05",
     "publishDate": "2026-05-05",
-    "scheduledTime": "07:00"
+    "scheduledTime": "20:03"
   },
   {
     "id": 42,
@@ -4334,7 +4334,7 @@
     "status": "published",
     "scheduledDate": "2026-05-06",
     "publishDate": "2026-05-06",
-    "scheduledTime": "10:30"
+    "scheduledTime": "20:46"
   },
   {
     "id": 19,
@@ -4413,7 +4413,7 @@
     "status": "published",
     "scheduledDate": "2026-05-05",
     "publishDate": "2026-05-05",
-    "scheduledTime": "14:00"
+    "scheduledTime": "11:17"
   },
   {
     "id": 64,
@@ -4492,7 +4492,7 @@
     "status": "published",
     "scheduledDate": "2026-05-07",
     "publishDate": "2026-05-07",
-    "scheduledTime": "08:00"
+    "scheduledTime": "07:58"
   },
   {
     "id": 28,
@@ -4571,7 +4571,7 @@
     "scheduledDate": "2026-05-06",
     "publishDate": "2026-05-06",
     "conclusion": "Ob eure Stockvideo Lizenz regional weltweit gültig ist, entscheidet über die rechtliche Sicherheit eurer internationalen Projekte. Prüft die räumliche Geltung vor jedem Einsatz, berücksichtigt lokale Besonderheiten und investiert in weltweite Lizenzen für maximale Flexibilität. So seid ihr für globale Kampagnen bestens gerüstet.",
-    "scheduledTime": "19:00"
+    "scheduledTime": "07:41"
   },
   {
     "id": 53,
@@ -4650,7 +4650,7 @@
     "status": "published",
     "scheduledDate": "2026-05-07",
     "publishDate": "2026-05-07",
-    "scheduledTime": "15:30"
+    "scheduledTime": "18:57"
   },
   {
     "id": 74,
@@ -4729,7 +4729,7 @@
     "status": "published",
     "scheduledDate": "2026-05-08",
     "publishDate": "2026-05-08",
-    "scheduledTime": "09:30"
+    "scheduledTime": "10:03"
   },
   {
     "id": 43,
@@ -4808,7 +4808,7 @@
     "status": "published",
     "scheduledDate": "2026-05-09",
     "publishDate": "2026-05-09",
-    "scheduledTime": "08:00"
+    "scheduledTime": "14:12"
   },
   {
     "id": 20,
@@ -4887,7 +4887,7 @@
     "status": "published",
     "scheduledDate": "2026-05-08",
     "publishDate": "2026-05-08",
-    "scheduledTime": "20:00"
+    "scheduledTime": "19:48"
   },
   {
     "id": 65,
@@ -4966,7 +4966,7 @@
     "status": "published",
     "scheduledDate": "2026-05-10",
     "publishDate": "2026-05-10",
-    "scheduledTime": "09:30"
+    "scheduledTime": "15:55"
   },
   {
     "id": 29,
@@ -5045,7 +5045,7 @@
     "scheduledDate": "2026-05-09",
     "publishDate": "2026-05-09",
     "conclusion": "Ein Stockvideo mehrere Kundenprojekte nutzen zu lassen, ist bei den richtigen Lizenzbedingungen völlig legitim. Mit einer sauberen Dokumentation, transparenter Kommunikation und dem passenden Lizenzmodell meistert ihr die Wiederverwendung professionell und rechtssicher. So maximiert ihr den Wert eures Stockmaterial Archivs.",
-    "scheduledTime": "17:00"
+    "scheduledTime": "09:00"
   },
   {
     "id": 54,
@@ -5124,7 +5124,7 @@
     "status": "published",
     "scheduledDate": "2026-05-10",
     "publishDate": "2026-05-10",
-    "scheduledTime": "18:00"
+    "scheduledTime": "09:44"
   },
   {
     "id": 75,
@@ -5203,7 +5203,7 @@
     "status": "published",
     "scheduledDate": "2026-05-11",
     "publishDate": "2026-05-11",
-    "scheduledTime": "07:00"
+    "scheduledTime": "15:22"
   },
   {
     "id": 44,
@@ -5282,7 +5282,7 @@
     "status": "published",
     "scheduledDate": "2026-05-11",
     "publishDate": "2026-05-11",
-    "scheduledTime": "15:30"
+    "scheduledTime": "11:01"
   },
   {
     "id": 101,
@@ -5361,7 +5361,7 @@
     "status": "published",
     "scheduledDate": "2026-05-12",
     "publishDate": "2026-05-12",
-    "scheduledTime": "10:00"
+    "scheduledTime": "17:00"
   },
   {
     "id": 76,
@@ -5440,7 +5440,7 @@
     "status": "published",
     "scheduledDate": "2026-05-13",
     "publishDate": "2026-05-13",
-    "scheduledTime": "08:30"
+    "scheduledTime": "20:46"
   },
   {
     "id": 30,
@@ -5519,7 +5519,7 @@
     "scheduledDate": "2026-05-12",
     "publishDate": "2026-05-12",
     "conclusion": "Stockvideos bieten für die Fernsehproduktion enormes Potenzial, erfordern aber besondere Aufmerksamkeit bei Lizenzierung, Technik und inhaltlicher Auswahl. Wir haben euch gezeigt, wie ihr die häufigsten Fallstricke umgeht und Stockmaterial professionell in eure TV Beiträge einbindet. Mit sorgfältiger Planung und den richtigen Quellen hebt ihr die Qualität eurer Produktionen auf ein neues Niveau.",
-    "scheduledTime": "19:00"
+    "scheduledTime": "10:35"
   },
   {
     "id": 55,
@@ -5598,7 +5598,7 @@
     "status": "published",
     "scheduledDate": "2026-05-14",
     "publishDate": "2026-05-14",
-    "scheduledTime": "11:00"
+    "scheduledTime": "10:18"
   },
   {
     "id": 45,
@@ -5677,7 +5677,7 @@
     "status": "published",
     "scheduledDate": "2026-05-13",
     "publishDate": "2026-05-13",
-    "scheduledTime": "16:00"
+    "scheduledTime": "11:01"
   },
   {
     "id": 102,
@@ -5756,7 +5756,7 @@
     "status": "published",
     "scheduledDate": "2026-05-15",
     "publishDate": "2026-05-15",
-    "scheduledTime": "09:00"
+    "scheduledTime": "11:48"
   },
   {
     "id": 77,
@@ -5835,7 +5835,7 @@
     "status": "published",
     "scheduledDate": "2026-05-14",
     "publishDate": "2026-05-14",
-    "scheduledTime": "20:00"
+    "scheduledTime": "20:03"
   },
   {
     "id": 31,
@@ -5914,7 +5914,7 @@
     "status": "published",
     "scheduledDate": "2026-05-15",
     "publishDate": "2026-05-15",
-    "scheduledTime": "14:30"
+    "scheduledTime": "20:03"
   },
   {
     "id": 96,
@@ -5993,7 +5993,7 @@
     "status": "published",
     "scheduledDate": "2026-05-16",
     "publishDate": "2026-05-16",
-    "scheduledTime": "07:30"
+    "scheduledTime": "10:52"
   },
   {
     "id": 86,
@@ -6072,7 +6072,7 @@
     "status": "published",
     "scheduledDate": "2026-05-16",
     "publishDate": "2026-05-16",
-    "scheduledTime": "17:30"
+    "scheduledTime": "13:41"
   },
   {
     "id": 103,
@@ -6151,7 +6151,7 @@
     "status": "published",
     "scheduledDate": "2026-05-17",
     "publishDate": "2026-05-17",
-    "scheduledTime": "10:30"
+    "scheduledTime": "20:46"
   },
   {
     "id": 78,
@@ -6230,7 +6230,7 @@
     "status": "published",
     "scheduledDate": "2026-05-18",
     "publishDate": "2026-05-18",
-    "scheduledTime": "08:00"
+    "scheduledTime": "15:38"
   },
   {
     "id": 32,
@@ -6309,7 +6309,7 @@
     "status": "published",
     "scheduledDate": "2026-05-17",
     "publishDate": "2026-05-17",
-    "scheduledTime": "18:30"
+    "scheduledTime": "07:41"
   },
   {
     "id": 97,
@@ -6388,7 +6388,7 @@
     "status": "published",
     "scheduledDate": "2026-05-19",
     "publishDate": "2026-05-19",
-    "scheduledTime": "09:00"
+    "scheduledTime": "16:44"
   },
   {
     "id": 87,
@@ -6467,7 +6467,7 @@
     "status": "published",
     "scheduledDate": "2026-05-18",
     "publishDate": "2026-05-18",
-    "scheduledTime": "13:00"
+    "scheduledTime": "11:17"
   },
   {
     "id": 104,
@@ -6546,7 +6546,7 @@
     "status": "published",
     "scheduledDate": "2026-05-20",
     "publishDate": "2026-05-20",
-    "scheduledTime": "07:30"
+    "scheduledTime": "08:51"
   },
   {
     "id": 79,
@@ -6625,7 +6625,7 @@
     "status": "published",
     "scheduledDate": "2026-05-19",
     "publishDate": "2026-05-19",
-    "scheduledTime": "16:30"
+    "scheduledTime": "11:01"
   },
   {
     "id": 33,
@@ -6704,7 +6704,7 @@
     "status": "published",
     "scheduledDate": "2026-05-20",
     "publishDate": "2026-05-20",
-    "scheduledTime": "15:00"
+    "scheduledTime": "14:47"
   },
   {
     "id": 98,
@@ -6783,7 +6783,7 @@
     "status": "published",
     "scheduledDate": "2026-05-21",
     "publishDate": "2026-05-21",
-    "scheduledTime": "10:00"
+    "scheduledTime": "17:51"
   },
   {
     "id": 88,
@@ -6862,7 +6862,7 @@
     "status": "published",
     "scheduledDate": "2026-05-21",
     "publishDate": "2026-05-21",
-    "scheduledTime": "20:00"
+    "scheduledTime": "07:41"
   },
   {
     "id": 105,
@@ -6941,7 +6941,7 @@
     "status": "published",
     "scheduledDate": "2026-05-22",
     "publishDate": "2026-05-22",
-    "scheduledTime": "08:30"
+    "scheduledTime": "07:41"
   },
   {
     "id": 80,
@@ -7020,7 +7020,7 @@
     "status": "published",
     "scheduledDate": "2026-05-23",
     "publishDate": "2026-05-23",
-    "scheduledTime": "11:30"
+    "scheduledTime": "21:00"
   },
   {
     "id": 34,
@@ -7099,7 +7099,7 @@
     "status": "published",
     "scheduledDate": "2026-05-22",
     "publishDate": "2026-05-22",
-    "scheduledTime": "18:00"
+    "scheduledTime": "15:38"
   },
   {
     "id": 99,
@@ -7178,7 +7178,7 @@
     "status": "published",
     "scheduledDate": "2026-05-24",
     "publishDate": "2026-05-24",
-    "scheduledTime": "09:00"
+    "scheduledTime": "07:41"
   },
   {
     "id": 89,
@@ -7257,7 +7257,7 @@
     "status": "published",
     "scheduledDate": "2026-05-23",
     "publishDate": "2026-05-23",
-    "scheduledTime": "19:30"
+    "scheduledTime": "08:33"
   },
   {
     "id": 106,
@@ -7336,7 +7336,7 @@
     "status": "published",
     "scheduledDate": "2026-05-25",
     "publishDate": "2026-05-25",
-    "scheduledTime": "07:00"
+    "scheduledTime": "18:22"
   },
   {
     "id": 81,
@@ -7415,7 +7415,7 @@
     "status": "published",
     "scheduledDate": "2026-05-24",
     "publishDate": "2026-05-24",
-    "scheduledTime": "17:00"
+    "scheduledTime": "15:22"
   },
   {
     "id": 35,
@@ -7494,7 +7494,7 @@
     "status": "published",
     "scheduledDate": "2026-05-25",
     "publishDate": "2026-05-25",
-    "scheduledTime": "14:00"
+    "scheduledTime": "07:58"
   },
   {
     "id": 100,
@@ -7573,7 +7573,7 @@
     "status": "published",
     "scheduledDate": "2026-05-26",
     "publishDate": "2026-05-26",
-    "scheduledTime": "10:30"
+    "scheduledTime": "11:17"
   },
   {
     "id": 90,
@@ -7652,7 +7652,7 @@
     "status": "published",
     "scheduledDate": "2026-05-26",
     "publishDate": "2026-05-26",
-    "scheduledTime": "19:00"
+    "scheduledTime": "15:38"
   },
   {
     "id": 107,
@@ -7731,7 +7731,7 @@
     "status": "published",
     "scheduledDate": "2026-05-27",
     "publishDate": "2026-05-27",
-    "scheduledTime": "08:00"
+    "scheduledTime": "11:34"
   },
   {
     "id": 82,
@@ -7810,7 +7810,7 @@
     "status": "published",
     "scheduledDate": "2026-05-27",
     "publishDate": "2026-05-27",
-    "scheduledTime": "15:30"
+    "scheduledTime": "20:03"
   },
   {
     "id": 91,
@@ -7889,7 +7889,7 @@
     "scheduledDate": "2026-05-28",
     "publishDate": "2026-05-28",
     "conclusion": "Störende Objekte entfernen Retusche ist ein unverzichtbares Werkzeug in der Postproduktion von Stockvideos. Mit den richtigen Techniken, einem klaren Workflow und dem Bewusstsein für die Grenzen der Bearbeitung verwandeln Sie fast jedes Clip in Material, das perfekt zu Ihrem Projekt passt.",
-    "scheduledTime": "09:30"
+    "scheduledTime": "09:44"
   },
   {
     "id": 108,
@@ -7968,7 +7968,7 @@
     "status": "published",
     "scheduledDate": "2026-05-29",
     "publishDate": "2026-05-29",
-    "scheduledTime": "08:00"
+    "scheduledTime": "13:41"
   },
   {
     "id": 83,
@@ -8047,7 +8047,7 @@
     "status": "published",
     "scheduledDate": "2026-05-28",
     "publishDate": "2026-05-28",
-    "scheduledTime": "20:00"
+    "scheduledTime": "17:35"
   },
   {
     "id": 92,
@@ -8126,7 +8126,7 @@
     "scheduledDate": "2026-05-29",
     "publishDate": "2026-05-29",
     "conclusion": "Übergänge bei Stockvideos kombinieren ist eine Fähigkeit, die über den Gesamteindruck Ihrer Produktion entscheidet. Mit farblicher Angleichung, bewusstem Einsatz von Bewegung und Audio sowie dem Verzicht auf überflüssige Effekte schaffen Sie Sequenzen, die professionell und wie aus einem Guss wirken.",
-    "scheduledTime": "17:00"
+    "scheduledTime": "09:00"
   },
   {
     "id": 109,
@@ -8205,7 +8205,7 @@
     "status": "scheduled",
     "scheduledDate": "2026-06-02",
     "publishDate": "2026-06-02",
-    "scheduledTime": "08:30"
+    "scheduledTime": "19:14"
   },
   {
     "id": 84,
@@ -8284,7 +8284,7 @@
     "status": "scheduled",
     "scheduledDate": "2026-06-02",
     "publishDate": "2026-06-02",
-    "scheduledTime": "16:00"
+    "scheduledTime": "09:44"
   },
   {
     "id": 93,
@@ -8363,7 +8363,7 @@
     "scheduledDate": "2026-05-30",
     "publishDate": "2026-05-30",
     "conclusion": "Querformat Hochformat Skalierung ist die Grundvoraussetzung für erfolgreiche plattformübergreifende Videokommunikation. Mit vorausschauender Planung, zentraler Motivplatzierung und sorgfältiger Endkontrolle stellen Sie sicher, dass Ihre Stockvideos auf jedem Bildschirm überzeugen.",
-    "scheduledTime": "09:30"
+    "scheduledTime": "13:07"
   },
   {
     "id": 110,
@@ -8442,7 +8442,7 @@
     "status": "published",
     "scheduledDate": "2026-05-31",
     "publishDate": "2026-05-31",
-    "scheduledTime": "07:00"
+    "scheduledTime": "16:11"
   },
   {
     "id": 85,
@@ -8521,7 +8521,7 @@
     "status": "published",
     "scheduledDate": "2026-05-30",
     "publishDate": "2026-05-30",
-    "scheduledTime": "18:00"
+    "scheduledTime": "10:52"
   },
   {
     "id": 94,
@@ -8600,7 +8600,7 @@
     "scheduledDate": "2026-06-03",
     "publishDate": "2026-06-03",
     "conclusion": "Sounddesign stumme Videos und Musik zu einem überzeugenden Gesamterlebnis zu verbinden ist eine Kunst, die den Wert Ihrer Stockvideos vervielfacht. Mit professioneller Vertonung, passenden Geräuschkulissen und sorgfältiger technischer Umsetzung verwandeln Sie stumme Clips in emotionale Geschichten.",
-    "scheduledTime": "11:00"
+    "scheduledTime": "15:38"
   },
   {
     "id": 95,
@@ -8679,6 +8679,6 @@
     "scheduledDate": "2026-06-03",
     "publishDate": "2026-06-03",
     "conclusion": "Export Web Performance speichern ist der entscheidende letzte Schritt, der über die Wirkung Ihrer gesamten Videoproduktion entscheidet. Mit den richtigen Formaten, durchdachter Bitratensteuerung und konsequenter Qualitätskontrolle stellen Sie sicher, dass Ihre Stockvideos schnell laden und dabei großartig aussehen.",
-    "scheduledTime": "20:00"
+    "scheduledTime": "09:44"
   }
 ]
