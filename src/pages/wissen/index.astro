@@ -6,11 +6,9 @@ import articles from '../../data/articles.json';
 const today = new Date();
 today.setHours(0, 0, 0, 0);
 const visibleArticles = articles.filter((a: any) => {
-  if (a.status === 'published') return true;
-  if (a.status === 'scheduled' && a.scheduledDate) {
-    return new Date(a.scheduledDate) <= today;
-  }
-  return false;
+  if (a.status === 'draft') return false;
+  if (a.scheduledDate) return new Date(a.scheduledDate) <= today;
+  return a.status === 'published';
 });
 
 const categories = [...new Set(visibleArticles.map(a => a.category))].sort();
