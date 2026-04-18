@@ -550,14 +550,16 @@ window.adminArticles = {
     seoHtml += '<div class="we-side-field"><label>Kategorie</label><input type="text" value="' + (seo.category||a.category||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateSeo(\'category\',this.value)"></div>';
 
     // GEO section
-    var geo = a.geo || {};
+    var geoLat = a.imageGeoLat || '';
+    var geoLng = a.imageGeoLng || '';
+    var geoCity = a.imageGeoCity || '';
     seoHtml += '<hr class="we-divider">';
-    seoHtml += '<h4>GEO-Daten</h4>';
-    seoHtml += '<div class="we-side-field"><label>Standort</label><input type="text" value="' + (geo.location||'').replace(/"/g,'&quot;') + '" onchange="adminArticles._updateGeo(\'location\',this.value)"></div>';
-    seoHtml += '<div class="we-side-field"><label>Breitengrad</label><input type="text" value="' + (geo.lat||'') + '" onchange="adminArticles._updateGeo(\'lat\',this.value)"></div>';
-    seoHtml += '<div class="we-side-field"><label>Laengengrad</label><input type="text" value="' + (geo.lng||'') + '" onchange="adminArticles._updateGeo(\'lng\',this.value)"></div>';
-    if (geo.lat && geo.lng) {
-      seoHtml += '<a class="we-geo-link" href="https://www.openstreetmap.org/?mlat=' + geo.lat + '&mlon=' + geo.lng + '#map=14/' + geo.lat + '/' + geo.lng + '" target="_blank">Auf Karte anzeigen &#x2197;</a>';
+    seoHtml += '<h4>GEO-Daten (Foto)</h4>';
+    seoHtml += '<div class="we-side-field"><label>Stadt / Ort</label><input type="text" placeholder="z.B. Berlin" value="' + String(geoCity).replace(/"/g,'&quot;') + '" onchange="adminArticles._updateGeo(\'imageGeoCity\',this.value)"></div>';
+    seoHtml += '<div class="we-side-field"><label>Breitengrad</label><input type="text" placeholder="z.B. 52.52" value="' + String(geoLat) + '" onchange="adminArticles._updateGeo(\'imageGeoLat\',parseFloat(this.value)||this.value)"></div>';
+    seoHtml += '<div class="we-side-field"><label>Laengengrad</label><input type="text" placeholder="z.B. 13.405" value="' + String(geoLng) + '" onchange="adminArticles._updateGeo(\'imageGeoLng\',parseFloat(this.value)||this.value)"></div>';
+    if (geoLat && geoLng) {
+      seoHtml += '<a class="we-geo-link" href="https://www.openstreetmap.org/?mlat=' + geoLat + '&mlon=' + geoLng + '#map=14/' + geoLat + '/' + geoLng + '" target="_blank">Auf Karte anzeigen &#x2197;</a>';
     }
 
     // Hero image section
@@ -870,9 +872,10 @@ window.adminArticles = {
   _updateGeo(field, value) {
     const a = this.articles.find(x => x.id == this.currentEditId);
     if (!a) return;
-    if (!a.geo) a.geo = {};
-    a.geo[field] = value;
+    a[field] = value;
     this._save();
+    // Re-render sidebar map link if lat/lng changed
+    if (field === 'imageGeoLat' || field === 'imageGeoLng') this._renderBlockEditor();
   },
 
 
