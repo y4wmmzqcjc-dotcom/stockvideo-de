@@ -712,7 +712,7 @@ var mediaModule = {
           '</div>' +
           '<div style="flex:1;min-width:0"><div style="color:#fff;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (v.title||'Ohne Titel') + '</div>' +
           '<div style="color:#888;font-size:12px;margin-top:2px">' + (v.category||'Keine Kategorie') + '</div></div>' +
-          '<button onclick="event.stopPropagation();admin.deleteVideo(' + origIdx + ')" style="background:rgba(255,59,48,0.1);color:#ff3b30;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px">Bearbeiten</button> Löschen</button>' +
+          '<button onclick="event.stopPropagation();admin.deleteVideo(' + origIdx + ')" style="background:rgba(255,59,48,0.1);color:#ff3b30;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px">Löschen</button>' +
           '</div>';
       }).join('');
     },
