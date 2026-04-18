@@ -15,12 +15,21 @@ function isVisible(a: any) {
 }
 
 export function getStaticPaths() {
-  return articles
-    .filter(isVisible)
-    .map((article) => ({
-      params: { slug: article.slug },
-      props: { article },
-    }));
+  // Inline visibility check — getStaticPaths runs in a separate module context in Astro
+  const now = new Date();
+  const visibleArticles = (articles as any[]).filter((a) => {
+    if (a.status === 'draft') return false;
+    if (a.scheduledDate) {
+      const timeStr = a.scheduledTime || '00:00';
+      const scheduledAt = new Date(a.scheduledDate + 'T' + timeStr + ':00');
+      return scheduledAt <= now;
+    }
+    return a.status === 'published';
+  });
+  return visibleArticles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
 }
 
 const { article } = Astro.props;
