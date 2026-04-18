@@ -607,7 +607,7 @@ window.adminArticles = {
     html += '<div class="we-main">';
     html += '<div class="we-topbar">';
     html += '<button class="we-back" onclick="adminArticles.closeEditor()">&#x2190;</button>';
-    html += '<button class="we-save" onclick="adminArticles.saveArticle()">Speichern</button>';
+    html += '<button class="we-save" onclick="adminArticles.saveArticle()">Speichern &amp; Veröffentlichen</button>';
     html += '</div>';
     html += '<input class="we-title-input" type="text" value="' + (a.title||'').replace(/"/g,'&quot;') + '" placeholder="Titel eingeben..." onchange="adminArticles._updateMeta(\'title\',this.value)">';
     html += '<div class="we-slug-row"><span>/wissen/</span><input type="text" value="' + (a.slug||'') + '" onchange="adminArticles._updateMeta(\'slug\',this.value)"></div>';
@@ -961,7 +961,8 @@ window.adminArticles = {
       a.sections.push(currentSection);
     }
     this._save();
-    this.showAlert('Artikel gespeichert!', 'success');
+    this.showAlert('Artikel gespeichert! Wird veröffentlicht…', 'success');
+    this.publishToGitHub();
   },
 
   showAlert(msg, type) {
