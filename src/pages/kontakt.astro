@@ -15,7 +15,11 @@ import config from '../../public/data/config.json';
   ═══════════════════════════════════════════════════════════════ -->
   <section class="hero-section">
     <div class="hero-bg">
-      <img src="/images/making-of/making-of-33.jpg" alt="Kameramann mit Cinema Kamera bei einer Produktion" class="hero-img" />
+      <img
+        src="/images/making-of/making-of-33.jpg"
+        alt="Kameramann mit Cinema Kamera bei einer Produktion"
+        class="hero-img"
+      />
       <div class="hero-overlay"></div>
       <div class="hero-grain"></div>
     </div>
@@ -42,27 +46,10 @@ import config from '../../public/data/config.json';
         Ob Lizenzfrage, Enterprise-Anfrage oder individuelle Aufnahme:
         Du bekommst eine echte Antwort, direkt von Timo Rende.
       </p>
-      <div class="hero-stats">
-        <div class="stat-item">
-          <span class="stat-prefix">&lt;</span>
-          <span class="stat-num" data-target="24">0</span><span class="stat-unit">h</span>
-          <span class="stat-label">Antwortzeit</span>
-        </div>
-        <div class="stat-divider" aria-hidden="true"></div>
-        <div class="stat-item">
-          <span class="stat-num" data-target="100">0</span><span class="stat-unit">%</span>
-          <span class="stat-label">Persönliche Antwort</span>
-        </div>
-        <div class="stat-divider" aria-hidden="true"></div>
-        <div class="stat-item">
-          <span class="stat-num" data-target="0">0</span><span class="stat-unit">€</span>
-          <span class="stat-label">Beratungskosten</span>
-        </div>
-        <div class="stat-divider" aria-hidden="true"></div>
-        <div class="stat-item">
-          <span class="stat-num" data-target="1">0</span>
-          <span class="stat-label">Direkter Ansprechpartner</span>
-        </div>
+      <div class="hero-chips">
+        <span class="chip"><span class="chip-dot"></span>&lt; 24 h Antwort</span>
+        <span class="chip"><span class="chip-dot"></span>DSGVO-konform</span>
+        <span class="chip"><span class="chip-dot"></span>Direkter Draht zum Team</span>
       </div>
     </div>
 
@@ -72,215 +59,10 @@ import config from '../../public/data/config.json';
   </section>
 
   <!-- ═══════════════════════════════════════════════════════════════
-       PERSOENLICH
-  ═══════════════════════════════════════════════════════════════ -->
-  <section class="pillar-section persoenlich-section reveal-section">
-    <div class="pillar-inner">
-      <div class="pillar-label">
-        <span class="pillar-icon">
-          <svg viewBox="0 0 40 40" fill="none">
-            <circle cx="20" cy="14" r="6" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M8 34C8 28 13 24 20 24C27 24 32 28 32 34" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </span>
-        <span class="pillar-tag">01 · Persönlich</span>
-      </div>
-      <div class="pillar-content">
-        <h2 class="pillar-title">Eine Mail.<br/>Eine echte Antwort.</h2>
-        <div class="pillar-text">
-          <p>
-            Wenn du uns schreibst, landet deine Nachricht nicht in einem Ticketsystem
-            mit Sammelpostfach. Sie landet direkt bei Timo, der seit über zehn Jahren
-            Bewegtbild produziert und genau weiß, worauf es bei deiner Anfrage ankommt.
-          </p>
-          <p>
-            Wir antworten in der Regel noch am selben Werktag. Wenn es einmal länger
-            dauert, weil wir am Set stehen, hörst du am nächsten Morgen von uns.
-            Versprochen, ohne automatisierte Eingangsbestätigung.
-          </p>
-        </div>
-        <div class="pillar-quote">
-          <span class="quote-mark">"</span>
-          Die beste Beratung kommt nicht aus einem Skript. Sie kommt aus jemandem,
-          der das Set kennt.
-          <span class="quote-mark">"</span>
-        </div>
-      </div>
-    </div>
-    <div class="pillar-visual persoenlich-visual">
-      <div class="frame-element">
-        <img src="/images/making-of/making-of-030.jpg" alt="Filmemacher am Set" loading="lazy" />
-        <div class="frame-border"></div>
-      </div>
-      <div class="floating-badge">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M3 21V19C3 16.79 4.79 15 7 15H17C19.21 15 21 16.79 21 19V21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/></svg>
-        <span>Direkter Ansprechpartner</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════════════
-       SCHNELL
-  ═══════════════════════════════════════════════════════════════ -->
-  <section class="pillar-section schnell-section reveal-section alt">
-    <div class="pillar-visual schnell-visual">
-      <div class="frame-element">
-        <img src="/images/making-of/making-of-015.jpg" alt="Cinema Kamera in Aktion" loading="lazy" />
-        <div class="frame-border"></div>
-      </div>
-    </div>
-    <div class="pillar-inner">
-      <div class="pillar-label">
-        <span class="pillar-icon">
-          <svg viewBox="0 0 40 40" fill="none">
-            <path d="M22 4L8 24H20L18 36L32 16H20L22 4Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-          </svg>
-        </span>
-        <span class="pillar-tag">02 · Schnell</span>
-      </div>
-      <h2 class="pillar-title">Schnelle Wege<br/>für schnelle Projekte.</h2>
-      <div class="pillar-text">
-        <p>
-          Stockvideo wird oft im letzten Schnittfenster gebraucht. Genau dann,
-          wenn die Zeit drückt. Deshalb halten wir alle Wege kurz: E-Mail,
-          Telefon, mobile Erreichbarkeit, jeder Kanal landet bei einem Menschen,
-          nicht bei einer Warteschleife.
-        </p>
-        <p>
-          Für dringende Produktionen: Ruf direkt mobil an. Für strukturierte
-          Anfragen: Nutze das Formular weiter unten. Beide Wege funktionieren,
-          beide bekommen die gleiche Aufmerksamkeit.
-        </p>
-      </div>
-      <div class="feature-chips">
-        <div class="chip">
-          <svg viewBox="0 0 20 20" fill="none"><path d="M10 18C14.418 18 18 14.418 18 10C18 5.582 14.418 2 10 2C5.582 2 2 5.582 2 10C2 14.418 5.582 18 10 18Z" stroke="currentColor" stroke-width="1.2"/><path d="M10 6V10L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-          Antwort meist binnen Stunden
-        </div>
-        <div class="chip">
-          <svg viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M7 10L9 12L13 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          DSGVO-konforme Übermittlung
-        </div>
-        <div class="chip">
-          <svg viewBox="0 0 20 20" fill="none"><path d="M5 4H8L10 9L7.5 10.5C8.5 12.5 10.5 14.5 12.5 15.5L14 13L19 14V17C19 18.105 18.105 19 17 19C9.82 19 4 13.18 4 6C4 4.895 4.895 4 5 4Z" stroke="currentColor" stroke-width="1.2"/></svg>
-          Notfall-Hotline mobil
-        </div>
-        <div class="chip">
-          <svg viewBox="0 0 20 20" fill="none"><path d="M3 10H17M10 3V17" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-          Kein Ticketsystem
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════════════
-       MANIFESTO · TEAM
-  ═══════════════════════════════════════════════════════════════ -->
-  <section class="manifesto-section reveal-section">
-    <div class="manifesto-bg">
-      <img src="/images/making-of/making-of-020.jpg" alt="Filmteam bei Außenaufnahmen" loading="lazy" />
-      <div class="manifesto-overlay"></div>
-    </div>
-    <div class="manifesto-content">
-      <div class="mission-tag">
-        <span class="pillar-icon">
-          <svg viewBox="0 0 40 40" fill="none">
-            <path d="M14 14C14 10.686 16.686 8 20 8C23.314 8 26 10.686 26 14C26 17.314 23.314 20 20 20C16.686 20 14 17.314 14 14Z" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M8 34C8 27.373 13.373 22 20 22C26.627 22 32 27.373 32 34" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </span>
-        <span>03 · Das Team</span>
-      </div>
-      <h2 class="manifesto-headline">
-        Filmemacher reden<br/>
-        <em>am liebsten</em><br/>
-        mit Filmemachern.
-      </h2>
-      <p class="manifesto-body">
-        Wir sind kein Stockportal mit Marketingabteilung. Wir sind Produzenten,
-        die selbst täglich vor der Kamera stehen oder im Schnitt sitzen.
-        Das hörst du an jeder Antwort: Wir verstehen, wovon du sprichst.
-      </p>
-      <div class="manifesto-pillars">
-        <div class="m-pillar">
-          <div class="m-icon">
-            <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="11" stroke="currentColor" stroke-width="1.5"/><path d="M16 10V16L20 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </div>
-          <strong>Antwortzeit</strong>
-          <span>Meist unter 24 Stunden, oft am selben Werktag.</span>
-        </div>
-        <div class="m-pillar">
-          <div class="m-icon">
-            <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="11" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M6 27C6 22 10.5 19 16 19C21.5 19 26 22 26 27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </div>
-          <strong>Persönlich</strong>
-          <span>Jede Nachricht erreicht einen echten Menschen aus der Branche.</span>
-        </div>
-        <div class="m-pillar">
-          <div class="m-icon">
-            <svg viewBox="0 0 32 32" fill="none"><rect x="6" y="9" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="16" cy="16" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M11 9V7C11 6 11.5 5 13 5H19C20.5 5 21 6 21 7V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </div>
-          <strong>Fachlich</strong>
-          <span>Lizenzrecht, Produktion, Schnitt: Wir wissen, wovon du redest.</span>
-        </div>
-        <div class="m-pillar">
-          <div class="m-icon">
-            <svg viewBox="0 0 32 32" fill="none"><path d="M16 4L26 8V16C26 22 21 27 16 28C11 27 6 22 6 16V8L16 4Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M11 16L14.5 19.5L21 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-          <strong>Diskret</strong>
-          <span>NDA selbstverständlich. Deine Projektdaten bleiben bei uns.</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════════════
-       FORM SECTION
+       FORM - direkt unter Hero
   ═══════════════════════════════════════════════════════════════ -->
   <section class="form-section reveal-section" id="formular">
     <div class="form-inner">
-      <div class="form-side">
-        <div class="pillar-label">
-          <span class="pillar-icon">
-            <svg viewBox="0 0 40 40" fill="none">
-              <path d="M6 12L20 22L34 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <rect x="6" y="10" width="28" height="20" rx="2" stroke="currentColor" stroke-width="1.5"/>
-            </svg>
-          </span>
-          <span class="pillar-tag">04 · Nachricht</span>
-        </div>
-        <h2 class="pillar-title">Schreib uns,<br/>wir schreiben zurück.</h2>
-        <p class="pillar-text">
-          Je mehr Kontext du uns gibst, desto präziser können wir antworten.
-          Wenn du dir unsicher bist, was du brauchst, beschreib einfach dein Projekt
-          und wir melden uns mit den passenden Optionen.
-        </p>
-
-        <div class="timeline">
-          <div class="tl-item tl-done">
-            <div class="tl-dot"></div>
-            <div class="tl-body">
-              <strong>Du sendest deine Nachricht</strong>
-              <span>Verschlüsselt übertragen. Eingang bestätigt per E-Mail.</span>
-            </div>
-          </div>
-          <div class="tl-item tl-active">
-            <div class="tl-dot"></div>
-            <div class="tl-body">
-              <strong>Wir lesen sie persönlich</strong>
-              <span>Direkt bei Timo, meist innerhalb weniger Stunden.</span>
-            </div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-dot"></div>
-            <div class="tl-body">
-              <strong>Du bekommst eine echte Antwort</strong>
-              <span>Mit Vorschlägen, Optionen und einem direkten Ansprechpartner.</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <form id="contactForm" class="contact-form" novalidate>
         <div class="form-header">
           <span class="form-title">Nachricht senden</span>
@@ -339,17 +121,17 @@ import config from '../../public/data/config.json';
     <div class="channels-head">
       <div class="pillar-label">
         <span class="pillar-icon">
-          <svg viewBox="0 0 40 40" fill="none">
-            <path d="M20 28C20 28 10 20 10 13C10 7.477 14.477 3 20 3C25.523 3 30 7.477 30 13C30 20 20 28 20 28Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-            <circle cx="20" cy="13" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 12L20 22L34 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="6" y="10" width="28" height="20" rx="2" stroke="currentColor" stroke-width="1.5"/>
           </svg>
         </span>
-        <span class="pillar-tag">05 · Direkt erreichen</span>
+        <span class="pillar-tag">01 · Direkt erreichen</span>
       </div>
-      <h2 class="pillar-title">Vier Wege,<br/>ein Team.</h2>
+      <h2 class="pillar-title">Wähle deinen Weg.<br/>Wir sind da.</h2>
       <p class="pillar-text">
-        Egal wie du uns erreichst, die Antwort kommt direkt aus Saarlouis,
-        nicht aus einem Ticketsystem.
+        Vier Wege, ein Team. Egal wie du uns erreichst, die Antwort kommt
+        direkt aus Saarlouis, nicht aus einem Ticketsystem.
       </p>
     </div>
 
@@ -433,7 +215,7 @@ import config from '../../public/data/config.json';
   /* ─── HERO ─── */
   .hero-section {
     position: relative;
-    min-height: 100vh;
+    min-height: 88vh;
     display: flex;
     align-items: flex-end;
     overflow: hidden;
@@ -501,7 +283,7 @@ import config from '../../public/data/config.json';
 
   .hero-headline {
     display: flex; flex-direction: column;
-    font-size: clamp(42px, 7vw, 88px);
+    font-size: clamp(38px, 6.2vw, 80px);
     font-weight: 800; line-height: 1.05;
     color: #fff; letter-spacing: -0.02em;
     margin-bottom: 28px;
@@ -517,44 +299,29 @@ import config from '../../public/data/config.json';
   @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
   .hero-sub {
-    font-size: clamp(15px, 1.5vw, 18px); color: rgba(255,255,255,0.65);
+    font-size: clamp(15px, 1.4vw, 18px); color: rgba(255,255,255,0.65);
     line-height: 1.7; max-width: 580px;
-    margin-bottom: 48px;
+    margin-bottom: 32px;
     animation: fadeUp 0.8s 0.7s both;
   }
 
-  .hero-stats {
-    display: flex; align-items: center; gap: 0;
-    flex-wrap: wrap;
+  .hero-chips {
+    display: flex; flex-wrap: wrap; gap: 10px;
     animation: fadeUp 0.8s 0.9s both;
   }
-  .stat-item {
-    display: flex; flex-direction: column;
-    padding: 0 28px 0 0;
+  .hero-chips .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 13px; color: rgba(255,255,255,0.75);
+    backdrop-filter: blur(8px);
   }
-  .stat-item:first-child { padding-left: 0; }
-  .stat-prefix {
-    font-size: clamp(22px, 3vw, 34px); font-weight: 700;
-    color: #e8c97a; line-height: 1; display: inline; margin-right: 4px;
-  }
-  .stat-num {
-    font-size: clamp(28px, 4vw, 44px); font-weight: 800;
-    color: #e8c97a; line-height: 1;
-    display: inline;
-  }
-  .stat-unit {
-    font-size: clamp(18px, 2.5vw, 28px); font-weight: 700;
-    color: #e8c97a;
-  }
-  .stat-label {
-    font-size: 11px; color: rgba(255,255,255,0.45);
-    text-transform: uppercase; letter-spacing: 0.1em;
-    margin-top: 6px;
-  }
-  .stat-divider {
-    width: 1px; height: 40px; background: rgba(255,255,255,0.15);
-    margin: 0 28px 20px 0;
-    align-self: flex-start; margin-top: 6px;
+  .chip-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #e8c97a;
+    flex-shrink: 0;
   }
 
   .scroll-hint { position: absolute; bottom: 40px; right: 60px; z-index: 2; }
@@ -570,22 +337,7 @@ import config from '../../public/data/config.json';
     100% { transform: scaleY(0); transform-origin: bottom; }
   }
 
-  /* ─── SHARED PILLAR STYLES ─── */
-  .pillar-section {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    min-height: 600px;
-    background: #0a0a0b;
-  }
-  .pillar-section.alt { direction: rtl; }
-  .pillar-section.alt > * { direction: ltr; }
-
-  .pillar-inner {
-    padding: clamp(60px, 8vw, 110px) clamp(32px, 5vw, 80px);
-    display: flex; flex-direction: column; justify-content: center;
-    gap: 24px;
-  }
+  /* ─── SHARED LABEL/TITLE ─── */
   .pillar-label {
     display: flex; align-items: center; gap: 10px;
     color: #e8c97a;
@@ -597,129 +349,16 @@ import config from '../../public/data/config.json';
     color: rgba(232,201,122,0.8);
   }
   .pillar-title {
-    font-size: clamp(26px, 3.5vw, 44px); font-weight: 800;
+    font-size: clamp(26px, 3.2vw, 42px); font-weight: 800;
     color: #fff; line-height: 1.15; letter-spacing: -0.02em;
   }
   .pillar-text { color: rgba(255,255,255,0.6); font-size: 15px; line-height: 1.75; }
   .pillar-text p + p { margin-top: 14px; }
 
-  .pillar-quote {
-    border-left: 2px solid #e8c97a;
-    padding: 14px 20px;
-    font-size: 14px; color: rgba(255,255,255,0.5);
-    font-style: italic; line-height: 1.6;
-    background: rgba(232,201,122,0.04);
-  }
-  .quote-mark { color: #e8c97a; font-style: normal; font-size: 18px; }
-
-  .pillar-visual {
-    position: relative; overflow: hidden;
-    min-height: 500px;
-    background: #111;
-  }
-  .frame-element { position: absolute; inset: 0; }
-  .frame-element img {
-    width: 100%; height: 100%; object-fit: cover;
-    filter: brightness(0.7) contrast(1.1);
-    transition: transform 0.8s ease;
-  }
-  .pillar-visual:hover .frame-element img { transform: scale(1.04); }
-  .frame-border {
-    position: absolute; inset: 20px;
-    border: 1px solid rgba(232,201,122,0.2);
-    pointer-events: none;
-  }
-
-  .feature-chips {
-    display: flex; flex-wrap: wrap; gap: 10px;
-    margin-top: 8px;
-  }
-  .chip {
-    display: flex; align-items: center; gap: 8px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 6px;
-    padding: 8px 14px;
-    font-size: 13px; color: rgba(255,255,255,0.7);
-  }
-  .chip svg { width: 15px; height: 15px; color: #e8c97a; }
-
-  .floating-badge {
-    position: absolute; bottom: 30px; right: 30px; z-index: 2;
-    display: flex; align-items: center; gap: 8px;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(232,201,122,0.3);
-    border-radius: 8px;
-    padding: 10px 16px;
-    font-size: 13px; color: #e8c97a;
-  }
-  .floating-badge svg { width: 16px; height: 16px; }
-
-  /* ─── MANIFESTO ─── */
-  .manifesto-section {
-    position: relative;
-    min-height: 700px;
-    display: flex; align-items: center;
-    overflow: hidden;
-  }
-  .manifesto-bg { position: absolute; inset: 0; }
-  .manifesto-bg img {
-    width: 100%; height: 100%; object-fit: cover;
-    filter: brightness(0.35);
-  }
-  .manifesto-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
-  }
-  .manifesto-content {
-    position: relative; z-index: 2;
-    padding: clamp(60px, 8vw, 100px) clamp(32px, 6vw, 100px);
-    max-width: 1200px;
-    width: 100%;
-  }
-  .mission-tag {
-    display: flex; align-items: center; gap: 10px;
-    color: #e8c97a; margin-bottom: 28px;
-    font-size: 11px; text-transform: uppercase; letter-spacing: 0.18em;
-  }
-  .mission-tag .pillar-icon svg { width: 28px; height: 28px; }
-  .manifesto-headline {
-    font-size: clamp(32px, 5vw, 62px); font-weight: 800;
-    color: #fff; line-height: 1.15; letter-spacing: -0.02em;
-    margin-bottom: 24px;
-  }
-  .manifesto-headline em { color: #e8c97a; font-style: normal; }
-  .manifesto-body {
-    font-size: clamp(15px, 1.4vw, 17px); color: rgba(255,255,255,0.65);
-    line-height: 1.75; max-width: 600px;
-    margin-bottom: 56px;
-  }
-  .manifesto-pillars {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-  }
-  .m-pillar {
-    display: flex; flex-direction: column; gap: 8px;
-    padding: 24px; border-radius: 8px;
-    background: rgba(255,255,255,0.06);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.1);
-    transition: border-color 0.3s, background 0.3s;
-  }
-  .m-pillar:hover {
-    border-color: rgba(232,201,122,0.4);
-    background: rgba(232,201,122,0.05);
-  }
-  .m-icon { width: 32px; height: 32px; color: #e8c97a; margin-bottom: 4px; }
-  .m-icon svg { width: 100%; height: 100%; }
-  .m-pillar strong { font-size: 14px; color: #fff; font-weight: 700; }
-  .m-pillar span { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; }
-
-  /* ─── FORM SECTION ─── */
+  /* ─── FORM SECTION (direkt unter Hero) ─── */
   .form-section {
     background: #050506;
-    padding: clamp(80px, 10vw, 140px) clamp(24px, 6vw, 100px);
+    padding: clamp(60px, 8vw, 100px) clamp(24px, 6vw, 100px);
     position: relative;
     overflow: hidden;
     scroll-margin-top: 80px;
@@ -732,57 +371,9 @@ import config from '../../public/data/config.json';
     pointer-events: none;
   }
   .form-inner {
-    display: grid; grid-template-columns: 1fr 1.3fr;
-    gap: 80px;
-    max-width: 1200px; margin: 0 auto;
+    max-width: 760px; margin: 0 auto;
     position: relative; z-index: 1;
-    align-items: start;
   }
-  .form-side {
-    display: flex; flex-direction: column; gap: 22px;
-    position: sticky; top: 100px;
-  }
-
-  /* Timeline (in form-side) */
-  .timeline { display: flex; flex-direction: column; gap: 0; margin-top: 12px; }
-  .tl-item {
-    display: flex; gap: 20px;
-    padding: 0 0 28px 0;
-    position: relative;
-  }
-  .tl-item:not(:last-child)::after {
-    content: '';
-    position: absolute; left: 9px; top: 20px;
-    width: 2px; bottom: 0;
-    background: rgba(255,255,255,0.08);
-  }
-  .tl-item.tl-done:not(:last-child)::after { background: rgba(232,201,122,0.3); }
-  .tl-item.tl-active:not(:last-child)::after { background: linear-gradient(to bottom, rgba(232,201,122,0.5), rgba(255,255,255,0.08)); }
-  .tl-dot {
-    width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
-    border: 2px solid rgba(255,255,255,0.15);
-    background: #050506;
-    margin-top: 2px; position: relative; z-index: 1;
-  }
-  .tl-done .tl-dot {
-    border-color: #e8c97a;
-    background: rgba(232,201,122,0.15);
-  }
-  .tl-active .tl-dot {
-    border-color: #e8c97a;
-    background: #e8c97a;
-    box-shadow: 0 0 0 4px rgba(232,201,122,0.2), 0 0 12px rgba(232,201,122,0.4);
-    animation: tlPulse 2s infinite;
-  }
-  @keyframes tlPulse {
-    0%, 100% { box-shadow: 0 0 0 4px rgba(232,201,122,0.2), 0 0 12px rgba(232,201,122,0.4); }
-    50% { box-shadow: 0 0 0 7px rgba(232,201,122,0.1), 0 0 20px rgba(232,201,122,0.6); }
-  }
-  .tl-body { display: flex; flex-direction: column; gap: 4px; padding-top: 1px; }
-  .tl-body strong { font-size: 14px; font-weight: 700; color: #fff; }
-  .tl-body span { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.5; }
-  .tl-item:not(.tl-done):not(.tl-active) .tl-body strong,
-  .tl-item:not(.tl-done):not(.tl-active) .tl-body span { opacity: 0.55; }
 
   .contact-form {
     display: flex; flex-direction: column; gap: 20px;
@@ -1018,22 +609,10 @@ import config from '../../public/data/config.json';
   /* ─── RESPONSIVE ─── */
   @media (max-width: 1000px) {
     .channel-grid { grid-template-columns: repeat(2, 1fr); }
-    .form-inner { grid-template-columns: 1fr; gap: 48px; }
-    .form-side { position: static; }
-  }
-  @media (max-width: 900px) {
-    .pillar-section { grid-template-columns: 1fr; }
-    .pillar-section.alt { direction: ltr; }
-    .pillar-visual { min-height: 300px; }
-    .manifesto-pillars { grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 600px) {
-    .hero-stats { gap: 4px; }
-    .stat-item { padding-right: 16px; }
-    .stat-divider { margin-right: 16px; }
     .channel-grid { grid-template-columns: 1fr; }
     .field-row { grid-template-columns: 1fr; }
-    .manifesto-pillars { grid-template-columns: 1fr; }
     .fta-actions { flex-direction: column; align-items: center; }
     .form-footer { justify-content: flex-start; }
     .scroll-hint { right: 24px; }
@@ -1056,31 +635,6 @@ import config from '../../public/data/config.json';
     }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
 
     document.querySelectorAll('.reveal-section').forEach(el => observer.observe(el));
-
-    // Counter animation
-    function animateCounter(el) {
-      const target = parseInt(el.dataset.target, 10);
-      if (isNaN(target) || target === 0) return;
-      const duration = 1400;
-      const start = performance.now();
-      const update = (now) => {
-        const p = Math.min((now - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - p, 3);
-        el.textContent = Math.round(eased * target).toLocaleString('de-DE');
-        if (p < 1) requestAnimationFrame(update);
-      };
-      requestAnimationFrame(update);
-    }
-    const statsObserver = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.querySelectorAll('.stat-num').forEach(animateCounter);
-          statsObserver.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.5 });
-    const heroStats = document.querySelector('.hero-stats');
-    if (heroStats) statsObserver.observe(heroStats);
   })();
 
   // Form submission
