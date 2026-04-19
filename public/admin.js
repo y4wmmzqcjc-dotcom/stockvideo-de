@@ -631,9 +631,18 @@ var mediaModule = {
       if (pw) {
         fetch('https://stockvideo-checkout.rende.workers.dev/admin/r2-stats', {
           headers: { 'X-Admin-Password': pw }
-        }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+        }).then(function(r){
+          // 401 = gespeichertes Passwort ist ungueltig (z.B. nach Rotation).
+          // Cache leeren, damit der naechste Publish-Dialog neu eingegeben werden muss.
+          if (r.status === 401) { localStorage.removeItem('adminPublishPw'); return { _authFail: true }; }
+          return r.ok ? r.json() : null;
+        }).then(function(j){
           var box = document.getElementById('_r2box');
           if (!box) return;
+          if (j && j._authFail) {
+            box.innerHTML = '<h3 style="margin:0 0 12px;color:#fff;font-size:16px">R2 Speicher</h3><div style="color:#ff9500;font-size:13px">Gespeichertes Passwort wurde abgelehnt (vermutlich rotiert). Bitte einmalig über "Veröffentlichen" neu eingeben.</div>';
+            return;
+          }
           var usedMB = j ? (j.totalBytes / 1048576) : 0;
           var objCount = j ? j.objectCount : 0;
           var pct = Math.min(100, usedMB / r2FreeMB * 100);
@@ -840,18 +849,20 @@ var mediaModule = {
     },
 
     refreshDeployStatus() {
-      var pw = localStorage.getItem('adminPublishPw') || '';
       var el = document.getElementById('_deployStatus');
       if (!el) return;
-      if (!pw) { el.innerHTML = 'Deploy-Status: Passwort einmalig über "Veröffentlichen" eingeben.'; return; }
-      fetch('https://stockvideo-checkout.rende.workers.dev/admin/last-commit', {
-        headers: { 'X-Admin-Password': pw }
+      // Public GitHub-API - Repo ist oeffentlich, kein Admin-Passwort noetig.
+      // Rate-Limit 60/h pro IP reicht fuer Dashboard-Anzeigen bei weitem.
+      fetch('https://api.github.com/repos/y4wmmzqcjc-dotcom/stockvideo-de/commits/main', {
+        headers: { 'Accept': 'application/vnd.github.v3+json' },
+        cache: 'no-store'
       }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
-        if (!j || !j.date) { el.textContent = 'Deploy-Status: nicht verfügbar'; return; }
-        var d = new Date(j.date);
+        if (!j || !j.commit || !j.commit.author) { el.textContent = 'Deploy-Status: nicht verfügbar'; return; }
+        var d = new Date(j.commit.author.date);
         var dateStr = d.toLocaleDateString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric'}) + ' ' + d.toLocaleTimeString('de-DE', {hour:'2-digit',minute:'2-digit'});
+        var msg = j.commit.message ? j.commit.message.split('\n')[0] : '';
         el.innerHTML = '✅ Letzter Commit: <strong style="color:#fff">' + dateStr + '</strong>' +
-          (j.message ? '<br><span style="font-size:12px;color:#666">' + j.message + '</span>' : '');
+          (msg ? '<br><span style="font-size:12px;color:#666">' + msg + '</span>' : '');
       }).catch(function(){
         el.textContent = 'Deploy-Status: Verbindungsfehler';
       });
