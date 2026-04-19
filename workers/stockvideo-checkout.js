@@ -3,7 +3,7 @@ const MOLLIE_API_KEY = 'test_A7njP8NN7AHtBVdxUPF96ccCErfQdS';
 const SITE_URL = 'https://stockvideo.de';
 const WORKER_URL = 'https://stockvideo-checkout.rende.workers.dev';
 const R2_PUBLIC = 'https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev';
-const EASYBILL_API_KEY = 'aebbc43b483947ee7e1adec7a9ebd25a4537c63d7e1ad59823c3cc359ddeed5f';
+// EASYBILL_API_KEY wird via env (Worker Secret) injiziert — siehe _eb_createCustomerAndInvoice.
 // RESEND_API_KEY wird via env (Worker Secret) injiziert — siehe _resend_sendDownload.
 const FROM_EMAIL = 'info@stockvideo.de';
 const FROM_NAME = 'stockvideo.de';
@@ -71,7 +71,9 @@ async function _ord_verifyToken(orderId, token){ if(!token)return false; const p
 function _b64_fromStr(s){let r="";for(let i=0;i<s.length;i++)r+=String.fromCharCode(s.charCodeAt(i)&0xff);return btoa(r);}
 function _html_escape(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);}
 function _country_iso(c){const m={"Deutschland":"DE","Germany":"DE","Österreich":"AT","Austria":"AT","Schweiz":"CH","Switzerland":"CH"};if(!c)return"DE";if(c.length===2)return c.toUpperCase();return m[c]||"DE";}
-async function _eb_createCustomerAndInvoice(order){
+async function _eb_createCustomerAndInvoice(env,order){
+  const EASYBILL_API_KEY = (env && env.EASYBILL_API_KEY) || '';
+  if (!EASYBILL_API_KEY) throw new Error("easybill: missing env.EASYBILL_API_KEY");
   const b=order.billing||{};
   const cust={company_name:b.company||"",first_name:b.firstName||"",last_name:b.lastName||"",street:b.street||"",zip_code:b.zip||"",city:b.city||"",country:_country_iso(b.country),emails:[b.email],vat_identifier:b.vatId||""};
   const cr=await fetch("https://api.easybill.de/rest/v1/customers",{method:"POST",headers:{"Authorization":"Bearer "+EASYBILL_API_KEY,"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(cust)});
@@ -123,7 +125,7 @@ function _migrateOrder(o){
 async function _fulfill_paidOrder(env,order){
   if (!order.easybillSent) {
     try{
-      const inv=await _eb_createCustomerAndInvoice(order);
+      const inv=await _eb_createCustomerAndInvoice(env,order);
       order.easybill=inv;
       order.easybillSent=true;
     }catch(e){
