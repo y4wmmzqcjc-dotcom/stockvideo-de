@@ -4,76 +4,774 @@ import Topbar from '../components/Topbar.astro';
 import Footer from '../components/Footer.astro';
 import config from '../../public/data/config.json';
 ---
-<BaseLayout title="Kontakt" description="Kontaktieren Sie stockvideo.de">
+<BaseLayout
+  title="Kontakt · stockvideo.de"
+  description="Sprich direkt mit dem Team hinter stockvideo.de. Wir beraten zu Lizenzen, Enterprise-Anfragen und individuellen Projekten - persönlich und in unter 24 Stunden."
+>
   <Topbar />
-  <div class="page-content">
-    <h1>Kontakt</h1>
-    <p>Haben Sie Fragen zu unseren Videos, Lizenzen oder benötigen individuelle Beratung? Wir helfen Ihnen gerne weiter.</p>
-    <h2>Kontaktdaten</h2>
-    <p>
-      {config.contact.name}<br>
-      {config.contact.street}<br>
-      {config.contact.city}<br><br>
-      Telefon: {config.contact.phone}<br>
-      Fax: {config.contact.fax}<br>
-      Email: <a href={`mailto:${config.contact.email}`}>{config.contact.email}</a>
-    </p>
-    <h2>Kontaktformular</h2>
-    <form id="contactForm" style="display:flex;flex-direction:column;gap:16px;max-width:500px;">
-      <input type="text" name="name" placeholder="Ihr Name" required style="background:#2c2c2c;border:1px solid #3a3a3a;border-radius:8px;padding:12px 16px;color:#fff;font-size:15px;font-family:inherit;outline:none;">
-      <input type="email" name="email" placeholder="Ihre Email-Adresse" required style="background:#2c2c2c;border:1px solid #3a3a3a;border-radius:8px;padding:12px 16px;color:#fff;font-size:15px;font-family:inherit;outline:none;">
-      <select name="subject" style="background:#2c2c2c;border:1px solid #3a3a3a;border-radius:8px;padding:12px 16px;color:#ccc;font-size:15px;font-family:inherit;outline:none;">
-        <option value="allgemein">Allgemeine Anfrage</option>
-        <option value="lizenz">Lizenzfrage</option>
-        <option value="technik">Technischer Support</option>
-        <option value="enterprise">Enterprise / Agentur</option>
-      </select>
-      <textarea name="message" placeholder="Ihre Nachricht" rows="6" required style="background:#2c2c2c;border:1px solid #3a3a3a;border-radius:8px;padding:12px 16px;color:#fff;font-size:15px;font-family:inherit;outline:none;resize:vertical;"></textarea>
-      <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0;pointer-events:none;" aria-hidden="true">
-      <div id="contactStatus" style="display:none;padding:12px 14px;border-radius:8px;font-size:14px;"></div>
-      <button type="submit" id="contactSubmit" class="btn-primary" style="align-self:flex-start;padding:12px 28px;font-size:15px;">Nachricht senden</button>
-    </form>
-    <script is:inline>
-      (function() {
-        const form = document.getElementById('contactForm');
-        const status = document.getElementById('contactStatus');
-        const btn = document.getElementById('contactSubmit');
-        if (!form) return;
-        form.addEventListener('submit', async function(e) {
-          e.preventDefault();
-          status.style.display = 'none';
-          btn.disabled = true;
-          btn.textContent = 'Wird gesendet …';
-          const fd = new FormData(form);
-          const payload = {};
-          for (const [k, v] of fd.entries()) payload[k] = v;
-          try {
-            const r = await fetch('/kontakt', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload),
-            });
-            const data = await r.json().catch(() => ({}));
-            if (!r.ok) throw new Error(data.error || 'Versand fehlgeschlagen');
-            status.textContent = 'Vielen Dank! Deine Nachricht wurde gesendet. Wir melden uns zeitnah.';
-            status.style.background = 'rgba(34,197,94,0.12)';
-            status.style.border = '1px solid rgba(34,197,94,0.35)';
-            status.style.color = '#86efac';
-            status.style.display = 'block';
-            form.reset();
-          } catch(err) {
-            status.textContent = 'Fehler: ' + err.message;
-            status.style.background = 'rgba(220,38,38,0.12)';
-            status.style.border = '1px solid rgba(220,38,38,0.35)';
-            status.style.color = '#fca5a5';
-            status.style.display = 'block';
-          } finally {
-            btn.disabled = false;
-            btn.textContent = 'Nachricht senden';
-          }
-        });
-      })();
-    </script>
-  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       HERO
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="hero-section">
+    <div class="hero-bg">
+      <img
+        src="/images/making-of/making-of-33.jpg"
+        alt="Kameramann mit Cinema Kamera bei einer Produktion"
+        class="hero-img"
+      />
+      <div class="hero-overlay"></div>
+      <div class="hero-grain"></div>
+    </div>
+
+    <div class="grid-lines" aria-hidden="true">
+      <div class="gl gl1"></div>
+      <div class="gl gl2"></div>
+      <div class="gl gl3"></div>
+      <div class="gl gl4"></div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="dot-pulse"></span>
+        <span>Kontakt · Wir sind erreichbar</span>
+      </div>
+      <h1 class="hero-headline">
+        <span class="line-reveal">Sprich mit dem Team,</span>
+        <span class="line-reveal delay1">das aus Frust</span>
+        <span class="line-reveal delay2 accent-line">eine Bibliothek gebaut hat.</span>
+      </h1>
+      <p class="hero-sub">
+        Ob Lizenzfrage, Enterprise-Anfrage oder individuelle Aufnahme: Hinter
+        stockvideo.de stehen Filmproduzenten, keine Callcenter. Du bekommst
+        eine echte Antwort - meist innerhalb weniger Stunden.
+      </p>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-prefix">&lt;</span><span class="stat-num" data-target="24">0</span><span class="stat-unit">h</span>
+          <span class="stat-label">Antwortzeit werktags</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat-item">
+          <span class="stat-num" data-target="1">0</span>
+          <span class="stat-label">Persönlicher Ansprechpartner</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat-item">
+          <span class="stat-num" data-target="0">0</span><span class="stat-unit">€</span>
+          <span class="stat-label">Erstberatung</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-hint" aria-hidden="true">
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       KONTAKTKANAELE
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="channels-section reveal-section">
+    <div class="channels-head">
+      <div class="pillar-label">
+        <span class="pillar-icon">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 12L20 22L34 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="6" y="10" width="28" height="20" rx="2" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </span>
+        <span class="pillar-tag">01 · Direkt erreichen</span>
+      </div>
+      <h2 class="pillar-title">Wähle deinen Weg.<br/>Wir sind da.</h2>
+      <p class="pillar-text">
+        Vier Wege, ein Team. Egal wie du uns erreichst, die Antwort kommt
+        direkt aus Saarlouis, nicht aus einem Ticketsystem.
+      </p>
+    </div>
+
+    <div class="channel-grid">
+      <a href={`mailto:${config.contact.email}`} class="channel-card">
+        <div class="channel-icon">
+          <svg viewBox="0 0 32 32" fill="none">
+            <rect x="4" y="8" width="24" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M4 10L16 19L28 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="channel-label">E-Mail</div>
+        <div class="channel-value">{config.contact.email}</div>
+        <div class="channel-hint">Meist binnen weniger Stunden</div>
+      </a>
+
+      <a href={`tel:${config.contact.phone.replace(/\s/g, '')}`} class="channel-card">
+        <div class="channel-icon">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M9 4H13L15 10L12 12C13.5 15.5 16.5 18.5 20 20L22 17L28 19V23C28 25.209 26.209 27 24 27C14.611 27 5 17.389 5 8C5 5.791 6.791 4 9 4Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="channel-label">Telefon</div>
+        <div class="channel-value">{config.contact.phone}</div>
+        <div class="channel-hint">Mo bis Fr · 9 bis 18 Uhr</div>
+      </a>
+
+      <a href={`tel:${config.contact.mobile.replace(/\s/g, '')}`} class="channel-card">
+        <div class="channel-icon">
+          <svg viewBox="0 0 32 32" fill="none">
+            <rect x="9" y="4" width="14" height="24" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M14 24H18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="channel-label">Mobil</div>
+        <div class="channel-value">{config.contact.mobile}</div>
+        <div class="channel-hint">Für dringende Projekte</div>
+      </a>
+
+      <div class="channel-card channel-card--static">
+        <div class="channel-icon">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M16 28C16 28 6 20 6 13C6 7.477 10.477 3 16 3C21.523 3 26 7.477 26 13C26 20 16 28 16 28Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <circle cx="16" cy="13" r="3" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="channel-label">Adresse</div>
+        <div class="channel-value">{config.contact.street}<br/>{config.contact.city}</div>
+        <div class="channel-hint">Besuche nur nach Terminvereinbarung</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       KONTAKTFORMULAR
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="form-section reveal-section">
+    <div class="form-inner">
+      <div class="form-side">
+        <div class="pillar-label">
+          <span class="pillar-icon">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 10H32" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M8 20H32" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M8 30H24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="pillar-tag">02 · Kontaktformular</span>
+        </div>
+        <h2 class="pillar-title">Schreib uns.<br/>Kurz. Lang. Hauptsache ehrlich.</h2>
+        <div class="pillar-text">
+          <p>
+            Egal ob zwei Zeilen für eine Lizenzfrage oder eine Briefing-Seite
+            für ein Großprojekt: wir lesen jede Nachricht persönlich.
+          </p>
+        </div>
+        <div class="form-chips">
+          <div class="chip">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M3 10L8 15L17 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            DSGVO-konform
+          </div>
+          <div class="chip">
+            <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M10 6V10L13 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Antwort in unter 24 h
+          </div>
+          <div class="chip">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M4 10H16M12 6L16 10L12 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Direkt an Timo Rende
+          </div>
+        </div>
+      </div>
+
+      <form id="contactForm" class="contact-form" novalidate>
+        <div class="field-row">
+          <label class="field">
+            <span class="field-label">Name</span>
+            <input type="text" name="name" placeholder="Dein Name" required autocomplete="name" />
+          </label>
+          <label class="field">
+            <span class="field-label">E-Mail</span>
+            <input type="email" name="email" placeholder="name@domain.de" required autocomplete="email" />
+          </label>
+        </div>
+
+        <label class="field">
+          <span class="field-label">Anliegen</span>
+          <div class="select-wrap">
+            <select name="subject">
+              <option value="allgemein">Allgemeine Anfrage</option>
+              <option value="lizenz">Lizenzfrage</option>
+              <option value="technik">Technischer Support</option>
+              <option value="enterprise">Enterprise / Agentur</option>
+            </select>
+            <svg class="select-caret" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Nachricht</span>
+          <textarea name="message" rows="6" placeholder="Worum geht es? Je mehr Kontext, desto besser unsere Antwort." required></textarea>
+        </label>
+
+        <!-- Honeypot -->
+        <input type="text" name="website" tabindex="-1" autocomplete="off" class="honeypot" aria-hidden="true" />
+
+        <div id="contactStatus" class="form-status" role="status" aria-live="polite"></div>
+
+        <div class="form-footer">
+          <p class="form-legal">
+            Mit dem Absenden stimmst du unserer
+            <a href="/datenschutz">Datenschutzerklärung</a> zu.
+          </p>
+          <button type="submit" id="contactSubmit" class="cta-btn">
+            <span>Nachricht senden</span>
+            <svg viewBox="0 0 20 20" fill="none"><path d="M4 10H16M12 6L16 10L12 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       FINAL CTA
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="final-cta reveal-section">
+    <div class="fta-inner">
+      <div class="fta-glow" aria-hidden="true"></div>
+      <div class="fta-tag">Keine Lust auf Formulare?</div>
+      <h2 class="fta-headline">Dann schreib<br/>einfach direkt.</h2>
+      <p class="fta-sub">
+        Eine schnelle Mail genügt. Wir melden uns in der Regel noch am selben Werktag.
+      </p>
+      <div class="fta-actions">
+        <a href={`mailto:${config.contact.email}`} class="btn-cta-primary">{config.contact.email}</a>
+        <a href="/" class="btn-cta-secondary">Zurück zur Startseite</a>
+      </div>
+    </div>
+  </section>
+
   <Footer />
 </BaseLayout>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STYLES
+═══════════════════════════════════════════════════════════════ -->
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ─── HERO ─── */
+  .hero-section {
+    position: relative;
+    min-height: 88vh;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    background: #000;
+  }
+  .hero-bg { position: absolute; inset: 0; }
+  .hero-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 35%;
+    opacity: 0.55;
+    transform: scale(1.04);
+    animation: slowZoom 20s ease-out forwards;
+  }
+  @keyframes slowZoom {
+    from { transform: scale(1.08); }
+    to   { transform: scale(1.00); }
+  }
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.3) 0%,
+      rgba(0,0,0,0.1) 30%,
+      rgba(0,0,0,0.6) 70%,
+      rgba(0,0,0,0.92) 100%
+    );
+  }
+  .hero-grain {
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .grid-lines { position: absolute; inset: 0; pointer-events: none; }
+  .gl {
+    position: absolute; top: 0; bottom: 0; width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent);
+  }
+  .gl1 { left: 25%; } .gl2 { left: 50%; } .gl3 { left: 75%; }
+  .gl4 { left: 0; right: 0; top: auto; bottom: 0; height: 1px; width: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.08), transparent); }
+
+  .hero-content {
+    position: relative; z-index: 2;
+    padding: clamp(80px, 10vw, 140px) clamp(24px, 6vw, 100px) clamp(60px, 8vw, 100px);
+    max-width: 900px;
+  }
+  .hero-eyebrow {
+    display: flex; align-items: center; gap: 12px;
+    color: rgba(255,255,255,0.55);
+    font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase;
+    margin-bottom: 32px;
+    animation: fadeUp 0.8s 0.2s both;
+  }
+  .dot-pulse {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: #e8c97a;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  .hero-headline {
+    display: flex; flex-direction: column;
+    font-size: clamp(38px, 6.2vw, 80px);
+    font-weight: 800; line-height: 1.05;
+    color: #fff; letter-spacing: -0.02em;
+    margin-bottom: 28px;
+  }
+  .line-reveal {
+    display: block;
+    opacity: 0; transform: translateY(24px);
+    animation: fadeUp 0.7s ease-out forwards;
+  }
+  .delay1 { animation-delay: 0.3s; }
+  .delay2 { animation-delay: 0.55s; }
+  .accent-line { color: #e8c97a; }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+  .hero-sub {
+    font-size: clamp(15px, 1.4vw, 18px); color: rgba(255,255,255,0.65);
+    line-height: 1.7; max-width: 580px;
+    margin-bottom: 48px;
+    animation: fadeUp 0.8s 0.7s both;
+  }
+
+  .hero-stats {
+    display: flex; align-items: center; gap: 0;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s 0.9s both;
+  }
+  .stat-item {
+    display: flex; flex-direction: column;
+    padding: 0 28px 0 0;
+  }
+  .stat-item:first-child { padding-left: 0; }
+  .stat-prefix {
+    font-size: clamp(22px, 3vw, 34px); font-weight: 700;
+    color: #e8c97a;
+  }
+  .stat-num {
+    font-size: clamp(28px, 4vw, 44px); font-weight: 800;
+    color: #e8c97a; line-height: 1;
+    display: inline;
+  }
+  .stat-unit {
+    font-size: clamp(18px, 2.5vw, 28px); font-weight: 700;
+    color: #e8c97a;
+  }
+  .stat-label {
+    font-size: 11px; color: rgba(255,255,255,0.45);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    margin-top: 6px;
+  }
+  .stat-divider {
+    width: 1px; height: 40px; background: rgba(255,255,255,0.15);
+    margin: 6px 28px 20px 0;
+    align-self: flex-start;
+  }
+
+  .scroll-hint { position: absolute; bottom: 40px; right: 60px; z-index: 2; }
+  .scroll-line {
+    width: 1px; height: 60px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+    animation: scrollDrop 2s infinite;
+  }
+  @keyframes scrollDrop {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* ─── SHARED LABEL/TITLE ─── */
+  .pillar-label {
+    display: flex; align-items: center; gap: 10px;
+    color: #e8c97a;
+  }
+  .pillar-icon { width: 28px; height: 28px; flex-shrink: 0; }
+  .pillar-icon svg { width: 100%; height: 100%; }
+  .pillar-tag {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.18em;
+    color: rgba(232,201,122,0.8);
+  }
+  .pillar-title {
+    font-size: clamp(26px, 3.2vw, 42px); font-weight: 800;
+    color: #fff; line-height: 1.15; letter-spacing: -0.02em;
+  }
+  .pillar-text { color: rgba(255,255,255,0.6); font-size: 15px; line-height: 1.75; }
+  .pillar-text p + p { margin-top: 14px; }
+
+  /* ─── CHANNELS ─── */
+  .channels-section {
+    background: #0a0a0b;
+    padding: clamp(70px, 9vw, 120px) clamp(24px, 6vw, 100px);
+  }
+  .channels-head {
+    max-width: 800px;
+    margin: 0 auto 56px;
+    display: flex; flex-direction: column; gap: 18px;
+    text-align: left;
+  }
+
+  .channel-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .channel-card {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 28px 24px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    color: #fff; text-decoration: none;
+    transition: border-color 0.25s, background 0.25s, transform 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .channel-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at top left, rgba(232,201,122,0.10), transparent 60%);
+    opacity: 0; transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .channel-card:not(.channel-card--static):hover {
+    border-color: rgba(232,201,122,0.4);
+    background: rgba(232,201,122,0.04);
+    transform: translateY(-3px);
+  }
+  .channel-card:not(.channel-card--static):hover::before { opacity: 1; }
+
+  .channel-icon { width: 30px; height: 30px; color: #e8c97a; margin-bottom: 4px; }
+  .channel-icon svg { width: 100%; height: 100%; }
+  .channel-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em;
+    color: rgba(255,255,255,0.5);
+  }
+  .channel-value {
+    font-size: 15px; font-weight: 600;
+    color: #fff; line-height: 1.45;
+    word-break: break-word;
+  }
+  .channel-hint {
+    font-size: 12px; color: rgba(255,255,255,0.4);
+    margin-top: auto; padding-top: 12px;
+  }
+
+  /* ─── FORM ─── */
+  .form-section {
+    background: #050506;
+    padding: clamp(80px, 10vw, 140px) clamp(24px, 6vw, 100px);
+    position: relative;
+    overflow: hidden;
+  }
+  .form-section::before {
+    content: '';
+    position: absolute; top: -200px; right: -200px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(232,201,122,0.08), transparent 60%);
+    pointer-events: none;
+  }
+
+  .form-inner {
+    display: grid; grid-template-columns: 1fr 1.3fr;
+    gap: 80px;
+    max-width: 1200px; margin: 0 auto;
+    position: relative; z-index: 1;
+    align-items: start;
+  }
+  .form-side {
+    display: flex; flex-direction: column; gap: 20px;
+    position: sticky; top: 100px;
+  }
+  .form-chips {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-top: 12px;
+  }
+  .chip {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 13px; color: rgba(255,255,255,0.7);
+  }
+  .chip svg { width: 15px; height: 15px; color: #e8c97a; }
+
+  .contact-form {
+    display: flex; flex-direction: column; gap: 20px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: clamp(28px, 4vw, 48px);
+    backdrop-filter: blur(8px);
+  }
+  .field-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+  }
+  .field { display: flex; flex-direction: column; gap: 8px; }
+  .field-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em;
+    color: rgba(255,255,255,0.5);
+  }
+  .field input,
+  .field textarea,
+  .field select {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 14px 16px;
+    color: #fff; font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  }
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: rgba(255,255,255,0.35);
+  }
+  .field input:focus,
+  .field textarea:focus,
+  .field select:focus {
+    border-color: rgba(232,201,122,0.6);
+    background: rgba(232,201,122,0.05);
+    box-shadow: 0 0 0 3px rgba(232,201,122,0.1);
+  }
+  .field textarea {
+    resize: vertical; min-height: 140px; line-height: 1.55;
+  }
+  .select-wrap { position: relative; }
+  .select-wrap select {
+    appearance: none; -webkit-appearance: none; -moz-appearance: none;
+    padding-right: 44px; cursor: pointer;
+  }
+  .select-wrap select option {
+    background: #0a0a0b; color: #fff;
+  }
+  .select-caret {
+    position: absolute; right: 16px; top: 50%;
+    transform: translateY(-50%);
+    width: 16px; height: 16px;
+    color: rgba(255,255,255,0.5);
+    pointer-events: none;
+  }
+
+  .honeypot {
+    position: absolute; left: -9999px; opacity: 0; pointer-events: none;
+  }
+
+  .form-status {
+    display: none;
+    padding: 12px 16px; border-radius: 8px;
+    font-size: 14px; line-height: 1.5;
+  }
+  .form-status.is-success {
+    display: block;
+    background: rgba(34,197,94,0.12);
+    border: 1px solid rgba(34,197,94,0.35);
+    color: #86efac;
+  }
+  .form-status.is-error {
+    display: block;
+    background: rgba(220,38,38,0.12);
+    border: 1px solid rgba(220,38,38,0.35);
+    color: #fca5a5;
+  }
+
+  .form-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 20px; flex-wrap: wrap;
+    padding-top: 4px;
+  }
+  .form-legal {
+    font-size: 12px; color: rgba(255,255,255,0.45);
+    line-height: 1.5; max-width: 340px;
+  }
+  .form-legal a { color: #e8c97a; text-decoration: none; border-bottom: 1px solid rgba(232,201,122,0.3); }
+  .form-legal a:hover { border-bottom-color: #e8c97a; }
+
+  .cta-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #e8c97a; color: #0a0a0b;
+    font-weight: 700; font-size: 14px; letter-spacing: 0.04em;
+    padding: 14px 28px; border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s, opacity 0.2s;
+    border: none; cursor: pointer;
+    font-family: inherit;
+  }
+  .cta-btn:hover:not(:disabled) { background: #f0d98a; transform: translateX(4px); }
+  .cta-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .cta-btn svg { width: 18px; height: 18px; }
+
+  /* ─── FINAL CTA ─── */
+  .final-cta {
+    background: #0a0a0b;
+    padding: clamp(80px, 10vw, 140px) clamp(32px, 6vw, 100px);
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .fta-inner { position: relative; z-index: 2; max-width: 680px; margin: 0 auto; }
+  .fta-glow {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 400px;
+    background: radial-gradient(ellipse, rgba(232,201,122,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .fta-tag {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: #e8c97a; margin-bottom: 20px;
+  }
+  .fta-headline {
+    font-size: clamp(32px, 5vw, 56px); font-weight: 800;
+    color: #fff; line-height: 1.15; letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  .fta-sub {
+    font-size: 16px; color: rgba(255,255,255,0.5); line-height: 1.7;
+    margin-bottom: 44px;
+  }
+  .fta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-cta-primary {
+    background: #e8c97a; color: #0a0a0b;
+    font-weight: 700; font-size: 14px;
+    padding: 14px 32px; border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-cta-primary:hover { background: #f0d98a; transform: translateY(-2px); }
+  .btn-cta-secondary {
+    background: transparent; color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.2);
+    font-weight: 600; font-size: 14px;
+    padding: 14px 32px; border-radius: 6px;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, transform 0.2s;
+  }
+  .btn-cta-secondary:hover {
+    border-color: rgba(255,255,255,0.5);
+    color: #fff; transform: translateY(-2px);
+  }
+
+  /* ─── SCROLL REVEAL ─── */
+  .reveal-section {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  }
+  .reveal-section.visible { opacity: 1; transform: translateY(0); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1000px) {
+    .channel-grid { grid-template-columns: repeat(2, 1fr); }
+    .form-inner { grid-template-columns: 1fr; gap: 48px; }
+    .form-side { position: static; }
+  }
+  @media (max-width: 600px) {
+    .hero-stats { gap: 4px; }
+    .stat-item { padding-right: 16px; }
+    .stat-divider { margin-right: 16px; }
+    .channel-grid { grid-template-columns: 1fr; }
+    .field-row { grid-template-columns: 1fr; }
+    .fta-actions { flex-direction: column; align-items: center; }
+    .form-footer { justify-content: flex-start; }
+    .scroll-hint { right: 24px; }
+  }
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════════════════════ -->
+<script is:inline>
+  // Scroll reveal
+  (function() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+    document.querySelectorAll('.reveal-section').forEach(el => observer.observe(el));
+
+    // Counter animation
+    function animateCounter(el) {
+      const target = parseInt(el.dataset.target, 10);
+      if (isNaN(target) || target === 0) return;
+      const duration = 1400;
+      const start = performance.now();
+      const update = (now) => {
+        const p = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(eased * target).toLocaleString('de-DE');
+        if (p < 1) requestAnimationFrame(update);
+      };
+      requestAnimationFrame(update);
+    }
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.querySelectorAll('.stat-num').forEach(animateCounter);
+          statsObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    const heroStats = document.querySelector('.hero-stats');
+    if (heroStats) statsObserver.observe(heroStats);
+  })();
+
+  // Form submission
+  (function() {
+    const form = document.getElementById('contactForm');
+    const status = document.getElementById('contactStatus');
+    const btn = document.getElementById('contactSubmit');
+    if (!form) return;
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      status.className = 'form-status';
+      status.textContent = '';
+      btn.disabled = true;
+      const label = btn.querySelector('span');
+      const originalLabel = label ? label.textContent : 'Nachricht senden';
+      if (label) label.textContent = 'Wird gesendet …';
+      const fd = new FormData(form);
+      const payload = {};
+      for (const [k, v] of fd.entries()) payload[k] = v;
+      try {
+        const r = await fetch('/kontakt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(data.error || 'Versand fehlgeschlagen');
+        status.className = 'form-status is-success';
+        status.textContent = 'Vielen Dank! Deine Nachricht wurde gesendet. Wir melden uns zeitnah.';
+        form.reset();
+      } catch(err) {
+        status.className = 'form-status is-error';
+        status.textContent = 'Fehler: ' + err.message;
+      } finally {
+        btn.disabled = false;
+        if (label) label.textContent = originalLabel;
+      }
+    });
+  })();
+</script>
