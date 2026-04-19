@@ -305,9 +305,9 @@ var mediaModule = {
     drop(e) { e.preventDefault(); e.currentTarget.classList.remove('drag-over'); this.upload(e.dataTransfer.files); }
 };
 
-        // FORCE_DEFAULT_HASH: SHA-256 von "Powerscreener2026".
-        // Alte admin123-Hashes werden automatisch auf den neuen Default ueberschrieben.
-(function(){try{var DEFAULT="3a303142f06e6c320d77b906aa38a07f64d8944354f29e4f2d5df63252662238";var OLD_ADMIN123="240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";var cur=localStorage.getItem("adminPasswordHash");if(!cur||cur.length!==64||cur===OLD_ADMIN123){localStorage.setItem("adminPasswordHash",DEFAULT);}}catch(e){}})();
+        // adminPasswordHash wird nicht mehr gebraucht: Login verifiziert direkt gegen den
+        // Worker (env.ADMIN_PASSWORD, salted-hash). Altlasten einmalig aufraeumen.
+        (function(){try{localStorage.removeItem('adminPasswordHash');}catch(e){}})();
 
 // ========== AUTHENTICATION MODULE ==========
         window.auth = {
@@ -320,14 +320,15 @@ var mediaModule = {
             otpAttempts: 0,
             lockoutEndTime: null,
 
+            // Einziger Wahrheitswert fuers Admin-Passwort ist ab jetzt der Worker
+            // (env.ADMIN_PASSWORD, gesalted-hash verglichen per /admin/verify).
+            // Der alte lokale SHA-256-Hash (adminPasswordHash) wird nicht mehr verwendet.
+            WORKER_URL: 'https://stockvideo-checkout.rende.workers.dev',
+
             init() {
                 this.checkLockout();
-                if (!localStorage.getItem('adminPasswordHash')) {
-                    // Set default admin password: "Powerscreener2026"
-                    const defaultPassword = 'Powerscreener2026';
-                    const hash = CryptoJS.SHA256(defaultPassword).toString();
-                    localStorage.setItem('adminPasswordHash', hash);
-                }
+                // Altlast aufraeumen: lokaler Hash wird nicht mehr benoetigt.
+                try { localStorage.removeItem('adminPasswordHash'); } catch(e){}
                 document.getElementById('passwordInput').addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') this.verifyPassword();
                 });
@@ -373,28 +374,41 @@ var mediaModule = {
                 updateTimer();
             },
 
-            verifyPassword() {
+            async verifyPassword() {
                 const password = document.getElementById('passwordInput').value;
                 const alertEl = document.getElementById('passwordAlert');
+                const btn = document.querySelector('#authStep1 .button-primary');
 
                 if (!password) {
                     if (alertEl) alertEl.innerHTML = '<div class="alert alert-error">Bitte geben Sie ein Passwort ein</div>';
                     return;
                 }
 
-                try {
-                    const hash = CryptoJS.SHA256(password).toString();
-                    const correctHash = localStorage.getItem('adminPasswordHash');
+                if (alertEl) alertEl.innerHTML = '<div style="color:#888;font-size:13px">Pruefe...</div>';
+                if (btn) { btn.disabled = true; }
 
-                    if (hash === correctHash) {
+                try {
+                    const r = await fetch(this.WORKER_URL + '/admin/verify', {
+                        method: 'POST',
+                        headers: { 'X-Admin-Password': password, 'Content-Type': 'application/json' },
+                        body: '{}'
+                    });
+                    if (r.ok) {
+                        // Richtiges Passwort: direkt auch fuers Publish/R2 speichern,
+                        // damit kein zweites Mal gefragt wird.
+                        try { localStorage.setItem('adminPublishPw', password); } catch(e){}
                         if (alertEl) alertEl.innerHTML = '';
                         this.startOTPProcess();
-                    } else {
+                    } else if (r.status === 401) {
                         if (alertEl) alertEl.innerHTML = '<div class="alert alert-error">Falsches Passwort</div>';
+                    } else {
+                        if (alertEl) alertEl.innerHTML = '<div class="alert alert-error">Server-Fehler (' + r.status + ')</div>';
                     }
                 } catch(e) {
-                    if (alertEl) alertEl.innerHTML = '<div class="alert alert-error">Fehler: ' + e.message + '</div>';
+                    if (alertEl) alertEl.innerHTML = '<div class="alert alert-error">Netzwerk-Fehler: ' + (e.message || e) + '</div>';
                     console.error('verifyPassword error:', e);
+                } finally {
+                    if (btn) { btn.disabled = false; }
                 }
             },
 
@@ -1590,26 +1604,16 @@ var mediaModule = {
             },
 
             changePassword() {
-                const newPassword = document.getElementById('settingsNewPassword').value;
-                const confirmPassword = document.getElementById('settingsConfirmPassword').value;
-
-                if (!newPassword) {
-                    this.showAlert('settingsAlert', 'error', 'Bitte geben Sie ein neues Passwort ein');
-                    return;
-                }
-
-                if (newPassword !== confirmPassword) {
-                    this.showAlert('settingsAlert', 'error', 'Passwörter stimmen nicht überein');
-                    return;
-                }
-
-                const hash = CryptoJS.SHA256(newPassword).toString();
-                localStorage.setItem('adminPasswordHash', hash);
-
+                // Das Admin-Passwort wird nicht mehr lokal gespeichert. Es liegt als
+                // Environment-Variable (ADMIN_PASSWORD) am Cloudflare-Worker und muss
+                // dort geaendert werden: Cloudflare Dashboard -> Workers -> stockvideo-checkout
+                // -> Settings -> Variables -> ADMIN_PASSWORD. Nach Aenderung koennen alle
+                // bisherigen Sessions ihr Passwort ueber "Passwort neu eingeben" auffrischen.
                 document.getElementById('settingsNewPassword').value = '';
                 document.getElementById('settingsConfirmPassword').value = '';
-
-                this.showAlert('settingsAlert', 'success', 'Passwort geändert');
+                this.showAlert('settingsAlert', 'error',
+                    'Passwort wird jetzt am Worker verwaltet (env.ADMIN_PASSWORD). ' +
+                    'Bitte ueber das Cloudflare-Dashboard setzen, hier ist keine Aenderung mehr moeglich.');
             },
 
             save2FASettings() {
