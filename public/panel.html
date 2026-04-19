@@ -580,9 +580,28 @@
       const prog = document.getElementById("videoModalUploadProgress");
       const r2 = document.getElementById("videoModalR2Key");
       const thumbKey = document.getElementById("videoModalThumbKey");
-      const autoSlug = window.slugifyKey(f.name.replace(/\.[^.]+$/, ""));
-      if (slugInput && !slugInput.value) slugInput.value = autoSlug;
-      const slug = (slugInput && slugInput.value) || autoSlug;
+      // Slug mit Kollisions-Schutz: bei Namenskonflikt automatisch -2, -3, … anhängen
+      function _uniqueSlug(base){
+        try{
+          var editingIdx = (window.admin && window.admin.editingVideoId !== null && window.admin.editingVideoId !== undefined) ? window.admin.editingVideoId : -1;
+          var vids = (window.admin && window.admin.videos) || [];
+          var used = new Set();
+          for (var i=0;i<vids.length;i++){ if (i!==editingIdx && vids[i] && vids[i].slug) used.add(vids[i].slug); }
+          if (!used.has(base)) return base;
+          var n = 2;
+          while (used.has(base + '-' + n)) n++;
+          return base + '-' + n;
+        }catch(e){ return base; }
+      }
+      const baseAutoSlug = window.slugifyKey(f.name.replace(/\.[^.]+$/, ""));
+      if (slugInput && !slugInput.value) slugInput.value = _uniqueSlug(baseAutoSlug);
+      var _desired = (slugInput && slugInput.value) || baseAutoSlug;
+      var _unique = _uniqueSlug(_desired);
+      if (_unique !== _desired){
+        if (slugInput) slugInput.value = _unique;
+        if (status) status.textContent = 'Slug-Konflikt: umbenannt in "' + _unique + '"';
+      }
+      const slug = _unique;
       // Titel aus Dateiname vorbelegen (falls leer)
       if (titleInput && !titleInput.value) titleInput.value = f.name.replace(/\.[^.]+$/, "");
       prog.style.display = "block"; prog.value = 0;

@@ -24,8 +24,15 @@ const ALLOWED_SORT = { "relevant":"relevant", "neu":"neu", "price-asc":"price-as
 const initRes  = ALLOWED_RES[(params.get("res") || "all").toLowerCase()] || "all";
 const initSort = ALLOWED_SORT[(params.get("sort") || "relevant").toLowerCase()] || "relevant";
 const initCat  = params.get("cat") || "all";
+const initQ    = (params.get("q") || "").slice(0, 80);
 
-let state = { search:"", cat:initCat, res:initRes, sort:initSort };
+let state = { search:initQ, cat:initCat, res:initRes, sort:initSort };
+
+// Search-Input mit initialem q-Parameter vorbefüllen (für Tag-Links aus Video-Detailseite)
+(function syncSearchInput(){
+  const si = document.getElementById("searchInput");
+  if (si && initQ) si.value = initQ;
+})();
 
 // Toolbar-UI an Initialstate angleichen (Button-Label, Select-Value, aktive Kategorie)
 (function syncToolbarUI(){

@@ -318,6 +318,12 @@ function generatePreview(videoFile, onProgress) {
       canvas.height = h;
       var ctx = canvas.getContext('2d');
 
+      // Preload SV logo watermark (transparent B/W PNG)
+      var logoImg = new Image();
+      var logoReady = false;
+      logoImg.onload = function(){ logoReady = true; };
+      logoImg.src = '/watermark/sv-logo.png';
+
       var stream = canvas.captureStream(25);
 
       // Try to capture audio too
@@ -362,22 +368,23 @@ function generatePreview(videoFile, onProgress) {
         // Draw video frame
         ctx.drawImage(video, 0, 0, w, h);
 
-        // Draw watermarks
+        // Draw center logo watermark (no diagonal tiled text anymore)
         ctx.save();
-        // Center watermark
-        ctx.font = (h * 0.08) + 'px Arial';
-        ctx.fillStyle = 'rgba(255,255,255,0.3)';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('stockvideo.de', w / 2, h / 2);
-
-        // Top-left watermark
-        ctx.font = (h * 0.05) + 'px Arial';
-        ctx.fillStyle = 'rgba(255,255,255,0.2)';
-        ctx.fillText('stockvideo.de', w * 0.25, h * 0.25);
-
-        // Bottom-right watermark
-        ctx.fillText('stockvideo.de', w * 0.75, h * 0.75);
+        if (logoReady) {
+          var tW = Math.round(w * 0.60);
+          var tH = Math.round(tW * (logoImg.height / logoImg.width));
+          var maxH = Math.round(h * 0.55);
+          if (tH > maxH) { tH = maxH; tW = Math.round(tH * (logoImg.width / logoImg.height)); }
+          ctx.globalAlpha = 0.30;
+          ctx.drawImage(logoImg, Math.round((w - tW) / 2), Math.round((h - tH) / 2), tW, tH);
+          ctx.globalAlpha = 1.0;
+        } else {
+          ctx.font = (h * 0.08) + 'px Arial';
+          ctx.fillStyle = 'rgba(255,255,255,0.3)';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('stockvideo.de', w / 2, h / 2);
+        }
         ctx.restore();
 
         // Update progress

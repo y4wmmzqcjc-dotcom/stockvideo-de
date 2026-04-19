@@ -23,94 +23,137 @@ const vatRate = 0.19;
 const priceNet = price / (1 + vatRate);
 const priceVat = price - priceNet;
 const fmt = (n: number) => n.toFixed(2).replace('.', ',');
+
+// Ähnliche Videos: Clips mit mindestens einem gemeinsamen Tag, sortiert nach Überlappungsgrad
+const ownTags = (video.tags || []).map(t => String(t).toLowerCase());
+const similar = videos
+  .filter(v => v.slug !== video.slug)
+  .map(v => {
+    const theirTags = (v.tags || []).map(t => String(t).toLowerCase());
+    const overlap = theirTags.filter(t => ownTags.includes(t)).length;
+    return { v, overlap };
+  })
+  .filter(x => x.overlap > 0)
+  .sort((a,b) => b.overlap - a.overlap)
+  .slice(0, 8)
+  .map(x => x.v);
 ---
 
 <BaseLayout title={video.title} description={video.description}>
   <Topbar />
   <div class="page-content" style="max-width:1200px;">
-    <div style="margin-bottom:8px;">
+    <div style="margin-bottom:12px;">
       <a href="/" style="color:var(--accent);font-size:14px;">← Zurück zur Übersicht</a>
       {cat && <span style="color:#666;font-size:14px;margin-left:12px;">/ <a href={`/kategorie/${video.category}`} style="color:var(--accent);">{cat.label}</a></span>}
     </div>
 
-    <div class="video-layout">
-    <div class="video-col">
-    <div id="videoContainer" style="aspect-ratio:16/9;border-radius:10px;overflow:hidden;margin-bottom:32px;position:relative;cursor:pointer;">
-      {videoUrl && (
-        <video id="videoPlayer" style="width:100%;height:100%;object-fit:cover;display:none;"
-          controls controlsList="nodownload" disablePictureInPicture
-          oncontextmenu="return false" preload="metadata" poster={video.thumbnail}><source src={videoUrl} type="video/mp4" />
-        </video>
-      )}
-      <div id="videoPoster" style={`position:absolute;inset:0;background:#000 center/cover no-repeat url(${video.thumbnail});`}>
-        <div style="position:absolute;inset:0;background:radial-gradient(circle at 25% 35%,rgba(255,255,255,0.06) 0%,transparent 45%),radial-gradient(circle at 75% 65%,rgba(255,255,255,0.04) 0%,transparent 35%);opacity:0.35;"></div>
-        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-          <div id="playBtn" style="width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,0.4);transition:transform 0.2s;">
-            <svg width="24" height="24" viewBox="0 0 16 16" fill="#1b1b1b"><path d="M4 2l10 6-10 6z"/></svg>
+    {/* Row 1: Video + Preisbox (gleiche Höhe) */}
+    <div class="video-top-row">
+      <div class="video-col">
+        <div id="videoContainer" style="aspect-ratio:16/9;border-radius:10px;overflow:hidden;position:relative;cursor:pointer;background:#000;">
+          {videoUrl && (
+            <video id="videoPlayer" style="width:100%;height:100%;object-fit:cover;display:none;"
+              controls controlsList="nodownload" disablePictureInPicture
+              oncontextmenu="return false" preload="metadata" poster={video.thumbnail}><source src={videoUrl} type="video/mp4" />
+            </video>
+          )}
+          <div id="videoPoster" style={`position:absolute;inset:0;background:#000 center/cover no-repeat url(${video.thumbnail});`}>
+            <div style="position:absolute;inset:0;background:radial-gradient(circle at 25% 35%,rgba(255,255,255,0.06) 0%,transparent 45%),radial-gradient(circle at 75% 65%,rgba(255,255,255,0.04) 0%,transparent 35%);opacity:0.35;"></div>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+              <div id="playBtn" style="width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,0.4);transition:transform 0.2s;">
+                <svg width="24" height="24" viewBox="0 0 16 16" fill="#1b1b1b"><path d="M4 2l10 6-10 6z"/></svg>
+              </div>
+            </div>
+          </div>
+          {video.r2Preview && <span style="position:absolute;top:16px;right:16px;z-index:2;background:rgba(0,0,0,0.6);color:#fff;padding:4px 10px;border-radius:4px;font-size:11px;letter-spacing:0.5px;">VORSCHAU</span>}
+          <span class={`res-badge ${video.resolution === '4K' ? 'res-4k' : 'res-hd'}`} style="position:absolute;top:16px;left:16px;z-index:2;">{video.resolution}</span>
+          <span class="dur-badge" style="position:absolute;bottom:16px;right:16px;z-index:2;">{video.duration}</span>
+        </div>
+      </div>
+
+      <div class="price-col">
+        <div class="price-box">
+          <div>
+            <div style="font-size:clamp(28px,3.5vw,40px);font-weight:700;color:#4ade80;line-height:1;margin-bottom:6px;">{fmt(price)} €</div>
+            <div style="color:#8a9a8a;font-size:12px;margin-bottom:10px;">Bruttopreis inkl. 19 % MwSt.</div>
+            <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:#b5c5b5;">
+              <span>Netto: <strong style="color:#d1e5d1;">{fmt(priceNet)} €</strong></span>
+              <span style="color:#4a5a4a;">·</span>
+              <span>MwSt. 19 %: <strong style="color:#d1e5d1;">{fmt(priceVat)} €</strong></span>
+            </div>
+          </div>
+
+          <ul class="price-benefits">
+            <li>Einmalige Zahlung · sofortiger Download</li>
+            <li>Lizenz inklusive · kommerzielle Nutzung</li>
+            <li>Originaldatei in {video.resolution}</li>
+            <li>MwSt.-Rechnung nach Kauf</li>
+          </ul>
+
+          <div>
+            <button id="buyBtn" class="btn-primary" style="padding:14px 28px;font-size:16px;font-weight:700;border-radius:8px;cursor:pointer;width:100%;">
+              Jetzt kaufen
+            </button>
+            {video.r2Preview && (
+              <button id="dlPreviewBtn" data-key={video.r2Preview} data-name={`stockvideo-${video.slug}-preview${video.r2Preview && video.r2Preview.endsWith('.webm') ? '.webm' : '.mp4'}`} style="margin-top:10px;padding:10px 20px;border-radius:6px;font-size:13px;color:#cfd8cf;background:transparent;border:1px solid #2d4a2d;cursor:pointer;width:100%;">
+                ⬇ Vorschau (480p) herunterladen
+              </button>
+            )}
+            <div id="buySpinner" style="display:none;margin-top:10px;color:#999;text-align:center;font-size:13px;">Weiterleitung zu Mollie…</div>
+            <div id="buyError" style="display:none;margin-top:10px;color:#ef4444;font-size:13px;text-align:center;"></div>
           </div>
         </div>
       </div>
-      {video.r2Preview && <span style="position:absolute;top:16px;right:16px;z-index:2;background:rgba(0,0,0,0.6);color:#fff;padding:4px 10px;border-radius:4px;font-size:11px;letter-spacing:0.5px;">VORSCHAU</span>}
-      <span class={`res-badge ${video.resolution === '4K' ? 'res-4k' : 'res-hd'}`} style="position:absolute;top:16px;left:16px;z-index:2;">{video.resolution}</span>
-      <!--wm--><div id="wmOverlay" style="position:absolute;inset:0;z-index:3;pointer-events:none;display:flex;align-items:center;justify-content:center;overflow:hidden;"><div style="position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);transform:rotate(-22deg);">{Array.from({length:16}).map(()=>(<div style="display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.22);font-size:clamp(14px,2vw,22px);font-weight:700;letter-spacing:2px;text-shadow:0 1px 4px rgba(0,0,0,0.6);user-select:none;">stockvideo.de</div>))}</div></div>
-      <span class="dur-badge" style="position:absolute;bottom:16px;right:16px;z-index:2;">{video.duration}</span>
     </div>
 
-    {video.r2Preview && (
-    <div style="display:flex;gap:10px;align-items:center;margin:0 0 16px;flex-wrap:wrap;">
-      <button id="dlPreviewBtn" data-key={video.r2Preview} data-name={`stockvideo-${video.slug}-preview${video.r2Preview && video.r2Preview.endsWith('.webm') ? '.webm' : '.mp4'}`} class="btn-primary" style="padding:12px 22px;border-radius:6px;font-size:14px;font-weight:700;color:#fff;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:10px;background:var(--accent,#2563eb);">⬇ Vorschau (480p) herunterladen</button>
-      {video.videoId && <span style="font-family:monospace;background:#222;padding:6px 12px;border-radius:4px;color:#888;font-size:12px;letter-spacing:0.5px;">ID {video.videoId}</span>}
+    {/* Row 2: Titel, Beschreibung, Specs (linke Spalte entlang) */}
+    <div class="video-meta">
+      <h1 style="font-size:clamp(22px,2.6vw,30px);margin:0 0 10px;">{video.title}</h1>
+      {video.description && <p style="color:#bbb;line-height:1.6;margin:0 0 18px;">{video.description}</p>}
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 4px;">
+        <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">Auflösung: {video.resolution}</span>
+        <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">Dauer: {video.duration}</span>
+        <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">{video.fps} FPS</span>
+        <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">MP4 / MOV</span>
+        {video.videoId && <span style="font-family:monospace;background:#222;padding:8px 12px;border-radius:6px;color:#888;font-size:12px;letter-spacing:0.5px;">ID {video.videoId}</span>}
+      </div>
     </div>
-  )}
+
+    {/* Row 3: Ähnliche Videos (volle Breite) */}
+    {similar.length > 0 && (
+      <section class="similar-wrap">
+        <h2 class="similar-head">Ähnliche Videos</h2>
+        <div class="similar-grid">
+          {similar.map(s => (
+            <a href={`/video/${s.slug}/`} class="similar-card">
+              <div class="similar-thumb">
+                {s.thumbnail ? <img src={s.thumbnail} alt={s.title} loading="lazy" /> : <div class="similar-bg" style={`background:${s.gradient || '#222'}`}></div>}
+                <span class={`res-badge ${s.resolution === '4K' ? 'res-4k' : 'res-hd'}`} style="position:absolute;top:10px;left:10px;">{s.resolution}</span>
+                <span class="dur-badge" style="position:absolute;bottom:10px;right:10px;">{s.duration}</span>
+              </div>
+              <div class="similar-info">
+                <span class="similar-title">{s.title}</span>
+                <span class="similar-price">{s.price || (s.prices && s.prices.web) || 0} €</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {/* Row 4: Schlagwörter (volle Breite, klickbar, ohne #) */}
+    {video.tags && video.tags.length > 0 && (
+      <section class="tags-wrap">
+        <h3 class="tags-head">Schlagwörter</h3>
+        <div class="tags-row">
+          {video.tags.map(tag => (
+            <a href={`/?q=${encodeURIComponent(tag)}`} class="tag-chip">{tag}</a>
+          ))}
+        </div>
+      </section>
+    )}
   </div>
-    <div class="info-col">
-    <h1 style="font-size:clamp(22px,3vw,32px);">{video.title}</h1>
-    <p>{video.description}</p>
-
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 24px;">
-      {video.tags.map(tag => (
-        <span style="background:#2c2c2c;color:#999;padding:4px 12px;border-radius:12px;font-size:13px;">#{tag}</span>
-      ))}
-    </div>
-
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 32px;">
-      <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">Auflösung: {video.resolution}</span>
-      <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">Dauer: {video.duration}</span>
-      <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">{video.fps} FPS</span>
-      <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">MP4 / MOV</span>
-    </div>
-
-    <div style="background:linear-gradient(135deg,#1a2a1a,#1e2e1e);border:1px solid #2d4a2d;border-radius:12px;padding:32px;text-align:center;margin-bottom:32px;">
-      <div style="font-size:42px;font-weight:700;color:#4ade80;margin-bottom:4px;">{fmt(price)} €</div>
-      <div style="color:#8a9a8a;font-size:12px;margin-bottom:12px;">Bruttopreis inkl. 19 % MwSt.</div>
-      <div style="display:flex;justify-content:center;gap:18px;flex-wrap:wrap;font-size:12px;color:#b5c5b5;margin-bottom:18px;">
-        <span>Netto: <strong style="color:#d1e5d1;">{fmt(priceNet)} €</strong></span>
-        <span style="color:#4a5a4a;">·</span>
-        <span>MwSt. 19 %: <strong style="color:#d1e5d1;">{fmt(priceVat)} €</strong></span>
-      </div>
-      <div style="color:#999;font-size:14px;margin-bottom:24px;">Einmalige Zahlung · Sofortiger Download · Lizenz inklusive · MwSt.-Rechnung nach Kauf</div>
-      <button id="buyBtn" class="btn-primary" style="padding:16px 48px;font-size:18px;border-radius:8px;cursor:pointer;min-width:240px;">
-        Jetzt kaufen
-      </button>
-      <div id="buySpinner" style="display:none;margin-top:16px;color:#999;align-items:center;justify-content:center;">
-        Weiterleitung zu Mollie...
-      </div>
-      <div id="buyError" style="display:none;margin-top:16px;color:#ef4444;font-size:14px;"></div>
-    </div>
-
-    <div style="background:#1e1e1e;border-radius:8px;padding:20px;margin-bottom:32px;">
-      <h3 style="font-size:16px;margin-bottom:12px;color:#ccc;">Was ist enthalten?</h3>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;color:#999;font-size:14px;">
-        <div>✓ Originaldatei in {video.resolution}</div>
-        <div>✓ Kommerzielle Nutzung</div>
-        <div>✓ Unbegrenzte Projekte</div>
-        <div>✓ Sofortiger Download</div>
-      </div>
-    </div>
-
-    </div>
-  </div>
-</div>
 
   <script define:vars={{ videoId: video.id, videoTitle: video.title, price, slug: video.slug, r2Key: video.r2Key }}>
     var container = document.getElementById('videoContainer');
@@ -157,11 +200,52 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
 
   <style>
     @keyframes spin { to { transform: rotate(360deg); } }
-.video-layout{display:grid;grid-template-columns:1.7fr 1fr;gap:28px;align-items:start;margin-bottom:24px}
-.video-col{min-width:0}
-.info-col{min-width:0}
-.info-col h1{margin-top:0}
-@media (max-width:900px){.video-layout{grid-template-columns:1fr}}
+
+    /* Row 1: Video + Preisbox — gleiche Höhe via Grid align-items:stretch (default) */
+    .video-top-row{display:grid;grid-template-columns:1.7fr 1fr;gap:28px;align-items:stretch;margin-bottom:20px}
+    .video-col{min-width:0}
+    .price-col{min-width:0;display:flex}
+    .price-box{
+      flex:1;
+      display:flex;flex-direction:column;justify-content:space-between;gap:14px;
+      background:linear-gradient(135deg,#1a2a1a,#1e2e1e);
+      border:1px solid #2d4a2d;border-radius:12px;padding:22px 22px 20px;
+    }
+    .price-benefits{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:13px;color:#b5c5b5;}
+    .price-benefits li{padding-left:22px;position:relative;line-height:1.4;}
+    .price-benefits li::before{content:'✓';position:absolute;left:0;top:0;color:#4ade80;font-weight:700;}
+
+    /* Row 2: Meta bleibt an linker Spalte ausgerichtet */
+    .video-meta{margin-bottom:40px;}
+
+    /* Row 3: Ähnliche Videos */
+    .similar-wrap{margin:8px 0 44px;}
+    .similar-head{font-size:20px;font-weight:700;margin:0 0 16px;color:#eee;}
+    .similar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+    .similar-card{display:block;text-decoration:none;color:inherit;border-radius:8px;overflow:hidden;background:#1a1a1a;transition:transform .15s ease;}
+    .similar-card:hover{transform:translateY(-2px);}
+    .similar-thumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:#222;}
+    .similar-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+    .similar-bg{position:absolute;inset:0;}
+    .similar-info{padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+    .similar-title{font-size:13px;color:#ddd;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;}
+    .similar-price{font-size:13px;color:#4ade80;font-weight:600;flex-shrink:0;}
+
+    /* Row 4: Tag-Chips */
+    .tags-wrap{margin:0 0 40px;padding-top:24px;border-top:1px solid #222;}
+    .tags-head{font-size:14px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:1.2px;margin:0 0 14px;}
+    .tags-row{display:flex;flex-wrap:wrap;gap:8px;}
+    .tag-chip{display:inline-block;background:#2c2c2c;color:#ccc;padding:6px 14px;border-radius:14px;font-size:13px;text-decoration:none;transition:background .15s ease,color .15s ease;}
+    .tag-chip:hover{background:var(--accent,#2563eb);color:#fff;}
+
+    /* Mobil: Ein-Spalten-Layout */
+    @media (max-width:900px){
+      .video-top-row{grid-template-columns:1fr;}
+      .similar-grid{grid-template-columns:repeat(2,1fr);}
+    }
+    @media (max-width:520px){
+      .similar-grid{grid-template-columns:1fr;}
+    }
   </style>
 
   <script type="application/ld+json" set:html={JSON.stringify({
