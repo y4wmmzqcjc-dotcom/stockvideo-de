@@ -65,10 +65,10 @@ const similar = videos
               </div>
             </div>
           </div>
-          <div style="position:absolute;top:16px;right:16px;z-index:2;display:flex;gap:8px;align-items:center;">
+          <div class="detail-badges">
             <span class={`res-badge ${video.resolution === '4K' ? 'res-4k' : 'res-hd'}`}>{video.resolution}</span>
             <span class="dur-badge">{video.duration} sek</span>
-            {video.r2Preview && <span style="background:rgba(0,0,0,0.6);color:#fff;padding:4px 10px;border-radius:4px;font-size:11px;letter-spacing:0.5px;">VORSCHAU</span>}
+            {video.r2Preview && <span class="preview-badge">VORSCHAU</span>}
           </div>
         </div>
       </div>
@@ -115,7 +115,7 @@ const similar = videos
 
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 4px;">
         <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">Auflösung: {video.resolution}</span>
-        <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">Dauer: {video.duration}</span>
+        <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">Dauer: {video.duration} sek</span>
         <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">{video.fps} FPS</span>
         <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">MP4 / MOV</span>
         {video.videoId && <span style="font-family:monospace;background:#222;padding:8px 12px;border-radius:6px;color:#888;font-size:12px;letter-spacing:0.5px;margin-left:auto;">ID {video.videoId}</span>}
@@ -202,6 +202,13 @@ const similar = videos
 
   <style>
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Badges oben rechts im Video-Player: flex-Gruppe, Badge-Klassen neutralisiert */
+    .detail-badges{position:absolute;top:16px;right:16px;z-index:2;display:flex;gap:8px;align-items:center;}
+    .detail-badges > *{position:static;top:auto;right:auto;bottom:auto;left:auto;flex:0 0 auto;}
+    .detail-badges .res-badge{padding:4px 10px;font-size:11px;border-radius:4px;line-height:1;}
+    .detail-badges .dur-badge{padding:4px 10px;font-size:11px;border-radius:4px;line-height:1;}
+    .detail-badges .preview-badge{background:rgba(0,0,0,0.6);color:#fff;padding:4px 10px;border-radius:4px;font-size:11px;letter-spacing:0.5px;line-height:1;}
 
     /* Row 1: Video + Preisbox — gleiche Höhe via Grid align-items:stretch (default) */
     .video-top-row{display:grid;grid-template-columns:1.7fr 1fr;gap:28px;align-items:stretch;margin-bottom:20px}
