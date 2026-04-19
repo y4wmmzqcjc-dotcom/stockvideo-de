@@ -20,33 +20,32 @@ function effectivePublishAt(a: any): Date | null {
   return null;
 }
 
-const visibleArticles = articles
-  .filter((a: any) => {
-    // draft ist immer unsichtbar
-    if (a.status === 'draft') return false;
-
-    const at = effectivePublishAt(a);
-
-    // status=published ohne Datum: sofort sichtbar (Legacy-Fallback)
-    if (a.status === 'published' && !at) return true;
-
-    // In allen anderen Faellen (published, scheduled, oder kein status):
-    // das Veroeffentlichungsdatum muss erreicht sein. Ein Artikel mit
-    // publishDate in der Zukunft ist noch nicht live, auch wenn der
-    // Admin versehentlich status=published gesetzt hat.
-    if (at) return at <= now;
-
-    return false;
-  })
+// Wir rendern alle nicht-draft Artikel in die Uebersicht. Ob eine Karte
+// sichtbar ist, entscheidet clientseitig ein kleines Inline-Script anhand
+// der aktuellen Uhrzeit - so ist die Uebersicht self-healing und benoetigt
+// keinen Rebuild, wenn ein zeitgeplanter Artikel faellig wird.
+// Server-initial gerendert sind: alle zum Build-Zeitpunkt bereits faelligen
+// Artikel (das ist die SEO-Wahrheit, die Googlebot sieht).
+const sortedNonDraft = articles
+  .filter((a: any) => a.status !== 'draft')
   .sort((a: any, b: any) => {
-    // Neueste zuerst. Uhrzeit wird in den Vergleich einbezogen, damit
-    // mehrere Veroeffentlichungen am selben Tag korrekt sortieren.
     const at = effectivePublishAt(a);
     const bt = effectivePublishAt(b);
     return (bt ? bt.getTime() : 0) - (at ? at.getTime() : 0);
   });
 
-const categories = [...new Set(visibleArticles.map(a => a.category))].sort();
+// Hilfsflag pro Artikel: ist er zum Build-Zeitpunkt bereits sichtbar?
+function isDueAt(a: any, ref: Date): boolean {
+  const at = effectivePublishAt(a);
+  if (a.status === 'published' && !at) return true;
+  if (at) return at <= ref;
+  return false;
+}
+
+// Kategorien-Filterleiste: alle, die in irgendeinem nicht-draft Artikel
+// auftauchen - sonst verschwinden ganze Rubriken, wenn nur zukuenftige
+// Artikel in ihnen liegen.
+const categories = [...new Set(sortedNonDraft.map(a => a.category))].sort();
 
 const categoryEmojis = {
   'Grundlagen': '🎬',
@@ -80,10 +79,19 @@ interface Article {
   featured?: boolean;
 }
 
-const enrichedArticles = visibleArticles.map((article: Article) => ({
-  ...article,
-  categoryColor: article.categoryColor || categoryColors[article.category as keyof typeof categoryColors] || '#666666'
-}));
+const enrichedArticles = sortedNonDraft.map((article: any) => {
+  const at = effectivePublishAt(article);
+  const due = isDueAt(article, now);
+  return {
+    ...article,
+    categoryColor: article.categoryColor || categoryColors[article.category as keyof typeof categoryColors] || '#666666',
+    _pubAtIso: at ? at.toISOString() : '',
+    _isFuture: !due,
+  };
+});
+
+// Nur die zum Build-Zeitpunkt sichtbaren Artikel in die JSON-LD-Liste.
+const enrichedInitiallyVisible = enrichedArticles.filter(a => !a._isFuture);
 ---
 
 <BaseLayout title="Wissen. Alles rund um Stockvideo" description="Expertenwissen, Praxistipps und Brancheneinblicke rund um Stockvideos. Von der Produktion bis zur Lizenzierung.">
@@ -124,7 +132,14 @@ const enrichedArticles = visibleArticles.map((article: Article) => ({
   <section class="articles-section">
     <div class="articles-grid" id="articlesGrid">
       {enrichedArticles.map((article) => (
-        <a href={`/wissen/${article.slug}/`} class="article-card" data-category={article.category} data-title={article.title.toLowerCase()}>
+        <a
+          href={`/wissen/${article.slug}/`}
+          class={`article-card${article._isFuture ? ' is-future' : ''}`}
+          data-category={article.category}
+          data-title={article.title.toLowerCase()}
+          data-pub-at={article._pubAtIso}
+          data-future={article._isFuture ? '1' : undefined}
+        >
           <!-- Image Area with Gradient and Emoji -->
           <div class="article-image">
             <img
@@ -164,7 +179,7 @@ const enrichedArticles = visibleArticles.map((article: Article) => ({
     "url": "https://stockvideo.de/wissen/",
     "mainEntity": {
       "@type": "ItemList",
-      "itemListElement": enrichedArticles.map((article, index) => ({
+      "itemListElement": enrichedInitiallyVisible.map((article, index) => ({
         "@type": "ListItem",
         "position": index + 1,
         "name": article.title,
@@ -184,6 +199,24 @@ const enrichedArticles = visibleArticles.map((article: Article) => ({
     const categoryChips = document.querySelectorAll('.cat-chip');
     const articleCards = document.querySelectorAll('.article-card');
     const articlesGrid = document.getElementById('articlesGrid');
+
+    // "Self-healing" Sichtbarkeit: Karten mit data-future="1" sind zur
+    // Build-Zeit als zukuenftig markiert. Wir prüfen bei jedem Seitenaufruf,
+    // ob ihr Veroeffentlichungszeitpunkt inzwischen erreicht ist, und
+    // enthuellen sie dann. So wird die Uebersicht aktuell, ohne dass ein
+    // Cloudflare-Rebuild gelaufen sein muss.
+    (function revealDueFutureCards(){
+      const now = Date.now();
+      document.querySelectorAll('.article-card[data-future="1"]').forEach((el) => {
+        const iso = el.getAttribute('data-pub-at');
+        if (!iso) return;
+        const at = Date.parse(iso);
+        if (!isNaN(at) && at <= now) {
+          el.removeAttribute('data-future');
+          el.classList.remove('is-future');
+        }
+      });
+    })();
 
     let activeCategory = 'all';
     let activeSearch = '';
@@ -216,6 +249,10 @@ const enrichedArticles = visibleArticles.map((article: Article) => ({
       articleCards.forEach(card => {
         const cardCategory = card.getAttribute('data-category');
         const cardTitle = card.getAttribute('data-title') || '';
+        // Noch nicht faellige Artikel bleiben immer unsichtbar, egal welche
+        // Filter der Nutzer waehlt - sonst wuerde "Alle Themen" versehentlich
+        // Zukunftsartikel enthuellen.
+        const isFuture = card.getAttribute('data-future') === '1';
 
         // Category filter
         const matchesCategory = activeCategory === 'all' || cardCategory === activeCategory;
@@ -224,7 +261,7 @@ const enrichedArticles = visibleArticles.map((article: Article) => ({
         const matchesSearch = activeSearch === '' || cardTitle.includes(activeSearch);
 
         // Show/hide card
-        const shouldShow = matchesCategory && matchesSearch;
+        const shouldShow = !isFuture && matchesCategory && matchesSearch;
 
         if (shouldShow) {
           card.style.opacity = '1';
@@ -387,6 +424,14 @@ const enrichedArticles = visibleArticles.map((article: Article) => ({
   }
 
   .article-card.hidden {
+    display: none;
+  }
+
+  /* Zukuenftig geplante Artikel bleiben unsichtbar, bis das Inline-Script
+     sie bei Seitenaufruf enthuellt, wenn ihr Veroeffentlichungszeitpunkt
+     erreicht ist. Ohne das CSS waere die Uebersicht an die Build-Zeit
+     gekoppelt und nur nach erneutem Cloudflare-Build aktuell. */
+  .article-card.is-future {
     display: none;
   }
 
