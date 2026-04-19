@@ -1272,23 +1272,8 @@ var mediaModule = {
                 // Site
                 v('scSiteName', cfg.siteName);
                 v('scSiteDesc',  cfg.siteDescription);
-                // Pricing
-                const pEl = document.getElementById('scPricing');
-                if (pEl) pEl.innerHTML = (cfg.pricing || []).map((p, i) => `
-                    <div class="sc-sub-card">
-                        <div class="sc-sub-title">Paket ${i+1}</div>
-                        <div style="display:grid;grid-template-columns:1fr 80px 80px;gap:10px;margin-bottom:10px;">
-                            <div><label style="display:block;color:#8899bb;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:4px;">Name</label>
-                            <input class="sc-input" type="text" value="${this._esc(p.label||'')}" data-pl="${i}"></div>
-                            <div><label style="display:block;color:#8899bb;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:4px;">Aufl.</label>
-                            <input class="sc-input" type="text" value="${this._esc(p.res||p.resolution||'')}" data-pr="${i}"></div>
-                            <div><label style="display:block;color:#8899bb;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:4px;">Preis €</label>
-                            <input class="sc-input" type="number" value="${p.price||''}" data-pp="${i}"></div>
-                        </div>
-                        <div style="margin-bottom:8px;"><label style="display:block;color:#8899bb;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:4px;">Beschreibung</label>
-                        <input class="sc-input" type="text" value="${this._esc(p.desc||p.description||'')}" data-pd="${i}"></div>
-                        <div class="sc-featured-toggle"><input type="checkbox" id="pf${i}" data-pf="${i}" ${p.featured?'checked':''}><label for="pf${i}">Als Highlight hervorheben</label></div>
-                    </div>`).join('');
+                // Pricing: Panel-UI entfernt (Variante B, einheitl. 19,99 € fix).
+                // Werte werden beim Speichern aus configData uebernommen.
                 // Nav
                 v('scNavCta', cfg.nav && cfg.nav.ctaText);
                 this._renderNavLinks(cfg.nav && cfg.nav.links || []);
@@ -1375,15 +1360,9 @@ var mediaModule = {
 
             _buildConfigFromForm() {
                 const g = id => { const el = document.getElementById(id); return el ? el.value : ''; };
-                // Features are not editable in the panel UI — preserve existing values from configData
+                // Features and Pricing are not editable in the panel UI — preserve existing values from configData
                 const features = (this.configData || {}).features || [];
-                const pricing = Array.from(document.querySelectorAll('[data-pl]')).map((_, i) => ({
-                    label: (document.querySelector(`[data-pl="${i}"]`) || {}).value || '',
-                    res: (document.querySelector(`[data-pr="${i}"]`) || {}).value || '',
-                    price: parseFloat((document.querySelector(`[data-pp="${i}"]`) || {}).value) || 0,
-                    desc: (document.querySelector(`[data-pd="${i}"]`) || {}).value || '',
-                    featured: !!(document.querySelector(`[data-pf="${i}"]`) || {}).checked
-                }));
+                const pricing  = (this.configData || {}).pricing  || [];
                 const navRows = Array.from(document.querySelectorAll('#scNavLinks .sc-nav-row'));
                 const navLinks = navRows.map(r => {
                     const inputs = r.querySelectorAll('input');

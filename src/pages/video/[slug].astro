@@ -18,6 +18,11 @@ const r2Base = 'https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev';
 const previewUrl = video.r2Preview ? r2Base + '/' + video.r2Preview : '';
 const videoUrl = previewUrl || (video.r2Key ? r2Base + '/' + video.r2Key : '');
 const price = video.price || (video.prices && video.prices.web) || 5;
+// Preis ist Brutto inkl. 19% MwSt. Aufschluesselung fuer transparente Anzeige.
+const vatRate = 0.19;
+const priceNet = price / (1 + vatRate);
+const priceVat = price - priceNet;
+const fmt = (n: number) => n.toFixed(2).replace('.', ',');
 ---
 
 <BaseLayout title={video.title} description={video.description}>
@@ -76,8 +81,14 @@ const price = video.price || (video.prices && video.prices.web) || 5;
     </div>
 
     <div style="background:linear-gradient(135deg,#1a2a1a,#1e2e1e);border:1px solid #2d4a2d;border-radius:12px;padding:32px;text-align:center;margin-bottom:32px;">
-      <div style="font-size:42px;font-weight:700;color:#4ade80;margin-bottom:8px;">{price.toFixed(2)} €</div>
-      <div style="color:#999;font-size:14px;margin-bottom:24px;">Einmalige Zahlung · Sofortiger Download · Lizenz inklusive</div>
+      <div style="font-size:42px;font-weight:700;color:#4ade80;margin-bottom:4px;">{fmt(price)} €</div>
+      <div style="color:#8a9a8a;font-size:12px;margin-bottom:12px;">Bruttopreis inkl. 19 % MwSt.</div>
+      <div style="display:flex;justify-content:center;gap:18px;flex-wrap:wrap;font-size:12px;color:#b5c5b5;margin-bottom:18px;">
+        <span>Netto: <strong style="color:#d1e5d1;">{fmt(priceNet)} €</strong></span>
+        <span style="color:#4a5a4a;">·</span>
+        <span>MwSt. 19 %: <strong style="color:#d1e5d1;">{fmt(priceVat)} €</strong></span>
+      </div>
+      <div style="color:#999;font-size:14px;margin-bottom:24px;">Einmalige Zahlung · Sofortiger Download · Lizenz inklusive · MwSt.-Rechnung nach Kauf</div>
       <button id="buyBtn" class="btn-primary" style="padding:16px 48px;font-size:18px;border-radius:8px;cursor:pointer;min-width:240px;">
         Jetzt kaufen
       </button>
