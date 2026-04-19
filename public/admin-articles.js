@@ -62,6 +62,17 @@ window.adminArticles = {
     return articleDate > now ? 'scheduled' : 'published';
   },
 
+  /* Effektiver Veroeffentlichungszeitpunkt (Datum + Uhrzeit) in ms.
+     Spiegelt die Logik aus src/pages/wissen/index.astro, damit Panel-
+     Reihenfolge und Live-Reihenfolge identisch sind. */
+  _effectivePublishAtMs(a) {
+    const d = a.scheduledDate || a.publishDate;
+    if (!d) return 0;
+    const t = a.scheduledTime || a.publishTime || '00:00';
+    const ms = Date.parse(d + 'T' + t + ':00');
+    return isNaN(ms) ? 0 : ms;
+  },
+
   _save() {
     localStorage.setItem('adminArticles', JSON.stringify(this.articles));
   },
@@ -168,11 +179,14 @@ window.adminArticles = {
         (a.category || '').toLowerCase().includes(q)
       );
     }
-    // Geplant: nächster Termin zuerst (aufsteigend). Alle anderen: neueste zuerst (absteigend).
+    // Geplant: naechster Termin zuerst (aufsteigend). Alle anderen: neueste zuerst (absteigend).
+    // Wichtig: Sortierung nach Datum+Uhrzeit (effectivePublishAt), nicht nur nach
+    // Datums-String - sonst wuerde das Panel bei mehreren Veroeffentlichungen am
+    // selben Tag in anderer Reihenfolge sortieren als die Live-Seite /wissen/.
     list = list.slice().sort((a, b) => {
-      const da = a.publishDate || a.scheduledDate || '';
-      const db = b.publishDate || b.scheduledDate || '';
-      return filter === 'scheduled' ? da.localeCompare(db) : db.localeCompare(da);
+      const ta = this._effectivePublishAtMs(a);
+      const tb = this._effectivePublishAtMs(b);
+      return filter === 'scheduled' ? ta - tb : tb - ta;
     });
     if (!list.length) {
       return q
