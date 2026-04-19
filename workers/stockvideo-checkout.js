@@ -83,6 +83,9 @@ async function _eb_createCustomerAndInvoice(env,order){
   const gross=Number(order.amount)||0;
   const net=+(gross*100/1.19).toFixed(2);
   const desc="Royalty-Free Lizenz: "+title+(order.projectName?" (Projekt: "+order.projectName+")":"")+" | Order: "+order.id;
+  // WICHTIG: is_draft:true MUSS bleiben. Rechnungen werden ausschliesslich als Entwurf gespeichert.
+  // Der Versand der Rechnung an den Kunden erfolgt MANUELL durch den Inhaber nach Sichtpruefung in EasyBill.
+  // Dieser Worker macht KEINEN /documents/{id}/send-by-email Aufruf.
   const doc={type:"INVOICE",pdf_template:"422215",customer_id:cj.id,is_draft:true,text_prefix:"",title:"Rechnung Video-Lizenz | Order: "+order.id,items:[{number:String((order.video&&order.video.id)||""),description:desc,quantity:1,single_price_net:net,vat_percent:19}],text:"Vielen Dank f\u00fcr Ihren Einkauf bei stockvideo.de.",file_format_config:[{type:"default"},{type:"zugferd2_4_en16931"}]};
   const dr=await fetch("https://api.easybill.de/rest/v1/documents",{method:"POST",headers:{"Authorization":"Bearer "+EASYBILL_API_KEY,"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(doc)});
   if(!dr.ok)throw new Error("easybill doc "+dr.status+": "+(await dr.text()).slice(0,300));
