@@ -40,32 +40,42 @@
     return best;
   }
 
+  // Cache the logo across multiple makeWatermarkPng calls in one upload session
+  // (called once per resolution: 480p preview + 360p hover loop)
+  let _logoImgP=null;
+  function loadLogoImg(){
+    if(_logoImgP) return _logoImgP;
+    _logoImgP=new Promise(function(resolve,reject){
+      const img=new Image();
+      img.onload=function(){resolve(img);};
+      img.onerror=function(){reject(new Error('sv-logo.png load failed'));};
+      img.src='/watermark/sv-logo.png';
+    });
+    return _logoImgP;
+  }
+
   async function makeWatermarkPng(W,H,videoId){
     const c=document.createElement('canvas');c.width=W;c.height=H;
     const ctx=c.getContext('2d');
     ctx.clearRect(0,0,W,H);
-    // diagonal tiled text
-    ctx.save();
-    ctx.translate(W/2,H/2);
-    ctx.rotate(-Math.PI/8);
-    ctx.font='bold '+Math.round(H/22)+'px sans-serif';
-    ctx.fillStyle='rgba(255,255,255,0.18)';
-    ctx.textAlign='center';
-    const txt='stockvideo.de · '+videoId;
-    const step=Math.round(H/4);
-    for(let y=-H;y<=H;y+=step){
-      for(let x=-W;x<=W;x+=Math.round(W/2)){
-        ctx.fillText(txt,x,y);
-      }
+    // Center logo (replaces both the diagonal tiled text AND the big "stockvideo.de" text)
+    try{
+      const logo=await loadLogoImg();
+      // Scale logo to ~38% of frame width, preserve aspect ratio
+      const targetW=Math.round(W*0.38);
+      const targetH=Math.round(targetW*(logo.height/logo.width));
+      ctx.globalAlpha=0.28;
+      ctx.drawImage(logo, Math.round((W-targetW)/2), Math.round((H-targetH)/2), targetW, targetH);
+      ctx.globalAlpha=1.0;
+    }catch(e){
+      // Fallback to text if logo can't be loaded
+      ctx.font='bold '+Math.round(H/8)+'px sans-serif';
+      ctx.fillStyle='rgba(255,255,255,0.28)';
+      ctx.textAlign='center';
+      ctx.textBaseline='middle';
+      ctx.fillText('stockvideo.de',W/2,H/2);
     }
-    ctx.restore();
-    // big center logo
-    ctx.font='bold '+Math.round(H/8)+'px sans-serif';
-    ctx.fillStyle='rgba(255,255,255,0.28)';
-    ctx.textAlign='center';
-    ctx.textBaseline='middle';
-    ctx.fillText('stockvideo.de',W/2,H/2);
-    // ID badge bottom-right
+    // ID badge bottom-right (unchanged)
     ctx.font='bold '+Math.round(H/26)+'px monospace';
     ctx.textAlign='right';
     ctx.textBaseline='bottom';
