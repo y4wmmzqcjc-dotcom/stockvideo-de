@@ -187,9 +187,15 @@ window.adminArticles = {
       const statusClass = displayStatus === 'published' ? 'aa-status-published' : displayStatus === 'scheduled' ? 'aa-status-scheduled' : 'aa-status-draft';
       const statusLabel = displayStatus === 'published' ? '\u00d6ffentlich' : displayStatus === 'scheduled' ? 'Geplant' : 'Entwurf';
       const statusIcon = displayStatus === 'published' ? '\u25CF' : displayStatus === 'scheduled' ? '\u25D0' : '\u25CB';
-      const schedDate = a.scheduledDate || a.publishDate;
+      // Geplant: scheduledDate hat Vorrang (zukuenftiger Termin)
+      // Oeffentlich: publishDate hat Vorrang (tatsaechlicher Veroeffentlichungstermin)
+      const schedDate = displayStatus === 'published'
+        ? (a.publishDate || a.scheduledDate)
+        : (a.scheduledDate || a.publishDate);
       const schedTime = a.scheduledTime ? ` · ${a.scheduledTime} Uhr` : '';
-      const schedInfo = displayStatus === 'scheduled' && schedDate ? `<span class="aa-sched-date">${this._formatDate(schedDate)}${schedTime}</span>` : '';
+      const schedInfo = (displayStatus === 'scheduled' || displayStatus === 'published') && schedDate
+        ? `<span class="aa-sched-date aa-sched-${displayStatus}">${this._formatDate(schedDate)}${schedTime}</span>`
+        : '';
       const catColor = a.categoryColor || '#1473e6';
 
       return `
