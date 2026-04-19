@@ -80,17 +80,24 @@
       ctx.textBaseline='middle';
       ctx.fillText('stockvideo.de',W/2,H/2);
     }
-    // ID badge bottom-right (unchanged)
-    ctx.font='bold '+Math.round(H/26)+'px monospace';
-    ctx.textAlign='right';
-    ctx.textBaseline='bottom';
-    const pad=Math.round(H/40);
-    const idTxt='ID '+videoId;
-    const m=ctx.measureText(idTxt);
-    ctx.fillStyle='rgba(0,0,0,0.55)';
-    ctx.fillRect(W-m.width-pad*2-pad, H-Math.round(H/22)-pad*2, m.width+pad*2, Math.round(H/22)+pad);
-    ctx.fillStyle='#fff';
-    ctx.fillText(idTxt,W-pad*2,H-pad*1.2);
+    // ID badge bottom-right — klar lesbare Sans-Serif, vertikal mittig
+    const fontSize = Math.round(H/22);
+    ctx.font = '700 ' + fontSize + 'px "Helvetica Neue", Helvetica, Arial, sans-serif';
+    const idTxt = 'ID ' + videoId;
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+    const m = ctx.measureText(idTxt);
+    const padX = Math.round(fontSize * 0.75);
+    const padY = Math.round(fontSize * 0.50);
+    const boxW = Math.round(m.width + padX * 2);
+    const boxH = Math.round(fontSize + padY * 2);
+    const margin = Math.round(fontSize * 0.5);
+    const boxX = W - boxW - margin;
+    const boxY = H - boxH - margin;
+    ctx.fillStyle = 'rgba(0,0,0,0.65)';
+    ctx.fillRect(boxX, boxY, boxW, boxH);
+    ctx.fillStyle = '#fff';
+    ctx.fillText(idTxt, boxX + padX, boxY + boxH / 2);
     return new Promise(r=>c.toBlob(r,'image/png'));
   }
   window.makeWatermarkPng=makeWatermarkPng;
