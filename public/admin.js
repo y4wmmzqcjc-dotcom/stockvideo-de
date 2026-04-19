@@ -497,15 +497,20 @@ var mediaModule = {
             },
 
             authenticateWithoutOTP() {
-                localStorage.setItem('adminAuthenticated', 'true');
+                // sessionStorage statt localStorage: bei jedem neuen Panel-Aufruf (neuer Tab/Browserstart)
+                // muss das Passwort wieder eingegeben werden. F5 im gleichen Tab bleibt angemeldet.
+                sessionStorage.setItem('adminAuthenticated', 'true');
                 document.getElementById('authScreen').style.display = 'none';
                 document.getElementById('adminLayout').style.display = 'flex';
                 admin.init();
+                if (typeof calendarModule !== 'undefined' && calendarModule.init) calendarModule.init();
+                if (typeof mediaModule !== 'undefined' && mediaModule.init) mediaModule.init();
             },
 
             logout() {
                 if (confirm('Wirklich abmelden?')) {
-                    localStorage.removeItem('adminAuthenticated');
+                    sessionStorage.removeItem('adminAuthenticated');
+                    localStorage.removeItem('adminAuthenticated'); // Altlast von vorher
                     location.reload();
                 }
             },
@@ -674,7 +679,9 @@ var mediaModule = {
         });
       } else {
         var box = document.getElementById('_r2box');
-        if (box) box.innerHTML = '<h3 style="margin:0 0 12px;color:#fff;font-size:16px">R2 Speicher</h3><div style="color:#888;font-size:13px">Passwort einmalig über "Veröffentlichen" eingeben, dann wird der Speicher angezeigt.</div>';
+        if (box) box.innerHTML = '<h3 style="margin:0 0 12px;color:#fff;font-size:16px">R2 Speicher</h3>' +
+          '<div style="color:#888;font-size:13px;margin-bottom:12px">Admin-Passwort noch nicht hinterlegt.</div>' +
+          '<button onclick="admin.promptAdminPw()" style="padding:8px 16px;background:#2563eb;border:none;border-radius:6px;color:#fff;font-size:13px;cursor:pointer">Passwort eingeben</button>';
       }
       this.refreshDeployStatus();
     },
@@ -1807,7 +1814,10 @@ var mediaModule = {
 
         // Initialize on page load
         window.addEventListener('load', () => {
-            const isAuthenticated = localStorage.getItem('adminAuthenticated');
+            // Altlast: "dauerhaft eingeloggt" per localStorage abschalten. Ab jetzt
+            // steuert sessionStorage die Session: bei neuem Tab/Browserstart -> Login-Screen.
+            if (localStorage.getItem('adminAuthenticated')) localStorage.removeItem('adminAuthenticated');
+            const isAuthenticated = sessionStorage.getItem('adminAuthenticated');
             if (isAuthenticated === 'true') {
                 document.getElementById('authScreen').style.display = 'none';
                 document.getElementById('adminLayout').style.display = 'flex';
