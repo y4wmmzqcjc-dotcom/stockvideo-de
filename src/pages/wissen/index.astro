@@ -6,16 +6,23 @@ import articles from '../../../public/data/articles.json';
 const now = new Date();
 const visibleArticles = articles
   .filter((a: any) => {
+    // status ist die source of truth: 'draft' nie, 'published' immer,
+    // 'scheduled' nur wenn der Zeitpunkt bereits erreicht ist.
     if (a.status === 'draft') return false;
-    const dateStr = a.scheduledDate || a.publishDate;
-    if (dateStr) {
+    if (a.status === 'published') return true;
+    if (a.status === 'scheduled' && a.scheduledDate) {
       const timeStr = a.scheduledTime || '00:00';
-      const publishAt = new Date(dateStr + 'T' + timeStr + ':00');
-      return publishAt <= now;
+      const scheduledAt = new Date(a.scheduledDate + 'T' + timeStr + ':00');
+      return scheduledAt <= now;
     }
-    return a.status === 'published';
+    // Fallback: kein status, aber publishDate in der Vergangenheit
+    if (!a.status && a.publishDate) {
+      return new Date(a.publishDate + 'T00:00:00') <= now;
+    }
+    return false;
   })
   .sort((a: any, b: any) => {
+    // Neueste zuerst: publishDate hat Vorrang, dann scheduledDate
     const da = a.publishDate || a.scheduledDate || '';
     const db = b.publishDate || b.scheduledDate || '';
     return db.localeCompare(da);

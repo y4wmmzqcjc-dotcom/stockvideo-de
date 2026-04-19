@@ -5,13 +5,20 @@ import Footer from '../../components/Footer.astro';
 import articles from '../../../public/data/articles.json';
 
 function isVisible(a: any) {
+  // status ist die source of truth: 'draft' nie, 'published' immer,
+  // 'scheduled' nur wenn der Zeitpunkt bereits erreicht ist.
   if (a.status === 'draft') return false;
-  if (a.scheduledDate) {
+  if (a.status === 'published') return true;
+  if (a.status === 'scheduled' && a.scheduledDate) {
     const timeStr = a.scheduledTime || '00:00';
     const scheduledAt = new Date(a.scheduledDate + 'T' + timeStr + ':00');
     return scheduledAt <= new Date();
   }
-  return a.status === 'published';
+  // Fallback: kein status, aber publishDate in der Vergangenheit
+  if (!a.status && a.publishDate) {
+    return new Date(a.publishDate + 'T00:00:00') <= new Date();
+  }
+  return false;
 }
 
 export function getStaticPaths() {
@@ -19,12 +26,16 @@ export function getStaticPaths() {
   const now = new Date();
   const visibleArticles = (articles as any[]).filter((a) => {
     if (a.status === 'draft') return false;
-    if (a.scheduledDate) {
+    if (a.status === 'published') return true;
+    if (a.status === 'scheduled' && a.scheduledDate) {
       const timeStr = a.scheduledTime || '00:00';
       const scheduledAt = new Date(a.scheduledDate + 'T' + timeStr + ':00');
       return scheduledAt <= now;
     }
-    return a.status === 'published';
+    if (!a.status && a.publishDate) {
+      return new Date(a.publishDate + 'T00:00:00') <= now;
+    }
+    return false;
   });
   return visibleArticles.map((article) => ({
     params: { slug: article.slug },
