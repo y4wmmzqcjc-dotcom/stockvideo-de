@@ -24,16 +24,18 @@ const priceNet = price / (1 + vatRate);
 const priceVat = price - priceNet;
 const fmt = (n: number) => n.toFixed(2).replace('.', ',');
 
-// Ähnliche Videos: Clips mit mindestens einem gemeinsamen Tag, sortiert nach Überlappungsgrad
+// Ähnliche Videos: Clips mit mindestens 15 % Tag-Überlappung (bezogen auf das aktuelle Video), sortiert nach Überlappungsgrad.
+// Verhindert, dass inhaltlich unverwandte Clips (z. B. Kuh unter Bagger) auftauchen, nur weil ein, zwei generische Tags geteilt werden.
+const SIMILAR_MIN_OVERLAP_RATIO = 0.15;
 const ownTags = (video.tags || []).map(t => String(t).toLowerCase());
-const similar = videos
+const similar = ownTags.length === 0 ? [] : videos
   .filter(v => v.slug !== video.slug)
   .map(v => {
     const theirTags = (v.tags || []).map(t => String(t).toLowerCase());
     const overlap = theirTags.filter(t => ownTags.includes(t)).length;
     return { v, overlap };
   })
-  .filter(x => x.overlap > 0)
+  .filter(x => (x.overlap / ownTags.length) >= SIMILAR_MIN_OVERLAP_RATIO)
   .sort((a,b) => b.overlap - a.overlap)
   .slice(0, 8)
   .map(x => x.v);
