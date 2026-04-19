@@ -161,5 +161,86 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776614148404",
+    "title": "Weite Luftaufnahme einer deutschen Kleinstadt eingebettet in grüne Hügellandschaft und Felder",
+    "slug": "stockvideo-drohne-shoot-2",
+    "description": "Weitwinkel-Luftaufnahme im langsamen Vorwärtsflug über eine malerische, deutsche Gemeinde. Der Clip zeigt die harmonische Verbindung von dichter Wohnbebauung und der umgebenden Agrarlandschaft mit Feldern, Wiesen und Waldstücken unter einem leicht bewölkten Sommerhimmel. Die Schatten der Wolken ziehen sanft über die Hügel. Bestens geeignet für Imagefilme über Tourismus, Immobilienmarketing, Regionalentwicklung oder als Establishing Shot für Dokumentationen über das Leben auf dem Land.",
+    "category": "drohne-arials",
+    "tags": [
+      "Luftaufnahme",
+      "Panorama",
+      "Dorf",
+      "Kleinstadt",
+      "Siedlung",
+      "Deutschland",
+      "Europa",
+      "Landschaft",
+      "Natur",
+      "Felder",
+      "Landwirtschaft",
+      "Wald",
+      "Hügel",
+      "Horizont",
+      "Blauer Himmel",
+      "Wolken",
+      "Sommer",
+      "Frühling",
+      "Drohnenfoto",
+      "Vogelperspektive",
+      "Geografie",
+      "Tourismus",
+      "Heimat",
+      "ländlicher Raum",
+      "Urbanisierung",
+      "Architektur",
+      "Dächer",
+      "Wohnen",
+      "Umwelt",
+      "Ökosystem",
+      "Weite",
+      "Freiheit",
+      "Reiseziel",
+      "Exploration",
+      "Immobilien",
+      "Planung",
+      "Agrarland",
+      "Grünfläche",
+      "Vegetation",
+      "Licht und Schatten",
+      "Übersicht",
+      "Topografie",
+      "Mitteleuropa",
+      "Idyllisch",
+      "Standort",
+      "Gemeinde",
+      "Infrastruktur",
+      "Erholung."
+    ],
+    "resolution": "4K",
+    "duration": 13,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/stockvideo-drohne-shoot-2.jpg",
+    "r2Key": "videos/stockvideo-drohne-shoot-2.mp4",
+    "r2Preview": "previews/stockvideo-drohne-shoot-2.mp4",
+    "r2Hover": "previews/stockvideo-drohne-shoot-2-hover.mp4",
+    "videoId": "stockvideo.de-Y6BS8PD9",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
