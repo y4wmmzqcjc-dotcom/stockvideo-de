@@ -1057,8 +1057,9 @@ var mediaModule = {
         var _vid=document.getElementById('videoModalVideoId'); if(_vid) _vid.value=video.videoId||'';
                 document.getElementById('videoModalFeatured').checked = video.featured;
 
-                this.updateCategoryDropdown();
-                const _setCat=()=>{const _d=document.getElementById('videoModalCategory');if(_d&&[..._d.options].some(o=>o.value===video.category)){_d.value=video.category;}else{setTimeout(_setCat,50);}};_setCat();
+                // Kategorie-Preselect atomar im Fetch-Callback — verhindert Race,
+                // bei der eine Nutzer-Änderung vom Polling überschrieben wird
+                this.updateCategoryDropdown(video.category);
                 this.renderGradientInputs(video.gradient);
 
                 document.getElementById('videoModal').classList.add('active');
@@ -1069,9 +1070,12 @@ var mediaModule = {
                 this.editingVideoId = null;
             },
 
-            updateCategoryDropdown() {
+            updateCategoryDropdown(preselectValue) {
                 const dropdown = document.getElementById('videoModalCategory');
                 if (!dropdown) return;
+                // Wenn kein explizites Preselect übergeben wurde: aktuellen User-Wert merken,
+                // damit ein zweiter Aufruf während des Modals die Auswahl nicht killt.
+                const target = (preselectValue !== undefined) ? preselectValue : dropdown.value;
                 fetch('/data/categories.json?_=' + Date.now(), { cache: 'no-store' })
                     .then(r => r.ok ? r.json() : [])
                     .catch(() => [])
@@ -1079,7 +1083,12 @@ var mediaModule = {
                         const cats = (Array.isArray(list) && list.length) ? list : (this.categories || []);
                         dropdown.innerHTML = '<option value="">-- Wählen Sie eine Kategorie --</option>' +
                             cats.map(c => '<option value="' + (c.slug || c.id) + '">' + (c.label || c.name || c.slug) + '</option>').join('');
-                        if (this.currentVideo && this.currentVideo.category) dropdown.value = this.currentVideo.category;
+                        // Preselect nur setzen, wenn Option existiert — sonst bleibt's leer
+                        if (target && [...dropdown.options].some(o => o.value === target)) {
+                            dropdown.value = target;
+                        } else {
+                            dropdown.value = '';
+                        }
                     });
             },
 
