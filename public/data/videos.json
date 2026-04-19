@@ -79,5 +79,86 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776617552999",
+    "title": "Nahaufnahme einer braun-weiß gefleckten Kuh auf der Weide bei Sonnenuntergang",
+    "slug": "stockvideo-kuh-auf-weide",
+    "description": "Atmosphärische Nahaufnahme einer neugierigen braun-weiß gefleckten Kuh auf einer Sommerweide. Das Video besticht durch warme Lichtstimmung (Golden Hour) und eine geringe Tiefenschärfe, die das Tier sanft vom grünen Hintergrund abhebt. Inklusive natürlicher Details wie Ohrmarken und Fliegen. Perfekt geeignet für Themen wie biologische Landwirtschaft, Milchproduktion, Tierschutz, ländliche Idylle oder Nachhaltigkeit in der Lebensmittelproduktion.",
+    "category": "tiere",
+    "tags": [
+      "Kuh",
+      "Rind",
+      "Nutztier",
+      "Landwirtschaft",
+      "Viehzucht",
+      "Bauernhof",
+      "Weide",
+      "Wiese",
+      "Natur",
+      "Tierporträt",
+      "Nahaufnahme",
+      "Braun",
+      "Weiß",
+      "Gefleckt",
+      "Ohrmarke",
+      "Vieh",
+      "ökologisch",
+      "Bio",
+      "Freilandhaltung",
+      "Milchwirtschaft",
+      "Fleischwirtschaft",
+      "ländlich",
+      "Sommer",
+      "Abendlicht",
+      "Sonnenuntergang",
+      "Bokeh",
+      "unscharfer Hintergrund",
+      "Tierhaltung",
+      "Nachhaltigkeit",
+      "Idylle",
+      "Alpen",
+      "Deutschland",
+      "Porträt",
+      "Blick in Kamera",
+      "Neugierde",
+      "Landleben",
+      "Gras",
+      "Fauna",
+      "Säugetier",
+      "Milchvieh",
+      "Herde",
+      "Umwelt",
+      "Authentisch",
+      "Friedlich",
+      "Agrarwirtschaft",
+      "Lebensmittel",
+      "Rohstoff",
+      "Dorfleben"
+    ],
+    "resolution": "4K",
+    "duration": 10,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/stockvideo-kuh-auf-weide.jpg",
+    "r2Key": "videos/stockvideo-kuh-auf-weide.mp4",
+    "r2Preview": "previews/stockvideo-kuh-auf-weide.mp4",
+    "r2Hover": "previews/stockvideo-kuh-auf-weide-hover.mp4",
+    "videoId": "stockvideo.de-07CJK6IV",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
