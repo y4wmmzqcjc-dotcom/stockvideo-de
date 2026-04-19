@@ -14,7 +14,10 @@ const STALE_LOCK_TIMEOUT = 600000;  // 10 Minuten - Balance zwischen Crash-Recov
 
 function downloadUrlFor(slug, r2Key) { const key = r2Key || VIDEO_MAP[slug]; if (!key) return null; return R2_PUBLIC + '/' + key; }
 // === stockvideo-checkout licence/order extension ===
-const DOWNLOAD_SECRET = "df3d17b4df83444312e65136f8a219adde6346787737259584c98d8e328a1126";
+// Fallback-Secret. Im fetch()-Handler wird dieser Wert durch env.DOWNLOAD_SECRET
+// überschrieben, falls das Worker-Secret gesetzt ist. So kannst du jederzeit
+// silent rotieren, indem du das Cloudflare-Secret setzt — ohne Code-Deploy.
+let DOWNLOAD_SECRET = "4ed67f0f87a3e6c2fada8764a854aa4a056c0e2f27085633507f3c3f919c98fb";
 async function _ord_hmac(secret, msg){ const k = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), {name:"HMAC", hash:"SHA-256"}, false, ["sign"]); const sig = await crypto.subtle.sign("HMAC", k, new TextEncoder().encode(msg)); return Array.from(new Uint8Array(sig)).map(b=>b.toString(16).padStart(2,"0")).join(""); }
 async function _ord_signDownload(orderId, ttl){ const t = ttl || 60*60*24*7; const exp = Math.floor(Date.now()/1000) + t; return exp + "." + (await _ord_hmac(DOWNLOAD_SECRET, orderId+"."+exp)); }
 function _ord_newId(){ const d = new Date(); const ymd = d.toISOString().slice(0,10).replace(/-/g,""); const r = crypto.getRandomValues(new Uint8Array(4)); return "ORD-"+ymd+"-"+Array.from(r).map(b=>b.toString(16).padStart(2,"0")).join("").toUpperCase(); }
@@ -360,6 +363,8 @@ async function _fulfill_paidOrder(env,order){
 export default {
   async fetch(request, env) {
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS_HEADERS });
+    // Worker-Secret für Download-URL-Signaturen kann jederzeit via env rotiert werden.
+    if (env && env.DOWNLOAD_SECRET) DOWNLOAD_SECRET = env.DOWNLOAD_SECRET;
     const url = new URL(request.url);
     const path = url.pathname;
     try {
