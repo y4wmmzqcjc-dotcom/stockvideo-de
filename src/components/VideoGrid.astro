@@ -16,7 +16,35 @@ import categoriesData from '../../public/data/categories.json';
 const catLabels = { all: "Alle Videos" };
 (categoriesData || []).forEach(c => { if (c.dataCat || c.slug) catLabels[c.dataCat || c.slug] = c.label; });
 
-let state = { search:"", cat:"all", res:"all", sort:"relevant" };
+// Initialstate aus URL-Query uebernehmen (?res=4k|hd, ?sort=neu|price-asc|price-desc|relevant, ?cat=...)
+// Falls die Params fehlen oder ungueltig sind, greifen die Defaults.
+const params = new URLSearchParams(window.location.search);
+const ALLOWED_RES  = { "4k":"4k", "hd":"hd", "all":"all" };
+const ALLOWED_SORT = { "relevant":"relevant", "neu":"neu", "price-asc":"price-asc", "price-desc":"price-desc" };
+const initRes  = ALLOWED_RES[(params.get("res") || "all").toLowerCase()] || "all";
+const initSort = ALLOWED_SORT[(params.get("sort") || "relevant").toLowerCase()] || "relevant";
+const initCat  = params.get("cat") || "all";
+
+let state = { search:"", cat:initCat, res:initRes, sort:initSort };
+
+// Toolbar-UI an Initialstate angleichen (Button-Label, Select-Value, aktive Kategorie)
+(function syncToolbarUI(){
+  const rb = document.getElementById("resFilterBtn");
+  if (rb) {
+    rb.dataset.state = state.res;
+    rb.textContent = state.res === "all" ? "Aufl\u00f6sung" : state.res === "4k" ? "Nur 4K" : "Nur HD";
+    rb.classList.toggle("active", state.res !== "all");
+  }
+  const ss = document.getElementById("sortSelect");
+  if (ss) ss.value = state.sort;
+  if (state.cat && state.cat !== "all") {
+    const target = document.querySelector('.cat-chip[data-cat="' + state.cat.replace(/"/g,'') + '"]');
+    if (target) {
+      document.querySelectorAll('.cat-chip').forEach(b => b.classList.remove('active'));
+      target.classList.add('active');
+    }
+  }
+})();
 
 function render() {
   let list = videos.filter(v => {
@@ -28,8 +56,15 @@ function render() {
     return mc && ms && mr;
   });
 
-  if (state.sort === "price-asc")  list.sort((a,b) => a.price - b.price);
-  if (state.sort === "price-desc") list.sort((a,b) => b.price - a.price);
+  const priceOf = v => Number(v.price ?? (v.prices && v.prices.web) ?? 0) || 0;
+  if (state.sort === "price-asc")  list.sort((a,b) => priceOf(a) - priceOf(b));
+  if (state.sort === "price-desc") list.sort((a,b) => priceOf(b) - priceOf(a));
+  // "neu" = nach video.id (Unix-ms-Timestamp) absteigend. Fallback fuer nicht-numerische IDs: string compare desc.
+  if (state.sort === "neu") list.sort((a,b) => {
+    const na = Number(a.id), nb = Number(b.id);
+    if (Number.isFinite(na) && Number.isFinite(nb)) return nb - na;
+    return String(b.id||'').localeCompare(String(a.id||''));
+  });
 
   const grid = document.getElementById("videoGrid");
   const noRes = document.getElementById("noResults");

@@ -56,7 +56,7 @@
     "links": [
       {
         "label": "Stockvideos",
-        "href": "/#kategorien",
+        "href": "/",
         "mobileHide": true
       },
       {
@@ -82,15 +82,15 @@
           },
           {
             "label": "4K Videos",
-            "href": "/#videoGrid"
+            "href": "/?res=4k"
           },
           {
             "label": "HD Videos",
-            "href": "/#videoGrid"
+            "href": "/?res=hd"
           },
           {
             "label": "Neueste Videos",
-            "href": "/#videoGrid"
+            "href": "/?sort=neu"
           }
         ]
       },
