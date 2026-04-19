@@ -401,7 +401,35 @@ export default {
         try {
           const RESEND_API_KEY = (env && env.RESEND_API_KEY) || '';
           if (!RESEND_API_KEY) return new Response('no key', { status: 200 });
-          const evt = await request.json();
+          // --- Svix signature verification (Task #34) ---
+          // Header: svix-id, svix-timestamp, svix-signature ("v1,<base64sig> v1,<base64sig>")
+          // Signed data: `${svix_id}.${svix_timestamp}.${rawBody}` — HMAC-SHA256 with base64-decoded secret
+          // Secret env: RESEND_WEBHOOK_SECRET = "whsec_<base64>". Return 401 on failure, 5-min replay window.
+          const rawBody = await request.text();
+          const WEBHOOK_SECRET = (env && env.RESEND_WEBHOOK_SECRET) || '';
+          if (WEBHOOK_SECRET) {
+            const svixId = request.headers.get('svix-id') || request.headers.get('webhook-id') || '';
+            const svixTs = request.headers.get('svix-timestamp') || request.headers.get('webhook-timestamp') || '';
+            const svixSig = request.headers.get('svix-signature') || request.headers.get('webhook-signature') || '';
+            if (!svixId || !svixTs || !svixSig) return new Response('missing svix headers', { status: 401 });
+            // 5 Minuten Replay-Fenster
+            const tsNum = parseInt(svixTs, 10);
+            const nowSec = Math.floor(Date.now() / 1000);
+            if (!tsNum || Math.abs(nowSec - tsNum) > 300) return new Response('stale timestamp', { status: 401 });
+            // Secret hat das Prefix "whsec_" und ist danach Base64
+            const secretB64 = WEBHOOK_SECRET.startsWith('whsec_') ? WEBHOOK_SECRET.slice(6) : WEBHOOK_SECRET;
+            const secretBytes = Uint8Array.from(atob(secretB64), c => c.charCodeAt(0));
+            const signedPayload = svixId + '.' + svixTs + '.' + rawBody;
+            const key = await crypto.subtle.importKey('raw', secretBytes, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+            const sigBuf = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(signedPayload));
+            const expected = btoa(String.fromCharCode(...new Uint8Array(sigBuf)));
+            // Header kann mehrere "v1,<sig>"-Paare space-separiert enthalten
+            const sigs = svixSig.split(' ').map(s => { const parts = s.split(','); return parts.length === 2 ? parts[1] : ''; }).filter(Boolean);
+            let match = false;
+            for (const s of sigs) { if (s.length === expected.length) { let diff = 0; for (let i = 0; i < s.length; i++) diff |= s.charCodeAt(i) ^ expected.charCodeAt(i); if (diff === 0) { match = true; break; } } }
+            if (!match) return new Response('invalid signature', { status: 401 });
+          }
+          const evt = JSON.parse(rawBody);
           const t = evt && evt.type;
           if (t === 'email.bounced' || t === 'email.complained' || t === 'email.delivery_delayed') {
             const data = (evt && evt.data) || {};
