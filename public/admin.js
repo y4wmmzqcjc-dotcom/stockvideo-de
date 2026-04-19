@@ -640,7 +640,9 @@ var mediaModule = {
           var box = document.getElementById('_r2box');
           if (!box) return;
           if (j && j._authFail) {
-            box.innerHTML = '<h3 style="margin:0 0 12px;color:#fff;font-size:16px">R2 Speicher</h3><div style="color:#ff9500;font-size:13px">Gespeichertes Passwort wurde abgelehnt (vermutlich rotiert). Bitte einmalig über "Veröffentlichen" neu eingeben.</div>';
+            box.innerHTML = '<h3 style="margin:0 0 12px;color:#fff;font-size:16px">R2 Speicher</h3>' +
+              '<div style="color:#ff9500;font-size:13px;margin-bottom:12px">Gespeichertes Passwort wurde abgelehnt (vermutlich rotiert).</div>' +
+              '<button onclick="admin.promptAdminPw()" style="padding:8px 16px;background:#2563eb;border:none;border-radius:6px;color:#fff;font-size:13px;cursor:pointer">Passwort neu eingeben</button>';
             return;
           }
           var usedMB = j ? (j.totalBytes / 1048576) : 0;
@@ -675,6 +677,39 @@ var mediaModule = {
         if (box) box.innerHTML = '<h3 style="margin:0 0 12px;color:#fff;font-size:16px">R2 Speicher</h3><div style="color:#888;font-size:13px">Passwort einmalig über "Veröffentlichen" eingeben, dann wird der Speicher angezeigt.</div>';
       }
       this.refreshDeployStatus();
+    },
+
+    // ===== Admin-Passwort neu eingeben (ohne Publish) =====
+    // Wird aus der R2-Box aufgerufen, wenn das gespeicherte PW 401 geliefert hat.
+    promptAdminPw() {
+      var self = this;
+      var ov = document.createElement('div');
+      ov.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);z-index:99999;display:flex;align-items:center;justify-content:center;';
+      ov.innerHTML = '<div style="background:#fff;padding:28px;border-radius:10px;min-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.2);font-family:sans-serif;">' +
+        '<h3 style="margin:0 0 18px;font-size:16px;font-weight:600;color:#111;">Admin-Passwort</h3>' +
+        '<input id="_ppw2" type="password" placeholder="Admin-Passwort" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:6px;font-size:14px;margin-bottom:16px;box-sizing:border-box;">' +
+        '<div style="display:flex;gap:10px;">' +
+          '<button id="_pok2" style="flex:1;padding:10px;background:#2563eb;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:14px;font-weight:500;">Speichern</button>' +
+          '<button id="_pcancel2" style="flex:1;padding:10px;background:#f1f5f9;color:#374151;border:1px solid #d1d5db;border-radius:6px;cursor:pointer;font-size:14px;">Abbrechen</button>' +
+        '</div></div>';
+      document.body.appendChild(ov);
+      var inp = document.getElementById('_ppw2');
+      inp.focus();
+      function close(save) {
+        var v = inp.value;
+        document.body.removeChild(ov);
+        if (save && v) {
+          localStorage.setItem('adminPublishPw', v);
+          // Dashboard neu rendern -> R2-Box laedt mit neuem PW
+          if (typeof self.updateDashboard === 'function') self.updateDashboard();
+        }
+      }
+      document.getElementById('_pok2').onclick = function(){ close(true); };
+      document.getElementById('_pcancel2').onclick = function(){ close(false); };
+      inp.addEventListener('keydown', function(e){
+        if (e.key === 'Enter') close(true);
+        if (e.key === 'Escape') close(false);
+      });
     },
 
     // ===== R2 CLEANUP =====
