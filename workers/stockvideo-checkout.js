@@ -266,10 +266,11 @@ async function _resend_sendAdminNotification(env,order){
     +'<tr><td style="padding:6px 0;color:#666">Projekt</td><td style="padding:6px 0">'+_html_escape(order.projectName||"-")+'</td></tr>'
     +'</table>'
     +(order.easybillError?'<p style="color:#b00;margin-top:14px">EasyBill-Fehler: '+_html_escape(order.easybillError)+'</p>':'')
-    +(order.emailError?'<p style="color:#b00;margin-top:14px">Mail-Fehler: '+_html_escape(order.emailError)+'</p>':'')
+    +(order.emailError?'<div style="background:#fff3f3;border:1px solid #f0c6c6;border-radius:6px;padding:12px 14px;margin-top:14px"><p style="color:#b00;margin:0 0 6px;font-weight:700">⚠ Kauf-Mail konnte NICHT an den Kunden zugestellt werden.</p><p style="margin:0 0 6px;font-size:13px">Der Kunde hat bisher weder Download-Link noch Lizenz erhalten. Bitte zeitnah manuell unter <a href="mailto:'+_html_escape(b.email||"")+'">'+_html_escape(b.email||"-")+'</a> kontaktieren.</p><p style="margin:0;color:#666;font-size:12px">Technischer Grund: '+_html_escape(order.emailError)+'</p></div>':'')
     +'<p style="color:#999;font-size:12px;margin-top:24px">Automatische Benachrichtigung vom stockvideo-checkout Worker.</p>'
     +'</div>';
-  const payload={from:FROM_NAME+" <"+FROM_EMAIL+">",to:["info@stockvideo.de"],subject:"[Kauf] "+title+" - "+amount+" - "+order.id,html:html};
+  const subjectPrefix=order.emailError?"[Kauf · Zustellung FEHLGESCHLAGEN]":"[Kauf]";
+  const payload={from:FROM_NAME+" <"+FROM_EMAIL+">",to:["info@stockvideo.de"],subject:subjectPrefix+" "+title+" - "+amount+" - "+order.id,html:html};
   if(b.email)payload.reply_to=b.email;
   const r=await fetch("https://api.resend.com/emails",{method:"POST",headers:{"Authorization":"Bearer "+RESEND_API_KEY,"Content-Type":"application/json"},body:JSON.stringify(payload)});
   if(!r.ok)throw new Error("resend admin "+r.status+": "+(await r.text()).slice(0,300));
@@ -308,7 +309,9 @@ async function _resend_sendDownload(env,order,downloadUrl,licenseUrl){
       {filename:"Widerrufsformular.pdf",content:_u8ToB64(wfPdf)},
     ];
   }catch(e){/* PDF-Build-Fehler: Mail trotzdem versenden, aber loggen */ order.attachmentError=String(e&&e.message||e); }
-  const body={from:FROM_NAME+" <"+FROM_EMAIL+">",to:[b.email],bcc:["info@stockvideo.de","rende@imagefilme.com"],subject:"Ihr Download von stockvideo.de",html:html,attachments:attachments};
+  // BCC bewusst entfernt: Wenn ein Admin-Postfach auf Resends Suppression-Liste landet, blockiert das sonst die Buyer-Mail komplett.
+  // Die Admin-Kopie läuft separat über _resend_sendAdminNotification.
+  const body={from:FROM_NAME+" <"+FROM_EMAIL+">",to:[b.email],subject:"Ihr Download von stockvideo.de",html:html,attachments:attachments};
   const r=await fetch("https://api.resend.com/emails",{method:"POST",headers:{"Authorization":"Bearer "+RESEND_API_KEY,"Content-Type":"application/json"},body:JSON.stringify(body)});
   if(!r.ok)throw new Error("resend "+r.status+": "+(await r.text()).slice(0,300));
   return await r.json();
@@ -436,16 +439,23 @@ export default {
           }
           const evt = JSON.parse(rawBody);
           const t = evt && evt.type;
-          if (t === 'email.bounced' || t === 'email.complained' || t === 'email.delivery_delayed') {
+          if (t === 'email.bounced' || t === 'email.complained' || t === 'email.delivery_delayed' || t === 'email.failed') {
             const data = (evt && evt.data) || {};
             const recipients = Array.isArray(data.to) ? data.to.join(', ') : (data.to || '-');
             const subject = data.subject || '-';
             const reason = (data.bounce && (data.bounce.message || data.bounce.subType || data.bounce.type))
               || (data.complaint && (data.complaint.complaintFeedbackType || data.complaint.feedbackType))
-              || '-';
+              || (data.failed && (data.failed.reason || data.failed.message))
+              || (data.reason || data.error || '-');
+            // "email.failed" tritt u. a. auf, wenn Resend die Mail wegen Suppression-Liste gar nicht erst annimmt.
+            const isSuppression = t === 'email.failed' && /suppress/i.test(JSON.stringify(data || {}));
+            const heading = isSuppression ? 'Resend: Empfaenger auf Suppression-Liste' : ('Resend: ' + t);
+            const intro = isSuppression
+              ? 'Der Empfaenger steht auf Resends Suppression-Liste und konnte daher NICHT beliefert werden. Im Resend-Dashboard pruefen und ggf. aus der Suppression-Liste entfernen.'
+              : 'Eine E-Mail von stockvideo.de wurde nicht zugestellt. Der Empfaenger landet damit ggf. auf der Resend-Suppression-Liste.';
             const html = '<div style="font-family:Arial,Helvetica,sans-serif;color:#1b1b1b;max-width:560px;margin:0 auto;padding:24px 20px;line-height:1.5">'
-              + '<h2 style="color:#b00;margin:0 0 16px">Resend: ' + _html_escape(t) + '</h2>'
-              + '<p>Eine E-Mail von stockvideo.de wurde nicht zugestellt. Der Empfaenger landet damit ggf. auf der Resend-Suppression-Liste.</p>'
+              + '<h2 style="color:#b00;margin:0 0 16px">' + _html_escape(heading) + '</h2>'
+              + '<p>' + _html_escape(intro) + '</p>'
               + '<table style="width:100%;border-collapse:collapse;font-size:14px">'
               + '<tr><td style="padding:6px 0;color:#666;width:140px">Empfaenger</td><td style="padding:6px 0"><b>' + _html_escape(recipients) + '</b></td></tr>'
               + '<tr><td style="padding:6px 0;color:#666">Betreff</td><td style="padding:6px 0">' + _html_escape(subject) + '</td></tr>'
@@ -455,7 +465,8 @@ export default {
               + '</table>'
               + '<p style="color:#666;font-size:13px;margin-top:18px">Im Resend-Dashboard ggf. die Suppression aufheben oder den Empfaenger anders erreichen.</p>'
               + '</div>';
-            const body = { from: FROM_NAME + ' <' + FROM_EMAIL + '>', to: ['info@stockvideo.de'], subject: '[Resend ' + t + '] ' + recipients, html: html };
+            const subjTag = isSuppression ? '[Resend Suppression]' : ('[Resend ' + t + ']');
+            const body = { from: FROM_NAME + ' <' + FROM_EMAIL + '>', to: ['info@stockvideo.de'], subject: subjTag + ' ' + recipients, html: html };
             await fetch('https://api.resend.com/emails', { method: 'POST', headers: { 'Authorization': 'Bearer ' + RESEND_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
           }
           return new Response('ok', { status: 200 });
