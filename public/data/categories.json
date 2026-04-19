@@ -31,8 +31,9 @@
   },
   {
     "id": "1776490850429",
-    "label": "Drohne Arials",
+    "label": "Drohne Aerials",
     "slug": "drohne-arials",
+    "dataCat": "drohne-arials",
     "description": "",
     "icon": "",
     "order": 0

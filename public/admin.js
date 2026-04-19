@@ -210,7 +210,7 @@ var mediaModule = {
         item.category = document.getElementById('media-detail-category').value;
         this.saveItems();
         this.render();
-        admin.showAlert('mediaAlert', 'Bilddetails gespeichert', 'success');
+        admin.showAlert('mediaAlert', 'success', 'Bilddetails gespeichert');
     },
 
     copyUrl() {
@@ -218,7 +218,7 @@ var mediaModule = {
         const item = this.items.find(m => m.id === this.activeId);
         if (!item) return;
         navigator.clipboard.writeText(item.url).then(() => {
-            admin.showAlert('mediaAlert', 'URL kopiert', 'success');
+            admin.showAlert('mediaAlert', 'success', 'URL kopiert');
         });
     },
 
@@ -239,7 +239,7 @@ var mediaModule = {
                 this.saveItems();
                 this.openDetail(this.activeId);
                 this.render();
-                admin.showAlert('mediaAlert', 'Bild ersetzt', 'success');
+                admin.showAlert('mediaAlert', 'success', 'Bild ersetzt');
             };
             img.src = e.target.result;
         };
@@ -252,7 +252,7 @@ var mediaModule = {
         this.saveItems();
         this.closeDetail();
         this.render();
-        admin.showAlert('mediaAlert', 'Bild gelöscht', 'success');
+        admin.showAlert('mediaAlert', 'success', 'Bild gelöscht');
     },
 
     bulkDelete() {
@@ -261,7 +261,7 @@ var mediaModule = {
         this.selectedIds.clear();
         this.saveItems();
         this.render();
-        admin.showAlert('mediaAlert', count + ' Bilder gelöscht', 'success');
+        admin.showAlert('mediaAlert', 'success', count + ' Bilder gelöscht');
     },
 
     formatSize(bytes) {
@@ -291,7 +291,7 @@ var mediaModule = {
                     if (uploaded === imageFiles.length) {
                         this.saveItems();
                         this.render();
-                        admin.showAlert('mediaAlert', uploaded + ' Bild(er) hochgeladen', 'success');
+                        admin.showAlert('mediaAlert', 'success', uploaded + ' Bild(er) hochgeladen');
                     }
                 };
                 img.src = e.target.result;
@@ -1729,6 +1729,11 @@ var mediaModule = {
             // ===== HELPERS =====
             showAlert(elementId, type, message) {
                 const element = document.getElementById(elementId);
+                if (!element) {
+                    // Fallback wenn Ziel-Element fehlt: in Konsole loggen statt JS-Fehler werfen
+                    console[type === 'error' ? 'error' : 'log'](`[${elementId}] ${message}`);
+                    return;
+                }
                 const className = `alert alert-${type}`;
                 element.innerHTML = `<div class="${className}">${message}</div>`;
                 setTimeout(() => {

@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Topbar from '../../components/Topbar.astro';
 import Footer from '../../components/Footer.astro';
-import articles from '../../data/articles.json';
+import articles from '../../../public/data/articles.json';
 const now = new Date();
 const visibleArticles = articles
   .filter((a: any) => {
