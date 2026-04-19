@@ -1406,17 +1406,14 @@ var mediaModule = {
                     const h = { Authorization: 'token ' + TOKEN, 'Content-Type': 'application/json' };
                     const api = 'https://api.github.com/repos/' + REPO;
                     const encode = obj => btoa(unescape(encodeURIComponent(JSON.stringify(obj, null, 2))));
-                    const paths = ['src/data/config.json', 'public/data/config.json'];
-                    const shas = await Promise.all(paths.map(p =>
-                        fetch(api + '/contents/' + p, { headers: h }).then(r => r.json()).then(j => j.sha)
-                    ));
-                    const results = await Promise.all(paths.map((p, i) =>
-                        fetch(api + '/contents/' + p, {
-                            method: 'PUT', headers: h,
-                            body: JSON.stringify({ message: 'admin: update config.json', content: encode(cfg), sha: shas[i], branch: 'main' })
-                        })
-                    ));
-                    if (results.every(r => r.ok)) {
+                    // Single Source of Truth: Astro-Komponenten importieren direkt aus public/data/config.json
+                    const path = 'public/data/config.json';
+                    const sha = await fetch(api + '/contents/' + path, { headers: h }).then(r => r.json()).then(j => j.sha);
+                    const result = await fetch(api + '/contents/' + path, {
+                        method: 'PUT', headers: h,
+                        body: JSON.stringify({ message: 'admin: update config.json', content: encode(cfg), sha, branch: 'main' })
+                    });
+                    if (result.ok) {
                         localStorage.setItem('adminConfigCache', JSON.stringify(cfg));
                         this.configData = cfg;
                         show('✓ Veröffentlicht! Cloudflare baut die Seite neu.', 'ok');
