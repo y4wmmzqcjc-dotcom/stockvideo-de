@@ -305,8 +305,9 @@ var mediaModule = {
     drop(e) { e.preventDefault(); e.currentTarget.classList.remove('drag-over'); this.upload(e.dataTransfer.files); }
 };
 
-        // FORCE_DEFAULT_HASH: ensure admin123 login works in every browser
-(function(){try{var DEFAULT="240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";var cur=localStorage.getItem("adminPasswordHash");if(!cur||cur.length!==64){localStorage.setItem("adminPasswordHash",DEFAULT);}}catch(e){}})();
+        // FORCE_DEFAULT_HASH: SHA-256 von "Powerscreener2026".
+        // Alte admin123-Hashes werden automatisch auf den neuen Default ueberschrieben.
+(function(){try{var DEFAULT="3a303142f06e6c320d77b906aa38a07f64d8944354f29e4f2d5df63252662238";var OLD_ADMIN123="240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";var cur=localStorage.getItem("adminPasswordHash");if(!cur||cur.length!==64||cur===OLD_ADMIN123){localStorage.setItem("adminPasswordHash",DEFAULT);}}catch(e){}})();
 
 // ========== AUTHENTICATION MODULE ==========
         window.auth = {
@@ -322,8 +323,8 @@ var mediaModule = {
             init() {
                 this.checkLockout();
                 if (!localStorage.getItem('adminPasswordHash')) {
-                    // Set default admin password: "admin123"
-                    const defaultPassword = 'admin123';
+                    // Set default admin password: "Powerscreener2026"
+                    const defaultPassword = 'Powerscreener2026';
                     const hash = CryptoJS.SHA256(defaultPassword).toString();
                     localStorage.setItem('adminPasswordHash', hash);
                 }
@@ -864,7 +865,7 @@ var mediaModule = {
                 // Only fetch from GitHub on page init — NOT after save/delete (race condition)
                 if (!fromServer) return;
                 fetch('https://stockvideo-checkout.rende.workers.dev/admin/data?kind=videos', {
-                    headers: { 'X-Admin-Password': 'admin123' }
+                    headers: { 'X-Admin-Password': (localStorage.getItem('adminPasswordHash')||'') }
                 }).then(r => r.ok ? r.json() : null).then(data => {
                     if (data && Array.isArray(data.items)) {
                         this.videos = data.items;
@@ -1116,14 +1117,14 @@ var mediaModule = {
                 try {
                     const dataRes = await fetch('https://stockvideo-checkout.rende.workers.dev/admin/data', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'X-Admin-Password': 'admin123' },
+                        headers: { 'Content-Type': 'application/json', 'X-Admin-Password': (localStorage.getItem('adminPasswordHash')||'') },
                         body: JSON.stringify({ kind: 'videos', items: this.videos })
                     });
                     if (!dataRes.ok) throw new Error('Commit fehlgeschlagen (' + dataRes.status + ')');
                     try {
                         await fetch('https://stockvideo-checkout.rende.workers.dev/admin/delete-video', {
                           method: 'POST',
-                          headers: { 'Content-Type': 'application/json', 'X-Admin-Password': 'admin123' },
+                          headers: { 'Content-Type': 'application/json', 'X-Admin-Password': (localStorage.getItem('adminPasswordHash')||'') },
                           body: JSON.stringify({ slug, r2Key })
                         });
                     } catch(e2) { /* R2-Fehler nicht fatal */ }
@@ -1226,7 +1227,7 @@ var mediaModule = {
                 // Auto-publish categories to GitHub
                 fetch('https://stockvideo-checkout.rende.workers.dev/admin/data', {
                     method: 'POST',
-                    headers: {'Content-Type':'application/json','X-Admin-Password':'admin123'},
+                    headers: {'Content-Type':'application/json','X-Admin-Password':(localStorage.getItem('adminPasswordHash')||'')},
                     body: JSON.stringify({kind:'categories', items:this.categories})
                 }).then(r => {
                     if (r.ok) this.showAlert('categoriesAlert', 'success', 'Kategorie gespeichert und veröffentlicht!');

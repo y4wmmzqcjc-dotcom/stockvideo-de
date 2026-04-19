@@ -197,6 +197,12 @@
       const xhr=new XMLHttpRequest();
       xhr.open('PUT','/admin/upload?key='+encodeURIComponent(key));
       xhr.setRequestHeader('Content-Type',contentType);
+      // Admin-Auth Header (Pages-Function prueft gegen env.ADMIN_PASSWORD, wenn gesetzt).
+      // Wir senden den clientseitigen Passwort-Hash — die Pages-Function akzeptiert Klartext ODER Hash.
+      try {
+        var _pwHash = (typeof localStorage!=='undefined' && localStorage.getItem('adminPasswordHash')) || '';
+        if (_pwHash) xhr.setRequestHeader('X-Admin-Password', _pwHash);
+      } catch(e) {}
       if(onProgress) xhr.upload.onprogress=function(e){if(e.lengthComputable) onProgress(e.loaded/e.total);};
       xhr.onload=function(){if(xhr.status>=200&&xhr.status<300) resolve(JSON.parse(xhr.responseText||'{}'));else reject(new Error('HTTP '+xhr.status+': '+xhr.responseText));};
       xhr.onerror=function(){reject(new Error('Network error'));};

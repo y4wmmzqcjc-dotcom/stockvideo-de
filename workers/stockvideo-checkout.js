@@ -70,7 +70,9 @@ async function _pdf_buildLicense(order){
   xref+="trailer\n<< /Size "+(nObj+1)+" /Root 1 0 R >>\nstartxref\n"+total+"\n%%EOF";
   parts.push(_u8(xref));return _cat(parts);
 }
-async function _ord_verifyToken(orderId, token){ if(!token)return false; const parts=token.split("."); if(parts.length!==2)return false; const exp=parseInt(parts[0],10); if(!exp||Date.now()/1000>exp)return false; const expected=await _ord_hmac(DOWNLOAD_SECRET, orderId+"."+exp); return expected===parts[1]; }
+// Konstantzeitvergleich fuer Hex-Strings (HMAC, sha256hex). Verhindert Timing-Seitenkanal.
+function _timingSafeEqualHex(a, b){ if(typeof a!=='string'||typeof b!=='string')return false; if(a.length!==b.length)return false; let diff=0; for(let i=0;i<a.length;i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i); return diff===0; }
+async function _ord_verifyToken(orderId, token){ if(!token)return false; const parts=token.split("."); if(parts.length!==2)return false; const exp=parseInt(parts[0],10); if(!exp||Date.now()/1000>exp)return false; const expected=await _ord_hmac(DOWNLOAD_SECRET, orderId+"."+exp); return _timingSafeEqualHex(expected, parts[1]); }
 function _b64_fromStr(s){let r="";for(let i=0;i<s.length;i++)r+=String.fromCharCode(s.charCodeAt(i)&0xff);return btoa(r);}
 function _html_escape(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);}
 function _country_iso(c){const m={"Deutschland":"DE","Germany":"DE","Österreich":"AT","Austria":"AT","Schweiz":"CH","Switzerland":"CH"};if(!c)return"DE";if(c.length===2)return c.toUpperCase();return m[c]||"DE";}
@@ -374,14 +376,21 @@ export default {
       if (path === '/create-payment' && request.method === 'POST') {
         const body = await request.json();
         const { videoId, videoTitle, price, slug, r2Key } = body;
-        if (!videoId || !price || !slug) return jsonResponse({ error: 'Missing required fields' }, 400);
+        if (!videoId || !slug) return jsonResponse({ error: 'Missing required fields' }, 400);
+        // Kanonischen Preis serverseitig ziehen — Client-Preis wird nur als Sanity-Check akzeptiert.
+        let vmHit = null;
+        try { const vr = await fetch('https://raw.githubusercontent.com/y4wmmzqcjc-dotcom/stockvideo-de/main/public/data/videos.json', { cf:{cacheTtl:60} }); if (vr.ok) { const va = await vr.json(); vmHit = va.find(x => String(x.id) === String(videoId) || x.slug === slug) || null; } } catch(e) {}
+        if (!vmHit) return jsonResponse({ error: 'video not found' }, 404);
+        const canonPrice = (vmHit.prices && typeof vmHit.prices.standard === 'number') ? vmHit.prices.standard : null;
+        if (canonPrice == null || canonPrice <= 0) return jsonResponse({ error: 'video price missing' }, 500);
+        if (price != null && typeof price === 'number' && Math.abs(price - canonPrice) > 0.01) return jsonResponse({ error: 'price mismatch', canonical: canonPrice }, 400);
         const payment = await createMolliePayment({
-          amount: { currency: 'EUR', value: parseFloat(price).toFixed(2) },
+          amount: { currency: 'EUR', value: canonPrice.toFixed(2) },
           description: 'stockvideo.de — ' + (videoTitle || 'Stock Video'),
           redirectUrl: SITE_URL + '/checkout/success/?slug=' + encodeURIComponent(slug),
           cancelUrl: SITE_URL + '/video/' + slug + '/',
           webhookUrl: url.origin + '/webhook',
-          metadata: { videoId: String(videoId), slug, videoTitle: videoTitle || '', r2Key: r2Key || VIDEO_MAP[slug] || '' },
+          metadata: { videoId: String(videoId), slug, videoTitle: videoTitle || '', r2Key: r2Key || vmHit.r2Key || VIDEO_MAP[slug] || '' },
         });
         await patchMolliePayment(payment.id, { redirectUrl: SITE_URL + '/checkout/success/?payment_id=' + payment.id + '&slug=' + encodeURIComponent(slug) });
         return jsonResponse({ paymentId: payment.id, checkoutUrl: payment._links.checkout.href, status: payment.status });
@@ -496,13 +505,18 @@ export default {
       }
       if (path.startsWith('/admin/')) {
         if (request.method === 'OPTIONS') { return new Response(null, { headers: { ...CORS_HEADERS } }); }
-        const ADMIN_HASH = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';
+        // Admin-Passwort-Hash: SHA-256 von "Powerscreener2026". Fallback, wenn env.ADMIN_PASSWORD nicht gesetzt ist.
+        // Bevorzugt wird ADMIN_PASSWORD aus der Worker-Env — dann wird live dagegen gehasht.
+        const ADMIN_HASH_DEFAULT = '3a303142f06e6c320d77b906aa38a07f64d8944354f29e4f2d5df63252662238';
+        const ADMIN_HASH = (env && env.ADMIN_PASSWORD) ? await sha256hex(env.ADMIN_PASSWORD) : ADMIN_HASH_DEFAULT;
         const GH_TOKEN = env.GH_TOKEN || '';
         const GH_REPO = 'y4wmmzqcjc-dotcom/stockvideo-de';
         const GH_BRANCH = 'main';
         const sha256hex = async (s) => { const b = new TextEncoder().encode(s); const h = await crypto.subtle.digest('SHA-256', b); return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join(''); };
         const getPw = async (req) => { let pw = req.headers.get('X-Admin-Password'); if (!pw) { try { const b = await req.clone().json(); pw = b && b.password; } catch(e){} } return pw; };
-        const verify = async (req) => { const pw = await getPw(req); if (!pw) return false; return (await sha256hex(pw)) === ADMIN_HASH; };
+        // Akzeptiert Klartext (sha256(pw) === ADMIN_HASH) ODER den bereits vorgehashten Wert (pw === ADMIN_HASH).
+        // Beides konstantzeit-verglichen.
+        const verify = async (req) => { const pw = await getPw(req); if (!pw) return false; const pwHashed = await sha256hex(pw); return _timingSafeEqualHex(pwHashed, ADMIN_HASH) || _timingSafeEqualHex(pw, ADMIN_HASH); };
         const ghHeaders = { 'Authorization': 'token ' + GH_TOKEN, 'User-Agent': 'stockvideo-worker', 'Accept': 'application/vnd.github.v3+json' };
         const ghGet = async (p) => { const r = await fetch('https://api.github.com/repos/' + GH_REPO + '/contents/' + p + '?ref=' + GH_BRANCH, { headers: ghHeaders }); if (!r.ok) return null; const j = await r.json(); return { sha: j.sha, content: atob(j.content.replace(/\n/g,'')) }; };
         const ghPut = async (p, content, msg, sha) => { const body = { message: msg, content: btoa(unescape(encodeURIComponent(content))), branch: GH_BRANCH }; if (sha) body.sha = sha; const r = await fetch('https://api.github.com/repos/' + GH_REPO + '/contents/' + p, { method: 'PUT', headers: { ...ghHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); const j = await r.json(); return { status: r.status, json: j }; };
@@ -512,7 +526,19 @@ export default {
         if (path === '/admin/last-commit' && request.method === 'GET') { const r = await fetch('https://api.github.com/repos/' + GH_REPO + '/commits/' + GH_BRANCH, { headers: ghHeaders }); if (!r.ok) return jsonResponse({ error: 'github', status: r.status }, 502); const j = await r.json(); return jsonResponse({ sha: j.sha ? j.sha.slice(0,7) : null, date: j.commit && j.commit.author ? j.commit.author.date : null, message: j.commit && j.commit.message ? j.commit.message.split('\n')[0] : null }); }
         if (path === '/admin/data' && request.method === 'GET') { const kind = url.searchParams.get('kind'); if (kind !== 'videos' && kind !== 'categories') return jsonResponse({ error: 'bad kind' }, 400); const f = await ghGet('public/data/' + kind + '.json'); if (!f) return jsonResponse({ items: [], sha: null }); let arr = []; try { arr = JSON.parse(f.content); } catch(e){} return jsonResponse({ items: arr, sha: f.sha }); }
         if (path === '/admin/data' && request.method === 'POST') { const body = await request.json(); const kind = body.kind; if (kind !== 'videos' && kind !== 'categories') return jsonResponse({ error: 'bad kind' }, 400); if (!Array.isArray(body.items)) return jsonResponse({ error: 'items must be array' }, 400); const p = 'public/data/' + kind + '.json'; const existing = await ghGet(p); const content = JSON.stringify(body.items, null, 2); const res = await ghPut(p, content, 'admin: update ' + kind + '.json (' + body.items.length + ' items)', existing && existing.sha); if (res.status >= 300) return jsonResponse({ error: 'github', status: res.status, msg: res.json.message }, 502); return jsonResponse({ ok: true, commit: res.json.commit && res.json.commit.sha }); }
-        if (path === '/admin/commit' && request.method === 'POST') { const body = await request.json(); if (!body.path || typeof body.content !== 'string') return jsonResponse({ error: 'path+content required' }, 400); const existing = await ghGet(body.path); const res = await ghPut(body.path, body.content, body.message || ('admin: update ' + body.path), existing && existing.sha); if (res.status >= 300) return jsonResponse({ error: 'github', status: res.status, msg: res.json.message }, 502); return jsonResponse({ ok: true, commit: res.json.commit && res.json.commit.sha }); }
+        if (path === '/admin/commit' && request.method === 'POST') {
+          const body = await request.json();
+          if (!body.path || typeof body.content !== 'string') return jsonResponse({ error: 'path+content required' }, 400);
+          // Pfad-Whitelist: nur Daten-JSON und Upload-Assets. Kein Traversal. Keine Worker-/Code-Pfade.
+          const p = String(body.path);
+          if (p.includes('..') || p.startsWith('/')) return jsonResponse({ error: 'invalid path' }, 400);
+          const allowed = /^public\/data\/[A-Za-z0-9._-]+\.json$/.test(p) || /^public\/uploads\/[A-Za-z0-9._\/-]+$/.test(p);
+          if (!allowed) return jsonResponse({ error: 'path not in whitelist', allowed: ['public/data/*.json', 'public/uploads/*'] }, 403);
+          const existing = await ghGet(p);
+          const res = await ghPut(p, body.content, body.message || ('admin: update ' + p), existing && existing.sha);
+          if (res.status >= 300) return jsonResponse({ error: 'github', status: res.status, msg: res.json.message }, 502);
+          return jsonResponse({ ok: true, commit: res.json.commit && res.json.commit.sha });
+        }
         if (path === '/admin/delete-video' && request.method === 'POST') {
           const body = await request.json();
           const slug = body.slug;
@@ -701,15 +727,29 @@ export default {
           const _b = await request.json();
           const _err = _ord_validateBilling(_b.billing);
           if (_err) return jsonResponse({ error: _err }, 400);
-          if (!_b.videoId || !_b.videoTitle || typeof _b.price !== "number" || _b.price <= 0) return jsonResponse({ error: "video info missing" }, 400);
+          if (!_b.videoId || !_b.videoTitle) return jsonResponse({ error: "video info missing" }, 400);
           if (!env || !env.ORDERS) return jsonResponse({ error: "ORDERS KV not bound" }, 500);
-          try { if (!_b.videoSlug || !_b.r2Key) { const _vr = await fetch("https://raw.githubusercontent.com/y4wmmzqcjc-dotcom/stockvideo-de/main/public/data/videos.json",{cf:{cacheTtl:60}}); if (_vr.ok) { const _va = await _vr.json(); const _vm = _va.find(x=>String(x.id)===String(_b.videoId)); if (_vm) { if (!_b.videoSlug) _b.videoSlug = _vm.slug || null; if (!_b.r2Key) _b.r2Key = _vm.r2Key || null; } } } } catch(e) {}
-          const _mr = await fetch("https://api.mollie.com/v2/payments", { method: "POST", headers: { "Authorization": "Bearer " + MOLLIE_API_KEY, "Content-Type": "application/json" }, body: JSON.stringify({ amount: { currency: "EUR", value: _b.price.toFixed(2) }, description: "stockvideo.de · " + _b.videoTitle, redirectUrl: SITE_URL + "/checkout/success?order=PENDING", webhookUrl: "https://stockvideo-checkout.rende.workers.dev/webhook-order", locale: "de_DE" }) });
+          // Kanonische Video-Daten (inkl. Preis) serverseitig aus videos.json ziehen.
+          // Client-Preis ist NICHT vertrauenswuerdig und wird nur als Sanity-Check akzeptiert.
+          let _vm = null;
+          try { const _vr = await fetch("https://raw.githubusercontent.com/y4wmmzqcjc-dotcom/stockvideo-de/main/public/data/videos.json",{cf:{cacheTtl:60}}); if (_vr.ok) { const _va = await _vr.json(); _vm = _va.find(x=>String(x.id)===String(_b.videoId)) || null; } } catch(e) {}
+          if (!_vm) return jsonResponse({ error: "video not found" }, 404);
+          if (!_b.videoSlug) _b.videoSlug = _vm.slug || null;
+          if (!_b.r2Key) _b.r2Key = _vm.r2Key || null;
+          // Lizenz-Tier: web | standard | premium (Default Standard). Ungueltige Werte -> 400.
+          const _allowedTiers = ["web","standard","premium"];
+          const _tier = _allowedTiers.includes(_b.licenseTier) ? _b.licenseTier : "standard";
+          if (_b.licenseTier && !_allowedTiers.includes(_b.licenseTier)) return jsonResponse({ error: "invalid licenseTier" }, 400);
+          const _canonPrice = (_vm.prices && typeof _vm.prices[_tier] === "number") ? _vm.prices[_tier] : null;
+          if (_canonPrice == null || _canonPrice <= 0) return jsonResponse({ error: "video price missing for tier " + _tier }, 500);
+          if (typeof _b.price === "number" && Math.abs(_b.price - _canonPrice) > 0.01) return jsonResponse({ error: "price mismatch", canonical: _canonPrice, tier: _tier }, 400);
+          const _usePrice = _canonPrice;
+          const _mr = await fetch("https://api.mollie.com/v2/payments", { method: "POST", headers: { "Authorization": "Bearer " + MOLLIE_API_KEY, "Content-Type": "application/json" }, body: JSON.stringify({ amount: { currency: "EUR", value: _usePrice.toFixed(2) }, description: "stockvideo.de · " + _b.videoTitle, redirectUrl: SITE_URL + "/checkout/success?order=PENDING", webhookUrl: "https://stockvideo-checkout.rende.workers.dev/webhook-order", locale: "de_DE" }) });
           if (!_mr.ok) return jsonResponse({ error: "mollie failed", detail: await _mr.text() }, 502);
           const _payment = await _mr.json();
           const _orderId = _payment.id;
           try { await fetch("https://api.mollie.com/v2/payments/" + _orderId, { method: "PATCH", headers: { "Authorization": "Bearer " + MOLLIE_API_KEY, "Content-Type": "application/json" }, body: JSON.stringify({ description: "stockvideo.de · " + _b.videoTitle + " · " + _orderId, redirectUrl: SITE_URL + "/checkout/success?order=" + _orderId, metadata: { orderId: _orderId } }) }); } catch(e){}
-          const _order = { id: _orderId, createdAt: new Date().toISOString(), status: "pending", video: { id: _b.videoId, title: _b.videoTitle, slug: _b.videoSlug || _b.slug || null, r2Key: _b.r2Key || null }, amount: _b.price, currency: "EUR", billing: _b.billing, projectName: (_b.projectName || "").trim() || null, mollie: { paymentId: _payment.id, status: _payment.status } };
+          const _order = { id: _orderId, createdAt: new Date().toISOString(), status: "pending", video: { id: _b.videoId, title: _b.videoTitle, slug: _b.videoSlug || _b.slug || null, r2Key: _b.r2Key || null }, amount: _usePrice, currency: "EUR", licenseTier: _tier, billing: _b.billing, projectName: (_b.projectName || "").trim() || null, mollie: { paymentId: _payment.id, status: _payment.status } };
           await env.ORDERS.put(_orderId, JSON.stringify(_order), { expirationTtl: 31536000 });
           return jsonResponse({ orderId: _orderId, checkoutUrl: _payment._links.checkout.href });
         } catch (e) { return jsonResponse({ error: String(e && e.message || e) }, 500); }
