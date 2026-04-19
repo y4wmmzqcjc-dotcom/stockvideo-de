@@ -4,28 +4,46 @@ import Topbar from '../../components/Topbar.astro';
 import Footer from '../../components/Footer.astro';
 import articles from '../../../public/data/articles.json';
 const now = new Date();
+
+// Effektiver Veroeffentlichungszeitpunkt eines Artikels (Datum + Uhrzeit).
+// Reihenfolge: scheduledDate/scheduledTime > publishDate/publishTime.
+// Gibt null zurueck, wenn kein Datum hinterlegt ist.
+function effectivePublishAt(a: any): Date | null {
+  if (a.scheduledDate) {
+    const t = a.scheduledTime || '00:00';
+    return new Date(a.scheduledDate + 'T' + t + ':00');
+  }
+  if (a.publishDate) {
+    const t = a.publishTime || '00:00';
+    return new Date(a.publishDate + 'T' + t + ':00');
+  }
+  return null;
+}
+
 const visibleArticles = articles
   .filter((a: any) => {
-    // status ist die source of truth: 'draft' nie, 'published' immer,
-    // 'scheduled' nur wenn der Zeitpunkt bereits erreicht ist.
+    // draft ist immer unsichtbar
     if (a.status === 'draft') return false;
-    if (a.status === 'published') return true;
-    if (a.status === 'scheduled' && a.scheduledDate) {
-      const timeStr = a.scheduledTime || '00:00';
-      const scheduledAt = new Date(a.scheduledDate + 'T' + timeStr + ':00');
-      return scheduledAt <= now;
-    }
-    // Fallback: kein status, aber publishDate in der Vergangenheit
-    if (!a.status && a.publishDate) {
-      return new Date(a.publishDate + 'T00:00:00') <= now;
-    }
+
+    const at = effectivePublishAt(a);
+
+    // status=published ohne Datum: sofort sichtbar (Legacy-Fallback)
+    if (a.status === 'published' && !at) return true;
+
+    // In allen anderen Faellen (published, scheduled, oder kein status):
+    // das Veroeffentlichungsdatum muss erreicht sein. Ein Artikel mit
+    // publishDate in der Zukunft ist noch nicht live, auch wenn der
+    // Admin versehentlich status=published gesetzt hat.
+    if (at) return at <= now;
+
     return false;
   })
   .sort((a: any, b: any) => {
-    // Neueste zuerst: publishDate hat Vorrang, dann scheduledDate
-    const da = a.publishDate || a.scheduledDate || '';
-    const db = b.publishDate || b.scheduledDate || '';
-    return db.localeCompare(da);
+    // Neueste zuerst. Uhrzeit wird in den Vergleich einbezogen, damit
+    // mehrere Veroeffentlichungen am selben Tag korrekt sortieren.
+    const at = effectivePublishAt(a);
+    const bt = effectivePublishAt(b);
+    return (bt ? bt.getTime() : 0) - (at ? at.getTime() : 0);
   });
 
 const categories = [...new Set(visibleArticles.map(a => a.category))].sort();

@@ -4,39 +4,36 @@ import Topbar from '../../components/Topbar.astro';
 import Footer from '../../components/Footer.astro';
 import articles from '../../../public/data/articles.json';
 
+// Effektiver Veroeffentlichungszeitpunkt (Datum + Uhrzeit).
+// scheduledDate/Time > publishDate/Time. Muss mit wissen/index.astro und
+// scripts/check-articles.mjs identisch bleiben.
+function effectivePublishAt(a: any): Date | null {
+  if (a.scheduledDate) {
+    const t = a.scheduledTime || '00:00';
+    return new Date(a.scheduledDate + 'T' + t + ':00');
+  }
+  if (a.publishDate) {
+    const t = a.publishTime || '00:00';
+    return new Date(a.publishDate + 'T' + t + ':00');
+  }
+  return null;
+}
+
 function isVisible(a: any) {
-  // status ist die source of truth: 'draft' nie, 'published' immer,
-  // 'scheduled' nur wenn der Zeitpunkt bereits erreicht ist.
   if (a.status === 'draft') return false;
-  if (a.status === 'published') return true;
-  if (a.status === 'scheduled' && a.scheduledDate) {
-    const timeStr = a.scheduledTime || '00:00';
-    const scheduledAt = new Date(a.scheduledDate + 'T' + timeStr + ':00');
-    return scheduledAt <= new Date();
-  }
-  // Fallback: kein status, aber publishDate in der Vergangenheit
-  if (!a.status && a.publishDate) {
-    return new Date(a.publishDate + 'T00:00:00') <= new Date();
-  }
+  const at = effectivePublishAt(a);
+  if (a.status === 'published' && !at) return true;
+  if (at) return at <= new Date();
   return false;
 }
 
 export function getStaticPaths() {
-  // Inline visibility check — getStaticPaths runs in a separate module context in Astro
-  const now = new Date();
-  const visibleArticles = (articles as any[]).filter((a) => {
-    if (a.status === 'draft') return false;
-    if (a.status === 'published') return true;
-    if (a.status === 'scheduled' && a.scheduledDate) {
-      const timeStr = a.scheduledTime || '00:00';
-      const scheduledAt = new Date(a.scheduledDate + 'T' + timeStr + ':00');
-      return scheduledAt <= now;
-    }
-    if (!a.status && a.publishDate) {
-      return new Date(a.publishDate + 'T00:00:00') <= now;
-    }
-    return false;
-  });
+  // Wichtig: Einzelartikel-Seiten werden fuer ALLE Artikel gebaut (ausser
+  // echte drafts). Die /wissen/-Uebersicht filtert zwar strikt nach
+  // publishDate, aber bereits gesetzte interne Verlinkungen aus anderen
+  // Artikeln muessen weiter funktionieren - also auch Artikel mit
+  // publishDate in der Zukunft erhalten ihre Detailseite.
+  const visibleArticles = (articles as any[]).filter((a) => a.status !== 'draft');
   return visibleArticles.map((article) => ({
     params: { slug: article.slug },
     props: { article },
