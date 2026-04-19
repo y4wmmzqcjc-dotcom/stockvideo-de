@@ -1285,6 +1285,7 @@ var mediaModule = {
                     id: this.editingCategoryId !== null ? this.categories[this.editingCategoryId].id : Date.now().toString(),
                     label,
                     slug,
+                    dataCat: slug, // Muss gesetzt sein, damit CategoryStrip-Button funktioniert (siehe #48)
                     description: document.getElementById('categoryModalDescription').value,
                     icon: document.getElementById('categoryModalIcon').value,
                     order: parseInt(document.getElementById('categoryModalOrder').value) || 0

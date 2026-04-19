@@ -4,6 +4,6 @@ import categories from '../../public/data/categories.json';
 <div class="cat-strip" id="catStrip" data-section="kategorien"><span id="kategorien" style="position:absolute;margin-top:-80px;" aria-hidden="true"></span>
   <button class="cat-chip active" data-cat="all">Alle Kategorien</button>
   {categories.map((cat) => (
-    <button class="cat-chip" data-cat={cat.dataCat}>{cat.label}</button>
+    <button class="cat-chip" data-cat={cat.dataCat || cat.slug}>{cat.label}</button>
   ))}
 </div>
