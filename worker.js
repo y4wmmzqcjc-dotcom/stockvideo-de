@@ -1,11 +1,11 @@
-// v20260418I
+// v20260419A
 const CORS_HEADERS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, GET, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Password', };
 const MOLLIE_API_KEY = 'test_A7njP8NN7AHtBVdxUPF96ccCErfQdS';
 const SITE_URL = 'https://stockvideo.de';
 const WORKER_URL = 'https://stockvideo-checkout.rende.workers.dev';
 const R2_PUBLIC = 'https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev';
 const EASYBILL_API_KEY = 'REDACTED-OLD-EASYBILL-KEY';
-const RESEND_API_KEY = 'REDACTED-OLD-RESEND-KEY';
+// RESEND_API_KEY wird via env (Worker Secret) injiziert — siehe _resend_sendDownload.
 const FROM_EMAIL = 'info@stockvideo.de';
 const FROM_NAME = 'stockvideo.de';
 const VIDEO_MAP = {"braune-kuh-auf-der-weide-4k-stock-video":"videos/kuhbraun.mp4"};
@@ -88,7 +88,9 @@ async function _eb_createCustomerAndInvoice(order){
   const dj=await dr.json();
   return {customerId:cj.id,documentId:dj.id,number:dj.number||null};
 }
-async function _resend_sendDownload(order,downloadUrl,licenseUrl){
+async function _resend_sendDownload(env,order,downloadUrl,licenseUrl){
+  const RESEND_API_KEY = (env && env.RESEND_API_KEY) || '';
+  if (!RESEND_API_KEY) throw new Error("resend: missing env.RESEND_API_KEY");
   const b=order.billing||{};
   const title=(order.video&&order.video.title)||"";
   const name=[b.firstName,b.lastName].filter(Boolean).join(" ")||"Kunde";
@@ -119,7 +121,7 @@ function _migrateOrder(o){
 }
 
 // ===== FIXED FULFILLMENT FUNCTION =====
-async function _fulfill_paidOrder(order){
+async function _fulfill_paidOrder(env,order){
   if (!order.easybillSent) {
     try{
       const inv=await _eb_createCustomerAndInvoice(order);
@@ -136,7 +138,7 @@ async function _fulfill_paidOrder(order){
       const sig=await _ord_signDownload(order.id);
       const durl=SITE_URL+"/dl/"+order.id+"?token="+sig;
       const lurl=SITE_URL+"/pdf/"+order.id+"?token="+sig;
-      const rs=await _resend_sendDownload(order,durl,lurl);
+      const rs=await _resend_sendDownload(env,order,durl,lurl);
       order.emailSent={id:rs.id||null,at:new Date().toISOString(),to:order.billing.email};
     }catch(e){
       order.emailError=String(e.message||e);
@@ -210,7 +212,7 @@ export default {
       if (path.startsWith('/admin/')) {
         if (request.method === 'OPTIONS') { return new Response(null, { headers: { ...CORS_HEADERS } }); }
         const ADMIN_HASH = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';
-        const GH_TOKEN = 'ghp_aTX6eKHDds4rW5YZT4KE1FMqA9WXJz0vzGOI';
+        const GH_TOKEN = env.GH_TOKEN || '';
         const GH_REPO = 'y4wmmzqcjc-dotcom/stockvideo-de';
         const GH_BRANCH = 'main';
         const sha256hex = async (s) => { const b = new TextEncoder().encode(s); const h = await crypto.subtle.digest('SHA-256', b); return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join(''); };
@@ -426,7 +428,7 @@ export default {
             if (_canAcquireLock || _canRetryPartial) {
               _o.fulfillmentStartedAt = Date.now();
               await env.ORDERS.put(_orderId, JSON.stringify(_o), { expirationTtl: 31536000 });
-              _o = await _fulfill_paidOrder(_o);
+              _o = await _fulfill_paidOrder(env, _o);
             }
           }
           else if (["failed","expired","canceled"].indexOf(_payment.status) !== -1) {
@@ -499,7 +501,7 @@ export default {
                 if ((_elapsedMs > 90000) && (!_o.fulfillmentStartedAt || _lockStale)) {
                   _o.fulfillmentStartedAt = Date.now();
                   await env.ORDERS.put(_id, JSON.stringify(_o), { expirationTtl: 31536000 });
-                  _o = await _fulfill_paidOrder(_o);
+                  _o = await _fulfill_paidOrder(env, _o);
                 }
 
                 await env.ORDERS.put(_id, JSON.stringify(_o), { expirationTtl: 31536000 });
@@ -547,7 +549,7 @@ export default {
           const _sig2 = await _ord_signDownload(_o.id);
           const _durl = WORKER_URL + "/video-dl/" + _o.id + "?token=" + _sig2;
           const _lurl = WORKER_URL+"/pdf/"+_o.id+"?token="+_sig2;
-          const _rs = await _resend_sendDownload(_o, _durl, _lurl);
+          const _rs = await _resend_sendDownload(env, _o, _durl, _lurl);
           _o.emailSent = { id: _rs.id||null, at: new Date().toISOString(), to: _o.billing.email };
           await env.ORDERS.put(_orderId, JSON.stringify(_o), { expirationTtl: 31536000 });
           return jsonResponse({ ok:true, to: _o.billing.email });
