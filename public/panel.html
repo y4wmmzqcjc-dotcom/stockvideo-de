@@ -642,13 +642,42 @@
       try{return origEdit(idx);}catch(e){console.error('editVideo',e);alert('Bearbeiten Fehler: '+e.message);}
     };
     var origDel=admin.deleteVideo.bind(admin);
-    admin.deleteVideo=function(idx){
+    admin.deleteVideo=async function(idx){
       if(!confirm('Wirklich löschen?'))return;
+      var self=this;
+      var victim=this.videos[idx];
+      var slug=(victim&&victim.slug)||'';
+      var r2Key=(victim&&victim.r2Key)||null;
+      // Lokal entfernen und UI direkt aktualisieren
       this.videos.splice(idx,1);
       try{localStorage.setItem('adminVideos',JSON.stringify(this.videos));}catch(e){}
+      try{localStorage.setItem('adminLastChange',new Date().toISOString());}catch(e){}
       this.renderVideosList&&this.renderVideosList();
       this.updateDashboard&&this.updateDashboard();
-      this.showAlert&&this.showAlert('videosAlert','success','Video gelöscht');
+      this.showAlert&&this.showAlert('videosAlert','info','Video wird gelöscht & publiziert…');
+      // Snapshot VOR dem Push erfassen — für Build-Widget-Polling
+      var preSnapshot=null;
+      try{
+        var sr=await fetch('/data/videos.json?_pre='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-store,no-cache','Pragma':'no-cache'}});
+        if(sr.ok) preSnapshot=await sr.text();
+      }catch(e){}
+      try{
+        var pw=(localStorage.getItem('adminPasswordHash')||'');
+        var hdr={'Content-Type':'application/json','X-Admin-Password':pw};
+        var r=await fetch('https://stockvideo-checkout.rende.workers.dev/admin/data',{method:'POST',headers:hdr,body:JSON.stringify({kind:'videos',items:self.videos})});
+        if(!r.ok) throw new Error('Commit fehlgeschlagen ('+r.status+')');
+        // R2-Cleanup ist best-effort, Fehler nicht blockierend
+        try{
+          await fetch('https://stockvideo-checkout.rende.workers.dev/admin/delete-video',{method:'POST',headers:hdr,body:JSON.stringify({slug:slug,r2Key:r2Key})});
+        }catch(e2){}
+        // Build-Widget triggern — zeigt oben den Deploy-Fortschritt wie bei Beiträgen
+        if(window.buildStatus&&window.buildStatus.triggerBuild){
+          window.buildStatus.triggerBuild('/data/videos.json',preSnapshot);
+        }
+        self.showAlert&&self.showAlert('videosAlert','success','Video gelöscht — Cloudflare Pages rebuildet (~60 s).');
+      }catch(e){
+        self.showAlert&&self.showAlert('videosAlert','error','Fehler: '+e.message);
+      }
     };
   }
   once();
