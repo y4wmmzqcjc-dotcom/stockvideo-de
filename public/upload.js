@@ -61,10 +61,10 @@
     // Center logo (replaces both the diagonal tiled text AND the big "stockvideo.de" text)
     try{
       const logo=await loadLogoImg();
-      // Scale logo to ~60% of frame width, preserve aspect ratio; cap height at 55% of frame height
-      let targetW=Math.round(W*0.60);
+      // Scale logo to ~78% of frame width, preserve aspect ratio; cap height at ~72% of frame height
+      let targetW=Math.round(W*0.78);
       let targetH=Math.round(targetW*(logo.height/logo.width));
-      const maxH=Math.round(H*0.55);
+      const maxH=Math.round(H*0.715);
       if (targetH > maxH){
         targetH = maxH;
         targetW = Math.round(targetH*(logo.width/logo.height));

@@ -371,9 +371,9 @@ function generatePreview(videoFile, onProgress) {
         // Draw center logo watermark (no diagonal tiled text anymore)
         ctx.save();
         if (logoReady) {
-          var tW = Math.round(w * 0.60);
+          var tW = Math.round(w * 0.78);
           var tH = Math.round(tW * (logoImg.height / logoImg.width));
-          var maxH = Math.round(h * 0.55);
+          var maxH = Math.round(h * 0.715);
           if (tH > maxH) { tH = maxH; tW = Math.round(tH * (logoImg.width / logoImg.height)); }
           ctx.globalAlpha = 0.30;
           ctx.drawImage(logoImg, Math.round((w - tW) / 2), Math.round((h - tH) / 2), tW, tH);

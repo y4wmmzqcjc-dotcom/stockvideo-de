@@ -65,9 +65,11 @@ const similar = videos
               </div>
             </div>
           </div>
-          {video.r2Preview && <span style="position:absolute;top:16px;right:16px;z-index:2;background:rgba(0,0,0,0.6);color:#fff;padding:4px 10px;border-radius:4px;font-size:11px;letter-spacing:0.5px;">VORSCHAU</span>}
-          <span class={`res-badge ${video.resolution === '4K' ? 'res-4k' : 'res-hd'}`} style="position:absolute;top:16px;left:16px;z-index:2;">{video.resolution}</span>
-          <span class="dur-badge" style="position:absolute;bottom:16px;right:16px;z-index:2;">{video.duration}</span>
+          <div style="position:absolute;top:16px;right:16px;z-index:2;display:flex;gap:8px;align-items:center;">
+            <span class={`res-badge ${video.resolution === '4K' ? 'res-4k' : 'res-hd'}`}>{video.resolution}</span>
+            <span class="dur-badge">{video.duration} sek</span>
+            {video.r2Preview && <span style="background:rgba(0,0,0,0.6);color:#fff;padding:4px 10px;border-radius:4px;font-size:11px;letter-spacing:0.5px;">VORSCHAU</span>}
+          </div>
         </div>
       </div>
 
@@ -116,7 +118,7 @@ const similar = videos
         <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">Dauer: {video.duration}</span>
         <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">{video.fps} FPS</span>
         <span style="background:#2a2a2a;padding:8px 16px;border-radius:6px;font-size:13px;color:#ccc;">MP4 / MOV</span>
-        {video.videoId && <span style="font-family:monospace;background:#222;padding:8px 12px;border-radius:6px;color:#888;font-size:12px;letter-spacing:0.5px;">ID {video.videoId}</span>}
+        {video.videoId && <span style="font-family:monospace;background:#222;padding:8px 12px;border-radius:6px;color:#888;font-size:12px;letter-spacing:0.5px;margin-left:auto;">ID {video.videoId}</span>}
       </div>
     </div>
 
