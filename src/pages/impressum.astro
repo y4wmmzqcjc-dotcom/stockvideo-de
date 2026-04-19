@@ -11,6 +11,7 @@ import config from '../data/config.json';
     <h2>Angaben gemäß § 5 TMG</h2>
     <p>
       {config.contact.name}<br>
+      {config.contact.brandName && <>{config.contact.brandName}<br /></>}
       {config.contact.street}<br>
       {config.contact.city}<br>
       Deutschland
@@ -18,6 +19,7 @@ import config from '../data/config.json';
     <h2>Kontakt</h2>
     <p>
       Telefon: {config.contact.phone}<br>
+      {config.contact.mobile && <>Mobil: {config.contact.mobile}<br /></>}
       Fax: {config.contact.fax}<br>
       Email: <a href={`mailto:${config.contact.email}`}>{config.contact.email}</a>
     </p>
