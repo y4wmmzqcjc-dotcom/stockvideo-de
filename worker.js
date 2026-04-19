@@ -1,4 +1,3 @@
-// v20260419G
 const CORS_HEADERS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, GET, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Password', };
 const MOLLIE_API_KEY = 'test_A7njP8NN7AHtBVdxUPF96ccCErfQdS';
 const SITE_URL = 'https://stockvideo.de';
@@ -672,11 +671,11 @@ export default {
 
         // === Resend: Suppression-Eintrag entfernen (DELETE /suppressions/{email}) ===
         if (path === '/admin/resend-unsuppress' && request.method === 'POST') {
-          const RESEND_API_KEY = (env && env.RESEND_API_KEY) || '';
-          if (!RESEND_API_KEY) return jsonResponse({ error: 'no RESEND_API_KEY in env' }, 500);
           const body = await request.json();
           const email = body.email;
           if (!email || typeof email !== 'string') return jsonResponse({ error: 'email required' }, 400);
+          const RESEND_API_KEY = (body && typeof body.apiKey === 'string' && body.apiKey.startsWith('re_')) ? body.apiKey : ((env && env.RESEND_API_KEY) || '');
+          if (!RESEND_API_KEY) return jsonResponse({ error: 'no RESEND_API_KEY available' }, 500);
           const r = await fetch('https://api.resend.com/suppressions/' + encodeURIComponent(email), { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + RESEND_API_KEY } });
           const txt = await r.text();
           return jsonResponse({ status: r.status, response: txt.slice(0, 500) }, 200);
