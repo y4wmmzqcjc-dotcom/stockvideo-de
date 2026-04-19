@@ -1,5 +1,8 @@
 const CORS_HEADERS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, GET, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Password', };
-const MOLLIE_API_KEY = 'test_A7njP8NN7AHtBVdxUPF96ccCErfQdS';
+// Fallback-Mollie-Key (Test). Wird im fetch()-Handler ueberschrieben, wenn
+// env.MOLLIE_API_KEY gesetzt ist — damit kannst du via "wrangler secret put MOLLIE_API_KEY"
+// auf den Live-Key rotieren, ohne den Code zu deployen.
+let MOLLIE_API_KEY = 'test_A7njP8NN7AHtBVdxUPF96ccCErfQdS';
 const SITE_URL = 'https://stockvideo.de';
 const WORKER_URL = 'https://stockvideo-checkout.rende.workers.dev';
 const R2_PUBLIC = 'https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev';
@@ -370,6 +373,7 @@ export default {
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS_HEADERS });
     // Worker-Secret für Download-URL-Signaturen kann jederzeit via env rotiert werden.
     if (env && env.DOWNLOAD_SECRET) DOWNLOAD_SECRET = env.DOWNLOAD_SECRET;
+    if (env && env.MOLLIE_API_KEY) MOLLIE_API_KEY = env.MOLLIE_API_KEY;
     const url = new URL(request.url);
     const path = url.pathname;
     try {

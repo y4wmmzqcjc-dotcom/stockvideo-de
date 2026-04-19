@@ -13,27 +13,11 @@ const CHECKOUT_WORKER = 'https://stockvideo-checkout.rende.workers.dev';
       <div class="os-label">Video</div>
       <div class="os-title" id="sumTitle">. </div>
 
-      <fieldset class="tier-picker" id="tierPicker">
-        <legend>Lizenz-Umfang</legend>
-        <label class="tier-opt">
-          <input type="radio" name="licenseTier" value="web" />
-          <span class="tier-name">Web-Lizenz</span>
-          <span class="tier-hint">Online, Social Media, bis HD</span>
-          <span class="tier-price" data-tier="web">—</span>
-        </label>
-        <label class="tier-opt tier-opt-default">
-          <input type="radio" name="licenseTier" value="standard" checked />
-          <span class="tier-name">Standard-Lizenz <em>empfohlen</em></span>
-          <span class="tier-hint">Online + Print, bis 4K, weltweit</span>
-          <span class="tier-price" data-tier="standard">—</span>
-        </label>
-        <label class="tier-opt">
-          <input type="radio" name="licenseTier" value="premium" />
-          <span class="tier-name">Premium-Lizenz</span>
-          <span class="tier-hint">Broadcast / TV, unbeschraenkt</span>
-          <span class="tier-price" data-tier="premium">—</span>
-        </label>
-      </fieldset>
+      <div class="license-info">
+        <div class="license-info-title">Erweiterte Nutzungslizenz inklusive</div>
+        <div class="license-info-body">Kommerzielle Nutzung in Web, Social Media, Werbung und Kundenprojekten — weltweit, zeitlich unbegrenzt, 4K UHD inklusive. Broadcast/TV-Lizenz auf <a href="/kontakt">Anfrage</a>.</div>
+      </div>
+      <input type="hidden" name="licenseTier" value="standard" />
 
       <div class="os-divider"></div>
       <div class="os-price-row">
@@ -176,50 +160,30 @@ const CHECKOUT_WORKER = 'https://stockvideo-checkout.rende.workers.dev';
       background: #3a3a3a;
       margin: 16px 0;
     }
-    .tier-picker {
+    .license-info {
       border: 1px solid #3a3a3a;
       border-radius: 8px;
-      padding: 12px 14px 6px;
+      padding: 12px 14px;
       margin-top: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+      background: #1b1b1b;
     }
-    .tier-picker legend {
+    .license-info-title {
       font-size: 12px;
       font-weight: 700;
-      color: #c8c8c8;
-      padding: 0 6px;
+      color: #1473e6;
       text-transform: uppercase;
       letter-spacing: .06em;
+      margin-bottom: 4px;
     }
-    .tier-opt {
-      display: grid;
-      grid-template-columns: 20px 1fr auto;
-      grid-template-areas: "radio name price" "radio hint price";
-      align-items: center;
-      gap: 4px 10px;
-      padding: 8px 4px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background .15s;
+    .license-info-body {
+      font-size: 13px;
+      color: #c8c8c8;
+      line-height: 1.5;
     }
-    .tier-opt:hover { background: #2a2a2a; }
-    .tier-opt input[type=radio] { grid-area: radio; accent-color: #1473e6; }
-    .tier-opt .tier-name { grid-area: name; font-weight: 600; color: #fff; font-size: 14px; }
-    .tier-opt .tier-name em {
-      font-style: normal;
-      font-size: 11px;
-      background: #1473e6;
-      color: #fff;
-      padding: 1px 6px;
-      border-radius: 4px;
-      margin-left: 6px;
-      letter-spacing: .03em;
+    .license-info-body a {
+      color: #1473e6;
+      text-decoration: underline;
     }
-    .tier-opt .tier-hint { grid-area: hint; font-size: 12px; color: #888; }
-    .tier-opt .tier-price { grid-area: price; font-weight: 700; color: #1473e6; font-size: 15px; }
-    .tier-opt input[type=radio]:checked ~ .tier-name { color: #1473e6; }
     .os-price-row {
       display: flex;
       justify-content: space-between;
