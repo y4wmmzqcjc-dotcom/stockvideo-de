@@ -156,12 +156,28 @@ function _pdf_buildTextDoc(title, paragraphs){
   parts.push(_u8(xref));return _cat(parts);
 }
 
-// === AGB als PDF (Inhalt aus src/pages/agb.astro) ===
-function _pdf_buildAGB(){
+// === Kontakt-Daten aus config.json ziehen (Single Source of Truth) ===
+// Fallback entspricht src/data/config.json — nur wirksam, wenn der Fetch fehlschlaegt.
+const CONTACT_FALLBACK={name:"Timo Rende",brandName:"Stockvideo.de",street:"Haldenstraße 16",city:"66806 Saarlouis / Ensdorf",phone:"06831 5052856",mobile:"0151 2046 3824",fax:"06831 5051619",email:"info@stockvideo.de",web:"www.stockvideo.de",ustId:"DE291222648"};
+async function _fetchContact(){
+  try{
+    const r=await fetch("https://stockvideo.de/data/config.json",{cf:{cacheTtl:300}});
+    if(r.ok){const j=await r.json();if(j&&j.contact&&j.contact.name&&j.contact.street&&j.contact.city)return j.contact;}
+  }catch(e){}
+  return CONTACT_FALLBACK;
+}
+// Ein-Zeilen-Adresse fuer Inline-Nennung (z.B. in § 6 Widerrufsbelehrung): "Timo Rende (Stockvideo.de), Haldenstraße 16, 66806 Saarlouis / Ensdorf"
+function _contactInline(C){return (C.name+(C.brandName?" ("+C.brandName+")":"")+", "+C.street+", "+C.city);}
+
+// === AGB als PDF (Inhalt aus src/pages/agb.astro; Adresse aus config.json) ===
+function _pdf_buildAGB(contact){
+  const C=contact||CONTACT_FALLBACK;
+  const inline=_contactInline(C);
+  const contactDetails="E-Mail: "+(C.email||"info@stockvideo.de")+(C.phone?", Telefon: "+C.phone:"")+(C.fax?", Fax: "+C.fax:"");
   const P=[
     {text:"Allgemeine Geschäftsbedingungen",bold:true,size:14,spaceBefore:0},
     {text:"§ 1 Geltungsbereich",bold:true,size:12,spaceBefore:16},
-    {text:"Diese Allgemeinen Geschäftsbedingungen gelten für alle Bestellungen und Lizenzierungen von Videoclips über die Website stockvideo.de, betrieben von Studio Rende - Tim O. Rende, Heinestraße 24, 66740 Saarlouis."},
+    {text:"Diese Allgemeinen Geschäftsbedingungen gelten für alle Bestellungen und Lizenzierungen von Videoclips über die Website stockvideo.de, betrieben von "+inline+"."},
     {text:"§ 2 Vertragsschluss",bold:true,size:12,spaceBefore:16},
     {text:"Die Darstellung der Videoclips auf der Website stellt kein rechtlich bindendes Angebot, sondern eine Aufforderung zur Bestellung dar. Durch das Absenden einer Bestellung geben Sie ein verbindliches Angebot zum Kauf ab. Der Vertrag kommt mit der Zahlungsbestätigung zustande."},
     {text:"§ 3 Lizenz",bold:true,size:12,spaceBefore:16},
@@ -169,11 +185,11 @@ function _pdf_buildAGB(){
     {text:"§ 4 Preise und Zahlung",bold:true,size:12,spaceBefore:16},
     {text:"Alle angegebenen Preise verstehen sich inklusive der gesetzlichen Mehrwertsteuer. Die Zahlung erfolgt über unseren Zahlungsdienstleister Mollie. Verfügbare Zahlungsarten: SEPA Lastschrift, Kreditkarte, PayPal, Sofort."},
     {text:"§ 5 Lieferung",bold:true,size:12,spaceBefore:16},
-    {text:"Nach erfolgreicher Zahlung erhalten Sie einen Downloadlink per E-Mail. Die Videodateien werden im Format MP4 und/oder MOV bereitgestellt. Der Downloadlink ist sieben Tage ab Zustellung der Bestätigungs-E-Mail gültig; danach kann ein neuer Link auf Anfrage über info@stockvideo.de angefordert werden."},
+    {text:"Nach erfolgreicher Zahlung erhalten Sie einen Downloadlink per E-Mail. Die Videodateien werden im Format MP4 und/oder MOV bereitgestellt. Der Downloadlink ist sieben Tage ab Zustellung der Bestätigungs-E-Mail gültig; danach kann ein neuer Link auf Anfrage über "+(C.email||"info@stockvideo.de")+" angefordert werden."},
     {text:"§ 6 Widerrufsrecht für Verbraucher",bold:true,size:12,spaceBefore:16},
     {text:"Widerrufsbelehrung",bold:true,size:11,spaceBefore:8},
     {text:"Widerrufsrecht. Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des Vertragsabschlusses."},
-    {text:"Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (Studio Rende - Tim O. Rende, Heinestraße 24, 66740 Saarlouis, E-Mail: info@stockvideo.de, Telefon: +49 6831 5083930) mittels einer eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder eine E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das beigefügte Muster-Widerrufsformular verwenden, das jedoch nicht vorgeschrieben ist."},
+    {text:"Um Ihr Widerrufsrecht auszuüben, müssen Sie uns ("+inline+", "+contactDetails+") mittels einer eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder eine E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das beigefügte Muster-Widerrufsformular verwenden, das jedoch nicht vorgeschrieben ist."},
     {text:"Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absenden."},
     {text:"Folgen des Widerrufs. Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen erhalten haben, unverzüglich und spätestens binnen vierzehn Tagen ab dem Tag zurückzuzahlen, an dem die Mitteilung über Ihren Widerruf dieses Vertrags bei uns eingegangen ist. Für diese Rückzahlung verwenden wir dasselbe Zahlungsmittel, das Sie bei der ursprünglichen Transaktion eingesetzt haben, es sei denn, mit Ihnen wurde ausdrücklich etwas anderes vereinbart; in keinem Fall werden Ihnen wegen dieser Rückzahlung Entgelte berechnet."},
     {text:"Vorzeitiges Erlöschen des Widerrufsrechts bei digitalen Inhalten",bold:true,size:11,spaceBefore:10},
@@ -187,8 +203,9 @@ function _pdf_buildAGB(){
   return _pdf_buildTextDoc("Allgemeine Geschäftsbedingungen",P);
 }
 
-// === Muster-Widerrufsformular als PDF (vorausgefüllt mit Bestelldaten) ===
-function _pdf_buildWiderrufsformular(order){
+// === Muster-Widerrufsformular als PDF (Adresse aus config.json, vorausgefüllt mit Bestelldaten) ===
+function _pdf_buildWiderrufsformular(order,contact){
+  const C=contact||CONTACT_FALLBACK;
   const b=order.billing||{};
   const name=[b.firstName,b.lastName].filter(Boolean).join(" ");
   const addr=[b.street,[b.zip,b.city].filter(Boolean).join(" "),b.country].filter(Boolean).join(", ");
@@ -198,10 +215,13 @@ function _pdf_buildWiderrufsformular(order){
     {text:"Muster-Widerrufsformular",bold:true,size:14,spaceBefore:0},
     {text:"(Wenn Sie den Vertrag widerrufen wollen, dann füllen Sie bitte dieses Formular aus und senden es zurück.)",size:9,color:"0.45 0.45 0.45",spaceBefore:6},
     {text:"An:",bold:true,size:11,spaceBefore:18},
-    {text:"Studio Rende - Tim O. Rende",size:11},
-    {text:"Heinestraße 24",size:11},
-    {text:"66740 Saarlouis",size:11},
-    {text:"E-Mail: info@stockvideo.de",size:11},
+    {text:C.name,size:11},
+    ...(C.brandName?[{text:C.brandName,size:11}]:[]),
+    {text:C.street,size:11},
+    {text:C.city,size:11},
+    {text:"E-Mail: "+(C.email||"info@stockvideo.de"),size:11},
+    ...(C.phone?[{text:"Telefon: "+C.phone,size:11}]:[]),
+    ...(C.fax?[{text:"Fax: "+C.fax,size:11}]:[]),
     {text:"Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden Waren (*)/die Erbringung der folgenden Dienstleistung (*):",spaceBefore:18},
     {text:"Royalty-Free Lizenz: "+title+(order.projectName?" (Projekt: "+order.projectName+")":""),bold:true,spaceBefore:8},
     {text:"Bestellnummer: "+order.id,spaceBefore:6},
@@ -277,8 +297,9 @@ async function _resend_sendDownload(env,order,downloadUrl,licenseUrl){
     +'</div>';
   let attachments=[];
   try{
-    const agbPdf=_pdf_buildAGB();
-    const wfPdf=_pdf_buildWiderrufsformular(order);
+    const contact=await _fetchContact();
+    const agbPdf=_pdf_buildAGB(contact);
+    const wfPdf=_pdf_buildWiderrufsformular(order,contact);
     attachments=[
       {filename:"AGB.pdf",content:_u8ToB64(agbPdf)},
       {filename:"Widerrufsformular.pdf",content:_u8ToB64(wfPdf)},
