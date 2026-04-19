@@ -1,4 +1,10 @@
 ---
+import '@fontsource/source-sans-3/latin-300.css';
+import '@fontsource/source-sans-3/latin-400.css';
+import '@fontsource/source-sans-3/latin-500.css';
+import '@fontsource/source-sans-3/latin-600.css';
+import '@fontsource/source-sans-3/latin-700.css';
+import '@fontsource/source-sans-3/latin-ext-400.css';
 import '../styles/global.css';
 import config from '../data/config.json';
 
@@ -9,6 +15,7 @@ interface Props {
 
 const { title = config.siteName, description = config.siteDescription } = Astro.props;
 const pageTitle = title === config.siteName ? `${config.siteName}| Lizenzfreie Stock Videos in 4K & HD` : `${title} | ${config.siteName}`;
+const canonicalUrl = new URL(Astro.url.pathname, config.siteUrl).href;
 ---
 <!DOCTYPE html>
 <html lang="de">
@@ -21,12 +28,10 @@ const pageTitle = title === config.siteName ? `${config.siteName}| Lizenzfreie S
   <meta property="og:title" content={pageTitle}>
   <meta property="og:description" content={description}>
   <meta property="og:type" content="website">
-  <meta property="og:url" content={config.siteUrl}>
-  <link rel="canonical" href={new URL(Astro.url.pathname, config.siteUrl).href}>
+  <meta property="og:url" content={canonicalUrl}>
+  <link rel="canonical" href={canonicalUrl}>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <slot name="head" />
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "Organization",

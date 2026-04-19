@@ -29,8 +29,51 @@ import config from '../data/config.json';
         <option value="enterprise">Enterprise / Agentur</option>
       </select>
       <textarea name="message" placeholder="Ihre Nachricht" rows="6" required style="background:#2c2c2c;border:1px solid #3a3a3a;border-radius:8px;padding:12px 16px;color:#fff;font-size:15px;font-family:inherit;outline:none;resize:vertical;"></textarea>
-      <button type="submit" class="btn-primary" style="align-self:flex-start;padding:12px 28px;font-size:15px;">Nachricht senden</button>
+      <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0;pointer-events:none;" aria-hidden="true">
+      <div id="contactStatus" style="display:none;padding:12px 14px;border-radius:8px;font-size:14px;"></div>
+      <button type="submit" id="contactSubmit" class="btn-primary" style="align-self:flex-start;padding:12px 28px;font-size:15px;">Nachricht senden</button>
     </form>
+    <script is:inline>
+      (function() {
+        const form = document.getElementById('contactForm');
+        const status = document.getElementById('contactStatus');
+        const btn = document.getElementById('contactSubmit');
+        if (!form) return;
+        form.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          status.style.display = 'none';
+          btn.disabled = true;
+          btn.textContent = 'Wird gesendet …';
+          const fd = new FormData(form);
+          const payload = {};
+          for (const [k, v] of fd.entries()) payload[k] = v;
+          try {
+            const r = await fetch('/kontakt', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+            });
+            const data = await r.json().catch(() => ({}));
+            if (!r.ok) throw new Error(data.error || 'Versand fehlgeschlagen');
+            status.textContent = 'Vielen Dank! Deine Nachricht wurde gesendet. Wir melden uns zeitnah.';
+            status.style.background = 'rgba(34,197,94,0.12)';
+            status.style.border = '1px solid rgba(34,197,94,0.35)';
+            status.style.color = '#86efac';
+            status.style.display = 'block';
+            form.reset();
+          } catch(err) {
+            status.textContent = 'Fehler: ' + err.message;
+            status.style.background = 'rgba(220,38,38,0.12)';
+            status.style.border = '1px solid rgba(220,38,38,0.35)';
+            status.style.color = '#fca5a5';
+            status.style.display = 'block';
+          } finally {
+            btn.disabled = false;
+            btn.textContent = 'Nachricht senden';
+          }
+        });
+      })();
+    </script>
   </div>
   <Footer />
 </BaseLayout>

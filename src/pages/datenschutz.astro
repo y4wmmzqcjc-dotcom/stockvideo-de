@@ -61,6 +61,14 @@ import config from '../data/config.json';
     <p>Für die Abwicklung von Zahlungen nutzen wir den Dienst <strong>Mollie B.V., Keizersgracht 313, 1016 EE Amsterdam, Niederlande</strong>. Bei einer Bestellung werden Ihre zur Zahlung erforderlichen Daten (z.&nbsp;B. Kreditkartendaten, Bankverbindung) direkt an Mollie übertragen. Wir selbst speichern keine vollständigen Zahlungsdaten. Mollie verarbeitet die Daten zur Zahlungsabwicklung und auf Grundlage der für Zahlungsdienstleister geltenden regulatorischen Anforderungen.</p>
     <p>Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung). Zwischen uns und Mollie besteht ein AVV. Datenschutzerklärung von Mollie: <a href="https://www.mollie.com/privacy" target="_blank" rel="noopener noreferrer">mollie.com/privacy</a>.</p>
 
+    <h3>Resend (E-Mail-Versand)</h3>
+    <p>Für den Versand transaktionaler E-Mails (Bestellbestätigungen, Download-Links, Rechnungen) nutzen wir den Dienst <strong>Resend, Inc., 2261 Market Street #5039, San Francisco, CA 94114, USA</strong>. Dabei werden Ihre E-Mail-Adresse, Ihr Name sowie der Inhalt der jeweiligen Nachricht (Bestellnummer, Download-Link, Rechnungs-PDF) an Resend übermittelt, damit die Zustellung erfolgen kann. Wir speichern bei Resend keine Kontakthistorie über den reinen Versand hinaus.</p>
+    <p>Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung) bzw. Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einem zuverlässigen E-Mail-Versand). Zwischen uns und Resend besteht ein AVV. <strong>Drittlandübermittlung:</strong> Resend hat seinen Sitz in den USA; die Übermittlung erfolgt auf Grundlage der EU-Standardvertragsklauseln gemäß Art. 46 Abs. 2 lit. c DSGVO. Datenschutzerklärung von Resend: <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">resend.com/legal/privacy-policy</a>.</p>
+
+    <h3>easybill GmbH (Rechnungserstellung)</h3>
+    <p>Zur Erstellung und Archivierung gesetzeskonformer Rechnungen nutzen wir den Dienst <strong>easybill GmbH, Düsselstraße 21, 41564 Kaarst, Deutschland</strong>. Bei einer Bestellung werden die für die Rechnungserstellung erforderlichen Daten an easybill übermittelt: Name, Anschrift, ggf. Firma, ggf. USt-IdNr., E-Mail-Adresse, Bestellpositionen, Rechnungsbetrag, Bestell- und Rechnungsnummer sowie das Datum. easybill erstellt daraus ein Rechnungs-PDF und archiviert die Rechnung revisionssicher für die Dauer der steuerlichen Aufbewahrungsfristen (§ 147 AO, in der Regel zehn Jahre).</p>
+    <p>Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung) und Art. 6 Abs. 1 lit. c DSGVO (rechtliche Verpflichtungen aus HGB und AO). Zwischen uns und easybill besteht ein AVV. easybill hat seinen Sitz in Deutschland; es erfolgt keine Drittlandübermittlung. Datenschutzerklärung von easybill: <a href="https://www.easybill.de/datenschutzerklaerung" target="_blank" rel="noopener noreferrer">easybill.de/datenschutzerklaerung</a>.</p>
+
     <!-- ===== 6. ANALYSE & HEATMAPS ===== -->
     <h2>6. Analyse und Nutzerverhalten</h2>
 
@@ -105,12 +113,14 @@ import config from '../data/config.json';
         <tr><td>Google LLC / Google Ireland Ltd.</td><td>USA / Irland</td><td>SCC + EU-U.S. DPF</td></tr>
         <tr><td>Microsoft Corporation</td><td>USA</td><td>SCC + EU-U.S. DPF</td></tr>
         <tr><td>Mollie B.V.</td><td>Niederlande (EU)</td><td>DSGVO unmittelbar anwendbar</td></tr>
+        <tr><td>Resend, Inc.</td><td>USA</td><td>SCC gemäß Art. 46 Abs. 2 lit. c DSGVO</td></tr>
+        <tr><td>easybill GmbH</td><td>Deutschland (EU)</td><td>DSGVO unmittelbar anwendbar</td></tr>
       </tbody>
     </table>
 
     <!-- ===== 10. AUFTRAGSVERARBEITUNG ===== -->
     <h2>10. Auftragsverarbeitung (AVV)</h2>
-    <p>Wir haben mit allen Dienstleistern, die in unserem Auftrag personenbezogene Daten verarbeiten, einen Vertrag zur Auftragsverarbeitung (AVV) gemäß Art. 28 DSGVO geschlossen. Dies stellt sicher, dass die Verarbeitung Ihrer personenbezogenen Daten nur auf unsere dokumentierten Weisung hin erfolgt und die Daten vertraulich behandelt werden. Die AVV-Vorlagen von Cloudflare und Google werden über die jeweiligen Datenschutz-Portale bereitgestellt; Mollie bietet einen AVV über das Mollie-Dashboard an.</p>
+    <p>Wir haben mit allen Dienstleistern, die in unserem Auftrag personenbezogene Daten verarbeiten, einen Vertrag zur Auftragsverarbeitung (AVV) gemäß Art. 28 DSGVO geschlossen. Dies stellt sicher, dass die Verarbeitung Ihrer personenbezogenen Daten nur auf unsere dokumentierten Weisung hin erfolgt und die Daten vertraulich behandelt werden. Die AVV-Vorlagen von Cloudflare, Google und Resend werden über die jeweiligen Datenschutz-Portale bereitgestellt; Mollie und easybill bieten AVV über ihre Dashboards an.</p>
 
     <!-- ===== 11. KAUFVORGANG & KUNDENDATEN ===== -->
     <h2>11. Kaufvorgang und Kundendaten</h2>

@@ -17,9 +17,40 @@ import config from '../data/config.json';
     <h2>§ 4 Preise und Zahlung</h2>
     <p>Alle angegebenen Preise verstehen sich inklusive der gesetzlichen Mehrwertsteuer. Die Zahlung erfolgt über unseren Zahlungsdienstleister Mollie. Verfügbare Zahlungsarten: SEPA Lastschrift, Kreditkarte, PayPal, Sofort.</p>
     <h2>§ 5 Lieferung</h2>
-    <p>Nach erfolgreicher Zahlung erhalten Sie einen Downloadlink per Email. Die Videodateien werden im Format MP4 und/oder MOV bereitgestellt. Der Downloadlink ist 24 Stunden gültig.</p>
-    <h2>§ 6 Widerrufsrecht</h2>
-    <p>Aufgrund der Natur digitaler Inhalte erlischt das Widerrufsrecht mit Beginn des Downloads, sofern Sie vor dem Download ausdrücklich zugestimmt haben, dass der Vertrag vor Ablauf der Widerrufsfrist erfüllt wird.</p>
+    <p>Nach erfolgreicher Zahlung erhalten Sie einen Downloadlink per E-Mail. Die Videodateien werden im Format MP4 und/oder MOV bereitgestellt. Der Downloadlink ist sieben Tage ab Zustellung der Bestätigungs-E-Mail gültig; danach kann ein neuer Link auf Anfrage über {config.contact.email} angefordert werden.</p>
+
+    <h2 id="widerrufsrecht">§ 6 Widerrufsrecht für Verbraucher</h2>
+    <h3>Widerrufsbelehrung</h3>
+    <p><strong>Widerrufsrecht.</strong> Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des Vertragsabschlusses.</p>
+    <p>Um Ihr Widerrufsrecht auszuüben, müssen Sie uns ({config.contact.name}, {config.contact.street}, {config.contact.city}, E-Mail: {config.contact.email}, Telefon: {config.contact.phone}) mittels einer eindeutigen Erklärung (z.&nbsp;B. ein mit der Post versandter Brief oder eine E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das beigefügte Muster-Widerrufsformular verwenden, das jedoch nicht vorgeschrieben ist.</p>
+    <p>Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absenden.</p>
+    <p><strong>Folgen des Widerrufs.</strong> Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen erhalten haben, unverzüglich und spätestens binnen vierzehn Tagen ab dem Tag zurückzuzahlen, an dem die Mitteilung über Ihren Widerruf dieses Vertrags bei uns eingegangen ist. Für diese Rückzahlung verwenden wir dasselbe Zahlungsmittel, das Sie bei der ursprünglichen Transaktion eingesetzt haben, es sei denn, mit Ihnen wurde ausdrücklich etwas anderes vereinbart; in keinem Fall werden Ihnen wegen dieser Rückzahlung Entgelte berechnet.</p>
+
+    <h3>Vorzeitiges Erlöschen des Widerrufsrechts bei digitalen Inhalten</h3>
+    <p>Das Widerrufsrecht erlischt bei einem Vertrag über die Lieferung von nicht auf einem körperlichen Datenträger befindlichen digitalen Inhalten vorzeitig, wenn wir mit der Ausführung des Vertrages begonnen haben, nachdem Sie</p>
+    <ol>
+      <li>ausdrücklich zugestimmt haben, dass wir mit der Ausführung des Vertrages vor Ablauf der Widerrufsfrist beginnen,</li>
+      <li>Ihre Kenntnis davon bestätigt haben, dass Sie durch Ihre Zustimmung mit Beginn der Ausführung des Vertrages Ihr Widerrufsrecht verlieren, und</li>
+      <li>wir Ihnen eine Bestätigung gemäß § 312f Absatz 3 BGB zur Verfügung gestellt haben (§ 356 Absatz 5 BGB).</li>
+    </ol>
+    <p>Die Zustimmung erteilen Sie im Bestellprozess durch das Setzen des entsprechenden Häkchens. Der Beginn der Ausführung erfolgt, sobald der Download-Link generiert und Ihnen per E-Mail zugestellt wurde.</p>
+
+    <h3>Muster-Widerrufsformular</h3>
+    <p>Wenn Sie den Vertrag widerrufen wollen, können Sie dieses Formular ausfüllen und an uns zurücksenden.</p>
+    <div class="widerruf-muster" style="border:1px solid #3a3a3a;border-radius:8px;padding:16px 20px;margin:12px 0;background:#1b1b1b">
+      <p>An<br />
+        {config.contact.name}<br />
+        {config.contact.street}<br />
+        {config.contact.city}<br />
+        E-Mail: {config.contact.email}</p>
+      <p>Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden Waren (*)/die Erbringung der folgenden Dienstleistung (*):</p>
+      <p>Bestellt am (*)/erhalten am (*): ____________________<br />
+        Name des/der Verbraucher(s): ____________________<br />
+        Anschrift des/der Verbraucher(s): ____________________<br />
+        Unterschrift des/der Verbraucher(s) (nur bei Mitteilung auf Papier): ____________________<br />
+        Datum: ____________________</p>
+      <p><em>(*) Unzutreffendes streichen.</em></p>
+    </div>
     <h2>§ 7 Haftung</h2>
     <p>Wir haften unbeschränkt für Vorsatz und grobe Fahrlässigkeit. Für leichte Fahrlässigkeit haften wir nur bei Verletzung wesentlicher Vertragspflichten und der Höhe nach begrenzt auf den vorhersehbaren, vertragstypischen Schaden.</p>
     <h2>§ 8 Schlussbestimmungen</h2>

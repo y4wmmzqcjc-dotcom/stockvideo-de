@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+.astro/
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+.dev.vars
+wrangler.toml.local
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Cloudflare / Wrangler
+.wrangler/

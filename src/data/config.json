@@ -1,10 +1,10 @@
 {
   "siteName": "stockvideo.de",
   "siteUrl": "https://stockvideo.de",
-  "siteDescription": "1.000+ handverlesene, lizenzfreie Videoclips in 4K und Full HD. Einmal kaufen, unbegrenzt nutzen. Keine Abopflicht. Faire Preise made in Germany.",
+  "siteDescription": "Handverlesene, lizenzfreie Videoclips in 4K und Full HD. Einmal kaufen, unbegrenzt nutzen. Keine Abopflicht. Faire Preise made in Germany.",
   "hero": {
     "title": "Lizenzfreie Stock Videos in 4K & HD",
-    "subtitle": "1.000+ handverlesene Videoclips. Einmal kaufen, unbegrenzt nutzen.\nKeine Abopflicht. Faire Preise made in Germany.",
+    "subtitle": "Handverlesene Videoclips. Einmal kaufen, unbegrenzt nutzen.\nKeine Abopflicht. Faire Preise made in Germany.",
     "searchPlaceholder": "Suche nach Videos… z.B. Natur, Business, Drohne, Berlin"
   },
   "features": [
@@ -31,31 +31,24 @@
   ],
   "pricing": [
     {
-      "label": "Web / Social",
-      "res": "Full HD",
-      "price": 29,
-      "desc": "Perfekt für Social Media und Websites",
-      "featured": false
-    },
-    {
-      "label": "Standard",
-      "res": "Full HD",
-      "price": 49,
-      "desc": "Kommerzielle Nutzung, unbegrenzt",
-      "featured": false
-    },
-    {
-      "label": "Premium",
-      "res": "4K UHD",
-      "price": 79,
-      "desc": "Höchste Qualität für professionelle Projekte",
+      "label": "Einzelvideo",
+      "res": "4K inklusive",
+      "price": 19.99,
+      "desc": "Ein Clip, kommerzielle Nutzung, unbegrenzt",
       "featured": true
     },
     {
+      "label": "5er Paket",
+      "res": "4K inklusive",
+      "price": 89,
+      "desc": "5 Videos nach Wahl. Ca. 10% Ersparnis",
+      "featured": false
+    },
+    {
       "label": "10er Paket",
-      "res": "Mix",
-      "price": 249,
-      "desc": "10 Videos nach Wahl. 38% Ersparnis",
+      "res": "4K inklusive",
+      "price": 159,
+      "desc": "10 Videos nach Wahl. Ca. 20% Ersparnis",
       "featured": false
     }
   ],
@@ -103,24 +96,24 @@
         "title": "Kategorien",
         "links": [
           {
-            "label": "Natur",
-            "href": "/kategorie/natur"
+            "label": "Tiere",
+            "href": "/kategorie/tiere"
           },
           {
-            "label": "Business",
-            "href": "/kategorie/business"
+            "label": "Essen",
+            "href": "/kategorie/essen"
           },
           {
             "label": "Technologie",
-            "href": "/kategorie/tech"
+            "href": "/kategorie/technologie"
           },
           {
-            "label": "Aerial",
-            "href": "/kategorie/aerial"
+            "label": "Drohne Aerials",
+            "href": "/kategorie/drohne-arials"
           },
           {
-            "label": "Menschen",
-            "href": "/kategorie/menschen"
+            "label": "Industrie",
+            "href": "/kategorie/industrie"
           }
         ]
       },
