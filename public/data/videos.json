@@ -160,5 +160,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776616712854",
+    "title": "Luftaufnahme Bagger belädt LKW mit Erde bei Straßenbauarbeiten in Wohngebiet",
+    "slug": "stockvideo-bagger",
+    "description": "Hochwertige Drohnenaufnahme aus der Vogelperspektive (Top-Down), die einen hydraulischen Radbagger dabei zeigt, wie er präzise Erdaushub auf die Ladefläche eines weißen Kipp-LKW lädt. Die Szene findet in einer abgesperrten Baustelle innerhalb eines Wohngebiets statt. Klare Details von Baumaschinen, Absperrgittern und dem Arbeitsprozess. Ideal für Reportagen über Stadtentwicklung, Tiefbau, Handwerk oder staatliche Investitionen in die Infrastruktur",
+    "category": "drohne-arials",
+    "tags": [
+      "Bagger",
+      "Radbagger",
+      "LKW",
+      "Kipper",
+      "Baustelle",
+      "Straßenbau",
+      "Tiefbau",
+      "Infrastruktur",
+      "Erdarbeiten",
+      "Bauarbeiten",
+      "Arbeit",
+      "Industrie",
+      "Transport",
+      "Logistik",
+      "Stadtentwicklung",
+      "Wohngebiet",
+      "Sanierung",
+      "Erdaushub",
+      "Schaufel",
+      "Beladen",
+      "Deutschland",
+      "Europa",
+      "Tageslicht",
+      "Draufsicht",
+      "Vogelperspektive",
+      "Drohnenaufnahme",
+      "Baumaschinen",
+      "gelber Helm",
+      "Absperrung",
+      "Sicherheitszaun",
+      "Verkehrsschild",
+      "Parkplatz",
+      "Asphalt",
+      "Erde",
+      "Sand",
+      "Schutt",
+      "Erneuerung",
+      "Handwerk",
+      "Schwerlast",
+      "Bauwesen",
+      "öffentlicher Raum",
+      "Projekt",
+      "Modernisierung",
+      "Stadtplanung",
+      "Technik",
+      "Kraftvoll",
+      "Präzision",
+      "Urban",
+      "Bauwirtschaft"
+    ],
+    "resolution": "4K",
+    "duration": 16,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/stockvideo-bagger.jpg",
+    "r2Key": "videos/stockvideo-bagger.mp4",
+    "r2Preview": "previews/stockvideo-bagger.mp4",
+    "r2Hover": "previews/stockvideo-bagger-hover.mp4",
+    "videoId": "stockvideo.de-ZP6X7CBY",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
