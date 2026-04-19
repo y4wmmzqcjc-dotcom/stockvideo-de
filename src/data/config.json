@@ -62,14 +62,12 @@
   "nav": {
     "links": [
       {
-        "label": "Kategorien",
-        "href": "/#kategorien",
-        "mobileHide": true
+        "label": "Stockvideos",
+        "href": "/#kategorien"
       },
       {
         "label": "Unternehmen",
-        "href": "/uber-uns",
-        "mobileHide": true
+        "href": "/uber-uns"
       },
       {
         "label": "Wissen",
