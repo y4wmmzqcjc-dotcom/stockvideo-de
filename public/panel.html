@@ -165,8 +165,11 @@
                 </div>
                 <div style="padding: 2rem;">
                     <div id="videosAlert"></div>
-                    <div style="margin-bottom: 2rem;">
+                    <div style="margin-bottom: 2rem;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
                         <button class="button button-primary" onclick="admin.openVideoModal()">+ Neues Video</button>
+                        <button id="videosPushBtn" class="button" style="background:#2563eb;color:#fff;border:none;padding:10px 22px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;" onclick="admin.publishToGitHub()">
+                            <span style="font-size:16px;">&#8593;</span> Auf GitHub pushen
+                        </button>
                     </div>
                     <div id="videosList"></div>
                 </div>
