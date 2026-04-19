@@ -15,8 +15,8 @@
     },
     {
       "icon": "§",
-      "title": "Deutsche Lizenzen",
-      "desc": "Klare Nutzungsrechte nach deutschem Recht. Einmal kaufen, unbegrenzt nutzen."
+      "title": "Deutsche Lizenzen & MwSt.",
+      "desc": "Klare Nutzungsrechte nach deutschem Recht. MwSt. auf jeder Rechnung ausgewiesen – ideal für den Vorsteuerabzug."
     },
     {
       "icon": "◆",
@@ -55,8 +55,8 @@
   "nav": {
     "links": [
       {
-        "label": "Kategorien",
-        "href": "/#kategorien",
+        "label": "Stockvideos",
+        "href": "/",
         "mobileHide": true
       },
       {
@@ -82,15 +82,15 @@
           },
           {
             "label": "4K Videos",
-            "href": "/#videoGrid"
+            "href": "/?res=4k"
           },
           {
             "label": "HD Videos",
-            "href": "/#videoGrid"
+            "href": "/?res=hd"
           },
           {
             "label": "Neueste Videos",
-            "href": "/#videoGrid"
+            "href": "/?sort=neu"
           }
         ]
       },
@@ -179,11 +179,14 @@
   },
   "contact": {
     "name": "Timo Rende",
+    "brandName": "Stockvideo.de",
     "street": "Haldenstraße 16",
-    "city": "66806 Ensdorf/Saarlouis",
+    "city": "66806 Saarlouis / Ensdorf",
     "phone": "06831 5052856",
+    "mobile": "0151 2046 3824",
     "fax": "06831 5051619",
     "email": "info@stockvideo.de",
+    "web": "www.stockvideo.de",
     "ustId": "DE291222648"
   }
 }
