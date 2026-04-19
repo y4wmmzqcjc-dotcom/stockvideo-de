@@ -645,12 +645,35 @@
       try{return origEdit(idx);}catch(e){console.error('editVideo',e);alert('Bearbeiten Fehler: '+e.message);}
     };
     var origDel=admin.deleteVideo.bind(admin);
+    // Passwort-Modal (identisch zu publishToGitHub) — liefert Admin-PW oder leeren String bei Abbruch
+    function _askAdminPw(){
+      return new Promise(function(resolve){
+        var saved=localStorage.getItem('adminPublishPw')||'';
+        var ov=document.createElement('div');
+        ov.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);z-index:99999;display:flex;align-items:center;justify-content:center;';
+        ov.innerHTML='<div style="background:#fff;padding:28px;border-radius:10px;min-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.2);font-family:sans-serif;"><h3 style="margin:0 0 18px;font-size:16px;font-weight:600;color:#111;">Video löschen & publizieren</h3><input id="_dpw" type="password" placeholder="Admin-Passwort" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:6px;font-size:14px;margin-bottom:10px;box-sizing:border-box;"><label style="display:flex;align-items:center;gap:7px;margin-bottom:16px;font-size:13px;color:#555;cursor:pointer;"><input type="checkbox" id="_dpsave"'+(saved?' checked':'')+'>Passwort speichern</label><div style="display:flex;gap:10px;"><button id="_dpok" style="flex:1;padding:10px;background:#2563eb;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:14px;font-weight:500;">Löschen</button><button id="_dpcancel" style="flex:1;padding:10px;background:#f1f5f9;color:#374151;border:1px solid #d1d5db;border-radius:6px;cursor:pointer;font-size:14px;">Abbrechen</button></div></div>';
+        document.body.appendChild(ov);
+        var inp=document.getElementById('_dpw');
+        inp.value=saved;inp.focus();inp.select();
+        function done(v){
+          if(document.getElementById('_dpsave').checked&&v)localStorage.setItem('adminPublishPw',v);
+          else if(!document.getElementById('_dpsave').checked)localStorage.removeItem('adminPublishPw');
+          document.body.removeChild(ov);resolve(v);
+        }
+        document.getElementById('_dpok').onclick=function(){done(inp.value);};
+        document.getElementById('_dpcancel').onclick=function(){done('');};
+        inp.addEventListener('keydown',function(e){if(e.key==='Enter')done(inp.value);if(e.key==='Escape')done('');});
+      });
+    }
     admin.deleteVideo=async function(idx){
       if(!confirm('Wirklich löschen?'))return;
       var self=this;
       var victim=this.videos[idx];
       var slug=(victim&&victim.slug)||'';
       var r2Key=(victim&&victim.r2Key)||null;
+      // Passwort zuerst erfragen (oder gespeichertes nutzen) — BEVOR lokaler State zerstört wird
+      var pw=await _askAdminPw();
+      if(!pw){return;} // Abbruch: nichts ändern
       // Lokal entfernen und UI direkt aktualisieren
       this.videos.splice(idx,1);
       try{localStorage.setItem('adminVideos',JSON.stringify(this.videos));}catch(e){}
@@ -665,7 +688,6 @@
         if(sr.ok) preSnapshot=await sr.text();
       }catch(e){}
       try{
-        var pw=(localStorage.getItem('adminPasswordHash')||'');
         var hdr={'Content-Type':'application/json','X-Admin-Password':pw};
         var r=await fetch('https://stockvideo-checkout.rende.workers.dev/admin/data',{method:'POST',headers:hdr,body:JSON.stringify({kind:'videos',items:self.videos})});
         if(!r.ok) throw new Error('Commit fehlgeschlagen ('+r.status+')');
