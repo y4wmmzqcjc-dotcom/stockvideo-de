@@ -80,24 +80,26 @@
       ctx.textBaseline='middle';
       ctx.fillText('stockvideo.de',W/2,H/2);
     }
-    // ID badge bottom-right — klar lesbare Sans-Serif, vertikal mittig
-    const fontSize = Math.round(H/22);
-    ctx.font = '700 ' + fontSize + 'px "Helvetica Neue", Helvetica, Arial, sans-serif';
-    const idTxt = 'ID ' + videoId;
-    ctx.textBaseline = 'middle';
-    ctx.textAlign = 'left';
-    const m = ctx.measureText(idTxt);
-    const padX = Math.round(fontSize * 0.75);
-    const padY = Math.round(fontSize * 0.50);
-    const boxW = Math.round(m.width + padX * 2);
-    const boxH = Math.round(fontSize + padY * 2);
-    const margin = Math.round(fontSize * 0.5);
-    const boxX = W - boxW - margin;
-    const boxY = H - boxH - margin;
-    ctx.fillStyle = 'rgba(0,0,0,0.65)';
-    ctx.fillRect(boxX, boxY, boxW, boxH);
-    ctx.fillStyle = '#fff';
-    ctx.fillText(idTxt, boxX + padX, boxY + boxH / 2);
+    // ID badge bottom-right — nur wenn videoId übergeben wurde (Hover-Loop ohne ID)
+    if (videoId) {
+      const fontSize = Math.round(H/22);
+      ctx.font = '700 ' + fontSize + 'px "Helvetica Neue", Helvetica, Arial, sans-serif';
+      const idTxt = 'ID ' + videoId;
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'left';
+      const m = ctx.measureText(idTxt);
+      const padX = Math.round(fontSize * 0.75);
+      const padY = Math.round(fontSize * 0.50);
+      const boxW = Math.round(m.width + padX * 2);
+      const boxH = Math.round(fontSize + padY * 2);
+      const margin = Math.round(fontSize * 0.5);
+      const boxX = W - boxW - margin;
+      const boxY = H - boxH - margin;
+      ctx.fillStyle = 'rgba(0,0,0,0.65)';
+      ctx.fillRect(boxX, boxY, boxW, boxH);
+      ctx.fillStyle = '#fff';
+      ctx.fillText(idTxt, boxX + padX, boxY + boxH / 2);
+    }
     return new Promise(r=>c.toBlob(r,'image/png'));
   }
   window.makeWatermarkPng=makeWatermarkPng;
@@ -209,7 +211,8 @@
     onStatus && onStatus('Encoding 480p Preview...');
     const prev=await recordPreview(file, 480, 0, videoId, onStatus);
     onStatus && onStatus('Encoding 360p Hover-Loop...');
-    const hov=await recordPreview(file, 360, 6, videoId, onStatus);
+    // Hover-Loop ohne ID-Badge — nur das zentrale Logo-Wasserzeichen
+    const hov=await recordPreview(file, 360, 6, '', onStatus);
     return {previewBlob:prev.blob, hoverBlob:hov.blob, mime:prev.mime};
   }
   window.encodePreviews=encodePreviews;
