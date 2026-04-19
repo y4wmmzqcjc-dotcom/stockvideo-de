@@ -165,7 +165,7 @@ function _pdf_buildTextDoc(title, paragraphs){
 }
 
 // === Kontakt-Daten aus config.json ziehen (Single Source of Truth) ===
-// Fallback entspricht src/data/config.json — nur wirksam, wenn der Fetch fehlschlaegt.
+// Fallback entspricht public/data/config.json — nur wirksam, wenn der Fetch fehlschlaegt.
 const CONTACT_FALLBACK={name:"Timo Rende",brandName:"Stockvideo.de",street:"Haldenstraße 16",city:"66806 Saarlouis / Ensdorf",phone:"06831 5052856",mobile:"0151 2046 3824",fax:"06831 5051619",email:"info@stockvideo.de",web:"www.stockvideo.de",ustId:"DE291222648"};
 async function _fetchContact(){
   try{

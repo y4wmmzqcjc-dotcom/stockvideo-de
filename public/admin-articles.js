@@ -1159,31 +1159,29 @@ window.adminArticles = {
       return next;
     };
 
-    // For each path: fetch fresh → patch → push (with SHA retry built into _ghPushFile)
-    for (const path of ['src/data/articles.json', 'public/data/articles.json']) {
-      for (let attempt = 0; attempt < 3; attempt++) {
-        const meta = await fetch(api + '/contents/' + path + '?ref=main&t=' + Date.now(), { headers: h }).then(r => r.json());
-        if (!meta.sha) throw new Error('GitHub API: ' + (meta.message || 'SHA nicht gefunden'));
+    // Single Source of Truth: nur public/data/articles.json (wird von Astro-Import und /data/*.json-Fetch gelesen)
+    const path = 'public/data/articles.json';
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const meta = await fetch(api + '/contents/' + path + '?ref=main&t=' + Date.now(), { headers: h }).then(r => r.json());
+      if (!meta.sha) throw new Error('GitHub API: ' + (meta.message || 'SHA nicht gefunden'));
 
-        const serverArr = decode(meta.content);
-        const patched = patchIn(serverArr);
-        const suffix = path.startsWith('src') ? '(src)' : '(public)';
+      const serverArr = decode(meta.content);
+      const patched = patchIn(serverArr);
 
-        const res = await fetch(api + '/contents/' + path, {
-          method: 'PUT', headers: h,
-          body: JSON.stringify({ message: 'admin: update article ' + slug + ' ' + suffix, content: encode(patched), sha: meta.sha, branch: 'main' })
-        });
+      const res = await fetch(api + '/contents/' + path, {
+        method: 'PUT', headers: h,
+        body: JSON.stringify({ message: 'admin: update article ' + slug, content: encode(patched), sha: meta.sha, branch: 'main' })
+      });
 
-        if (res.ok) {
-          // Keep local cache in sync with public version
-          if (path.includes('public')) { this.articles = patched; this._save(); }
-          break; // next path
-        }
-
-        const err = await res.json().catch(() => ({}));
-        if (res.status === 409 || (err.message || '').includes('but expected')) continue; // SHA conflict → retry
-        throw new Error('GitHub Fehler (' + suffix + '): ' + (err.message || res.status));
+      if (res.ok) {
+        // Keep local cache in sync
+        this.articles = patched; this._save();
+        return;
       }
+
+      const err = await res.json().catch(() => ({}));
+      if (res.status === 409 || (err.message || '').includes('but expected')) continue; // SHA conflict → retry
+      throw new Error('GitHub Fehler: ' + (err.message || res.status));
     }
   },
 
@@ -1224,10 +1222,8 @@ window.adminArticles = {
   async _publishFullList() {
     const encode = arr => btoa(unescape(encodeURIComponent(JSON.stringify(arr, null, 2))));
     const b64 = encode(this.articles);
-    await Promise.all([
-      this._ghPushFile('src/data/articles.json',    b64, 'admin: update articles.json (src)'),
-      this._ghPushFile('public/data/articles.json', b64, 'admin: update articles.json (public)')
-    ]);
+    // Single Source of Truth: nur public/data/articles.json
+    await this._ghPushFile('public/data/articles.json', b64, 'admin: update articles.json');
   },
 
   /* ---------- HELPERS ---------- */

@@ -1653,6 +1653,8 @@ var mediaModule = {
                 const timestamp = new Date().toISOString();
                 const treeData = {
                     base_tree: baseSha,
+                    // Single Source of Truth: nur public/data/*.json
+                    // (Astro importiert diese Dateien direkt; es gibt kein src/data/*.json mehr.)
                     tree: [
                         {
                             path: 'public/data/videos.json',
@@ -1660,14 +1662,12 @@ var mediaModule = {
                             type: 'blob',
                             content: JSON.stringify(config.videos, null, 2)
                         },
-                        { path: 'src/data/videos.json', mode: '100644', type: 'blob', content: JSON.stringify((config.videos||[]), null, 2) },
-            {
+                        {
                             path: 'public/data/categories.json',
                             mode: '100644',
                             type: 'blob',
                             content: JSON.stringify(config.categories, null, 2)
                         },
-                        { path: 'src/data/categories.json', mode: '100644', type: 'blob', content: JSON.stringify((config.categories||[]).slice().sort((a,b)=>(a.order||0)-(b.order||0)).map(c=>({slug:c.slug,label:c.label,dataCat:c.slug})), null, 2) },
                         {
                             path: 'public/data/config.json',
                             mode: '100644',
