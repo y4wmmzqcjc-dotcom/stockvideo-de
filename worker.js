@@ -1,4 +1,4 @@
-// v20260419B
+// v20260419C
 const CORS_HEADERS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, GET, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Password', };
 const MOLLIE_API_KEY = 'test_A7njP8NN7AHtBVdxUPF96ccCErfQdS';
 const SITE_URL = 'https://stockvideo.de';
@@ -90,6 +90,167 @@ async function _eb_createCustomerAndInvoice(env,order){
   const dj=await dr.json();
   return {customerId:cj.id,documentId:dj.id,number:dj.number||null};
 }
+// === HELPERS für Base64 (für Resend-Attachments) ===
+function _u8ToB64(u8){let s='';const c=0x8000;for(let i=0;i<u8.length;i+=c){s+=String.fromCharCode.apply(null,u8.subarray(i,i+c));}return btoa(s);}
+
+// === Generischer Mehrseiten-Text-PDF-Builder ===
+// paragraphs: [{text, bold, size, color, spaceBefore}]
+function _pdf_buildTextDoc(title, paragraphs){
+  const PW=595,PH=842,LH=14,TT=722,TB=60;
+  const pages=[];let cmds=[];let y=TT;
+  function newPage(){
+    if(cmds.length>0)pages.push(cmds);cmds=[];y=TT;
+    cmds.push("q 0.106 0.106 0.106 rg 0 762 595 80 re f Q");
+    cmds.push("BT /F2 22 Tf 1 1 1 rg 50 "+(PH-50)+" Td (stockvideo) Tj 0.145 0.388 0.922 rg (.de) Tj ET");
+    cmds.push("BT /F1 11 Tf 0.8 0.8 0.8 rg 50 "+(PH-72)+" Td ("+_pdf_escape(title)+") Tj ET");
+    cmds.push("q 0.145 0.388 0.922 rg 0 0 595 30 re f Q");
+    cmds.push("BT /F2 9 Tf 1 1 1 rg 50 11 Td (stockvideo.de - Lizenzfreie Stock-Videos in 4K & HD) Tj ET");
+  }
+  function wrap(text,maxChars){
+    if(!text)return [''];
+    const words=String(text).split(' ');const lines=[];let cur='';
+    for(const w of words){
+      if(w.length>maxChars){
+        if(cur){lines.push(cur);cur='';}
+        let rest=w;while(rest.length>maxChars){lines.push(rest.slice(0,maxChars));rest=rest.slice(maxChars);}
+        cur=rest;continue;
+      }
+      const cand=cur?(cur+' '+w):w;
+      if(cand.length>maxChars){lines.push(cur);cur=w;}else{cur=cand;}
+    }
+    if(cur)lines.push(cur);return lines;
+  }
+  newPage();
+  for(const p of paragraphs){
+    const font=p.bold?'/F2':'/F1';const size=p.size||10;
+    const maxC=size===10?90:(size===11?82:(size===12?75:(size===14?64:90)));
+    const color=p.color||"0.1 0.1 0.1";
+    const before=p.spaceBefore!==undefined?p.spaceBefore:(size>=12?14:4);
+    y-=before;
+    if(!p.text||p.text===''){y-=LH;continue;}
+    const lines=wrap(p.text,maxC);
+    for(const ln of lines){
+      if(y<TB){newPage();}
+      cmds.push("BT "+font+" "+size+" Tf "+color+" rg 50 "+y+" Td ("+_pdf_escape(ln)+") Tj ET");
+      y-=LH;
+    }
+  }
+  pages.push(cmds);
+  const parts=[];parts.push(_u8("%PDF-1.4\n%\xE2\xE3\xCF\xD3\n"));
+  const offsets=[];const pushObj=(b)=>{let n=0;for(const p of parts)n+=p.length;offsets.push(n);parts.push(b);};
+  const np=pages.length;const f1=3+2*np,f2=f1+1;
+  const res="<< /Font << /F1 "+f1+" 0 R /F2 "+f2+" 0 R >> >>";
+  pushObj(_u8("1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n"));
+  let kids='';for(let i=0;i<np;i++)kids+=(3+i)+' 0 R ';
+  pushObj(_u8("2 0 obj\n<< /Type /Pages /Kids ["+kids.trim()+"] /Count "+np+" >>\nendobj\n"));
+  for(let i=0;i<np;i++){const pn=3+i,cn=3+np+i;pushObj(_u8(pn+" 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+PW+" "+PH+"] /Resources "+res+" /Contents "+cn+" 0 R >>\nendobj\n"));}
+  for(let i=0;i<np;i++){const cn=3+np+i;const cont=pages[i].join("\n");const cU8=_u8(cont);pushObj(_cat([_u8(cn+" 0 obj\n<< /Length "+cU8.length+" >>\nstream\n"),cU8,_u8("\nendstream\nendobj\n")]));}
+  pushObj(_u8(f1+" 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>\nendobj\n"));
+  pushObj(_u8(f2+" 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>\nendobj\n"));
+  let total=0;for(const p of parts)total+=p.length;
+  const no=offsets.length;let xref="xref\n0 "+(no+1)+"\n0000000000 65535 f \n";
+  for(const o of offsets)xref+=String(o).padStart(10,"0")+" 00000 n \n";
+  xref+="trailer\n<< /Size "+(no+1)+" /Root 1 0 R >>\nstartxref\n"+total+"\n%%EOF";
+  parts.push(_u8(xref));return _cat(parts);
+}
+
+// === AGB als PDF (Inhalt aus src/pages/agb.astro) ===
+function _pdf_buildAGB(){
+  const P=[
+    {text:"Allgemeine Geschäftsbedingungen",bold:true,size:14,spaceBefore:0},
+    {text:"§ 1 Geltungsbereich",bold:true,size:12,spaceBefore:16},
+    {text:"Diese Allgemeinen Geschäftsbedingungen gelten für alle Bestellungen und Lizenzierungen von Videoclips über die Website stockvideo.de, betrieben von Studio Rende - Tim O. Rende, Heinestraße 24, 66740 Saarlouis."},
+    {text:"§ 2 Vertragsschluss",bold:true,size:12,spaceBefore:16},
+    {text:"Die Darstellung der Videoclips auf der Website stellt kein rechtlich bindendes Angebot, sondern eine Aufforderung zur Bestellung dar. Durch das Absenden einer Bestellung geben Sie ein verbindliches Angebot zum Kauf ab. Der Vertrag kommt mit der Zahlungsbestätigung zustande."},
+    {text:"§ 3 Lizenz",bold:true,size:12,spaceBefore:16},
+    {text:"Mit dem Kauf erwerben Sie eine nichtexklusive, zeitlich unbegrenzte Lizenz zur Nutzung des Videoclips gemäß der gewählten Lizenzstufe (Web/Social, Standard oder Premium). Die Lizenz umfasst das Recht zur Nutzung in kommerziellen und nichtkommerziellen Projekten."},
+    {text:"§ 4 Preise und Zahlung",bold:true,size:12,spaceBefore:16},
+    {text:"Alle angegebenen Preise verstehen sich inklusive der gesetzlichen Mehrwertsteuer. Die Zahlung erfolgt über unseren Zahlungsdienstleister Mollie. Verfügbare Zahlungsarten: SEPA Lastschrift, Kreditkarte, PayPal, Sofort."},
+    {text:"§ 5 Lieferung",bold:true,size:12,spaceBefore:16},
+    {text:"Nach erfolgreicher Zahlung erhalten Sie einen Downloadlink per E-Mail. Die Videodateien werden im Format MP4 und/oder MOV bereitgestellt. Der Downloadlink ist sieben Tage ab Zustellung der Bestätigungs-E-Mail gültig; danach kann ein neuer Link auf Anfrage über info@stockvideo.de angefordert werden."},
+    {text:"§ 6 Widerrufsrecht für Verbraucher",bold:true,size:12,spaceBefore:16},
+    {text:"Widerrufsbelehrung",bold:true,size:11,spaceBefore:8},
+    {text:"Widerrufsrecht. Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des Vertragsabschlusses."},
+    {text:"Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (Studio Rende - Tim O. Rende, Heinestraße 24, 66740 Saarlouis, E-Mail: info@stockvideo.de, Telefon: +49 6831 5083930) mittels einer eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder eine E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das beigefügte Muster-Widerrufsformular verwenden, das jedoch nicht vorgeschrieben ist."},
+    {text:"Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absenden."},
+    {text:"Folgen des Widerrufs. Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen erhalten haben, unverzüglich und spätestens binnen vierzehn Tagen ab dem Tag zurückzuzahlen, an dem die Mitteilung über Ihren Widerruf dieses Vertrags bei uns eingegangen ist. Für diese Rückzahlung verwenden wir dasselbe Zahlungsmittel, das Sie bei der ursprünglichen Transaktion eingesetzt haben, es sei denn, mit Ihnen wurde ausdrücklich etwas anderes vereinbart; in keinem Fall werden Ihnen wegen dieser Rückzahlung Entgelte berechnet."},
+    {text:"Vorzeitiges Erlöschen des Widerrufsrechts bei digitalen Inhalten",bold:true,size:11,spaceBefore:10},
+    {text:"Das Widerrufsrecht erlischt bei einem Vertrag über die Lieferung von nicht auf einem körperlichen Datenträger befindlichen digitalen Inhalten vorzeitig, wenn wir mit der Ausführung des Vertrages begonnen haben, nachdem Sie (1) ausdrücklich zugestimmt haben, dass wir mit der Ausführung des Vertrages vor Ablauf der Widerrufsfrist beginnen, (2) Ihre Kenntnis davon bestätigt haben, dass Sie durch Ihre Zustimmung mit Beginn der Ausführung des Vertrages Ihr Widerrufsrecht verlieren, und (3) wir Ihnen eine Bestätigung gemäß § 312f Absatz 3 BGB zur Verfügung gestellt haben (§ 356 Absatz 5 BGB)."},
+    {text:"Die Zustimmung erteilen Sie im Bestellprozess durch das Setzen des entsprechenden Häkchens. Der Beginn der Ausführung erfolgt, sobald der Download-Link generiert und Ihnen per E-Mail zugestellt wurde."},
+    {text:"§ 7 Haftung",bold:true,size:12,spaceBefore:16},
+    {text:"Wir haften unbeschränkt für Vorsatz und grobe Fahrlässigkeit. Für leichte Fahrlässigkeit haften wir nur bei Verletzung wesentlicher Vertragspflichten und der Höhe nach begrenzt auf den vorhersehbaren, vertragstypischen Schaden."},
+    {text:"§ 8 Schlussbestimmungen",bold:true,size:12,spaceBefore:16},
+    {text:"Es gilt das Recht der Bundesrepublik Deutschland. Gerichtsstand ist, soweit gesetzlich zulässig, Saarlouis. Sollten einzelne Bestimmungen unwirksam sein, bleibt die Wirksamkeit der übrigen Bestimmungen davon unberührt."},
+  ];
+  return _pdf_buildTextDoc("Allgemeine Geschäftsbedingungen",P);
+}
+
+// === Muster-Widerrufsformular als PDF (vorausgefüllt mit Bestelldaten) ===
+function _pdf_buildWiderrufsformular(order){
+  const b=order.billing||{};
+  const name=[b.firstName,b.lastName].filter(Boolean).join(" ");
+  const addr=[b.street,[b.zip,b.city].filter(Boolean).join(" "),b.country].filter(Boolean).join(", ");
+  const title=(order.video&&order.video.title)||"";
+  const dateOrdered=((order.paidAt||order.createdAt||"")+"").slice(0,10);
+  const P=[
+    {text:"Muster-Widerrufsformular",bold:true,size:14,spaceBefore:0},
+    {text:"(Wenn Sie den Vertrag widerrufen wollen, dann füllen Sie bitte dieses Formular aus und senden es zurück.)",size:9,color:"0.45 0.45 0.45",spaceBefore:6},
+    {text:"An:",bold:true,size:11,spaceBefore:18},
+    {text:"Studio Rende - Tim O. Rende",size:11},
+    {text:"Heinestraße 24",size:11},
+    {text:"66740 Saarlouis",size:11},
+    {text:"E-Mail: info@stockvideo.de",size:11},
+    {text:"Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden Waren (*)/die Erbringung der folgenden Dienstleistung (*):",spaceBefore:18},
+    {text:"Royalty-Free Lizenz: "+title+(order.projectName?" (Projekt: "+order.projectName+")":""),bold:true,spaceBefore:8},
+    {text:"Bestellnummer: "+order.id,spaceBefore:6},
+    {text:"Bestellt am: "+dateOrdered,spaceBefore:4},
+    {text:"Erhalten am: "+dateOrdered,spaceBefore:4},
+    {text:"Name des/der Verbraucher(s): "+name,spaceBefore:14},
+    {text:"Anschrift des/der Verbraucher(s): "+addr,spaceBefore:6},
+    {text:"E-Mail des/der Verbraucher(s): "+(b.email||""),spaceBefore:6},
+    {text:"Unterschrift des/der Verbraucher(s) (nur bei Mitteilung auf Papier): ____________________",spaceBefore:18},
+    {text:"Datum: ____________________",spaceBefore:10},
+    {text:"(*) Unzutreffendes streichen.",size:9,color:"0.45 0.45 0.45",spaceBefore:18},
+    {text:"Hinweis zum Erlöschen des Widerrufsrechts bei digitalen Inhalten",bold:true,size:11,spaceBefore:24},
+    {text:"Bitte beachten Sie: Mit Ihrer ausdrücklichen Zustimmung im Bestellprozess (Häkchen) und unserer Bestätigung gemäß § 312f Abs. 3 BGB ist Ihr Widerrufsrecht für den heruntergeladenen Videoclip nach § 356 Abs. 5 BGB bereits mit Beginn der Ausführung (Bereitstellung des Download-Links) erloschen. Eine Rückerstattung ist daher in der Regel ausgeschlossen.",size:9,color:"0.3 0.3 0.3"},
+  ];
+  return _pdf_buildTextDoc("Muster-Widerrufsformular",P);
+}
+
+// === Admin-Benachrichtigungsmail bei jedem Kauf ===
+async function _resend_sendAdminNotification(env,order){
+  const RESEND_API_KEY=(env&&env.RESEND_API_KEY)||'';
+  if(!RESEND_API_KEY)throw new Error("resend admin: missing env.RESEND_API_KEY");
+  const b=order.billing||{};
+  const title=(order.video&&order.video.title)||"-";
+  const name=[b.firstName,b.lastName].filter(Boolean).join(" ")||"-";
+  const amount=(Number(order.amount)||0).toFixed(2)+" EUR";
+  const inv=order.easybill?(order.easybill.number||order.easybill.documentId||"-"):"-";
+  const html='<div style="font-family:Arial,Helvetica,sans-serif;color:#1b1b1b;max-width:560px;margin:0 auto;padding:24px 20px;line-height:1.5">'
+    +'<h2 style="color:#2563eb;margin:0 0 16px">Neuer Kauf auf stockvideo.de</h2>'
+    +'<table style="width:100%;border-collapse:collapse;font-size:14px">'
+    +'<tr><td style="padding:6px 0;color:#666;width:140px">Bestellnummer</td><td style="padding:6px 0"><b>'+_html_escape(order.id)+'</b></td></tr>'
+    +'<tr><td style="padding:6px 0;color:#666">Datum</td><td style="padding:6px 0">'+_html_escape((order.paidAt||"").slice(0,19).replace("T"," "))+'</td></tr>'
+    +'<tr><td style="padding:6px 0;color:#666">Video</td><td style="padding:6px 0">'+_html_escape(title)+'</td></tr>'
+    +'<tr><td style="padding:6px 0;color:#666">Betrag (brutto)</td><td style="padding:6px 0"><b>'+_html_escape(amount)+'</b></td></tr>'
+    +'<tr><td style="padding:6px 0;color:#666">Rechnung EasyBill</td><td style="padding:6px 0">'+_html_escape(String(inv))+'</td></tr>'
+    +'<tr><td style="padding:6px 0;color:#666">Kunde</td><td style="padding:6px 0">'+_html_escape(name)+'</td></tr>'
+    +'<tr><td style="padding:6px 0;color:#666">E-Mail</td><td style="padding:6px 0"><a href="mailto:'+_html_escape(b.email||"")+'">'+_html_escape(b.email||"-")+'</a></td></tr>'
+    +'<tr><td style="padding:6px 0;color:#666">Firma</td><td style="padding:6px 0">'+_html_escape(b.company||"-")+'</td></tr>'
+    +'<tr><td style="padding:6px 0;color:#666">Anschrift</td><td style="padding:6px 0">'+_html_escape([b.street,[b.zip,b.city].filter(Boolean).join(" "),b.country].filter(Boolean).join(", "))+'</td></tr>'
+    +'<tr><td style="padding:6px 0;color:#666">Projekt</td><td style="padding:6px 0">'+_html_escape(order.projectName||"-")+'</td></tr>'
+    +'</table>'
+    +(order.easybillError?'<p style="color:#b00;margin-top:14px">EasyBill-Fehler: '+_html_escape(order.easybillError)+'</p>':'')
+    +(order.emailError?'<p style="color:#b00;margin-top:14px">Mail-Fehler: '+_html_escape(order.emailError)+'</p>':'')
+    +'<p style="color:#999;font-size:12px;margin-top:24px">Automatische Benachrichtigung vom stockvideo-checkout Worker.</p>'
+    +'</div>';
+  const payload={from:FROM_NAME+" <"+FROM_EMAIL+">",to:["info@stockvideo.de"],subject:"[Kauf] "+title+" - "+amount+" - "+order.id,html:html};
+  if(b.email)payload.reply_to=b.email;
+  const r=await fetch("https://api.resend.com/emails",{method:"POST",headers:{"Authorization":"Bearer "+RESEND_API_KEY,"Content-Type":"application/json"},body:JSON.stringify(payload)});
+  if(!r.ok)throw new Error("resend admin "+r.status+": "+(await r.text()).slice(0,300));
+  return await r.json();
+}
+
 async function _resend_sendDownload(env,order,downloadUrl,licenseUrl){
   const RESEND_API_KEY = (env && env.RESEND_API_KEY) || '';
   if (!RESEND_API_KEY) throw new Error("resend: missing env.RESEND_API_KEY");
@@ -102,13 +263,26 @@ async function _resend_sendDownload(env,order,downloadUrl,licenseUrl){
     +'<p style="color:#e1e1e1">vielen Dank für Ihren Einkauf auf stockvideo.de.</p>'
     +'<p style="color:#e1e1e1"><strong style="color:#fff">Video:</strong> '+_html_escape(title)+'<br><strong style="color:#fff">Bestellnummer:</strong> '+_html_escape(order.id)+'</p>'
     +'<p style="margin:28px 0 12px"><a href="'+downloadUrl+'" style="display:inline-block;background:#2563eb;color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:700">Video herunterladen</a></p>'
-    +'<p style="margin:0 0 24px"><a href="'+licenseUrl+'" style="display:inline-block;background:transparent;color:#2563eb;padding:10px 0;text-decoration:none;font-weight:600">📄 Lizenzurkunde (PDF) herunterladen</a></p>'
+    +'<p style="margin:0 0 24px"><a href="'+licenseUrl+'" style="display:inline-block;background:transparent;color:#2563eb;padding:10px 0;text-decoration:none;font-weight:600">Lizenzurkunde (PDF) herunterladen</a></p>'
     +'<p style="color:#9a9a9a;font-size:14px">Der Video-Download-Link ist 7 Tage gültig. Die Lizenzurkunde steht Ihnen dauerhaft unter obigem Link zur Verfügung.</p>'
     +'<p style="color:#9a9a9a;font-size:14px">Ihre Rechnung erhalten Sie in den kommenden Tagen per E-Mail.</p>'
     +'<hr style="border:none;border-top:1px solid #333;margin:28px 0">'
+    +'<p style="color:#fff;font-size:14px;font-weight:700;margin:0 0 6px">Vertragsunterlagen im Anhang</p>'
+    +'<p style="color:#9a9a9a;font-size:13px;margin:0 0 14px">Im Anhang dieser E-Mail finden Sie unsere Allgemeinen Geschäftsbedingungen (AGB.pdf) sowie das Muster-Widerrufsformular (Widerrufsformular.pdf) zu Ihren Akten.</p>'
+    +'<p style="color:#9a9a9a;font-size:13px;margin:0 0 14px"><strong style="color:#fff">Hinweis zum Erlöschen des Widerrufsrechts (§ 356 Abs. 5 BGB):</strong> Mit Ihrer ausdrücklichen Zustimmung im Bestellprozess und der vorliegenden Bestätigung ist Ihr Widerrufsrecht für die heruntergeladenen digitalen Inhalte erloschen, da die Ausführung des Vertrages mit Bereitstellung des Download-Links begonnen hat.</p>'
+    +'<hr style="border:none;border-top:1px solid #333;margin:28px 0">'
     +'<p style="color:#666;font-size:12px">stockvideo.de · Lizenzfreie Stock-Videos in 4K &amp; HD</p>'
     +'</div>';
-  const body={from:FROM_NAME+" <"+FROM_EMAIL+">",to:[b.email],bcc:["info@stockvideo.de","rende@imagefilme.com"],subject:"Ihr Download von stockvideo.de",html:html};
+  let attachments=[];
+  try{
+    const agbPdf=_pdf_buildAGB();
+    const wfPdf=_pdf_buildWiderrufsformular(order);
+    attachments=[
+      {filename:"AGB.pdf",content:_u8ToB64(agbPdf)},
+      {filename:"Widerrufsformular.pdf",content:_u8ToB64(wfPdf)},
+    ];
+  }catch(e){/* PDF-Build-Fehler: Mail trotzdem versenden, aber loggen */ order.attachmentError=String(e&&e.message||e); }
+  const body={from:FROM_NAME+" <"+FROM_EMAIL+">",to:[b.email],bcc:["info@stockvideo.de","rende@imagefilme.com"],subject:"Ihr Download von stockvideo.de",html:html,attachments:attachments};
   const r=await fetch("https://api.resend.com/emails",{method:"POST",headers:{"Authorization":"Bearer "+RESEND_API_KEY,"Content-Type":"application/json"},body:JSON.stringify(body)});
   if(!r.ok)throw new Error("resend "+r.status+": "+(await r.text()).slice(0,300));
   return await r.json();
@@ -145,6 +319,15 @@ async function _fulfill_paidOrder(env,order){
     }catch(e){
       order.emailError=String(e.message||e);
       order.emailSent=false;
+    }
+  }
+
+  if (!order.adminNotified) {
+    try{
+      const an=await _resend_sendAdminNotification(env,order);
+      order.adminNotified={id:an.id||null,at:new Date().toISOString()};
+    }catch(e){
+      order.adminNotifyError=String(e.message||e);
     }
   }
 
@@ -189,6 +372,39 @@ export default {
         return jsonResponse(simplified);
       }
       if (path === '/webhook' && request.method === 'POST') { return new Response('OK', { status: 200 }); }
+
+      // === Resend Webhook: Bounce / Complaint / Delivery-Delayed -> Mail an Admin ===
+      if (path === '/webhook/resend' && request.method === 'POST') {
+        try {
+          const RESEND_API_KEY = (env && env.RESEND_API_KEY) || '';
+          if (!RESEND_API_KEY) return new Response('no key', { status: 200 });
+          const evt = await request.json();
+          const t = evt && evt.type;
+          if (t === 'email.bounced' || t === 'email.complained' || t === 'email.delivery_delayed') {
+            const data = (evt && evt.data) || {};
+            const recipients = Array.isArray(data.to) ? data.to.join(', ') : (data.to || '-');
+            const subject = data.subject || '-';
+            const reason = (data.bounce && (data.bounce.message || data.bounce.subType || data.bounce.type))
+              || (data.complaint && (data.complaint.complaintFeedbackType || data.complaint.feedbackType))
+              || '-';
+            const html = '<div style="font-family:Arial,Helvetica,sans-serif;color:#1b1b1b;max-width:560px;margin:0 auto;padding:24px 20px;line-height:1.5">'
+              + '<h2 style="color:#b00;margin:0 0 16px">Resend: ' + _html_escape(t) + '</h2>'
+              + '<p>Eine E-Mail von stockvideo.de wurde nicht zugestellt. Der Empfaenger landet damit ggf. auf der Resend-Suppression-Liste.</p>'
+              + '<table style="width:100%;border-collapse:collapse;font-size:14px">'
+              + '<tr><td style="padding:6px 0;color:#666;width:140px">Empfaenger</td><td style="padding:6px 0"><b>' + _html_escape(recipients) + '</b></td></tr>'
+              + '<tr><td style="padding:6px 0;color:#666">Betreff</td><td style="padding:6px 0">' + _html_escape(subject) + '</td></tr>'
+              + '<tr><td style="padding:6px 0;color:#666">Grund</td><td style="padding:6px 0">' + _html_escape(String(reason)) + '</td></tr>'
+              + '<tr><td style="padding:6px 0;color:#666">Resend-ID</td><td style="padding:6px 0"><code>' + _html_escape(String(data.email_id || data.id || '-')) + '</code></td></tr>'
+              + '<tr><td style="padding:6px 0;color:#666">Zeitpunkt</td><td style="padding:6px 0">' + _html_escape(String(evt.created_at || new Date().toISOString())) + '</td></tr>'
+              + '</table>'
+              + '<p style="color:#666;font-size:13px;margin-top:18px">Im Resend-Dashboard ggf. die Suppression aufheben oder den Empfaenger anders erreichen.</p>'
+              + '</div>';
+            const body = { from: FROM_NAME + ' <' + FROM_EMAIL + '>', to: ['info@stockvideo.de'], subject: '[Resend ' + t + '] ' + recipients, html: html };
+            await fetch('https://api.resend.com/emails', { method: 'POST', headers: { 'Authorization': 'Bearer ' + RESEND_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+          }
+          return new Response('ok', { status: 200 });
+        } catch (e) { return new Response('ok', { status: 200 }); }
+      }
       if (path === '/download' && request.method === 'GET') {
         const paymentId = url.searchParams.get('id');
         if (!paymentId) return new Response('Missing id', { status: 400, headers: CORS_HEADERS });
@@ -367,6 +583,46 @@ export default {
           }
           const deletedCount = results.filter(r => r.ok).length;
           return jsonResponse({ ok: true, deletedCount, results });
+        }
+
+        // === Resend: Frische Test-Mail an blockierte Adresse ===
+        // Erzeugt einen neuen Resend-Eventeintrag, damit der "Remove from suppression list"-Button im Resend-Dashboard erscheint.
+        if (path === '/admin/resend-test-send' && request.method === 'POST') {
+          const RESEND_API_KEY = (env && env.RESEND_API_KEY) || '';
+          if (!RESEND_API_KEY) return jsonResponse({ error: 'no RESEND_API_KEY in env' }, 500);
+          const body = await request.json();
+          const to = body.to;
+          if (!to || typeof to !== 'string') return jsonResponse({ error: 'to required' }, 400);
+          const payload = {
+            from: FROM_NAME + ' <' + FROM_EMAIL + '>',
+            to: [to],
+            subject: 'stockvideo.de - Suppression-Test ' + new Date().toISOString(),
+            text: 'Diese Mail erzeugt einen frischen Resend-Eventeintrag, um die Adresse aus der Suppression-Liste entfernen zu koennen.'
+          };
+          const r = await fetch('https://api.resend.com/emails', { method: 'POST', headers: { 'Authorization': 'Bearer ' + RESEND_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+          const txt = await r.text();
+          return jsonResponse({ status: r.status, response: txt.slice(0, 500) }, 200);
+        }
+
+        // === Resend: Suppression-Liste auslesen ===
+        if (path === '/admin/resend-list-suppressions' && request.method === 'GET') {
+          const RESEND_API_KEY = (env && env.RESEND_API_KEY) || '';
+          if (!RESEND_API_KEY) return jsonResponse({ error: 'no RESEND_API_KEY in env' }, 500);
+          const r = await fetch('https://api.resend.com/suppressions', { headers: { 'Authorization': 'Bearer ' + RESEND_API_KEY } });
+          const txt = await r.text();
+          return jsonResponse({ status: r.status, response: txt.slice(0, 2000) }, 200);
+        }
+
+        // === Resend: Suppression-Eintrag entfernen (DELETE /suppressions/{email}) ===
+        if (path === '/admin/resend-unsuppress' && request.method === 'POST') {
+          const RESEND_API_KEY = (env && env.RESEND_API_KEY) || '';
+          if (!RESEND_API_KEY) return jsonResponse({ error: 'no RESEND_API_KEY in env' }, 500);
+          const body = await request.json();
+          const email = body.email;
+          if (!email || typeof email !== 'string') return jsonResponse({ error: 'email required' }, 400);
+          const r = await fetch('https://api.resend.com/suppressions/' + encodeURIComponent(email), { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + RESEND_API_KEY } });
+          const txt = await r.text();
+          return jsonResponse({ status: r.status, response: txt.slice(0, 500) }, 200);
         }
 
         return jsonResponse({ error: 'admin endpoint not found' }, 404);
