@@ -2593,5 +2593,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776692700010",
+    "title": "Moderner Ruheraum mit Sonnenliegen und gelben Blumen in einem Spa bei hellem Gegenlicht durch ein großes Fenster",
+    "slug": "7",
+    "description": "Ein heller Wellnessbereich zeigt mehrere gepolsterte Liegen in Reih und Glied. Im Vordergrund stehen drei gelbe Blumen in einem Glas auf einem Beistelltisch, während das Sonnenlicht durch die Fensterfront im Hintergrund fällt.",
+    "category": "hobbys-und-freizeit",
+    "tags": [
+      "spa",
+      "wellness",
+      "relaxation",
+      "lounge",
+      "interior",
+      "chair",
+      "sunbed",
+      "flower",
+      "yellow",
+      "vase",
+      "glass",
+      "window",
+      "sunlight",
+      "bright",
+      "leisure",
+      "luxury",
+      "quiet",
+      "peace",
+      "resort",
+      "hotel",
+      "comfort",
+      "terrace",
+      "indoor",
+      "furniture",
+      "table",
+      "decoration",
+      "gerbera",
+      "backlighting",
+      "morning",
+      "day",
+      "calmness",
+      "serenity",
+      "health",
+      "lifestyle",
+      "vacation",
+      "hospitality",
+      "empty",
+      "architecture",
+      "room",
+      "modern",
+      "design",
+      "soft",
+      "atmosphere",
+      "rays",
+      "glare",
+      "sun",
+      "retreat",
+      "therapy",
+      "wellbeing"
+    ],
+    "resolution": "4K",
+    "duration": 9,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/7.jpg",
+    "r2Key": "videos/7.mov",
+    "r2Preview": "previews/7.mp4",
+    "r2Hover": "previews/7-hover.mp4",
+    "videoId": "stockvideo.de-8Y5WQNJQ",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
