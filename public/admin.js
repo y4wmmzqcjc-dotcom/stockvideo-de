@@ -121,6 +121,7 @@ var mediaModule = {
             'onclick="mediaModule.handleClick(event,' + item.id + ')" ondblclick="mediaModule.openDetail(' + item.id + ')">' +
             '<div class="media-card-check" onclick="event.stopPropagation();mediaModule.toggleSelect(' + item.id + ')">' +
             (this.selectedIds.has(item.id) ? '\u2713' : '') + '</div>' +
+                '<button class="media-card-rotate" onclick="event.stopPropagation();mediaModule.rotate(' + item.id + ')" title="90\u00b0 rotieren" style="position:absolute;top:8px;right:8px;z-index:2;background:rgba(0,0,0,0.55);color:#fff;border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;line-height:28px;padding:0;">\u21bb</button>' +
             '<div class="media-card-thumb"><img src="' + item.url + '" alt="' + (item.alt||item.name) + '" loading="lazy" ' +
             'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'+
             '<div class="media-placeholder" style="display:none;align-items:center;justify-content:center;flex-direction:column;gap:6px;width:100%;height:100%;background:linear-gradient(135deg,#1a1a2e,#2a2a4e);color:#8888aa;font-size:11px;text-align:center;padding:8px"><span style="font-size:24px;opacity:0.5">🖼</span><span style="word-break:break-all;line-height:1.3">' + (item.name||'Bild') + '</span></div></div>' +
@@ -222,6 +223,45 @@ var mediaModule = {
         });
     },
 
+    async rotate(id) {
+        const item = this.items.find(function(m){return m.id===id;});
+        if (!item) { admin.showAlert('mediaAlert', 'error', 'Bild nicht gefunden'); return; }
+        const jpegLike = /\.jpe?g($|\?)/i.test(item.url) || /\.jpe?g$/i.test(item.name || '');
+        if (!jpegLike) { admin.showAlert('mediaAlert', 'error', 'Rotation nur fuer JPEG-Dateien verfuegbar.'); return; }
+        let key;
+        try { const u = new URL(item.url, location.origin); key = u.pathname.replace(/^\//, ''); }
+        catch(e) { admin.showAlert('mediaAlert', 'error', 'URL konnte nicht geparst werden.'); return; }
+        if (!/^images\//.test(key)) { admin.showAlert('mediaAlert', 'error', 'Nur Bilder unter /images/ koennen rotiert werden.'); return; }
+        const pw = localStorage.getItem('adminPublishPw') || '';
+        if (!pw) { admin.showAlert('mediaAlert', 'error', 'Admin-Passwort nicht im Cache.'); return; }
+        try {
+            const baseUrl = item.url.split('?')[0];
+            const resp = await fetch(baseUrl + '?_r=' + Date.now(), { cache: 'no-store' });
+            if (!resp.ok) throw new Error('Original laden: ' + resp.status);
+            const blob = await resp.blob();
+            const bmp = await createImageBitmap(blob);
+            const canvas = document.createElement('canvas');
+            canvas.width = bmp.height; canvas.height = bmp.width;
+            const ctx = canvas.getContext('2d');
+            ctx.translate(canvas.width, 0); ctx.rotate(Math.PI / 2);
+            ctx.drawImage(bmp, 0, 0);
+            if (bmp.close) bmp.close();
+            const rotatedBlob = await new Promise(function(res, rej){ canvas.toBlob(function(b){ b ? res(b) : rej(new Error('Kodierung fehlgeschlagen')); }, 'image/jpeg', 0.92); });
+            const put = await fetch('https://stockvideo-checkout.rende.workers.dev/admin/r2-put?key=' + encodeURIComponent(key), {
+                method: 'PUT',
+                headers: { 'Content-Type': 'image/jpeg', 'X-Admin-Password': pw },
+                body: rotatedBlob,
+            });
+            if (!put.ok) { const errTxt = await put.text().catch(function(){return '';}); throw new Error('Upload fehlgeschlagen: ' + put.status + ' ' + errTxt); }
+            item.url = baseUrl + '?_r=' + Date.now();
+            this.saveItems();
+            this.render();
+            admin.showAlert('mediaAlert', 'success', 'Bild rotiert.');
+        } catch (e) {
+            admin.showAlert('mediaAlert', 'error', 'Rotation fehlgeschlagen: ' + e.message);
+        }
+    },
+    
     replace(files) {
         if (!files || !files[0] || !this.activeId) return;
         const file = files[0];
@@ -932,7 +972,7 @@ var mediaModule = {
                 // Only fetch from GitHub on page init — NOT after save/delete (race condition)
                 if (!fromServer) return;
                 fetch('https://stockvideo-checkout.rende.workers.dev/admin/data?kind=videos', {
-                    headers: { 'X-Admin-Password': (localStorage.getItem('adminPasswordHash')||'') }
+                    headers: { 'X-Admin-Password': (localStorage.getItem('adminPublishPw')||'') }
                 }).then(r => r.ok ? r.json() : null).then(data => {
                     if (data && Array.isArray(data.items)) {
                         this.videos = data.items;
@@ -1193,14 +1233,14 @@ var mediaModule = {
                 try {
                     const dataRes = await fetch('https://stockvideo-checkout.rende.workers.dev/admin/data', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'X-Admin-Password': (localStorage.getItem('adminPasswordHash')||'') },
+                        headers: { 'Content-Type': 'application/json', 'X-Admin-Password': (localStorage.getItem('adminPublishPw')||'') },
                         body: JSON.stringify({ kind: 'videos', items: this.videos })
                     });
                     if (!dataRes.ok) throw new Error('Commit fehlgeschlagen (' + dataRes.status + ')');
                     try {
                         await fetch('https://stockvideo-checkout.rende.workers.dev/admin/delete-video', {
                           method: 'POST',
-                          headers: { 'Content-Type': 'application/json', 'X-Admin-Password': (localStorage.getItem('adminPasswordHash')||'') },
+                          headers: { 'Content-Type': 'application/json', 'X-Admin-Password': (localStorage.getItem('adminPublishPw')||'') },
                           body: JSON.stringify({ slug, r2Key })
                         });
                     } catch(e2) { /* R2-Fehler nicht fatal */ }
@@ -1304,7 +1344,7 @@ var mediaModule = {
                 // Auto-publish categories to GitHub
                 fetch('https://stockvideo-checkout.rende.workers.dev/admin/data', {
                     method: 'POST',
-                    headers: {'Content-Type':'application/json','X-Admin-Password':(localStorage.getItem('adminPasswordHash')||'')},
+                    headers: {'Content-Type':'application/json','X-Admin-Password':(localStorage.getItem('adminPublishPw')||'')},
                     body: JSON.stringify({kind:'categories', items:this.categories})
                 }).then(r => {
                     if (r.ok) this.showAlert('categoriesAlert', 'success', 'Kategorie gespeichert und veröffentlicht!');
