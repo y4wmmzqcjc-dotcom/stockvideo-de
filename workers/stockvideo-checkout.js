@@ -622,7 +622,26 @@ export default {
           } catch(e3) {
             jsonUpdate = { ok: false, error: e3.message };
           }
-          return jsonResponse({ ok: true, deleted: results, jsonUpdate });
+          // Add 301 redirect for deleted slug in _redirects (SEO: no dangling URLs)
+          let redirectUpdate = null;
+          try {
+            const rf = await ghGet('public/_redirects');
+            if (rf) {
+              const existing = rf.content;
+              const redirectLine = '/video/' + slug + '/  /  301';
+              // Only add if not already present
+              if (!existing.includes('/video/' + slug + '/')) {
+                const updated = existing.trimEnd() + '\n' + redirectLine + '\n';
+                const rRes = await ghPut('public/_redirects', updated, 'admin: redirect deleted video ' + slug, rf.sha);
+                redirectUpdate = { ok: rRes.status < 300, status: rRes.status };
+              } else {
+                redirectUpdate = { ok: true, note: 'already present' };
+              }
+            }
+          } catch(e4) {
+            redirectUpdate = { ok: false, error: e4.message };
+          }
+          return jsonResponse({ ok: true, deleted: results, jsonUpdate, redirectUpdate });
         }
 
         // === R2 CLEANUP SCAN ===
