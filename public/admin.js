@@ -984,35 +984,109 @@ var mediaModule = {
     },
 
             // ===== VIDEOS =====
+
+            // Helper: returns the set of slugs the user has marked as deleted.
+            // Stored in localStorage so it survives page reloads.
+            _getDeletedSlugs() {
+                try { return new Set(JSON.parse(localStorage.getItem('adminDeletedSlugs') || '[]')); } catch(e) { return new Set(); }
+            },
+            _setDeletedSlugs(set) {
+                localStorage.setItem('adminDeletedSlugs', JSON.stringify([...set]));
+            },
+
             loadVideos(fromServer = true) {
                 // Auto-unmojibake any legacy UTF-8-over-Latin-1 corruption
                 const _unwrap = s => { try { const b = new Uint8Array(s.length); for (let i=0;i<s.length;i++){ const c=s.charCodeAt(i); if (c>0xFF) return null; b[i]=c; } return new TextDecoder('utf-8',{fatal:true}).decode(b); } catch(e){ return null; } };
                 const _fix = s => { if (typeof s !== 'string') return s; let cur=s; for (let i=0;i<8;i++){ if (!/[\u00C0-\u00C3\u00A0-\u00BF]/.test(cur)) return cur; const nx=_unwrap(cur); if (nx==null||nx===cur) return cur; cur=nx; } return cur; };
                 const _walk = x => { if (typeof x==='string') return _fix(x); if (Array.isArray(x)) return x.map(_walk); if (x && typeof x==='object'){ const o={}; for (const k of Object.keys(x)) o[k]=_walk(x[k]); return o; } return x; };
                 const stored = localStorage.getItem('adminVideos');
-                this.videos = stored ? _walk(JSON.parse(stored)) : [];
+                const deletedSlugs = this._getDeletedSlugs();
+                let parsed = stored ? _walk(JSON.parse(stored)) : [];
+                // Always filter out slugs the user has deleted — prevents them re-appearing after reload
+                if (deletedSlugs.size > 0) parsed = parsed.filter(v => !deletedSlugs.has(v.slug));
+                this.videos = parsed;
                 this.renderVideosList();
                 if (!fromServer) return;
-                // Guard: skip server fetch if a local change happened in the last 30s.
-                // This prevents a stale CDN or Worker response from overwriting a just-deleted
-                // or just-saved video list before the new build propagates.
+                // Guard: skip server fetch for 30s after a local change to avoid stale overwrite
                 if (this._lastLocalChange && (Date.now() - this._lastLocalChange) < 30000) return;
-                // Sequence counter: only the *last* in-flight fetch wins; discard stale responses.
+                // Sequence counter: only the last in-flight fetch wins
                 const seq = (this._lvSeq = (this._lvSeq || 0) + 1);
-                // Use the Worker endpoint (reads directly from GitHub) — always authoritative,
-                // reflects commits immediately without waiting for a Cloudflare CDN build.
                 const pw = localStorage.getItem('adminPublishPw') || 'admin123';
                 fetch('https://stockvideo-checkout.rende.workers.dev/admin/data?kind=videos', {
                     headers: { 'X-Admin-Password': pw }
                 }).then(r => r.ok ? r.json() : null).then(data => {
-                    if (seq !== this._lvSeq) return; // superseded by a newer loadVideos call
+                    if (seq !== this._lvSeq) return;
                     if (this._lastLocalChange && (Date.now() - this._lastLocalChange) < 30000) return;
                     if (data && Array.isArray(data.items)) {
-                        this.videos = _walk(data.items);
+                        const dSlugs = this._getDeletedSlugs();
+                        let items = _walk(data.items);
+                        // Filter server data through the deleted-slugs set so ghosts never re-appear
+                        if (dSlugs.size > 0) items = items.filter(v => !dSlugs.has(v.slug));
+                        this.videos = items;
                         localStorage.setItem('adminVideos', JSON.stringify(this.videos));
                         this.renderVideosList();
                     }
                 }).catch(() => {});
+            },
+
+            // Check every video thumbnail via <img> tag and collect the ones that 404.
+            // Returns a Promise<string[]> — array of slugs whose thumbnails are broken.
+            _checkBrokenThumbs() {
+                return Promise.all(this.videos.map(v => new Promise(resolve => {
+                    const url = v.thumbnail || v.posterUrl || '';
+                    if (!url) { resolve(v.slug); return; }
+                    const img = new Image();
+                    const tid = setTimeout(() => resolve(null), 8000); // 8s timeout = alive
+                    img.onload  = () => { clearTimeout(tid); resolve(null); };
+                    img.onerror = () => { clearTimeout(tid); resolve(v.slug); };
+                    img.src = url + '?_chk=' + Date.now();
+                }))).then(results => results.filter(Boolean));
+            },
+
+            // Removes all ghost videos (broken thumbnails) and commits to GitHub.
+            async repairGhosts() {
+                const btn = document.getElementById('repairGhostsBtn');
+                if (btn) { btn.disabled = true; btn.textContent = '🔍 Prüfe Thumbnails…'; }
+                try {
+                    const broken = await this._checkBrokenThumbs();
+                    if (broken.length === 0) {
+                        if (btn) { btn.disabled = false; btn.textContent = '✓ Alle OK'; }
+                        this.showAlert('videosAlert', 'success', 'Keine defekten Videos gefunden!');
+                        return;
+                    }
+                    if (!confirm(broken.length + ' defekte Video(s) gefunden:\n' + broken.join(', ') + '\n\nJetzt bereinigen und von GitHub entfernen?')) {
+                        if (btn) { btn.disabled = false; btn.textContent = '🧹 Ghosts bereinigen'; }
+                        return;
+                    }
+                    // Mark all broken slugs as deleted
+                    const dSlugs = this._getDeletedSlugs();
+                    broken.forEach(s => dSlugs.add(s));
+                    this._setDeletedSlugs(dSlugs);
+                    // Remove from local list
+                    const cleanVideos = this.videos.filter(v => !broken.includes(v.slug));
+                    this.videos = cleanVideos;
+                    localStorage.setItem('adminVideos', JSON.stringify(cleanVideos));
+                    this._lastLocalChange = Date.now();
+                    this.renderVideosList();
+                    if (btn) btn.textContent = '⬆ Committe…';
+                    // Commit to GitHub
+                    const pw = localStorage.getItem('adminPublishPw') || 'admin123';
+                    const res = await fetch('https://stockvideo-checkout.rende.workers.dev/admin/data', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-Admin-Password': pw },
+                        body: JSON.stringify({ kind: 'videos', items: cleanVideos })
+                    });
+                    if (!res.ok) throw new Error('Commit fehlgeschlagen (' + res.status + ')');
+                    // Clear from deletedSlugs on success (GitHub is now authoritative)
+                    broken.forEach(s => dSlugs.delete(s));
+                    this._setDeletedSlugs(dSlugs);
+                    if (window.buildStatus) window.buildStatus.triggerBuild('/data/videos.json', null);
+                    this.showAlert('videosAlert', 'success', broken.length + ' Ghost-Video(s) bereinigt und live gelöscht!');
+                    if (btn) { btn.disabled = false; btn.textContent = '🧹 Ghosts bereinigen'; }
+                } catch(e) {
+                    this.showAlert('videosAlert', 'error', 'Fehler: ' + e.message);
+                    if (btn) { btn.disabled = false; btn.textContent = '🧹 Ghosts bereinigen'; }
+                }
             },
 
             renderVideosList() {
@@ -1269,6 +1343,12 @@ var mediaModule = {
                 localStorage.setItem('adminVideos', JSON.stringify(updatedVideos));
                 localStorage.setItem('adminLastChange', new Date().toISOString());
                 this._lastLocalChange = Date.now(); // guard: block server overwrites for 30s
+                // Register slug in persistent deletedSlugs set — survives page reloads.
+                // Even if the GitHub commit fails temporarily, this prevents the ghost from
+                // re-appearing when loadVideos(true) re-fetches from the server.
+                const _dSlugs = this._getDeletedSlugs();
+                _dSlugs.add(slug);
+                this._setDeletedSlugs(_dSlugs);
                 this.loadVideos(false);
                 this.showAlert('videosAlert', 'info', 'Lösche Video...');
 
@@ -1301,6 +1381,10 @@ var mediaModule = {
                         body: JSON.stringify({ slug, r2Key })
                     }).catch(() => {});
 
+                    // GitHub confirmed the delete — slug can be removed from the deletedSlugs set
+                    const _dSlugsAfter = this._getDeletedSlugs();
+                    _dSlugsAfter.delete(slug);
+                    this._setDeletedSlugs(_dSlugsAfter);
                     if (window.buildStatus) window.buildStatus.triggerBuild('/data/videos.json', preSnapshot);
                     this.showAlert('videosAlert', 'success', 'Video gelöscht und veröffentlicht!');
                 } catch(e) {
