@@ -36,5 +36,32 @@
     "description": "",
     "icon": "",
     "order": 0
+  },
+  {
+    "id": "1776677663468",
+    "label": "Gebäude und Architektur",
+    "slug": "gebude-und-architektur",
+    "dataCat": "gebude-und-architektur",
+    "description": "",
+    "icon": "",
+    "order": 0
+  },
+  {
+    "id": "1776677708805",
+    "label": "Business",
+    "slug": "business",
+    "dataCat": "business",
+    "description": "",
+    "icon": "",
+    "order": 0
+  },
+  {
+    "id": "1776677730181",
+    "label": "Transport",
+    "slug": "transport",
+    "dataCat": "transport",
+    "description": "",
+    "icon": "",
+    "order": 0
   }
 ]
