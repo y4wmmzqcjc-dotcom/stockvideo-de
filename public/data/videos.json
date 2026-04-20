@@ -570,5 +570,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776678711975",
+    "title": "Schwerlasttransport eines Flugzeugrumpfs auf einem Tieflader LKW auf einer Straße bei Tageslicht",
+    "slug": "stock-footage-02",
+    "description": "Ein schwarzer Lastwagen transportiert einen großen, weiß-roten Flugzeugrumpf als Spezialtransport auf einer öffentlichen Straße. Der Konvoi wird von weiteren Fahrzeugen begleitet und bewegt sich an einer grün bepflanzten Böschung vorbei.",
+    "category": "transport",
+    "tags": [
+      "truck",
+      "transport",
+      "aviation",
+      "fuselage",
+      "heavy-load",
+      "oversized",
+      "logistics",
+      "aircraft",
+      "semi-truck",
+      "trailer",
+      "road",
+      "street",
+      "shipping",
+      "specialized",
+      "convoy",
+      "airplane",
+      "cargo",
+      "delivery",
+      "vehicle",
+      "industry",
+      "freight",
+      "hauling",
+      "big",
+      "large",
+      "metallic",
+      "infrastructure",
+      "moving",
+      "flatbed",
+      "heavy-duty",
+      "commercial",
+      "trailer-truck",
+      "transport-industry",
+      "aerospace",
+      "technical",
+      "outdoor",
+      "daytime",
+      "long-haul",
+      "automotive",
+      "engineering",
+      "professional",
+      "logistics-service",
+      "specialized-transport",
+      "wide-load",
+      "red",
+      "white",
+      "black",
+      "traffic",
+      "motor-vehicle",
+      "carrier"
+    ],
+    "resolution": "4K",
+    "duration": 18,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/stock-footage-02.jpg",
+    "r2Key": "videos/stock-footage-02.mov",
+    "r2Preview": "previews/stock-footage-02.mp4",
+    "r2Hover": "previews/stock-footage-02-hover.mp4",
+    "videoId": "stockvideo.de-0LU95EYM",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
