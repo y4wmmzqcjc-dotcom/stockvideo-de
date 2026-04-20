@@ -1140,5 +1140,86 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776688145953",
+    "title": "Mountainbiker mit Helm und Schutzausrüstung fährt eine steile Waldstrecke auf einem Mountainbike hinunter",
+    "slug": "pur-stock-26",
+    "description": "Das Video zeigt einen Mountainbiker, der eine technisch anspruchsvolle Abfahrt im Wald meistert. Die Person trägt einen Fullface-Helm sowie Protektoren und fährt über einen unbefestigten Pfad mit Wurzeln und Laub direkt an der Kamera vorbei.",
+    "category": "hobbys-und-freizeit",
+    "tags": [
+      "mountainbike",
+      "cycling",
+      "forest",
+      "downhill",
+      "mountainbiking",
+      "outdoor",
+      "bicycle",
+      "rider",
+      "helmet",
+      "protection",
+      "sports",
+      "adventure",
+      "nature",
+      "trail",
+      "woods",
+      "active",
+      "lifestyle",
+      "exercise",
+      "fitness",
+      "summer",
+      "action",
+      "motion",
+      "dirt",
+      "path",
+      "bike",
+      "extreme-sports",
+      "recreation",
+      "leisure",
+      "tree",
+      "leaves",
+      "foliage",
+      "green",
+      "woodland",
+      "speed",
+      "skill",
+      "athlete",
+      "equipment",
+      "hobby",
+      "off-road",
+      "mountain-bikers",
+      "e-bike",
+      "fullface-helmet",
+      "mtb",
+      "workout",
+      "healthy",
+      "endurance",
+      "terrain",
+      "racing"
+    ],
+    "resolution": "4K",
+    "duration": 6,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/pur-stock-26.jpg",
+    "r2Key": "videos/pur-stock-26.mov",
+    "r2Preview": "previews/pur-stock-26.mp4",
+    "r2Hover": "previews/pur-stock-26-hover.mp4",
+    "videoId": "stockvideo.de-68KWQ18B",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
