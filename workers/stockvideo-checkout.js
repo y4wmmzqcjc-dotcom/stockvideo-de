@@ -555,13 +555,38 @@ export default {
           // Pfad-Whitelist: nur Daten-JSON und Upload-Assets. Kein Traversal. Keine Worker-/Code-Pfade.
           const p = String(body.path);
           if (p.includes('..') || p.startsWith('/')) return jsonResponse({ error: 'invalid path' }, 400);
-          const allowed = /^public\/data\/[A-Za-z0-9._-]+\.json$/.test(p) || /^public\/uploads\/[A-Za-z0-9._\/-]+$/.test(p);
-          if (!allowed) return jsonResponse({ error: 'path not in whitelist', allowed: ['public/data/*.json', 'public/uploads/*'] }, 403);
+          const allowed = /^public\/data\/[A-Za-z0-9._-]+\.json$/.test(p) || /^public\/uploads\/[A-Za-z0-9._\/-]+$/.test(p) || p === 'public/_redirects';
+          if (!allowed) return jsonResponse({ error: 'path not in whitelist', allowed: ['public/data/*.json', 'public/uploads/*', 'public/_redirects'] }, 403);
           const existing = await ghGet(p);
           const res = await ghPut(p, body.content, body.message || ('admin: update ' + p), existing && existing.sha);
           if (res.status >= 300) return jsonResponse({ error: 'github', status: res.status, msg: res.json.message }, 502);
           return jsonResponse({ ok: true, commit: res.json.commit && res.json.commit.sha });
         }
+        // R2-Dateien umbenennen (copy → delete) – für SEO-Slug-Optimierung bestehender Videos
+        if (path === '/admin/r2-rename' && request.method === 'POST') {
+          if (!env.R2) return jsonResponse({ error: 'R2 not bound' }, 500);
+          const body = await request.json();
+          if (!Array.isArray(body.renames)) return jsonResponse({ error: 'renames must be array' }, 400);
+          const results = [];
+          for (const item of body.renames) {
+            const { oldKey, newKey } = item;
+            if (!oldKey || !newKey || oldKey === newKey) {
+              results.push({ oldKey, newKey, ok: true, note: 'skipped' });
+              continue;
+            }
+            try {
+              const obj = await env.R2.get(oldKey);
+              if (!obj) { results.push({ oldKey, newKey, ok: false, note: 'not found in R2' }); continue; }
+              await env.R2.put(newKey, obj.body, { httpMetadata: obj.httpMetadata, customMetadata: obj.customMetadata });
+              await env.R2.delete(oldKey);
+              results.push({ oldKey, newKey, ok: true });
+            } catch(e) {
+              results.push({ oldKey, newKey, ok: false, error: e.message });
+            }
+          }
+          return jsonResponse({ results });
+        }
+
         if (path === '/admin/delete-video' && request.method === 'POST') {
           const body = await request.json();
           const slug = body.slug;
