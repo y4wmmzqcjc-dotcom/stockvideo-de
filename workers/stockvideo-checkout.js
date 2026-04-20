@@ -1,4 +1,4 @@
-const CORS_HEADERS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, GET, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Password', };
+const CORS_HEADERS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, GET, PUT, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Password', };
 // Fallback-Mollie-Key (Test). Wird im fetch()-Handler ueberschrieben, wenn
 // env.MOLLIE_API_KEY gesetzt ist — damit kannst du via "wrangler secret put MOLLIE_API_KEY"
 // auf den Live-Key rotieren, ohne den Code zu deployen.
