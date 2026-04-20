@@ -816,5 +816,84 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776687513751",
+    "title": "Nahaufnahme einer Hand eines Mannes zeigt auf Details eines schwarzen Armaturenbretts während einer Qualitätskontrolle",
+    "slug": "ais-stock-29",
+    "description": "Das Video zeigt die Hand eines Mannes mit Smartwatch, der prüfend über die Oberfläche und Kanten eines dunklen Fahrzeug-Armaturenbretts fährt. Im Hintergrund ist eine weitere Person in einer professionellen, kühl beleuchteten Werkstatt- oder Produktionsumgebung erkennbar.",
+    "category": "industrie",
+    "tags": [
+      "dashboard",
+      "automotive",
+      "inspection",
+      "quality-control",
+      "hand",
+      "interior",
+      "car",
+      "manufacturing",
+      "detail",
+      "surface",
+      "checking",
+      "part",
+      "technician",
+      "engineer",
+      "production",
+      "industry",
+      "automotive-industry",
+      "close-up",
+      "precision",
+      "material",
+      "plastic",
+      "texture",
+      "worker",
+      "workshop",
+      "professional",
+      "assembly",
+      "vehicle",
+      "component",
+      "smart-watch",
+      "touch",
+      "examining",
+      "engineering",
+      "hardware",
+      "interior-design",
+      "car-part",
+      "maintenance",
+      "development",
+      "technical",
+      "black",
+      "dark",
+      "modern",
+      "blue-light",
+      "manufacturing-process",
+      "industrial-design",
+      "work",
+      "business"
+    ],
+    "resolution": "4K",
+    "duration": 10,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/ais-stock-29.jpg",
+    "r2Key": "videos/ais-stock-29.mov",
+    "r2Preview": "previews/ais-stock-29.mp4",
+    "r2Hover": "previews/ais-stock-29-hover.mp4",
+    "videoId": "stockvideo.de-5UVXPIMS",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
