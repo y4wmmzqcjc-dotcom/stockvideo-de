@@ -30,6 +30,7 @@ function _u8(s){const a=new Uint8Array(s.length);for(let i=0;i<s.length;i++)a[i]
 function _cat(arrs){let n=0;for(const a of arrs)n+=a.length;const r=new Uint8Array(n);let o=0;for(const a of arrs){r.set(a,o);o+=a.length;}return r;}
 function _jpgDims(u8){let i=2;while(i<u8.length-8){if(u8[i]!==0xff){i++;continue;}const m=u8[i+1];i+=2;if(m>=0xc0&&m<=0xcf&&m!==0xc4&&m!==0xc8&&m!==0xcc){return {h:(u8[i+3]<<8)|u8[i+4],w:(u8[i+5]<<8)|u8[i+6]};}const len=(u8[i]<<8)|u8[i+1];if(!len)return null;i+=len;}return null;}
 async function _fetchJpg(url){try{const r=await fetch(url);if(!r.ok)return null;const b=new Uint8Array(await r.arrayBuffer());const d=_jpgDims(b);if(!d)return null;return {bytes:b,w:d.w,h:d.h};}catch(e){return null;}}
+function _pdf_wrapLines(text,maxChars){const words=String(text||'').split(' ');const lines=[];let cur='';for(const w of words){if(!cur){cur=w;}else if((cur+' '+w).length<=maxChars){cur+=' '+w;}else{lines.push(cur);cur=w;}}if(cur)lines.push(cur);return lines.length?lines:[''];}
 async function _pdf_buildLicense(order){
   const b=order.billing||{};const title=(order.video&&order.video.title)||"";const slug=(order.video&&order.video.slug)||"";
   const thumb=slug?await _fetchJpg(R2_PUBLIC+"/thumbs/"+slug+".jpg"):null;
@@ -42,7 +43,7 @@ async function _pdf_buildLicense(order){
   let y=450;
   cmds.push("BT /F2 12 Tf 0.106 0.106 0.106 rg 50 "+y+" Td (Bestelldetails) Tj ET");y-=20;
   const info=[["Order ID",order.id],["Datum",((order.paidAt||order.createdAt||"")+"").slice(0,10)],["Video",title],["Projekt",order.projectName||"-"],["Betrag",(Number(order.amount)||0).toFixed(2)+" EUR"]];
-  for(const [k,v] of info){cmds.push("BT /F1 10 Tf 0.45 0.45 0.45 rg 50 "+y+" Td ("+_pdf_escape(k)+") Tj ET");cmds.push("BT /F2 10 Tf 0.1 0.1 0.1 rg 150 "+y+" Td ("+_pdf_escape(v)+") Tj ET");y-=16;}
+  for(const [k,v] of info){const lines=_pdf_wrapLines(String(v||''),55);cmds.push("BT /F1 10 Tf 0.45 0.45 0.45 rg 50 "+y+" Td ("+_pdf_escape(k)+") Tj ET");for(let i=0;i<lines.length;i++){cmds.push("BT /F2 10 Tf 0.1 0.1 0.1 rg 150 "+(y-i*14)+" Td ("+_pdf_escape(lines[i])+") Tj ET");}y-=16*lines.length;}
   y-=10;cmds.push("BT /F2 12 Tf 0.106 0.106 0.106 rg 50 "+y+" Td (Lizenznehmer) Tj ET");y-=18;
   const lic=[[b.firstName,b.lastName].filter(Boolean).join(" "),b.company,b.street,[b.zip,b.city].filter(Boolean).join(" "),b.country,b.email,b.vatId?"USt-IdNr.: "+b.vatId:""].filter(Boolean);
   for(const l of lic){cmds.push("BT /F1 10 Tf 0.2 0.2 0.2 rg 50 "+y+" Td ("+_pdf_escape(l)+") Tj ET");y-=14;}
