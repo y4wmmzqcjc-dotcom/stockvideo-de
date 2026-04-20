@@ -1384,5 +1384,86 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776689238623",
+    "title": "Nahaufnahme von Kinderhänden beim Bewässern von Heidekraut mit einer grünen Gießkanne im Garten",
+    "slug": "stockfootage-6-2",
+    "description": "Die Aufnahme zeigt die Hände eines Kindes, die eine grüne 5-Liter-Gießkanne aus Kunststoff halten und Pflanzen in einem Blumenkasten bewässern. Im Fokus steht das lilafarbene Heidekraut, während der Hintergrund in einer natürlichen Gartenumgebung unscharf verläuft.",
+    "category": "pflanzen-und-blumen",
+    "tags": [
+      "watering",
+      "child",
+      "garden",
+      "plant",
+      "watering-can",
+      "hand",
+      "gardening",
+      "heather",
+      "flower",
+      "outdoor",
+      "green",
+      "plastic",
+      "growth",
+      "care",
+      "nature",
+      "backyard",
+      "activity",
+      "childhood",
+      "spring",
+      "summer",
+      "leisure",
+      "hobby",
+      "environment",
+      "soil",
+      "pot",
+      "planter",
+      "botanical",
+      "floral",
+      "violet",
+      "small",
+      "learning",
+      "education",
+      "responsibility",
+      "sustainability",
+      "domestic",
+      "home",
+      "yard",
+      "water",
+      "pouring",
+      "closeup",
+      "detail",
+      "lifestyle",
+      "healthy",
+      "organic",
+      "seasonal",
+      "foliage",
+      "work",
+      "person"
+    ],
+    "resolution": "4K",
+    "duration": 11,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/stockfootage-6-2.jpg",
+    "r2Key": "videos/stockfootage-6-2.mov",
+    "r2Preview": "previews/stockfootage-6-2.mp4",
+    "r2Hover": "previews/stockfootage-6-2-hover.mp4",
+    "videoId": "stockvideo.de-6VUVJ1S5",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
