@@ -2347,5 +2347,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776692032100",
+    "title": "Weiße Hühner auf einer weitläufigen grünen Wiese in Freilandhaltung hinter einem Maschendrahtzaun",
+    "slug": "stock-footage-08-2",
+    "description": "Eine Gruppe weißer Hühner bewegt sich frei auf einem großen eingezäunten Wiesengelände eines landwirtschaftlichen Betriebs. Im Hintergrund sind mobile Hühnerställe und Strommasten in einer ländlichen Landschaft unter bewölktem Himmel erkennbar.",
+    "category": "tiere",
+    "tags": [
+      "chicken",
+      "hen",
+      "poultry",
+      "free range",
+      "farm",
+      "agriculture",
+      "organic",
+      "livestock",
+      "meadow",
+      "grass",
+      "outdoor",
+      "animal",
+      "rural",
+      "farming",
+      "white",
+      "bird",
+      "fence",
+      "wire fence",
+      "field",
+      "countryside",
+      "sustainability",
+      "domestic animal",
+      "agriculture industry",
+      "nature",
+      "poultry farm",
+      "animal welfare",
+      "grazing",
+      "flock",
+      "livestock farming",
+      "egg production",
+      "farm life",
+      "countryside",
+      "land",
+      "paddock",
+      "eco",
+      "bio",
+      "range",
+      "freedom",
+      "green",
+      "summer",
+      "cloudy",
+      "village",
+      "hen house",
+      "coop",
+      "food",
+      "forage",
+      "vertebrate",
+      "husbandry",
+      "ranch"
+    ],
+    "resolution": "4K",
+    "duration": 7,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/stock-footage-08-2.jpg",
+    "r2Key": "videos/stock-footage-08-2.mov",
+    "r2Preview": "previews/stock-footage-08-2.mp4",
+    "r2Hover": "previews/stock-footage-08-2-hover.mp4",
+    "videoId": "stockvideo.de-8JUAGVWV",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
