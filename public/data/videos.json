@@ -1546,5 +1546,86 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776689584419",
+    "title": "Luftaufnahme einer großen Baustelle mit eingerüstetem und planungshüllenverkleidetem Gebäude in einer Kleinstadt",
+    "slug": "stock-footage-01",
+    "description": "Die Drohnenaufnahme zeigt ein weitläufiges Bauprojekt, dessen Fassade und Dach vollständig mit weißen Schutzplanen und Gerüsten umschlossen sind. Im Hintergrund erstreckt sich eine Wohnsiedlung unter klarem blauen Himmel, während im Vordergrund kahle Bäume die Szenerie rahmen.",
+    "category": "gebude-und-architektur",
+    "tags": [
+      "construction",
+      "site",
+      "aerial",
+      "building",
+      "scaffolding",
+      "tarp",
+      "renovation",
+      "architecture",
+      "urban",
+      "housing",
+      "development",
+      "city",
+      "town",
+      "roof",
+      "covering",
+      "protection",
+      "industry",
+      "project",
+      "real-estate",
+      "engineering",
+      "skyline",
+      "structure",
+      "residential",
+      "infrastructure",
+      "outdoor",
+      "day",
+      "drone",
+      "sky",
+      "blue",
+      "tree",
+      "leafless",
+      "winter",
+      "spring",
+      "perspective",
+      "view",
+      "high-angle",
+      "neighborhood",
+      "house",
+      "apartment",
+      "facade",
+      "work",
+      "industrial",
+      "planning",
+      "wrapping",
+      "protection-net",
+      "safety",
+      "village",
+      "suburban"
+    ],
+    "resolution": "4K",
+    "duration": 13,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/stock-footage-01.jpg",
+    "r2Key": "videos/stock-footage-01.mov",
+    "r2Preview": "previews/stock-footage-01.mp4",
+    "r2Hover": "previews/stock-footage-01-hover.mp4",
+    "videoId": "stockvideo.de-7370A1PG",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
