@@ -2511,5 +2511,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776692480291",
+    "title": "Frische braune Eier werden per Hand in eine blaue Eiersteige aus Kunststoff auf einem Bauernhof sortiert",
+    "slug": "stock-footage-10",
+    "description": "Eine Person hält eine blaue Palette aus Kunststoff, während eine andere Hand behutsam frisch gesammelte, braune Hühnereier in die Vertiefungen legt. Die Szene findet im Freien in einem landwirtschaftlichen Umfeld statt.",
+    "category": "essen",
+    "tags": [
+      "egg",
+      "chicken egg",
+      "farm",
+      "agriculture",
+      "organic",
+      "fresh",
+      "brown",
+      "tray",
+      "plastic",
+      "hand",
+      "sorting",
+      "collecting",
+      "poultry",
+      "livestock",
+      "rural",
+      "farming",
+      "sustainable",
+      "food",
+      "raw",
+      "ingredient",
+      "harvest",
+      "bio",
+      "eco",
+      "agriculture industry",
+      "farm life",
+      "countryside",
+      "local",
+      "production",
+      "poultry farm",
+      "animal welfare",
+      "natural",
+      "protein",
+      "nutrition",
+      "healthy",
+      "domestic",
+      "outdoor",
+      "closeup",
+      "holding",
+      "egg tray",
+      "agriculture business",
+      "worker",
+      "manual labor",
+      "village",
+      "marketplace",
+      "quality",
+      "fresh food",
+      "small business",
+      "livestock farming",
+      "poultry house"
+    ],
+    "resolution": "4K",
+    "duration": 5,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/stock-footage-10.jpg",
+    "r2Key": "videos/stock-footage-10.mov",
+    "r2Preview": "previews/stock-footage-10.mp4",
+    "r2Hover": "previews/stock-footage-10-hover.mp4",
+    "videoId": "stockvideo.de-8TIT7E03",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
