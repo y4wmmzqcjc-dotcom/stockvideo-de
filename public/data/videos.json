@@ -1059,5 +1059,86 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776688002887",
+    "title": "Nahaufnahme von zwei Personen beim Mountainbiken auf einem Waldweg mit Fokus auf Hinterrad und pinken Schuh",
+    "slug": "pur-stock-08",
+    "description": "Das Video zeigt die Rückansicht von zwei Radfahrern, die auf Mountainbikes einen unbefestigten Waldweg befahren. Die Kamera fokussiert dabei auf das rotierende Hinterrad und die Pedalarbeit einer Person, die pinke Sportschuhe trägt.",
+    "category": "hobbys-und-freizeit",
+    "tags": [
+      "mountainbike",
+      "cycling",
+      "forest",
+      "trail",
+      "outdoor",
+      "bicycle",
+      "mountainbiking",
+      "tire",
+      "wheel",
+      "spokes",
+      "pedal",
+      "shoe",
+      "sports",
+      "recreation",
+      "leisure",
+      "nature",
+      "path",
+      "dirt-road",
+      "woods",
+      "green",
+      "active",
+      "lifestyle",
+      "exercise",
+      "fitness",
+      "summer",
+      "adventure",
+      "couple",
+      "riding",
+      "bike",
+      "gear",
+      "mountain-bikers",
+      "e-bike",
+      "gravel",
+      "hobby",
+      "motion",
+      "tracking-shot",
+      "low-angle",
+      "sneakers",
+      "pink",
+      "shorts",
+      "healthy",
+      "tourism",
+      "vacation",
+      "friendship",
+      "workout",
+      "eco-friendly",
+      "country-lane",
+      "environment"
+    ],
+    "resolution": "4K",
+    "duration": 6,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/pur-stock-08.jpg",
+    "r2Key": "videos/pur-stock-08.mov",
+    "r2Preview": "previews/pur-stock-08.mp4",
+    "r2Hover": "previews/pur-stock-08-hover.mp4",
+    "videoId": "stockvideo.de-65IU624R",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
