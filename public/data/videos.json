@@ -718,11 +718,11 @@
       "standard": 19.99,
       "premium": 19.99
     },
-    "thumbnail": "",
-    "r2Key": "",
-    "r2Preview": "",
-    "r2Hover": "",
-    "videoId": "",
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/aero-avionik-stock-10.jpg",
+    "r2Key": "videos/aero-avionik-stock-10.mov",
+    "r2Preview": "previews/aero-avionik-stock-10.mp4",
+    "r2Hover": "previews/aero-avionik-stock-10-hover.mp4",
+    "videoId": "stockvideo.de-09H54GKP",
     "featured": false,
     "gradient": [
       {
