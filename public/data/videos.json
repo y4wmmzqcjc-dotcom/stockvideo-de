@@ -488,5 +488,37 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776677008843",
+    "title": "Aero Avionik Stock 06",
+    "slug": "aero-avionik-stock-06",
+    "description": "Aero Avionik Stock 01",
+    "category": "",
+    "tags": [],
+    "resolution": "4K",
+    "duration": 0,
+    "fps": 0,
+    "prices": {
+      "web": 0,
+      "standard": 0,
+      "premium": 0
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/aero-avionik-stock-06.jpg",
+    "r2Key": "videos/aero-avionik-stock-06.mov",
+    "r2Preview": "previews/aero-avionik-stock-06.mp4",
+    "r2Hover": "previews/aero-avionik-stock-06-hover.mp4",
+    "videoId": "stockvideo.de-ZLR0TRZV",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
