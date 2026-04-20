@@ -224,41 +224,60 @@ var mediaModule = {
     },
 
     async rotate(id) {
+        const notify = function(kind, msg) {
+            try { admin.showAlert("mediaAlert", kind, msg); } catch(_) {}
+            try { admin.showAlert("videosAlert", kind, msg); } catch(_) {}
+            try { console[kind==="error"?"error":"log"]("[rotate]", kind, msg); } catch(_) {}
+            let t = document.getElementById("__rotateToast");
+            if (!t) {
+                t = document.createElement("div");
+                t.id = "__rotateToast";
+                t.style.cssText = "position:fixed;top:20px;right:20px;padding:14px 20px;border-radius:8px;font:600 14px system-ui,sans-serif;z-index:99999;max-width:420px;box-shadow:0 6px 16px rgba(0,0,0,0.25);color:#fff;cursor:pointer";
+                t.onclick = function(){ this.style.display = "none"; };
+                document.body.appendChild(t);
+            }
+            t.textContent = msg;
+            t.style.background = kind === "success" ? "#10b981" : kind === "error" ? "#ef4444" : "#3b82f6";
+            t.style.display = "block";
+            clearTimeout(t._hide);
+            t._hide = setTimeout(function(){ t.style.display = "none"; }, kind === "error" ? 8000 : 4000);
+        };
         const item = this.items.find(function(m){return m.id===id;});
-        if (!item) { admin.showAlert('mediaAlert', 'error', 'Bild nicht gefunden'); return; }
-        const jpegLike = /\.jpe?g($|\?)/i.test(item.url) || /\.jpe?g$/i.test(item.name || '');
-        if (!jpegLike) { admin.showAlert('mediaAlert', 'error', 'Rotation nur fuer JPEG-Dateien verfuegbar.'); return; }
+        if (!item) { notify("error", "Bild nicht gefunden"); return; }
+        const jpegLike = /\.jpe?g($|\?)/i.test(item.url) || /\.jpe?g$/i.test(item.name || "");
+        if (!jpegLike) { notify("error", "Rotation nur fuer JPEG-Dateien verfuegbar."); return; }
         let key;
-        try { const u = new URL(item.url, location.origin); key = u.pathname.replace(/^\//, ''); }
-        catch(e) { admin.showAlert('mediaAlert', 'error', 'URL konnte nicht geparst werden.'); return; }
-        if (!/^images\//.test(key)) { admin.showAlert('mediaAlert', 'error', 'Nur Bilder unter /images/ koennen rotiert werden.'); return; }
-        const pw = localStorage.getItem('adminPublishPw') || '';
-        if (!pw) { admin.showAlert('mediaAlert', 'error', 'Admin-Passwort nicht im Cache.'); return; }
+        try { const u = new URL(item.url, location.origin); key = u.pathname.replace(/^\//, ""); }
+        catch(e) { notify("error", "URL konnte nicht geparst werden."); return; }
+        if (!/^images\//.test(key)) { notify("error", "Nur Bilder unter /images/ koennen rotiert werden."); return; }
+        const pw = localStorage.getItem("adminPublishPw") || "";
+        if (!pw) { notify("error", "Admin-Passwort nicht im Cache - bitte neu anmelden."); return; }
+        notify("info", "Rotiere " + (item.name || key) + " ...");
         try {
-            const baseUrl = item.url.split('?')[0];
-            const resp = await fetch(baseUrl + '?_r=' + Date.now(), { cache: 'no-store' });
-            if (!resp.ok) throw new Error('Original laden: ' + resp.status);
+            const baseUrl = item.url.split("?")[0];
+            const resp = await fetch(baseUrl + "?_r=" + Date.now(), { cache: "no-store" });
+            if (!resp.ok) throw new Error("Original laden: " + resp.status);
             const blob = await resp.blob();
             const bmp = await createImageBitmap(blob);
-            const canvas = document.createElement('canvas');
+            const canvas = document.createElement("canvas");
             canvas.width = bmp.height; canvas.height = bmp.width;
-            const ctx = canvas.getContext('2d');
+            const ctx = canvas.getContext("2d");
             ctx.translate(canvas.width, 0); ctx.rotate(Math.PI / 2);
             ctx.drawImage(bmp, 0, 0);
             if (bmp.close) bmp.close();
-            const rotatedBlob = await new Promise(function(res, rej){ canvas.toBlob(function(b){ b ? res(b) : rej(new Error('Kodierung fehlgeschlagen')); }, 'image/jpeg', 0.92); });
-            const put = await fetch('https://stockvideo-checkout.rende.workers.dev/admin/r2-put?key=' + encodeURIComponent(key), {
-                method: 'PUT',
-                headers: { 'Content-Type': 'image/jpeg', 'X-Admin-Password': pw },
+            const rotatedBlob = await new Promise(function(res, rej){ canvas.toBlob(function(b){ b ? res(b) : rej(new Error("Kodierung fehlgeschlagen")); }, "image/jpeg", 0.92); });
+            const put = await fetch("https://stockvideo-checkout.rende.workers.dev/admin/r2-put?key=" + encodeURIComponent(key), {
+                method: "PUT",
+                headers: { "Content-Type": "image/jpeg", "X-Admin-Password": pw },
                 body: rotatedBlob,
             });
-            if (!put.ok) { const errTxt = await put.text().catch(function(){return '';}); throw new Error('Upload fehlgeschlagen: ' + put.status + ' ' + errTxt); }
-            item.url = baseUrl + '?_r=' + Date.now();
+            if (!put.ok) { const errTxt = await put.text().catch(function(){return "";}); throw new Error("Upload fehlgeschlagen: " + put.status + " " + errTxt); }
+            item.url = baseUrl + "?_r=" + Date.now();
             this.saveItems();
             this.render();
-            admin.showAlert('mediaAlert', 'success', 'Bild rotiert.');
+            notify("success", "Bild rotiert: " + (item.name || key));
         } catch (e) {
-            admin.showAlert('mediaAlert', 'error', 'Rotation fehlgeschlagen: ' + e.message);
+            notify("error", "Rotation fehlgeschlagen: " + e.message);
         }
     },
     
