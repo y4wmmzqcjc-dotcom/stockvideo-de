@@ -39,9 +39,117 @@ const similar = ownTags.length === 0 ? [] : videos
   .sort((a,b) => b.overlap - a.overlap)
   .slice(0, 8)
   .map(x => x.v);
+
+// ── SEO ────────────────────────────────────────────────────────────────────
+// Longtail-optimierter Seitentitel: Inhalt + Kaufsignal + Auflösung
+const seoTitle = `${video.title} – lizenzfreies Stockvideo ${video.resolution} kaufen`;
+
+// Meta-Description: kurze Version der Beschreibung + Kaufsignal (max. 155 Zeichen)
+const descBase = (video.description || '').replace(/\s+/g, ' ').trim();
+const descSuffix = ` Jetzt als lizenzfreies Stockvideo in ${video.resolution} kaufen und sofort herunterladen.`;
+const seoDescription = descBase.length + descSuffix.length <= 155
+  ? descBase + descSuffix
+  : descBase.slice(0, 155 - descSuffix.length - 1) + '…' + descSuffix;
+
+// Upload-Datum aus ID ableiten (ID = Unix-Timestamp in ms)
+const uploadDate = video.id
+  ? new Date(parseInt(String(video.id))).toISOString().split('T')[0]
+  : '2025-01-01';
+
+// Canonical URL dieser Seite
+const pageUrl = `https://stockvideo.de/video/${video.slug}/`;
+const catUrl  = `https://stockvideo.de/kategorie/${video.category}/`;
+
+// Schema.org – VideoObject + Offer
+const schemaVideo = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoObject',
+  name: video.title,
+  description: video.description || video.title,
+  thumbnailUrl: video.thumbnail,
+  uploadDate,
+  duration: `PT${video.duration}S`,
+  contentUrl: videoUrl || video.thumbnail,
+  embedUrl: pageUrl,
+  inLanguage: 'de',
+  keywords: (video.tags || []).join(', '),
+  offers: {
+    '@type': 'Offer',
+    price: String(price),
+    priceCurrency: 'EUR',
+    availability: 'https://schema.org/InStock',
+    url: pageUrl,
+  },
+};
+
+// Schema.org – BreadcrumbList
+const schemaBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Startseite', item: 'https://stockvideo.de/' },
+    { '@type': 'ListItem', position: 2, name: cat?.label || 'Videos', item: catUrl },
+    { '@type': 'ListItem', position: 3, name: video.title, item: pageUrl },
+  ],
+};
+
+// Schema.org – FAQPage (kaufrelevante Fragen → FAQ-Snippet in Google)
+const schemaFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: `Wie kann ich das Stockvideo "${video.title}" kaufen?`,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: `Klicken Sie auf "Jetzt kaufen", bezahlen Sie sicher über Mollie und laden Sie die ${video.resolution}-Originaldatei sofort herunter. Die Lizenz für kommerzielle Nutzung ist im Preis enthalten.`,
+      },
+    },
+    {
+      '@type': 'Question',
+      name: `In welcher Auflösung ist das Stockvideo verfügbar?`,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: `Das Stockvideo ist in ${video.resolution} (${video.fps} fps, MP4) verfügbar. Nach dem Kauf erhalten Sie die volle Originaldatei ohne Wasserzeichen.`,
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Darf ich das Stockvideo kommerziell nutzen?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Ja. Die Lizenz erlaubt die kommerzielle Nutzung des Stockvideos, z. B. in Werbefilmen, Social-Media-Kampagnen, Imagefilmen oder Websites. Sie zahlen einmalig – keine Abo-Kosten.',
+      },
+    },
+  ],
+};
 ---
 
-<BaseLayout title={video.title} description={video.description}>
+<BaseLayout title={seoTitle} description={seoDescription}>
+  <Fragment slot="head">
+    {/* Open Graph */}
+    <meta property="og:type" content="video.other" />
+    <meta property="og:image" content={video.thumbnail} />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="720" />
+    <meta property="og:image:alt" content={seoTitle} />
+    {videoUrl && <meta property="og:video" content={videoUrl} />}
+    {videoUrl && <meta property="og:video:type" content="video/mp4" />}
+    {videoUrl && <meta property="og:video:width" content="1280" />}
+    {videoUrl && <meta property="og:video:height" content="720" />}
+    {/* Twitter Card */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={video.thumbnail} />
+    <meta name="twitter:title" content={seoTitle} />
+    <meta name="twitter:description" content={seoDescription} />
+    {/* Schema.org – VideoObject */}
+    <script type="application/ld+json" set:html={JSON.stringify(schemaVideo)} />
+    {/* Schema.org – BreadcrumbList */}
+    <script type="application/ld+json" set:html={JSON.stringify(schemaBreadcrumb)} />
+    {/* Schema.org – FAQPage */}
+    <script type="application/ld+json" set:html={JSON.stringify(schemaFaq)} />
+  </Fragment>
   <Topbar />
   <div class="page-content" style="max-width:1200px;">
     <div style="margin-bottom:12px;">
