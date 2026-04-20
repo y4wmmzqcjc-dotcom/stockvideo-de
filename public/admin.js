@@ -985,21 +985,26 @@ var mediaModule = {
 
             // ===== VIDEOS =====
             loadVideos(fromServer = true) {
-                const stored = localStorage.getItem('adminVideos');
-                this.videos = stored ? JSON.parse(stored) : [];
-                this.renderVideosList();
-                // Only fetch from GitHub on page init — NOT after save/delete (race condition)
-                if (!fromServer) return;
-                fetch('https://stockvideo-checkout.rende.workers.dev/admin/data?kind=videos', {
-                    headers: { 'X-Admin-Password': (localStorage.getItem('adminPublishPw')||'') }
-                }).then(r => r.ok ? r.json() : null).then(data => {
-                    if (data && Array.isArray(data.items)) {
-                        this.videos = data.items;
-                        localStorage.setItem('adminVideos', JSON.stringify(this.videos));
-                        this.renderVideosList();
-                    }
-                }).catch(() => {});
-            },
+                            // Auto-unmojibake any legacy UTF-8-over-Latin-1 corruption
+                            const _unwrap = s => { try { const b = new Uint8Array(s.length); for (let i=0;i<s.length;i++){ const c=s.charCodeAt(i); if (c>0xFF) return null; b[i]=c; } return new TextDecoder('utf-8',{fatal:true}).decode(b); } catch(e){ return null; } };
+                            const _fix = s => { if (typeof s !== 'string') return s; let cur=s; for (let i=0;i<8;i++){ if (!/[\u00C0-\u00C3\u00A0-\u00BF]/.test(cur)) return cur; const nx=_unwrap(cur); if (nx==null||nx===cur) return cur; cur=nx; } return cur; };
+                            const _walk = x => { if (typeof x==='string') return _fix(x); if (Array.isArray(x)) return x.map(_walk); if (x && typeof x==='object'){ const o={}; for (const k of Object.keys(x)) o[k]=_walk(x[k]); return o; } return x; };
+                            const stored = localStorage.getItem('adminVideos');
+                            this.videos = stored ? _walk(JSON.parse(stored)) : [];
+                            this.renderVideosList();
+                            if (!fromServer) return;
+                            // Fetch canonical clean data from Pages (no auth required)
+                            fetch('/data/videos.json?t=' + Date.now(), { cache: 'no-store' })
+                                .then(r => r.ok ? r.json() : null)
+                                .then(data => {
+                                    if (Array.isArray(data)) {
+                                        this.videos = _walk(data);
+                                        localStorage.setItem('adminVideos', JSON.stringify(this.videos));
+                                        this.renderVideosList();
+                                    }
+                                })
+                                .catch(() => {});
+                        },
 
             renderVideosList() {
       const container = document.getElementById('videosList');
