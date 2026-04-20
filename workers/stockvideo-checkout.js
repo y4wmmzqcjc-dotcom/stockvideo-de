@@ -527,6 +527,20 @@ export default {
         if (path === '/admin/verify' && request.method === 'POST') { const ok = await verify(request); return jsonResponse({ ok: ok }, ok ? 200 : 401); }
         if (!(await verify(request))) { return jsonResponse({ error: 'unauthorized' }, 401); }
         if (path === '/admin/r2-stats' && request.method === 'GET') { if (!env.R2) return jsonResponse({ error: 'R2 not bound' }, 500); let total = 0, count = 0, cursor; do { const listed = await env.R2.list({ cursor, limit: 1000 }); for (const obj of listed.objects) { total += obj.size; count++; } cursor = listed.truncated ? listed.cursor : undefined; } while (cursor); return jsonResponse({ totalBytes: total, objectCount: count }); }
+
+    if (path === '/admin/r2-put' && request.method === 'PUT') {
+      if (!verify(request, env)) return jsonResponse({ error: 'unauthorized' }, 401);
+      if (!env.R2) return jsonResponse({ error: 'R2 not bound' }, 500);
+      const key = url.searchParams.get('key');
+      if (!key) return jsonResponse({ error: 'key query param required' }, 400);
+      if (!/^images\/[A-Za-z0-9._\/-]+\.(jpe?g|png|webp|gif)$/i.test(key)) return jsonResponse({ error: 'key not in whitelist' }, 403);
+      const ct = request.headers.get('Content-Type') || 'application/octet-stream';
+      const buf = await request.arrayBuffer();
+      if (!buf || buf.byteLength === 0) return jsonResponse({ error: 'empty body' }, 400);
+      if (buf.byteLength > 20 * 1024 * 1024) return jsonResponse({ error: 'too large (max 20MB)' }, 413);
+      await env.R2.put(key, buf, { httpMetadata: { contentType: ct }, customMetadata: { uploadedBy: 'admin-rotate', ts: String(Date.now()) } });
+      return jsonResponse({ ok: true, key: key, size: buf.byteLength, contentType: ct });
+    }
         if (path === '/admin/last-commit' && request.method === 'GET') { const r = await fetch('https://api.github.com/repos/' + GH_REPO + '/commits/' + GH_BRANCH, { headers: ghHeaders }); if (!r.ok) return jsonResponse({ error: 'github', status: r.status }, 502); const j = await r.json(); return jsonResponse({ sha: j.sha ? j.sha.slice(0,7) : null, date: j.commit && j.commit.author ? j.commit.author.date : null, message: j.commit && j.commit.message ? j.commit.message.split('\n')[0] : null }); }
         if (path === '/admin/data' && request.method === 'GET') { const kind = url.searchParams.get('kind'); if (kind !== 'videos' && kind !== 'categories') return jsonResponse({ error: 'bad kind' }, 400); const f = await ghGet('public/data/' + kind + '.json'); if (!f) return jsonResponse({ items: [], sha: null }); let arr = []; try { arr = JSON.parse(f.content); } catch(e){} return jsonResponse({ items: arr, sha: f.sha }); }
         if (path === '/admin/data' && request.method === 'POST') { const body = await request.json(); const kind = body.kind; if (kind !== 'videos' && kind !== 'categories') return jsonResponse({ error: 'bad kind' }, 400); if (!Array.isArray(body.items)) return jsonResponse({ error: 'items must be array' }, 400); const p = 'public/data/' + kind + '.json'; const existing = await ghGet(p); const content = JSON.stringify(body.items, null, 2); const res = await ghPut(p, content, 'admin: update ' + kind + '.json (' + body.items.length + ' items)', existing && existing.sha); if (res.status >= 300) return jsonResponse({ error: 'github', status: res.status, msg: res.json.message }, 502); return jsonResponse({ ok: true, commit: res.json.commit && res.json.commit.sha }); }
