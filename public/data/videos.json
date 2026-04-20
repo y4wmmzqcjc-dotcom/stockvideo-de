@@ -242,5 +242,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776674730385",
+    "title": "Flugzeugbauteil auf einer Werkbank in einem Hangar mit einem Kleinflugzeug und Schraubstock im Hintergrund",
+    "slug": "aero-avionik-stock-01",
+    "description": "Die Aufnahme zeigt eine Innenansicht eines Flugzeughangars oder einer Wartungshalle. Im Fokus steht ein glänzendes, weißes Flugzeugbauteil (vermutlich ein Randbogen oder eine Flügelspitze), das auf einem weißen Schaumstoffblock auf einer hölzernen Werkbank ruht. Das Bauteil weist ein schlichtes, grafisches Dekor in Schwarz und Blau auf.\n\nRechts im Bild ist ein massiver, blauer Schraubstock fest an der Werkbank montiert. Im unscharfen Hintergrund ist der Rumpf eines weißen Kleinflugzeugs mit ähnlichen grafischen Markierungen erkennbar. Die Umgebung wirkt sauber und technisch, was auf eine professionelle Instandsetzungs- oder Montageumgebung im Bereich der allgemeinen Luftfahrt hindeutet. Die Beleuchtung ist gleichmäßig und hell, typisch für eine Werkstattatmosphäre.",
+    "category": "technologie",
+    "tags": [
+      "aviation",
+      "airplane",
+      "aircraft",
+      "hangar",
+      "wing",
+      "part",
+      "maintenance",
+      "repair",
+      "workshop",
+      "workbench",
+      "vice",
+      "tool",
+      "engineering",
+      "aerospace",
+      "technical",
+      "industrial",
+      "mechanic",
+      "service",
+      "inspection",
+      "fuselage",
+      "plane",
+      "light",
+      "white",
+      "metal",
+      "component",
+      "assembly",
+      "technology",
+      "transport",
+      "vehicle",
+      "interior",
+      "indoor",
+      "detail",
+      "manufacturing",
+      "construction",
+      "blue",
+      "equipment",
+      "hardware",
+      "professional",
+      "general",
+      "light-aircraft",
+      "civil",
+      "storage",
+      "facility",
+      "wingtip",
+      "aerodynamic",
+      "structure",
+      "surface",
+      "shiny",
+      "gloss"
+    ],
+    "resolution": "4K",
+    "duration": 7,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/aero-avionik-stock-01.jpg",
+    "r2Key": "videos/aero-avionik-stock-01.mov",
+    "r2Preview": "previews/aero-avionik-stock-01.mp4",
+    "r2Hover": "previews/aero-avionik-stock-01-hover.mp4",
+    "videoId": "stockvideo.de-Y8XXW3MC",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
