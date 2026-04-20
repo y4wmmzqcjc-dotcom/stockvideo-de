@@ -829,6 +829,21 @@ export default {
         } catch (e) { return new Response("ok"); }
       }
 
+      if (path.indexOf("/dl/previews/") === 0 && request.method === "GET") {
+        const _r2Key = decodeURIComponent(path.slice(4));
+        const _u = new URL(request.url);
+        const _name = _u.searchParams.get("name") || _r2Key.split("/").pop() || "preview.mp4";
+        const _r2 = await fetch(R2_PUBLIC + "/" + _r2Key);
+        if (!_r2.ok) return new Response("preview not found", { status: 404 });
+        const _h = new Headers();
+        _h.set("Content-Type", _r2.headers.get("content-type") || "video/mp4");
+        _h.set("Content-Disposition", 'attachment; filename="' + _name.replace(/"/g, "") + '"');
+        const _cl = _r2.headers.get("content-length");
+        if (_cl) _h.set("Content-Length", _cl);
+        _h.set("Access-Control-Allow-Origin", "*");
+        _h.set("Cache-Control", "public, max-age=3600");
+        return new Response(_r2.body, { status: 200, headers: _h });
+      }
       if ((path.indexOf("/video-dl/") === 0 || path.indexOf("/dl/") === 0) && request.method === "GET") {
         const _orderId = decodeURIComponent(path.startsWith("/dl/") ? path.slice(4) : path.slice(10));
         const _u = new URL(request.url);
