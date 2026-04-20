@@ -895,5 +895,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776687671655",
+    "title": "Wissenschaftler betrachtet dreidimensionale topografische Oberflächenanalyse auf einem Monitor im Labor",
+    "slug": "rohschnitt-1",
+    "description": "Ein Fachmann im weißen Laborkittel analysiert eine farbcodierte 3D-Visualisierung einer Materialoberfläche auf einem Computerbildschirm. Die Aufnahme zeigt die Schulterperspektive während der Arbeit mit hochpräziser Messsoftware in einer wissenschaftlichen Umgebung.",
+    "category": "industrie",
+    "tags": [
+      "science",
+      "laboratory",
+      "analysis",
+      "monitor",
+      "3d",
+      "topography",
+      "research",
+      "scientist",
+      "professional",
+      "technology",
+      "data",
+      "visualization",
+      "surface",
+      "measurement",
+      "engineering",
+      "technical",
+      "software",
+      "computer",
+      "screening",
+      "microscope",
+      "laboratory-coat",
+      "expert",
+      "quality-control",
+      "inspection",
+      "digital",
+      "industrial",
+      "physics",
+      "chemistry",
+      "metallurgy",
+      "material-science",
+      "precision",
+      "developer",
+      "workstation",
+      "laboratory-equipment",
+      "innovation",
+      "development",
+      "modern",
+      "lab",
+      "male",
+      "scanning",
+      "imaging",
+      "results",
+      "evaluation",
+      "chart",
+      "graph",
+      "optics",
+      "high-tech",
+      "statistics",
+      "work"
+    ],
+    "resolution": "4K",
+    "duration": 10,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/rohschnitt-1.jpg",
+    "r2Key": "videos/rohschnitt-1.mov",
+    "r2Preview": "previews/rohschnitt-1.mp4",
+    "r2Hover": "previews/rohschnitt-1-hover.mp4",
+    "videoId": "stockvideo.de-5YAQJNX5",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
