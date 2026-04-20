@@ -2183,5 +2183,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776691717815",
+    "title": "Braune Kuh mit weißer Musterung steht in einem Außenstall am Futtertrog und blickt direkt in die Kamera",
+    "slug": "stock-footage-05",
+    "description": "Mehrere Rinder stehen in einem eingezäunten Außenbereich eines landwirtschaftlichen Betriebs hinter einem Betonfuttertrog. Im Fokus steht eine braun-weiß gescheckte Kuh, die frontal zum Betrachter positioniert ist, während ein anderes Tier im Vordergrund Heu frisst.",
+    "category": "tiere",
+    "tags": [
+      "cow",
+      "cattle",
+      "livestock",
+      "farm",
+      "agriculture",
+      "animal",
+      "barn",
+      "stable",
+      "fence",
+      "feeding",
+      "ear tag",
+      "rural",
+      "farming",
+      "mammal",
+      "bovine",
+      "outdoor",
+      "brown",
+      "white",
+      "spotted",
+      "herd",
+      "ranch",
+      "domestic",
+      "agriculture industry",
+      "looking at camera",
+      "beef",
+      "dairy",
+      "stall",
+      "food trough",
+      "hay",
+      "meadow",
+      "country",
+      "nature",
+      "rustic",
+      "domestic animal",
+      "countryside",
+      "livestock farming",
+      "agriculture business",
+      "head",
+      "face",
+      "snout",
+      "organic",
+      "standing",
+      "livestock stall",
+      "farmland",
+      "cattle breeding",
+      "animal husbandry",
+      "farm life",
+      "pasture",
+      "paddock"
+    ],
+    "resolution": "4K",
+    "duration": 6,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/stock-footage-05.jpg",
+    "r2Key": "videos/stock-footage-05.mov",
+    "r2Preview": "previews/stock-footage-05.mp4",
+    "r2Hover": "previews/stock-footage-05-hover.mp4",
+    "videoId": "stockvideo.de-8D56RTBW",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
