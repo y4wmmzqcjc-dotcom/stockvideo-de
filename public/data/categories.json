@@ -36,5 +36,14 @@
     "description": "",
     "icon": "",
     "order": 0
+  },
+  {
+    "id": "1776719758675",
+    "label": "Zeitraffer",
+    "slug": "zeitraffer",
+    "dataCat": "zeitraffer",
+    "description": "Zeitraffer Timelapse",
+    "icon": "",
+    "order": 0
   }
 ]
