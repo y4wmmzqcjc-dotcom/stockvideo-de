@@ -985,26 +985,35 @@ var mediaModule = {
 
             // ===== VIDEOS =====
             loadVideos(fromServer = true) {
-                            // Auto-unmojibake any legacy UTF-8-over-Latin-1 corruption
-                            const _unwrap = s => { try { const b = new Uint8Array(s.length); for (let i=0;i<s.length;i++){ const c=s.charCodeAt(i); if (c>0xFF) return null; b[i]=c; } return new TextDecoder('utf-8',{fatal:true}).decode(b); } catch(e){ return null; } };
-                            const _fix = s => { if (typeof s !== 'string') return s; let cur=s; for (let i=0;i<8;i++){ if (!/[\u00C0-\u00C3\u00A0-\u00BF]/.test(cur)) return cur; const nx=_unwrap(cur); if (nx==null||nx===cur) return cur; cur=nx; } return cur; };
-                            const _walk = x => { if (typeof x==='string') return _fix(x); if (Array.isArray(x)) return x.map(_walk); if (x && typeof x==='object'){ const o={}; for (const k of Object.keys(x)) o[k]=_walk(x[k]); return o; } return x; };
-                            const stored = localStorage.getItem('adminVideos');
-                            this.videos = stored ? _walk(JSON.parse(stored)) : [];
-                            this.renderVideosList();
-                            if (!fromServer) return;
-                            // Fetch canonical clean data from Pages (no auth required)
-                            fetch('/data/videos.json?t=' + Date.now(), { cache: 'no-store' })
-                                .then(r => r.ok ? r.json() : null)
-                                .then(data => {
-                                    if (Array.isArray(data)) {
-                                        this.videos = _walk(data);
-                                        localStorage.setItem('adminVideos', JSON.stringify(this.videos));
-                                        this.renderVideosList();
-                                    }
-                                })
-                                .catch(() => {});
-                        },
+                // Auto-unmojibake any legacy UTF-8-over-Latin-1 corruption
+                const _unwrap = s => { try { const b = new Uint8Array(s.length); for (let i=0;i<s.length;i++){ const c=s.charCodeAt(i); if (c>0xFF) return null; b[i]=c; } return new TextDecoder('utf-8',{fatal:true}).decode(b); } catch(e){ return null; } };
+                const _fix = s => { if (typeof s !== 'string') return s; let cur=s; for (let i=0;i<8;i++){ if (!/[\u00C0-\u00C3\u00A0-\u00BF]/.test(cur)) return cur; const nx=_unwrap(cur); if (nx==null||nx===cur) return cur; cur=nx; } return cur; };
+                const _walk = x => { if (typeof x==='string') return _fix(x); if (Array.isArray(x)) return x.map(_walk); if (x && typeof x==='object'){ const o={}; for (const k of Object.keys(x)) o[k]=_walk(x[k]); return o; } return x; };
+                const stored = localStorage.getItem('adminVideos');
+                this.videos = stored ? _walk(JSON.parse(stored)) : [];
+                this.renderVideosList();
+                if (!fromServer) return;
+                // Guard: skip server fetch if a local change happened in the last 30s.
+                // This prevents a stale CDN or Worker response from overwriting a just-deleted
+                // or just-saved video list before the new build propagates.
+                if (this._lastLocalChange && (Date.now() - this._lastLocalChange) < 30000) return;
+                // Sequence counter: only the *last* in-flight fetch wins; discard stale responses.
+                const seq = (this._lvSeq = (this._lvSeq || 0) + 1);
+                // Use the Worker endpoint (reads directly from GitHub) — always authoritative,
+                // reflects commits immediately without waiting for a Cloudflare CDN build.
+                const pw = localStorage.getItem('adminPublishPw') || 'admin123';
+                fetch('https://stockvideo-checkout.rende.workers.dev/admin/data?kind=videos', {
+                    headers: { 'X-Admin-Password': pw }
+                }).then(r => r.ok ? r.json() : null).then(data => {
+                    if (seq !== this._lvSeq) return; // superseded by a newer loadVideos call
+                    if (this._lastLocalChange && (Date.now() - this._lastLocalChange) < 30000) return;
+                    if (data && Array.isArray(data.items)) {
+                        this.videos = _walk(data.items);
+                        localStorage.setItem('adminVideos', JSON.stringify(this.videos));
+                        this.renderVideosList();
+                    }
+                }).catch(() => {});
+            },
 
             renderVideosList() {
       const container = document.getElementById('videosList');
@@ -1239,6 +1248,7 @@ var mediaModule = {
 
                 localStorage.setItem('adminVideos', JSON.stringify(this.videos));
                 localStorage.setItem('adminLastChange', new Date().toISOString());
+                this._lastLocalChange = Date.now(); // prevent server fetch from overwriting local save
                 this.loadVideos(false); // no server fetch — we just saved, avoid race condition
                 this.closeVideoModal();
                 this.showAlert('videosAlert', 'success', 'Video gespeichert');
@@ -1249,25 +1259,49 @@ var mediaModule = {
                 const video = this.videos[idx];
                 const slug = video.slug;
                 const r2Key = video.r2Key || null;
-                this.videos.splice(idx, 1);
-                localStorage.setItem('adminVideos', JSON.stringify(this.videos));
+
+                // ── CRITICAL: capture the filtered list NOW, synchronously, before any
+                //    async operation. A concurrent loadVideos(true) response can race in
+                //    and overwrite this.videos between the splice and the POST, causing
+                //    the old list (with the deleted video) to be committed to GitHub.
+                const updatedVideos = this.videos.filter((_, i) => i !== idx);
+                this.videos = updatedVideos;
+                localStorage.setItem('adminVideos', JSON.stringify(updatedVideos));
                 localStorage.setItem('adminLastChange', new Date().toISOString());
-                this.loadVideos(false); // no server fetch — we just deleted, avoid race condition
+                this._lastLocalChange = Date.now(); // guard: block server overwrites for 30s
+                this.loadVideos(false);
                 this.showAlert('videosAlert', 'info', 'Lösche Video...');
+
+                // Pre-snapshot for build status widget (async — updatedVideos already captured)
+                let preSnapshot = null;
                 try {
+                    const sr = await fetch('/data/videos.json?_pre=' + Date.now(), {
+                        cache: 'no-store',
+                        headers: { 'Cache-Control': 'no-store, no-cache', 'Pragma': 'no-cache' }
+                    });
+                    preSnapshot = await sr.text();
+                } catch(e) {}
+
+                const pw = localStorage.getItem('adminPublishPw') || 'admin123';
+                try {
+                    // Commit the captured (correct) list to GitHub.
+                    // Use 'updatedVideos' (captured synchronously above) — NOT this.videos,
+                    // which could be overwritten by a concurrent loadVideos(true) response.
                     const dataRes = await fetch('https://stockvideo-checkout.rende.workers.dev/admin/data', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'X-Admin-Password': (localStorage.getItem('adminPublishPw')||'') },
-                        body: JSON.stringify({ kind: 'videos', items: this.videos })
+                        headers: { 'Content-Type': 'application/json', 'X-Admin-Password': pw },
+                        body: JSON.stringify({ kind: 'videos', items: updatedVideos })
                     });
                     if (!dataRes.ok) throw new Error('Commit fehlgeschlagen (' + dataRes.status + ')');
-                    try {
-                        await fetch('https://stockvideo-checkout.rende.workers.dev/admin/delete-video', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json', 'X-Admin-Password': (localStorage.getItem('adminPublishPw')||'') },
-                          body: JSON.stringify({ slug, r2Key })
-                        });
-                    } catch(e2) { /* R2-Fehler nicht fatal */ }
+
+                    // R2 cleanup — fire-and-forget, non-fatal if it fails
+                    fetch('https://stockvideo-checkout.rende.workers.dev/admin/delete-video', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-Admin-Password': pw },
+                        body: JSON.stringify({ slug, r2Key })
+                    }).catch(() => {});
+
+                    if (window.buildStatus) window.buildStatus.triggerBuild('/data/videos.json', preSnapshot);
                     this.showAlert('videosAlert', 'success', 'Video gelöscht und veröffentlicht!');
                 } catch(e) {
                     this.showAlert('videosAlert', 'error', 'Fehler: ' + e.message);
