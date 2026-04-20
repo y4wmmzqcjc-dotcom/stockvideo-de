@@ -121,7 +121,7 @@ var mediaModule = {
             'onclick="mediaModule.handleClick(event,' + item.id + ')" ondblclick="mediaModule.openDetail(' + item.id + ')">' +
             '<div class="media-card-check" onclick="event.stopPropagation();mediaModule.toggleSelect(' + item.id + ')">' +
             (this.selectedIds.has(item.id) ? '\u2713' : '') + '</div>' +
-                '<button class="media-card-rotate" onclick="event.stopPropagation();mediaModule.rotate(' + item.id + ')" title="90\u00b0 rotieren" style="position:absolute;top:8px;right:8px;z-index:2;background:rgba(0,0,0,0.55);color:#fff;border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;line-height:28px;padding:0;">\u21bb</button>' +
+                '<button type="button" class="media-card-rotate" onclick="event.preventDefault();event.stopPropagation();mediaModule.rotate(' + item.id + ')" title="90\u00b0 rotieren" style="position:absolute;top:8px;right:8px;z-index:2;background:rgba(0,0,0,0.55);color:#fff;border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;line-height:28px;padding:0;">\u21bb</button>' +
             '<div class="media-card-thumb"><img src="' + item.url + '" alt="' + (item.alt||item.name) + '" loading="lazy" ' +
             'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'+
             '<div class="media-placeholder" style="display:none;align-items:center;justify-content:center;flex-direction:column;gap:6px;width:100%;height:100%;background:linear-gradient(135deg,#1a1a2e,#2a2a4e);color:#8888aa;font-size:11px;text-align:center;padding:8px"><span style="font-size:24px;opacity:0.5">🖼</span><span style="word-break:break-all;line-height:1.3">' + (item.name||'Bild') + '</span></div></div>' +
