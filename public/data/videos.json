@@ -2429,5 +2429,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776692239985",
+    "title": "Nahaufnahme einer braunen Henne in einer Hühnerherde mit unscharfen Personen im Hintergrund auf einem Bauernhof",
+    "slug": "stock-footage-09",
+    "description": "Eine braune Henne mit rotem Kamm steht im Profilfokus einer großen Gruppe von Hühnern im Freien. Im Hintergrund sind mehrere Personen bei der Arbeit oder Interaktion mit den Tieren in einer ländlichen Umgebung bei Tageslicht zu sehen.",
+    "category": "tiere",
+    "tags": [
+      "chicken",
+      "hen",
+      "poultry",
+      "livestock",
+      "farm",
+      "agriculture",
+      "organic",
+      "bird",
+      "free range",
+      "animal",
+      "brown",
+      "red comb",
+      "beak",
+      "flock",
+      "farming",
+      "agriculture industry",
+      "sustainability",
+      "nature",
+      "outdoor",
+      "countryside",
+      "animal welfare",
+      "livestock farming",
+      "egg production",
+      "rural",
+      "domestic animal",
+      "farm life",
+      "eco",
+      "bio",
+      "range",
+      "vertebrate",
+      "husbandry",
+      "ranch",
+      "worker",
+      "group",
+      "people",
+      "background",
+      "blurred",
+      "out of focus",
+      "closeup",
+      "profile",
+      "head",
+      "eye",
+      "feathers",
+      "summer",
+      "daylight",
+      "field",
+      "food",
+      "poultry farm",
+      "animal husbandry"
+    ],
+    "resolution": "4K",
+    "duration": 5,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/stock-footage-09.jpg",
+    "r2Key": "videos/stock-footage-09.mov",
+    "r2Preview": "previews/stock-footage-09.mp4",
+    "r2Hover": "previews/stock-footage-09-hover.mp4",
+    "videoId": "stockvideo.de-8ODLJ8JF",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
