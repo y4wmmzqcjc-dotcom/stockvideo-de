@@ -1393,7 +1393,198 @@ var mediaModule = {
             },
 
             generateSlug(title) {
-                return title.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
+                return this.titleToSlug(title);
+            },
+
+            // Leitet aus einem deutschen Titel einen SEO-Slug ab:
+            // Umlaute → ae/oe/ue/ss, Sonderzeichen entfernt, Leerzeichen → Bindestriche
+            titleToSlug(title) {
+                return String(title || '')
+                    .toLowerCase()
+                    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .trim()
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-')
+                    .replace(/^-|-$/g, '');
+            },
+
+            // Leitet aus r2Key den aktuellen Base-Slug ab (z.B. "videos/abc.mp4" → "abc")
+            _r2BaseSlug(r2Key) {
+                if (!r2Key) return '';
+                const name = r2Key.split('/').pop() || '';
+                return name.replace(/\.[^.]+$/, '');
+            },
+
+            // Baut alle R2-Rename-Paare für ein Video (original, thumb, preview, hover)
+            _buildR2Renames(v, newSlug) {
+                const R2_BASE = 'https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/';
+                const renames = [];
+
+                // Thumbnail: thumbs/{oldSlug}.jpg → thumbs/{newSlug}.jpg
+                if (v.thumbnail) {
+                    const oldThumbKey = v.thumbnail.replace(R2_BASE, '');
+                    const ext = oldThumbKey.split('.').pop() || 'jpg';
+                    const newThumbKey = `thumbs/${newSlug}.${ext}`;
+                    if (oldThumbKey !== newThumbKey)
+                        renames.push({ type: 'thumb', oldKey: oldThumbKey, newKey: newThumbKey });
+                }
+
+                // Originalvideo: videos/{oldSlug}.mp4 → videos/{newSlug}.mp4
+                if (v.r2Key) {
+                    const ext = v.r2Key.split('.').pop() || 'mp4';
+                    const newR2Key = `videos/${newSlug}.${ext}`;
+                    if (v.r2Key !== newR2Key)
+                        renames.push({ type: 'video', oldKey: v.r2Key, newKey: newR2Key });
+                }
+
+                // 480p-Vorschau: previews/{oldSlug}.mp4 → previews/{newSlug}.mp4
+                if (v.r2Preview) {
+                    const ext = v.r2Preview.split('.').pop() || 'mp4';
+                    const newPreviewKey = `previews/${newSlug}.${ext}`;
+                    if (v.r2Preview !== newPreviewKey)
+                        renames.push({ type: 'preview', oldKey: v.r2Preview, newKey: newPreviewKey });
+                }
+
+                // Hover-Clip: previews/{oldSlug}-hover.mp4 → previews/{newSlug}-hover.mp4
+                if (v.r2Hover) {
+                    const ext = v.r2Hover.split('.').pop() || 'mp4';
+                    const newHoverKey = `previews/${newSlug}-hover.${ext}`;
+                    if (v.r2Hover !== newHoverKey)
+                        renames.push({ type: 'hover', oldKey: v.r2Hover, newKey: newHoverKey });
+                }
+
+                return renames;
+            },
+
+            // Optimiert alle Video-Slugs + R2-Dateinamen aus dem Titel und trägt 301-Redirects ein.
+            async optimizeSlugs() {
+                const btn = document.getElementById('optimizeSlugsBtn');
+                if (btn) { btn.disabled = true; btn.textContent = '⏳ Optimiere…'; }
+
+                const R2_BASE = 'https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/';
+
+                // Welche Videos brauchen Optimierung? (Slug oder R2-Keys weichen von Titel ab)
+                const changes = this.videos
+                    .map((v, i) => {
+                        const newSlug = this.titleToSlug(v.title);
+                        const r2Renames = newSlug ? this._buildR2Renames(v, newSlug) : [];
+                        const slugChanged = newSlug && newSlug !== v.slug;
+                        return { i, v, newSlug, r2Renames, slugChanged, needsWork: slugChanged || r2Renames.length > 0 };
+                    })
+                    .filter(x => x.needsWork);
+
+                if (changes.length === 0) {
+                    this.showAlert('videosAlert', 'info', 'Alle Slugs und Dateinamen sind bereits aus dem Titel abgeleitet – nichts zu tun.');
+                    if (btn) { btn.disabled = false; btn.textContent = '🔗 SEO-Slugs'; }
+                    return;
+                }
+
+                const totalFiles = changes.reduce((s, x) => s + x.r2Renames.length, 0);
+                const preview = changes.map(x =>
+                    `• ${x.v.slug} → ${x.newSlug}` +
+                    (x.r2Renames.length ? `\n  ${x.r2Renames.length} Datei(en) umbenennen` : '')
+                ).join('\n');
+                if (!confirm(
+                    `${changes.length} Video(s) werden optimiert (${totalFiles} R2-Datei(en) umbenennen):\n\n${preview}\n\n` +
+                    `Alte URLs erhalten automatisch 301-Redirects. Fortfahren?`
+                )) {
+                    if (btn) { btn.disabled = false; btn.textContent = '🔗 SEO-Slugs'; }
+                    return;
+                }
+
+                const pw = localStorage.getItem('adminPublishPw') || 'admin123';
+                const WORKER = 'https://stockvideo-checkout.rende.workers.dev';
+
+                // 1. R2-Dateien umbenennen (Schritt für Schritt mit Statusanzeige)
+                const allRenames = changes.flatMap(x => x.r2Renames);
+                if (allRenames.length > 0) {
+                    this.showAlert('videosAlert', 'info', `Benenne ${allRenames.length} R2-Datei(en) um…`);
+                    const renameRes = await fetch(WORKER + '/admin/r2-rename', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-Admin-Password': pw },
+                        body: JSON.stringify({ renames: allRenames }),
+                    });
+                    if (!renameRes.ok) {
+                        const err = await renameRes.text().catch(() => renameRes.status);
+                        this.showAlert('videosAlert', 'error', `R2-Umbenennung fehlgeschlagen: ${err}`);
+                        if (btn) { btn.disabled = false; btn.textContent = '🔗 SEO-Slugs'; }
+                        return;
+                    }
+                    const renameJson = await renameRes.json();
+                    const failed = (renameJson.results || []).filter(r => !r.ok && r.note !== 'skipped');
+                    if (failed.length > 0) {
+                        console.warn('[SEO-Slugs] R2-Fehler:', failed);
+                    }
+                }
+
+                // 2. _redirects von GitHub holen
+                let currentRedirects = '';
+                try {
+                    const r = await fetch(
+                        'https://raw.githubusercontent.com/y4wmmzqcjc-dotcom/stockvideo-de/main/public/_redirects',
+                        { cache: 'no-store' }
+                    );
+                    if (r.ok) currentRedirects = await r.text();
+                } catch(e) {}
+
+                // 3. Neue Redirect-Zeilen für geänderte URL-Slugs
+                const newLines = changes
+                    .filter(x => x.slugChanged && !currentRedirects.includes(`/video/${x.v.slug}/`))
+                    .map(x => `/video/${x.v.slug}/  /video/${x.newSlug}/  301`);
+                const updatedRedirects = [currentRedirects.trimEnd(), ...newLines].filter(Boolean).join('\n') + '\n';
+
+                // 4. Videos-Array vollständig aktualisieren (Slug + alle R2-Keys + Thumbnail-URL)
+                const updatedVideos = this.videos.map((v, i) => {
+                    const c = changes.find(x => x.i === i);
+                    if (!c) return v;
+                    const updated = { ...v, slug: c.newSlug };
+                    // R2-Keys und Thumbnail-URL auf neue Namen zeigen lassen
+                    for (const rn of c.r2Renames) {
+                        if (rn.type === 'thumb')    updated.thumbnail = R2_BASE + rn.newKey;
+                        if (rn.type === 'video')    updated.r2Key     = rn.newKey;
+                        if (rn.type === 'preview')  updated.r2Preview = rn.newKey;
+                        if (rn.type === 'hover')    updated.r2Hover   = rn.newKey;
+                    }
+                    return updated;
+                });
+
+                this.showAlert('videosAlert', 'info', 'Speichere videos.json und Redirects…');
+                try {
+                    // 5. videos.json speichern
+                    const vRes = await fetch(WORKER + '/admin/data', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-Admin-Password': pw },
+                        body: JSON.stringify({ kind: 'videos', items: updatedVideos }),
+                    });
+                    if (!vRes.ok) throw new Error('videos.json: ' + vRes.status);
+
+                    // 6. _redirects speichern
+                    if (newLines.length > 0) {
+                        const rRes = await fetch(WORKER + '/admin/commit', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-Admin-Password': pw },
+                            body: JSON.stringify({
+                                path: 'public/_redirects',
+                                content: updatedRedirects,
+                                message: `seo: add ${newLines.length} slug redirect(s) from title`,
+                            }),
+                        });
+                        if (!rRes.ok) throw new Error('_redirects: ' + rRes.status);
+                    }
+
+                    // 7. Lokalen State aktualisieren
+                    this.videos = updatedVideos;
+                    localStorage.setItem('adminVideos', JSON.stringify(this.videos));
+                    this._lastLocalChange = Date.now();
+                    this.loadVideos(false);
+                    this.showAlert('videosAlert', 'success',
+                        `✓ ${changes.length} Video(s) optimiert · ${allRenames.length} Datei(en) umbenannt · ${newLines.length} Redirect(s) eingetragen. Cloudflare baut neu.`);
+                } catch(e) {
+                    this.showAlert('videosAlert', 'error', 'Fehler: ' + e.message);
+                } finally {
+                    if (btn) { btn.disabled = false; btn.textContent = '🔗 SEO-Slugs'; }
+                }
             },
 
             // ===== CATEGORIES =====
