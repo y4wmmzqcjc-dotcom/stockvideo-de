@@ -324,5 +324,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776675092054",
+    "title": "Nahaufnahme eines digitalen Cockpit-Displays im Flugzeug mit Navigationsdaten und Menüoberfläche",
+    "slug": "aero-avionik-stock-02",
+    "description": "Die Aufnahme zeigt eine detaillierte Nahaufnahme eines modernen, digitalen Avionik-Displays (Glass Cockpit) in einem Flugzeug. Auf der linken Seite des Bildschirms ist ein Menü mit verschiedenen Icons wie „Units“, „Backlight“ und „Crew Profile“ zu sehen, während die rechte Seite primäre Flugdaten und Navigationsinstrumente anzeigt. Erkennbar sind unter anderem ein digitaler Kompass mit Kursangabe, GPS-Informationen sowie eine künstliche Horizont-Darstellung. Die Benutzeroberfläche wirkt hochmodern und technisch präzise, wobei die Schärfe auf den zentralen Anzeigeelementen liegt.",
+    "category": "",
+    "tags": [
+      "cockpit",
+      "aviation",
+      "display",
+      "screen",
+      "navigation",
+      "aircraft",
+      "avionics",
+      "flight",
+      "instrument",
+      "technology",
+      "digital",
+      "pilot",
+      "interface",
+      "monitor",
+      "dashboard",
+      "gps",
+      "gauge",
+      "altitude",
+      "horizon",
+      "compass",
+      "menu",
+      "system",
+      "electronic",
+      "data",
+      "transportation",
+      "aerospace",
+      "technical",
+      "detail",
+      "close-up",
+      "modern",
+      "aircraft-instrument",
+      "flight-deck",
+      "panel",
+      "control",
+      "information",
+      "light",
+      "glowing",
+      "glass",
+      "software",
+      "telemetry",
+      "indicator",
+      "heading",
+      "aviation-technology",
+      "inside",
+      "cockpit-view",
+      "smart",
+      "precision",
+      "virtual",
+      "aeronautics"
+    ],
+    "resolution": "4K",
+    "duration": 5,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/aero-avionik-stock-02.jpg",
+    "r2Key": "videos/aero-avionik-stock-02.mov",
+    "r2Preview": "previews/aero-avionik-stock-02.mp4",
+    "r2Hover": "previews/aero-avionik-stock-02-hover.mp4",
+    "videoId": "stockvideo.de-YGS1HF4T",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
