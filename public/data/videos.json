@@ -1627,5 +1627,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776689771758",
+    "title": "Nahaufnahme einer industriellen Schleifmaschine mit starkem Funkenflug bei der Metallbearbeitung",
+    "slug": "gerima-2021-stock-04",
+    "description": "Die Aufnahme zeigt im Detail, wie ein rotierendes Schleifband die Kante eines Metallbauteils bearbeitet. Dabei entsteht ein intensiver, fächerförmiger Funkenregen vor einem dunklen Hintergrund in einer Werkstattumgebung.",
+    "category": "industrie",
+    "tags": [
+      "grinding",
+      "sparks",
+      "metalwork",
+      "industry",
+      "machine",
+      "steel",
+      "manufacturing",
+      "metal",
+      "workshop",
+      "industrial",
+      "factory",
+      "tool",
+      "process",
+      "engineering",
+      "spark",
+      "glow",
+      "hot",
+      "heat",
+      "friction",
+      "technology",
+      "craftsmanship",
+      "fabrication",
+      "power",
+      "automated",
+      "component",
+      "edge",
+      "precision",
+      "motion",
+      "dark",
+      "bright",
+      "fire",
+      "abrasive",
+      "sander",
+      "belt-sander",
+      "production",
+      "technical",
+      "equipment",
+      "hardware",
+      "material",
+      "processing",
+      "metallurgy",
+      "mechanical",
+      "heavy-duty",
+      "detail",
+      "closeup",
+      "shining",
+      "labor",
+      "workshop-equipment",
+      "finishing"
+    ],
+    "resolution": "4K",
+    "duration": 17,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/gerima-2021-stock-04.jpg",
+    "r2Key": "videos/gerima-2021-stock-04.mov",
+    "r2Preview": "previews/gerima-2021-stock-04.mp4",
+    "r2Hover": "previews/gerima-2021-stock-04-hover.mp4",
+    "videoId": "stockvideo.de-772NRG7T",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
