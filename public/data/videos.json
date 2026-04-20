@@ -652,5 +652,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776677988024",
+    "title": "Blick durch die geöffnete Tür in das Cockpit eines Kleinflugzeugs mit eingeschalteten digitalen Displays",
+    "slug": "aero-avionik-stock-10",
+    "description": "Die Aufnahme zeigt die Innenansicht eines Leichtflugzeugs durch die offenstehende Kabinentür. Das Instrumentenbrett ist mit modernen, leuchtenden Glas-Cockpit-Anzeigen ausgestattet, die Navigationsdaten und Flugparameter visualisieren.",
+    "category": "technologie",
+    "tags": [
+      "cockpit",
+      "aviation",
+      "airplane",
+      "aircraft",
+      "display",
+      "avionics",
+      "flight",
+      "instrument",
+      "technology",
+      "digital",
+      "panel",
+      "interior",
+      "door",
+      "entry",
+      "pilot",
+      "navigation",
+      "screen",
+      "dashboard",
+      "electronic",
+      "aerospace",
+      "transportation",
+      "plane",
+      "light-aircraft",
+      "general-aviation",
+      "control",
+      "system",
+      "interface",
+      "monitor",
+      "glass-cockpit",
+      "cabin",
+      "fuselage",
+      "technical",
+      "detail",
+      "communication",
+      "altitude",
+      "heading",
+      "map",
+      "data",
+      "information",
+      "engineering",
+      "aeronautics",
+      "indoor",
+      "civil",
+      "vehicle",
+      "flight-deck",
+      "equipment",
+      "smart",
+      "hardware",
+      "modern"
+    ],
+    "resolution": "4K",
+    "duration": 7,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "",
+    "r2Key": "",
+    "r2Preview": "",
+    "r2Hover": "",
+    "videoId": "",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
