@@ -977,5 +977,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776687856358",
+    "title": "Luftaufnahme einer weiten Hügellandschaft mit dichtem Mischwald und vereinzelten Siedlungen unter bewölktem Himmel",
+    "slug": "pur-stock-06",
+    "description": "Das Video zeigt eine weite Drohnenansicht über bewaldete Hügelketten und Täler. Im dichten Grün des Waldes sind vereinzelt Wohnhäuser, Strommasten und eine am Rand verlaufende Straße erkennbar.",
+    "category": "drohne-arials",
+    "tags": [
+      "landscape",
+      "aerial",
+      "forest",
+      "hill",
+      "nature",
+      "valley",
+      "woodland",
+      "green",
+      "environment",
+      "trees",
+      "sky",
+      "clouds",
+      "scenery",
+      "countryside",
+      "outdoor",
+      "horizon",
+      "panorama",
+      "view",
+      "rural",
+      "vegetation",
+      "wilderness",
+      "background",
+      "high-angle",
+      "drone-shot",
+      "altitude",
+      "remote",
+      "mixed-forest",
+      "summer",
+      "broadleaf",
+      "travel",
+      "geology",
+      "settlement",
+      "road",
+      "infrastructure",
+      "sustainable",
+      "conservation",
+      "ecology",
+      "day",
+      "overcast",
+      "tranquil",
+      "vast",
+      "scenic",
+      "heights",
+      "leaf",
+      "natural",
+      "plants",
+      "topography",
+      "terrain",
+      "europe"
+    ],
+    "resolution": "4K",
+    "duration": 6,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/pur-stock-06.jpg",
+    "r2Key": "videos/pur-stock-06.mov",
+    "r2Preview": "previews/pur-stock-06.mp4",
+    "r2Hover": "previews/pur-stock-06-hover.mp4",
+    "videoId": "stockvideo.de-62DTDA2G",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
