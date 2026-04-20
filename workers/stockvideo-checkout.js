@@ -529,7 +529,7 @@ export default {
         if (path === '/admin/r2-stats' && request.method === 'GET') { if (!env.R2) return jsonResponse({ error: 'R2 not bound' }, 500); let total = 0, count = 0, cursor; do { const listed = await env.R2.list({ cursor, limit: 1000 }); for (const obj of listed.objects) { total += obj.size; count++; } cursor = listed.truncated ? listed.cursor : undefined; } while (cursor); return jsonResponse({ totalBytes: total, objectCount: count }); }
 
     if (path === '/admin/r2-put' && request.method === 'PUT') {
-      if (!verify(request, env)) return jsonResponse({ error: 'unauthorized' }, 401);
+      if (!(await verify(request))) return jsonResponse({ error: 'unauthorized' }, 401);
       if (!env.R2) return jsonResponse({ error: 'R2 not bound' }, 500);
       const key = url.searchParams.get('key');
       if (!key) return jsonResponse({ error: 'key query param required' }, 400);
