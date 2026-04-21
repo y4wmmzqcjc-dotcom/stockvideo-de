@@ -214,140 +214,157 @@
 
 
 
-// v20260421S - Gemini KI: Key server-side via /api/ki-analyze
+// v20260422A - KI: Analyse beim File-Select, Title-Blur befüllt Felder
+// Flow: Datei wählen → KI analysiert Frames → User tippt Titel → Tab/Enter → Felder werden befüllt
 (function () {
   'use strict';
 
-  // ── Toast ─────────────────────────────────────────────────────────────────
-  function getToast() {
-    let el = document.getElementById('ki-toast');
-    if (!el) {
-      el = document.createElement('div');
-      el.id = 'ki-toast';
-      el.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1a1a2e;color:#e0e0ff;' +
-        'padding:13px 20px;border-radius:10px;z-index:99999;font-size:14px;font-family:sans-serif;' +
-        'box-shadow:0 4px 24px rgba(0,0,0,.55);display:none;max-width:320px;line-height:1.4;';
-      document.body.appendChild(el);
+  window._kiResult = null;
+  window._kiStatus = 'idle'; // idle | running | done | error
+
+  // ── Status-Anzeige im Modal ───────────────────────────────────────────
+  function setKiUI(msg) {
+    const el = document.getElementById('videoModalAlert');
+    if (!el) return;
+    el.style.cssText = 'display:block;padding:8px 12px;border-radius:6px;margin-bottom:12px;font-size:13px;';
+    if (msg.startsWith('ERR')) {
+      el.style.background = '#fff3cd'; el.style.color = '#856404';
+    } else if (msg.startsWith('OK')) {
+      el.style.background = '#d4edda'; el.style.color = '#155724';
+    } else {
+      el.style.background = '#e8f4fd'; el.style.color = '#0c5460';
     }
-    return el;
-  }
-  function setStatus(msg) { const t = getToast(); t.textContent = msg; t.style.display = 'block'; }
-  function hideStatus(d)  { setTimeout(() => { getToast().style.display = 'none'; }, d || 3000); }
-
-  function withTimeout(promise, ms, label) {
-    return Promise.race([
-      promise,
-      new Promise((_, rej) => setTimeout(() => rej(new Error(label + ' Timeout')), ms))
-    ]);
+    el.textContent = msg.replace(/^(ERR|OK|INFO) /, '');
   }
 
-  // ── 3 JPEG Frames extrahieren ─────────────────────────────────────────────
-  function extractFrame(file, pos) {
-    return new Promise((resolve, reject) => {
+  // ── Frames aus Video-Datei extrahieren ───────────────────────────────
+  async function extractFramesB64(file, count) {
+    return new Promise((resolve) => {
       const url = URL.createObjectURL(file);
-      const video = document.createElement('video');
-      video.muted = true; video.src = url;
-      video.addEventListener('loadedmetadata', () => { video.currentTime = (video.duration || 10) * pos; });
-      video.addEventListener('seeked', () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.min(video.videoWidth || 640, 768);
-        canvas.height = Math.round(canvas.width / ((video.videoWidth||16)/(video.videoHeight||9)));
-        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+      const vid = document.createElement('video');
+      vid.src = url; vid.muted = true; vid.preload = 'metadata';
+      const frames = [];
+      vid.addEventListener('loadedmetadata', async () => {
+        const dur = vid.duration || 10;
+        for (let i = 0; i < count; i++) {
+          const t = dur * (i + 1) / (count + 1);
+          await new Promise(r => {
+            vid.currentTime = t;
+            vid.addEventListener('seeked', () => {
+              const cv = document.createElement('canvas');
+              cv.width = 320; cv.height = 180;
+              cv.getContext('2d').drawImage(vid, 0, 0, 320, 180);
+              frames.push(cv.toDataURL('image/jpeg', 0.7).split(',')[1]);
+              r();
+            }, { once: true });
+          });
+        }
         URL.revokeObjectURL(url);
-        resolve(canvas.toDataURL('image/jpeg', 0.85).split(',')[1]);
+        resolve(frames);
       });
-      video.addEventListener('error', reject);
-      video.load();
+      vid.addEventListener('error', () => { URL.revokeObjectURL(url); resolve([]); });
     });
   }
 
-  // ── Prompt ────────────────────────────────────────────────────────────────
-  function getKiPrompt() {
-    const ca = document.querySelector('#videoModalCategory');
-    const cats = ca ? [...ca.options].filter(o => o.value).map(o => o.value).join(', ') : '';
-    return 'Analysiere diese 3 Frames aus einem Stockvideo (Anfang, Mitte, Ende). Antworte NUR mit diesem JSON:\n' +
-      '{"titel":"Kurzer deutscher Titel max 60 Zeichen",' +
-      '"beschreibung":"Deutsche Beschreibung 1-2 Saetze",' +
-      '"keywords":["kw1","kw2","kw3","kw4","kw5"],' +
-      '"kategorie":"EINE aus: ' + cats + '"}';
-  }
-
-  // ── Felder befüllen ───────────────────────────────────────────────────────
-  function fillFields(data) {
-    const set = (sel, val, ev) => { const el = document.querySelector(sel); if (el && val) { el.value = val; el.dispatchEvent(new Event(ev||'input', {bubbles:true})); }};
-    set('#videoModalTitle_Input', data.titel);
-    set('#videoModalDescription', data.beschreibung);
-    set('#videoModalTags', Array.isArray(data.keywords) ? data.keywords.join(', ') : String(data.keywords||''));
-    if (data.kategorie) {
-      const ca = document.querySelector('#videoModalCategory');
-      if (ca) {
-        const cat = String(data.kategorie).toLowerCase().trim();
-        const best = [...ca.options].find(o => o.value === data.kategorie || o.value.toLowerCase() === cat || o.value.replace(/-/g,'') === cat.replace(/-/g,''));
-        if (best) { ca.value = best.value; ca.dispatchEvent(new Event('change', {bubbles:true})); }
-      }
-    }
-  }
-
-  // ── KI via /api/ki-analyze (Key server-side in CF Pages secret) ───────────
+  // ── KI-Analyse aufrufen ───────────────────────────────────────────────
   async function runKiAnalysis(file) {
-    setStatus('📸 Extrahiere Frames...');
-    const [f1, f2, f3] = await withTimeout(
-      Promise.all([extractFrame(file, 0.2), extractFrame(file, 0.5), extractFrame(file, 0.8)]),
-      20000, 'Frame-Extraktion'
-    );
-
-    setStatus('🤖 Gemini analysiert...');
-    const res = await withTimeout(
-      fetch('/api/ki-analyze', {
+    window._kiStatus = 'running';
+    window._kiResult = null;
+    setKiUI('INFO Analysiere Video mit KI...');
+    try {
+      const frames = await extractFramesB64(file, 3);
+      const prompt = 'Analysiere dieses Stockvideo fuer stockvideo.de. ' +
+        'Antworte NUR mit JSON, kein Markdown: ' +
+        '{"beschreibung":"SEO-optimierte Beschreibung auf Deutsch (2-3 Saetze)",' +
+        '"kategorie":"EINE aus: tiere|essen|hobbys|industrie|pflanzen|technologie|drohne|gebaeude|business|transport",' +
+        '"tags":["tag1","tag2","tag3","tag4","tag5"],' +
+        '"preis":29,"dauer_sek":0,"fps":0}';
+      const resp = await fetch('/api/ki-analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ frames: [f1, f2, f3], prompt: getKiPrompt() })
-      }),
-      30000, 'Gemini API'
-    );
-
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error('API Fehler ' + res.status + ': ' + errText.substring(0, 100));
+        body: JSON.stringify({ frames, prompt })
+      });
+      const data = await resp.json();
+      if (data.analysis) {
+        let parsed = null;
+        try {
+          let txt = typeof data.analysis === 'string' ? data.analysis : JSON.stringify(data.analysis);
+          txt = txt.replace(/^[sS]*?({)/, '$1').replace(/(})[sS]*$/, '$1');
+          parsed = JSON.parse(txt);
+        } catch (e) { /* ignore parse error */ }
+        if (parsed) {
+          window._kiResult = parsed;
+          window._kiStatus = 'done';
+          setKiUI('OK KI fertig — Titel eingeben und Tab/Enter druecken');
+          return;
+        }
+      }
+      window._kiStatus = 'error';
+      const errMsg = data.error ? data.error.replace('Gemini ', '') : 'Kein Ergebnis';
+      setKiUI('ERR KI: ' + errMsg + ' — Felder manuell ausfüllen');
+    } catch (err) {
+      window._kiStatus = 'error';
+      setKiUI('ERR KI-Fehler: ' + err.message + ' — Felder manuell ausfüllen');
     }
-
-    const result = await res.json();
-    if (!result.analysis) throw new Error('Keine Antwort von Gemini');
-    const data = JSON.parse(result.analysis);
-    fillFields(data);
-    setStatus('✅ Metadaten gesetzt – Upload startet...');
-    hideStatus(2500);
-    return data;
   }
 
-  // ── Capture-Phase Listener ────────────────────────────────────────────────
-  document.addEventListener('change', async function (e) {
-    if (!e.target || e.target.id !== 'videoModalFile') return;
-    if (e.target.__kiPassThrough) return;
-
-    e.stopImmediatePropagation();
-    e.preventDefault();
-
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const saveBtn = document.querySelector('#videoModalSaveBtn, [id*="SaveBtn"]');
-    if (saveBtn) { saveBtn.disabled = true; saveBtn.dataset.kiBlocked = '1'; }
-
-    try {
-      await withTimeout(runKiAnalysis(file), 60000, 'KI Gesamt');
-    } catch (err) {
-      setStatus('⚠️ KI übersprungen: ' + err.message.substring(0, 60));
-      hideStatus(4000);
-      console.error('[KI]', err);
-      const ti = document.querySelector('#videoModalTitle_Input');
-      if (ti && !ti.value) ti.value = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
-    } finally {
-      if (saveBtn) { saveBtn.disabled = false; delete saveBtn.dataset.kiBlocked; }
-      e.target.__kiPassThrough = true;
-      e.target.dispatchEvent(new Event('change', { bubbles: true }));
-      delete e.target.__kiPassThrough;
+  // ── Felder aus KI-Ergebnis befüllen ───────────────────────────────
+  function fillFromKi() {
+    const r = window._kiResult;
+    if (!r || window._kiStatus !== 'done') return;
+    const get = id => document.getElementById(id);
+    const desc  = get('videoModalDescription');
+    const cat   = get('videoModalCategory');
+    const tags  = get('videoModalTags');
+    const dur   = get('videoModalDuration');
+    const fps   = get('videoModalFPS');
+    const price = get('videoModalPrice');
+    if (desc  && !desc.value  && r.beschreibung) desc.value  = r.beschreibung;
+    if (tags  && !tags.value  && r.tags)         tags.value  = Array.isArray(r.tags) ? r.tags.join(', ') : r.tags;
+    if (dur   && !dur.value   && r.dauer_sek)    dur.value   = r.dauer_sek;
+    if (fps   && !fps.value   && r.fps)          fps.value   = r.fps;
+    if (price && !price.value && r.preis)        price.value = r.preis;
+    if (cat && !cat.value && r.kategorie) {
+      const v = r.kategorie.toLowerCase().trim();
+      Array.from(cat.options).forEach(o => { if (o.value === v || v.startsWith(o.value)) cat.value = o.value; });
     }
-  }, true);
+    setKiUI('OK Felder befüllt — bitte prüfen und ggf. anpassen');
+  }
+
+  // ── Listener am File-Input und Titel-Input ─────────────────────────
+  function attachListeners() {
+    const fileEl  = document.getElementById('videoModalFile');
+    const titleEl = document.getElementById('videoModalTitle_Input');
+    if (fileEl && !fileEl._kiAttached) {
+      fileEl._kiAttached = true;
+      fileEl.addEventListener('change', function () {
+        if (this.files[0]) { window._kiResult = null; window._kiStatus = 'idle'; runKiAnalysis(this.files[0]); }
+      });
+    }
+    if (titleEl && !titleEl._kiTitleAttached) {
+      titleEl._kiTitleAttached = true;
+      titleEl.addEventListener('blur', function () {
+        if (this.value.trim().length > 1 && window._kiStatus === 'done') fillFromKi();
+      });
+      titleEl.addEventListener('keydown', function (e) {
+        if ((e.key === 'Enter' || e.key === 'Tab') && this.value.trim().length > 1 && window._kiStatus === 'done') fillFromKi();
+      });
+    }
+  }
+
+  // ── openVideoModal patchen ────────────────────────────────────────────
+  if (typeof admin !== 'undefined' && admin.openVideoModal) {
+    const _orig = admin.openVideoModal.bind(admin);
+    admin.openVideoModal = function () {
+      window._kiResult = null;
+      window._kiStatus = 'idle';
+      const alertEl = document.getElementById('videoModalAlert');
+      if (alertEl) { alertEl.style.display = 'none'; alertEl.textContent = ''; }
+      _orig.apply(this, arguments);
+      setTimeout(attachListeners, 150);
+    };
+  }
+
+  attachListeners();
 
 })();
