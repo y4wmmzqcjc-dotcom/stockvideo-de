@@ -3007,5 +3007,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776765611720",
+    "title": "Industrielles Förderband beim Transport von Holzhackschnitzeln zur energetischen Verwertung oder Verarbeitung",
+    "slug": "industrielles-foerderband-beim-transport-von-holzhackschnitzeln-zur-energetischen-verwertung-oder-verarbeitung",
+    "description": "Diese Stockaufnahme zeigt eine industrielle Anlage, bei der Holzhackschnitzel über ein mechanisches Förderbandsystem transportiert werden. Das zerkleinerte Holzmaterial fällt gleichmäßig auf das Band, wobei feiner Staub in der hellen Fabrikhalle aufgewirbelt wird. Die metallische Konstruktion der Anlage ist robust und funktional gestaltet, typisch für Betriebe im Bereich der Biomasse-Energieerzeugung oder der Holzverarbeitung. Die Szene verdeutlicht den automatisierten Materialfluss von nachwachsenden Rohstoffen. Das Licht fällt seitlich ein und betont die Textur der Holzsplitter sowie die Staubentwicklung während des laufenden Produktionsprozesses.",
+    "category": "industrie",
+    "tags": [
+      "Hackschnitzel",
+      "Holzhackschnitzel",
+      "Förderband",
+      "Industrie",
+      "Biomasse",
+      "Holzverarbeitung",
+      "Erneuerbare Energie",
+      "Rohstoff",
+      "Transport",
+      "Materialfluss",
+      "Fabrik",
+      "Anlage",
+      "Mechanik",
+      "Holzsplitter",
+      "Staub",
+      "Staubentwicklung",
+      "Automatisierung",
+      "Produktion",
+      "Energieerzeugung",
+      "Nachhaltigkeit",
+      "Brennstoff",
+      "Biokraftstoff",
+      "Recycling",
+      "Zerkleinerung",
+      "Metallkonstruktion",
+      "Maschinenbau",
+      "Werkshalle",
+      "Wirtschaft",
+      "Industrieanlage",
+      "Technik",
+      "Technologie",
+      "Energiewirtschaft",
+      "Biomassekraftwerk",
+      "Holzindustrie",
+      "Ressource",
+      "Verarbeitung",
+      "Förderanlage",
+      "Bewegung",
+      "Material",
+      "Schüttgut",
+      "Ökologie",
+      "Umweltschutz",
+      "Fabrikhalle",
+      "Beladung",
+      "Rohstofflager",
+      "Mechanisierung",
+      "Effizienz",
+      "Kraftwerk",
+      "System"
+    ],
+    "resolution": "4K",
+    "duration": 11,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/industrielles-foerderband-beim-transport-von-holzhackschnitzeln-zur-energetische.jpg",
+    "r2Key": "videos/industrielles-foerderband-beim-transport-von-holzhackschnitzeln-zur-energetische.mov",
+    "r2Preview": "previews/industrielles-foerderband-beim-transport-von-holzhackschnitzeln-zur-energetische.mp4",
+    "r2Hover": "previews/industrielles-foerderband-beim-transport-von-holzhackschnitzeln-zur-energetische-hover.mp4",
+    "videoId": "stockvideo.de-GCRYKL5L",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
