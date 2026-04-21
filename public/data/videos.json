@@ -6428,5 +6428,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776779634987",
+    "title": "Nahaufnahme eines Einweisers am Flughafen beim Kreuzen zweier roter Leuchtstäbe als Stoppsignal",
+    "slug": "nahaufnahme-eines-einweisers-am-flughafen-beim-kreuzen-zweier-roter-leuchtstaebe-als-stoppsignal",
+    "description": "Diese Stockaufnahme zeigt eine detaillierte Ansicht der Hände eines Bodenmitarbeiters am Flughafen, der zwei leuchtend rote Signalstäbe vor einem bewölkten Himmel kreuzt. Diese Geste dient in der Luftfahrt als visuelles Signal zum Anhalten eines Flugzeugs während der Bodenabfertigung. Im Hintergrund ist die obere Kante einer hellen Flugzeughalle unscharf erkennbar. Die Aufnahme fokussiert sich auf die funktionale Handlung der Einweisung und vermittelt eine professionelle Atmosphäre der Sicherheit und Koordination auf dem Rollfeld. Die Lichtverhältnisse sind neutral und tageslichtabhängig.",
+    "category": "transport",
+    "tags": [
+      "Einweiser",
+      "Leuchtstab",
+      "Flughafen",
+      "Signal",
+      "Bodenabfertigung",
+      "Stopp",
+      "Luftverkehr",
+      "Sicherheit",
+      "Flugplatz",
+      "Kommunikation",
+      "Bodenpersonal",
+      "Einweisen",
+      "Signalstab",
+      "Handzeichen",
+      "Luftfahrt",
+      "Rollfeld",
+      "Vorfeld",
+      "Koordination",
+      "Arbeit",
+      "Mitarbeiter",
+      "Nahaufnahme",
+      "Rot",
+      "Warnsignal",
+      "Flugbetrieb",
+      "Logistik",
+      "Transport",
+      "Flugzeughalle",
+      "Hangar",
+      "Kontrolle",
+      "Einweisung",
+      "Flugzeugführung",
+      "Navigation",
+      "Service",
+      "Bodencrew",
+      "Flugwesen",
+      "Technik",
+      "Personal",
+      "Abfertigung",
+      "Halt",
+      "Geste",
+      "Zeichen",
+      "Anleitung",
+      "Hilfe",
+      "Flughafenmitarbeiter",
+      "Sicherheitssignal",
+      "Sichtzeichen",
+      "Flugvorbereitung",
+      "Professionalität",
+      "Flughafenbetrieb"
+    ],
+    "resolution": "4K",
+    "duration": 5,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/nahaufnahme-eines-einweisers-am-flughafen-beim-kreuzen-zweier-roter-leuchtstaebe.jpg",
+    "r2Key": "videos/nahaufnahme-eines-einweisers-am-flughafen-beim-kreuzen-zweier-roter-leuchtstaebe.mov",
+    "r2Preview": "previews/nahaufnahme-eines-einweisers-am-flughafen-beim-kreuzen-zweier-roter-leuchtstaebe.mp4",
+    "r2Hover": "previews/nahaufnahme-eines-einweisers-am-flughafen-beim-kreuzen-zweier-roter-leuchtstaebe-hover.mp4",
+    "videoId": "stockvideo.de-OPKMH8FQ",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
