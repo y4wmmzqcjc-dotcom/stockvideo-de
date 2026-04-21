@@ -4151,5 +4151,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776768200916",
+    "title": "Extreme Nahaufnahme einer CNC-Brennschneidmaschine beim präzisen Schneiden einer dicken Metallplatte mit Funkenflug",
+    "slug": "extreme-nahaufnahme-einer-cnc-brennschneidmaschine-beim-praezisen-schneiden-einer-dicken-metallplatte-mit-funkenflug",
+    "description": "Diese Stockaufnahme zeigt in einer detaillierten Makroaufnahme den thermischen Trennprozess einer massiven Stahlplatte durch eine automatisierte CNC-Brennschneidmaschine. Zwei Gasbrenner führen eine präzise geführte Flamme über die Metalloberfläche, wodurch glühendes, flüssiges Metall und helle Funken nach unten austreten. Die Szene verdeutlicht die enorme Hitzeeinwirkung und die technische Präzision moderner Metallbearbeitung. Das Spiel aus blauem Lichtkegel und orangefarbenem Glühen erzeugt eine kontrastreiche, industrielle Atmosphäre, während die Kamera die langsame, stetige Vorwärtsbewegung des Schneidkopfs entlang der Schnittkante fokussiert.",
+    "category": "industrie",
+    "tags": [
+      "Brennschneiden",
+      "Metallbearbeitung",
+      "CNC",
+      "Stahl",
+      "Industrie",
+      "Nahaufnahme",
+      "Funkenflug",
+      "Hitze",
+      "Präzision",
+      "Fertigung",
+      "Maschine",
+      "Schneidbrenner",
+      "Flamme",
+      "Metall",
+      "Trennen",
+      "Automatisierung",
+      "Stahlplatte",
+      "Glühen",
+      "Produktion",
+      "Technik",
+      "Maschinenbau",
+      "Werkstück",
+      "Prozess",
+      "Bauteil",
+      "Werkstoff",
+      "Schmelzen",
+      "Gasbrenner",
+      "Konstruktion",
+      "Werkstatt",
+      "Technologie",
+      "Industrieanlage",
+      "Schlacke",
+      "Metallbau",
+      "Schnittkante",
+      "Makro",
+      "Hardware",
+      "Mechanik",
+      "Werkzeug",
+      "Schwerindustrie",
+      "Arbeitsplatz",
+      "Energie",
+      "Kraft",
+      "Bauelement",
+      "Profil",
+      "Form",
+      "Schneiden",
+      "Schweißen",
+      "Industrieumfeld",
+      "Fertigungstechnik"
+    ],
+    "resolution": "4K",
+    "duration": 9,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/extreme-nahaufnahme-einer-cnc-brennschneidmaschine-beim-praezisen-schneiden-eine.jpg",
+    "r2Key": "videos/extreme-nahaufnahme-einer-cnc-brennschneidmaschine-beim-praezisen-schneiden-eine.mov",
+    "r2Preview": "previews/extreme-nahaufnahme-einer-cnc-brennschneidmaschine-beim-praezisen-schneiden-eine.mp4",
+    "r2Hover": "previews/extreme-nahaufnahme-einer-cnc-brennschneidmaschine-beim-praezisen-schneiden-eine-hover.mp4",
+    "videoId": "stockvideo.de-HWBMKPI5",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
