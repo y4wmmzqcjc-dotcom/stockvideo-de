@@ -3905,5 +3905,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776767905158",
+    "title": "Industriearbeiter bearbeitet Metallplatte mit einem Winkelschleifer in einer Werkhalle aus der Vogelperspektive",
+    "slug": "industriearbeiter-bearbeitet-metallplatte-mit-einem-winkelschleifer-in-einer-werkhalle-aus-der-vogelperspektive",
+    "description": "Diese Stockaufnahme zeigt einen Arbeiter in dunkler Schutzkleidung, der in einer weitläufigen Industriehalle eine Metallplatte bearbeitet. Aus der Draufsicht ist zu sehen, wie der Mann einen Winkelschleifer nutzt, wodurch ein intensiver Funkenflug entsteht, der sich über den Betonboden ausbreitet. Auf dem Arbeitstisch und in der Umgebung befinden sich diverse schwere Stahlbauteile und Werkzeuge. Die Szenerie ist sachlich und dokumentarisch gefilmt, wobei die kühle Beleuchtung der Halle und der warme Kontrast der orangefarbenen Funken eine professionelle industrielle Arbeitsatmosphäre schaffen.",
+    "category": "industrie",
+    "tags": [
+      "Winkelschleifer",
+      "Metallbearbeitung",
+      "Funkenflug",
+      "Industriearbeiter",
+      "Werkhalle",
+      "Stahl",
+      "Draufsicht",
+      "Flexen",
+      "Handwerk",
+      "Industrie",
+      "Arbeit",
+      "Metall",
+      "Schlosser",
+      "Fertigung",
+      "Werkstatt",
+      "Funke",
+      "Schutzkleidung",
+      "Handwerker",
+      "Metallplatte",
+      "Betonboden",
+      "Halle",
+      "Produktion",
+      "Technik",
+      "Werkzeug",
+      "Schleifen",
+      "Bauteil",
+      "Stahlbau",
+      "Arbeitsplatz",
+      "Mann",
+      "Profi",
+      "Montage",
+      "Maschinenbau",
+      "Werkstoff",
+      "Schwerindustrie",
+      "Präzision",
+      "Sicherheit",
+      "Ausrüstung",
+      "Tätigkeit",
+      "Manuell",
+      "Oberflächenbearbeitung",
+      "Konstruktion",
+      "Handarbeit",
+      "Industriegelände",
+      "Lagerhalle",
+      "Material",
+      "Prozess",
+      "Trennen",
+      "Schleifmaschine",
+      "Hitze"
+    ],
+    "resolution": "4K",
+    "duration": 15,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/industriearbeiter-bearbeitet-metallplatte-mit-einem-winkelschleifer-in-einer-wer.jpg",
+    "r2Key": "videos/industriearbeiter-bearbeitet-metallplatte-mit-einem-winkelschleifer-in-einer-wer.mov",
+    "r2Preview": "previews/industriearbeiter-bearbeitet-metallplatte-mit-einem-winkelschleifer-in-einer-wer.mp4",
+    "r2Hover": "previews/industriearbeiter-bearbeitet-metallplatte-mit-einem-winkelschleifer-in-einer-wer-hover.mp4",
+    "videoId": "stockvideo.de-HPOVI0TR",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
