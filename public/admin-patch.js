@@ -1,12 +1,12 @@
-// admin-patch.js â v20260421H
+// admin-patch.js Ã¢ÂÂ v20260421I
 (function () {
   'use strict';
-  // ââ Modal-Fix CSS
+  // Ã¢ÂÂÃ¢ÂÂ Modal-Fix CSS
   (function(){const s=document.createElement('style');s.id='bw-patch-css';s.textContent='.modal.active .modal-content{display:block!important}';document.head.appendChild(s);})();
 
   var R2_BASE = 'https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev';
 
-  // ââ Helpers âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+  // Ã¢ÂÂÃ¢ÂÂ Helpers Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
   function isComplete(v) {
     return !!(v.title && v.title.trim() && v.description && v.description.trim() &&
       v.tags && Array.isArray(v.tags) && v.tags.length > 0 && v.category && v.category.trim());
@@ -16,7 +16,7 @@
     var m = [];
     if (!v.title || !v.title.trim()) m.push('Titel');
     if (!v.description || !v.description.trim()) m.push('Beschreibung');
-    if (!v.tags || !v.tags.length) m.push('SchlagwÃ¶rter');
+    if (!v.tags || !v.tags.length) m.push('SchlagwÃÂ¶rter');
     if (!v.category || !v.category.trim()) m.push('Kategorie');
     return m;
   }
@@ -25,9 +25,9 @@
     return (str || '').trim().split(/\s+/).filter(Boolean).length;
   }
 
-  // ââ UnerwÃ¼nschte UI-Elemente verstecken âââââââââââââââââââââââââââââââââââââââââââââââââ
+  // Ã¢ÂÂÃ¢ÂÂ UnerwÃÂ¼nschte UI-Elemente verstecken Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
   function hideElements() {
-    // SEO-Slug Button (gefÃ¤hrlich â benennt R2-Dateien ohne videos.json-Update)
+    // SEO-Slug Button (gefÃÂ¤hrlich Ã¢ÂÂ benennt R2-Dateien ohne videos.json-Update)
     var slugBtn = document.getElementById('optimizeSlugsBtn');
     if (slugBtn) slugBtn.style.display = 'none';
 
@@ -44,7 +44,7 @@
     if (batchZone) batchZone.remove();
   }
 
-  // ââ Ampel-Indikatoren ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+  // Ã¢ÂÂÃ¢ÂÂ Ampel-Indikatoren Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
   function injectAmpels() {
     document.querySelectorAll('#videoListItems .video-item').forEach(function (item) {
       if (item.querySelector('.bw-ampel')) return;
@@ -55,7 +55,7 @@
       var ok = isComplete(v);
       var dot = document.createElement('span');
       dot.className = 'bw-ampel';
-      dot.title = ok ? 'Alle Metadaten vollstÃ¤ndig' : 'Fehlt: ' + getMissing(v).join(', ');
+      dot.title = ok ? 'Alle Metadaten vollstÃÂ¤ndig' : 'Fehlt: ' + getMissing(v).join(', ');
       dot.style.cssText = 'display:inline-block;width:10px;height:10px;border-radius:50%;' +
         'margin-right:6px;flex-shrink:0;vertical-align:middle;background:' + (ok ? '#22c55e' : '#ef4444');
       var titleEl = item.querySelector('.video-title, .video-name, h3, h4, strong') || item.firstChild;
@@ -63,7 +63,7 @@
     });
   }
 
-  // ââ Video-Metadaten automatisch erkennen (Dauer + FPS) ââââââââââââââââââââââââââ
+  // Ã¢ÂÂÃ¢ÂÂ Video-Metadaten automatisch erkennen (Dauer + FPS) Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
   function autoDetectVideoMeta(file) {
     var url = URL.createObjectURL(file);
     var vid = document.createElement('video');
@@ -120,7 +120,7 @@
     });
   }
 
-  // ââ File-Input: Titel prÃ¼fen + Auto-Detect âââââââââââââââââââââââââââââââââââââââââââââââ
+  // Ã¢ÂÂÃ¢ÂÂ File-Input: Titel prÃÂ¼fen + Auto-Detect Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
   function hookFileInput() {
     var fileInput = document.getElementById('videoModalFile');
     if (!fileInput || fileInput._bwHooked) return;
@@ -132,8 +132,8 @@
       var wc = wordCount(title);
       if (wc < 5) {
         var needed = 5 - wc;
-        alert('Bitte zuerst einen Titel mit mindestens 5 WÃ¶rtern eingeben.\n' +
-          (wc === 0 ? 'Noch kein Titel eingetragen.' : 'Noch ' + needed + ' Wort' + (needed === 1 ? '' : 'Ã¶rter') + ' fehlen.'));
+        alert('Bitte zuerst einen Titel mit mindestens 5 WÃÂ¶rtern eingeben.\n' +
+          (wc === 0 ? 'Noch kein Titel eingetragen.' : 'Noch ' + needed + ' Wort' + (needed === 1 ? '' : 'ÃÂ¶rter') + ' fehlen.'));
         fileInput.value = '';
         return;
       }
@@ -142,12 +142,12 @@
     });
   }
 
-  // ââ openVideoModal: Standard-Preis + Hooks ââââââââââââââââââââââââââââââââââââââââââââââ
+  // Ã¢ÂÂÃ¢ÂÂ openVideoModal: Standard-Preis + Hooks Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
   var _origOpen = admin.openVideoModal.bind(admin);
   admin.openVideoModal = function (video) {
     _origOpen(video);
     setTimeout(function () {
-      // Standard-Preis 19.99 fÃ¼r neue Videos
+      // Standard-Preis 19.99 fÃÂ¼r neue Videos
       var priceEl = document.getElementById('videoModalPrice');
       if (priceEl && (!video || !video.price)) priceEl.value = '19.99';
       hookFileInput();
@@ -155,7 +155,7 @@
     }, 60);
   };
 
-  // ââ renderVideosList: neueste zuerst + Ampeln âââââââââââââââââââââââââââââââââââââââââââââ
+  // Ã¢ÂÂÃ¢ÂÂ renderVideosList: neueste zuerst + Ampeln Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
   var _origRender = admin.renderVideosList.bind(admin);
   admin.renderVideosList = function () {
     admin.videos.sort(function (a, b) { return Number(b.id) - Number(a.id); });
@@ -163,14 +163,14 @@
     setTimeout(injectAmpels, 80);
   };
 
-  // ââ saveVideo: Ampeln aktualisieren âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+  // Ã¢ÂÂÃ¢ÂÂ saveVideo: Ampeln aktualisieren Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
   var _origSave = admin.saveVideo.bind(admin);
   admin.saveVideo = function () {
     _origSave();
     setTimeout(injectAmpels, 80);
   };
 
-  // ââ publishToGitHub: unvollstÃ¤ndige Videos herausfiltern âââââââââââââââââââââââââââââââââ
+  // Ã¢ÂÂÃ¢ÂÂ publishToGitHub: unvollstÃÂ¤ndige Videos herausfiltern Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
   var _origPublish = admin.publishToGitHub.bind(admin);
   admin.publishToGitHub = function () {
     var raw = localStorage.getItem('adminVideos');
@@ -179,7 +179,7 @@
     var draftCount = all.length - complete.length;
     if (draftCount > 0) {
       var names = all.filter(function (v) { return !isComplete(v); }).map(function (v) { return v.title || ('[ID: ' + v.id + ']'); });
-      var msg = draftCount + ' Video(s) ohne vollstÃ¤ndige Metadaten werden NICHT verÃ¶ffentlicht:\n\n' +
+      var msg = draftCount + ' Video(s) ohne vollstÃÂ¤ndige Metadaten werden NICHT verÃÂ¶ffentlicht:\n\n' +
         names.join('\n') + '\n\nFortfahren?';
       if (!confirm(msg)) return;
       localStorage.setItem('adminVideos', JSON.stringify(complete));
@@ -192,7 +192,7 @@
     return result;
   };
 
-  // ââ switchPanel: AufrÃ¤umen + Ampeln ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+  // Ã¢ÂÂÃ¢ÂÂ switchPanel: AufrÃÂ¤umen + Ampeln Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
   var _origSwitch = admin.switchPanel.bind(admin);
   admin.switchPanel = function (name) {
     _origSwitch(name);
@@ -201,24 +201,24 @@
     }
   };
 
-  // ââ MutationObserver ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+  // Ã¢ÂÂÃ¢ÂÂ MutationObserver Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
   var listItems = document.getElementById('videoListItems');
   if (listItems) {
     new MutationObserver(function () { setTimeout(injectAmpels, 80); }).observe(listItems, { childList: true });
   }
 
-  // ââ Initialer Cleanup âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+  // Ã¢ÂÂÃ¢ÂÂ Initialer Cleanup Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
   hideElements();
 
 })();
 
 
-// ââ // ── KI-Analyse mit SmolVLM (lokal, kein API-Key) ───────────────────────────────────
+// Ã¢ÂÂÃ¢ÂÂ // ââ KI-Analyse mit SmolVLM (lokal, kein API-Key) âââââââââââââââââââââââââââââââââââ
 (function() {
 
 const MODEL_ID = 'HuggingFaceTB/SmolVLM-256M-Instruct';
 const CDN_URL = 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3/dist/transformers.min.js';
-const KI_PROMPT = 'Du analysierst ein Standbild aus einem Stockvideo. Antworte NUR mit folgendem JSON, ohne Erklärungen:\n{"titel":"...","beschreibung":"...","keywords":["..."],"kategorie":"..."}\n- titel: kurz, 3-8 Wörter\n- beschreibung: 1-2 Sätze\n- keywords: 5-10 relevante Schlagwörter\n- kategorie: genau einer von: natur, architektur, menschen, transport, technologie, sport, essen, tiere, sonstiges';
+const KI_PROMPT = 'Du analysierst ein Standbild aus einem Stockvideo. Antworte NUR mit folgendem JSON, ohne ErklÃ¤rungen:\n{"titel":"...","beschreibung":"...","keywords":["..."],"kategorie":"..."}\n- titel: kurz, 3-8 WÃ¶rter\n- beschreibung: 1-2 SÃ¤tze\n- keywords: 5-10 relevante SchlagwÃ¶rter\n- kategorie: genau einer von: natur, architektur, menschen, transport, technologie, sport, essen, tiere, sonstiges';
 
 // Frame aus Video extrahieren
 function extractFrame(file) {
@@ -257,15 +257,15 @@ function getStatusEl() {
   return el;
 }
 
-// Hauptfunktion: Frame analysieren und Felder befüllen
+// Hauptfunktion: Frame analysieren und Felder befÃ¼llen
 async function runAnalysis(file) {
   const setStatus = msg => { const el = getStatusEl(); if (el) el.textContent = msg; };
   try {
-    setStatus('⏳ Frame extrahieren...');
+    setStatus('â³ Frame extrahieren...');
     const frame = await extractFrame(file);
 
     if (!window._kiProcessor || !window._kiModel) {
-      setStatus('⏳ KI-Modell laden (~250 MB, einmalig)...');
+      setStatus('â³ KI-Modell laden (~250 MB, einmalig)...');
       const lib = await import(CDN_URL);
       const { AutoProcessor, AutoModelForVision2Seq, RawImage } = lib;
       window._RawImage = RawImage;
@@ -277,7 +277,7 @@ async function runAnalysis(file) {
       window._kiModel = await AutoModelForVision2Seq.from_pretrained(MODEL_ID, { device, dtype });
     }
 
-    setStatus('⏳ KI analysiert...');
+    setStatus('â³ KI analysiert...');
     const processor = window._kiProcessor;
     const model = window._kiModel;
     const RawImage = window._RawImage;
@@ -326,7 +326,7 @@ function hookFileInput(input) {
     if (file && file.type.startsWith('video/')) {
       const ti = document.querySelector('#videoModalTitle_Input');
       if (ti && !ti.value.trim()) {
-        ti.value = '\u23f3 KI analysiert...';
+        ti.value = '\u23f3 Titel wird von KI generiert';
         ti.dispatchEvent(new Event('input', { bubbles: true }));
       }
       runAnalysis(file);
