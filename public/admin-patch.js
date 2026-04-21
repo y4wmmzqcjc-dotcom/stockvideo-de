@@ -1,11 +1,11 @@
-// admin-patch.js — v20260421A
+// admin-patch.js — v20260421B
 // Erweiterungen: Sortierung (neu zuerst) | Ampel-Indikator | Batch-Upload
 (function () {
   'use strict';
 
   var R2_BASE = 'https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev';
 
-  // ── 1. METADATEN-VOLLSTÄNDIGKEIT ──────────────────────────────────
+  // ── 1. METADATEN-VOLLSTÄNDIGKEIT ─────────────────────────────────
   function isComplete(v) {
     return !!(
       v.title && v.title.trim() &&
@@ -61,14 +61,13 @@
     setTimeout(injectAmpels, 80);
   };
 
-  // Ampel nach saveVideo neu setzen
   var _origSave = admin.saveVideo.bind(admin);
   admin.saveVideo = function () {
     _origSave();
     setTimeout(injectAmpels, 250);
   };
 
-  // ── 4. PUBLISH-FILTER ─────────────────────────────────────────────
+  // ── 4. PUBLISH-FILTER ────────────────────────────────────────────
   var _origPublish = admin.publishToGitHub.bind(admin);
   admin.publishToGitHub = function () {
     var raw = localStorage.getItem('adminVideos');
@@ -82,8 +81,8 @@
         .map(function (v) { return '"' + (v.title || 'Unbenannt') + '"'; })
         .join(', ');
       var go = confirm(
-        draftCount + ' Video(s) mit roter Ampel werden NICHT veröffentlicht:\n' +
-        draftNames + '\n\nNur ' + complete.length + ' vollständige Video(s) gehen live.\nFortfahren?'
+        draftCount + ' Video(s) mit roter Ampel werden NICHT veroeffentlicht:\n' +
+        draftNames + '\n\nNur ' + complete.length + ' vollstaendige Video(s) gehen live.\nFortfahren?'
       );
       if (!go) return;
       localStorage.setItem('adminVideos', JSON.stringify(complete));
@@ -102,12 +101,12 @@
     return result;
   };
 
-  // ── 5. BATCH-UPLOAD ───────────────────────────────────────────────
+  // ── 5. BATCH-UPLOAD ──────────────────────────────────────────────
   function slugFromFile(name) {
     return name
       .replace(/\.[^.]+$/, '')
       .toLowerCase()
-      .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss')
+      .replace(/ae/g,'ae').replace(/oe/g,'oe').replace(/ue/g,'ue')
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '')
       .substring(0, 55) + '-4k-stock-video';
@@ -138,7 +137,7 @@
       r2Key: 'videos/' + slug + '.mp4',
       r2Preview: 'previews/' + slug + '.mp4',
       r2Hover: 'previews/' + slug + '-hover.mp4',
-      videoId: 'stockvideo.de-' + videoId.toString(36).toUpperCase().slice(-8),
+      videoId: 'stockvideo.de-' + Math.random().toString(36).slice(2,10).toUpperCase(),
       featured: false,
       gradient: [{ color: '#1473e6', position: 0 }, { color: '#0d5fcf', position: 100 }]
     };
@@ -151,6 +150,7 @@
     var videoId = String(Date.now() + idx * 17);
     var slug = uniqueSlug(slugFromFile(file.name));
     dotEl.style.background = '#f59e0b';
+    statusEl.textContent = 'Verarbeitung laeuft...';
     try {
       await uploadVideo(file, {
         slug: slug,
@@ -161,12 +161,12 @@
       var title = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
       addVideoEntry(slug, videoId, title);
       dotEl.style.background = '#22c55e';
-      statusEl.textContent = '✓ Fertig — Metadaten bitte ergänzen (rote Ampel)';
+      statusEl.textContent = 'Fertig — Metadaten bitte ergaenzen (rote Ampel)';
       barEl.style.width = '100%';
       barEl.style.background = '#22c55e';
     } catch (e) {
       dotEl.style.background = '#ef4444';
-      statusEl.textContent = '✗ Fehler: ' + (e.message || String(e));
+      statusEl.textContent = 'Fehler: ' + (e.message || String(e));
     }
   }
 
@@ -175,23 +175,26 @@
     var panel = document.getElementById('panel-videos');
     if (!panel) return;
 
+    var listDiv = document.getElementById('videosList');
+    var insertParent = listDiv ? listDiv.parentElement : panel;
+    var insertBefore = listDiv || insertParent.firstChild;
+
     var wrap = document.createElement('div');
     wrap.style.marginBottom = '20px';
     wrap.innerHTML =
       '<div id="bw-batch-zone" style="border:2px dashed #3a3a4a;border-radius:10px;padding:24px 20px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:#0f0f1a;">' +
         '<div style="font-size:24px;margin-bottom:6px;">📥</div>' +
         '<div style="font-size:14px;font-weight:600;color:#ccc;margin-bottom:4px;">Videos per Drag & Drop hochladen</div>' +
-        '<div style="font-size:12px;color:#555;">Bis zu 10 Videodateien gleichzeitig · klicken zum Auswählen</div>' +
+        '<div style="font-size:12px;color:#555;">Bis zu 10 Videodateien gleichzeitig &middot; klicken zum Auswaehlen</div>' +
         '<input type="file" id="bw-batch-input" accept="video/*" multiple style="display:none;">' +
         '<div id="bw-batch-cards" style="margin-top:14px;display:flex;flex-direction:column;gap:8px;text-align:left;"></div>' +
       '</div>';
 
-    var listDiv = document.getElementById('videosList');
-    panel.insertBefore(wrap, listDiv || panel.firstChild);
+    insertParent.insertBefore(wrap, insertBefore);
 
-    var zone   = document.getElementById('bw-batch-zone');
-    var input  = document.getElementById('bw-batch-input');
-    var cards  = document.getElementById('bw-batch-cards');
+    var zone  = document.getElementById('bw-batch-zone');
+    var input = document.getElementById('bw-batch-input');
+    var cards = document.getElementById('bw-batch-cards');
 
     function handleFiles(files) {
       var arr = Array.from(files).filter(function (f) { return f.type.startsWith('video/'); }).slice(0, 10);
@@ -239,7 +242,7 @@
   admin.switchPanel = function (name) {
     _origSwitch(name);
     if (name === 'videos') {
-      setTimeout(function () { injectBatchUI(); injectAmpels(); }, 120);
+      setTimeout(function () { injectBatchUI(); injectAmpels(); }, 150);
     }
   };
 
@@ -247,7 +250,7 @@
   var listEl = document.getElementById('videoListItems');
   if (listEl) {
     new MutationObserver(function () {
-      setTimeout(injectAmpels, 60);
+      setTimeout(injectAmpels, 80);
     }).observe(listEl, { childList: true });
   }
 
@@ -257,8 +260,8 @@
   }
   var vpanel = document.getElementById('panel-videos');
   if (vpanel && vpanel.style.display !== 'none') {
-    injectBatchUI();
+    setTimeout(injectBatchUI, 200);
   }
 
-  console.log('[admin-patch] v20260421A geladen ✓');
+  console.log('[admin-patch] v20260421B geladen');
 })();
