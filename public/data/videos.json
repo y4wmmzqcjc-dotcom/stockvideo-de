@@ -6100,5 +6100,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776779312379",
+    "title": "Nahaufnahme eines modernen Glascockpits mit digitalen Instrumentenanzeigen und Multifunktionsdisplays im Flugzeug",
+    "slug": "nahaufnahme-eines-modernen-glascockpits-mit-digitalen-instrumentenanzeigen-und-multifunktionsdisplays-im-flugzeug",
+    "description": "Diese Stockaufnahme zeigt eine detaillierte Seitenansicht des Instrumentenbretts in einem modernen Flugzeugcockpit. Im Fokus stehen mehrere leuchtende digitale Displays, die Navigationskarten, Fluglageinformationen und Triebwerksdaten in einem Glascockpit-System visualisieren. Die Szene ist von hellem, diffusem Tageslicht durchflutet, das von der Seite einfällt und eine klare, technische Atmosphäre schafft. Im unteren Bildbereich sind Ansätze der Steuerhörner erkennbar. Die Aufnahme verdeutlicht die fortschrittliche Avionik und die präzise Anordnung der Bedienelemente in der heutigen Luftfahrt ohne Anwesenheit von Personen.",
+    "category": "transport",
+    "tags": [
+      "Flugzeug",
+      "Cockpit",
+      "Avionik",
+      "Glascockpit",
+      "Luftfahrt",
+      "Navigation",
+      "Instrumententafel",
+      "Display",
+      "Monitor",
+      "Flugzeugtechnik",
+      "Steuerung",
+      "Instrumentierung",
+      "Flugdaten",
+      "Digital",
+      "Technologie",
+      "Panel",
+      "Kleinflugzeug",
+      "Reiseflugzeug",
+      "Luftverkehr",
+      "Luftfahrttechnik",
+      "Ausrüstung",
+      "Schalter",
+      "Cockpitbildschirm",
+      "Fliegen",
+      "Luftfahrzeug",
+      "Sicherheit",
+      "Navigationssystem",
+      "Elektronik",
+      "Innenaufnahme",
+      "Nahaufnahme",
+      "Präzision",
+      "Transport",
+      "Businessjet",
+      "Privatflugzeug",
+      "Kommunikation",
+      "Anzeige",
+      "Luftfahrtindustrie",
+      "Modern",
+      "Information",
+      "System",
+      "Kontrolle",
+      "Hangar",
+      "Flugplatz",
+      "Cockpitinstrument",
+      "Fluglage",
+      "Karte",
+      "Multifunktionsdisplay",
+      "Luftfahrtnavigation",
+      "Flugvorbereitung"
+    ],
+    "resolution": "4K",
+    "duration": 5,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/nahaufnahme-eines-modernen-glascockpits-mit-digitalen-instrumentenanzeigen-und-m.jpg",
+    "r2Key": "videos/nahaufnahme-eines-modernen-glascockpits-mit-digitalen-instrumentenanzeigen-und-m.mov",
+    "r2Preview": "previews/nahaufnahme-eines-modernen-glascockpits-mit-digitalen-instrumentenanzeigen-und-m.mp4",
+    "r2Hover": "previews/nahaufnahme-eines-modernen-glascockpits-mit-digitalen-instrumentenanzeigen-und-m-hover.mp4",
+    "videoId": "stockvideo.de-OINK8QVU",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
