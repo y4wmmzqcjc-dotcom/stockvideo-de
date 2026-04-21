@@ -1,4 +1,4 @@
-// admin-patch.js ÃÂ¢ÃÂÃÂ v20260421J
+// admin-patch.js ÃÂ¢ÃÂÃÂ v20260421K
 (function () {
   'use strict';
   // ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ Modal-Fix CSS
@@ -287,8 +287,7 @@ async function runAnalysis(file) {
     const text = processor.apply_chat_template(messages, { add_generation_prompt: true });
     const inputs = await processor(text, [image]);
     const outputIds = await model.generate({ ...inputs, max_new_tokens: 800, do_sample: false });
-    const trimmedIds = outputIds.map((ids, i) => ids.slice(inputs.input_ids[i].length));
-    const raw = processor.batch_decode(trimmedIds, { skip_special_tokens: true })[0] || '';
+    const raw = processor.batch_decode(outputIds, { skip_special_tokens: true })[0] || '';
 
     const jsonMatch = raw.match(/\{[\s\S]*?\}/);
     if (!jsonMatch) throw new Error('Kein JSON: ' + raw.slice(0, 120));
