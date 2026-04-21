@@ -132,11 +132,6 @@
       var wc = wordCount(title);
       if (wc < 5) {
         var needed = 5 - wc;
-        alert('Bitte zuerst einen Titel mit mindestens 5 Wörtern eingeben.\n' +
-          (wc === 0 ? 'Noch kein Titel eingetragen.' : 'Noch ' + needed + ' Wort' + (needed === 1 ? '' : 'örter') + ' fehlen.'));
-        fileInput.value = '';
-        return;
-      }
       var file = e.target.files[0];
       if (file) autoDetectVideoMeta(file);
     });
@@ -214,7 +209,7 @@
 
 
 
-// v20260422A - KI: Analyse beim File-Select, Title-Blur befüllt Felder
+// v20260422B - KI: Analyse beim File-Select, Title-Blur befüllt Felder
 // Flow: Datei wählen → KI analysiert Frames → User tippt Titel → Tab/Enter → Felder werden befüllt
 (function () {
   'use strict';
