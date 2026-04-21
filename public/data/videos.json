@@ -6592,5 +6592,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776780473831",
+    "title": "Nahaufnahme eines präzisen CNC-Fräskopfes bei der automatisierten Bearbeitung einer Kunststoffoberfläche",
+    "slug": "nahaufnahme-eines-praezisen-cnc-fraeskopfes-bei-der-automatisierten-bearbeitung-einer-kunststoffoberflaeche",
+    "description": "Diese Stockaufnahme zeigt in einer detaillierten Nahaufnahme den aktiven Fräskopf einer CNC-Maschine. Das feine Werkzeug rotiert mit hoher Geschwindigkeit und schneidet präzise in eine glatte, dunkle Materialplatte. Ein blauer Gelenkschlauch zur Kühlung oder Luftzufuhr ist direkt neben der Spindel positioniert. Die Szene ist in kühles, technisches Licht getaucht und verdeutlicht die Genauigkeit moderner, computergesteuerter Fertigungsprozesse. Im Vordergrund sind unscharfe Maschinenteile erkennbar, die der Aufnahme Tiefe verleihen und den Fokus auf den mechanischen Arbeitsprozess in einer industriellen Werkstattumgebung legen.",
+    "category": "industrie",
+    "tags": [
+      "CNC",
+      "Fräse",
+      "Fräskopf",
+      "Metallbearbeitung",
+      "Fertigung",
+      "Maschine",
+      "Industrie",
+      "Präzision",
+      "Automatisierung",
+      "Werkzeug",
+      "Spindel",
+      "Technik",
+      "Nahaufnahme",
+      "Produktion",
+      "Kunststoffbearbeitung",
+      "Werkstatt",
+      "Maschinenbau",
+      "Werkzeugmaschine",
+      "High-Tech",
+      "Bearbeitung",
+      "Innovation",
+      "Fertigungstechnik",
+      "Detail",
+      "Computergesteuert",
+      "Mechanik",
+      "Anlage",
+      "Bauteil",
+      "Fräsen",
+      "Industrieanlage",
+      "Prozess",
+      "Schnitt",
+      "Werkstück",
+      "Elektronik",
+      "Hardware",
+      "Aluminium",
+      "Ingenieurwesen",
+      "Effizienz",
+      "Konstruktion",
+      "Gravur",
+      "Prototyping",
+      "Handwerk",
+      "Montage",
+      "Digitalisierung",
+      "Metallbau",
+      "Werkzeugbau",
+      "Kühlung",
+      "Robotik",
+      "Industrie 4.0",
+      "Arbeitsschritt"
+    ],
+    "resolution": "4K",
+    "duration": 30,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/nahaufnahme-eines-praezisen-cnc-fraeskopfes-bei-der-automatisierten-bearbeitung-.jpg",
+    "r2Key": "videos/nahaufnahme-eines-praezisen-cnc-fraeskopfes-bei-der-automatisierten-bearbeitung-.mov",
+    "r2Preview": "previews/nahaufnahme-eines-praezisen-cnc-fraeskopfes-bei-der-automatisierten-bearbeitung-.mp4",
+    "r2Hover": "previews/nahaufnahme-eines-praezisen-cnc-fraeskopfes-bei-der-automatisierten-bearbeitung--hover.mp4",
+    "videoId": "stockvideo.de-P6RFZF21",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
