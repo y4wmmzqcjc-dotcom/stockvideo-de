@@ -2843,5 +2843,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776765392772",
+    "title": "Vogelperspektive auf Bauarbeiter beim Entleeren eines Betonkübels am Kran in einer Baugrube",
+    "slug": "vogelperspektive-auf-bauarbeiter-beim-entleeren-eines-betonkuebels-am-kran-in-einer-baugrube",
+    "description": "Diese Stockaufnahme zeigt aus einer senkrechten Draufsicht zwei Bauarbeiter, die einen großen orangefarbenen Betonkübel in einer Baugrube manövrieren. Der Kübel hängt an Ketten eines Krans und wird von den Arbeitern präzise über die vorbereitete Schotterschicht geführt, um den Beton gleichmäßig zu verteilen. Deutlich erkennbar ist der bereits ausgebrachte, dunkle Frischbeton auf dem hellen Untergrund. Die Szene verdeutlicht die körperliche Arbeit und die notwendige Koordination im Tiefbau. Das helle Sonnenlicht erzeugt starke Schattenwürfe auf der Baustelle, was die Tiefe und Textur der Materialien betont.",
+    "category": "industrie",
+    "tags": [
+      "Betonieren",
+      "Bauarbeiter",
+      "Betonkübel",
+      "Kran",
+      "Baugrube",
+      "Draufsicht",
+      "Vogelperspektive",
+      "Tiefbau",
+      "Fundament",
+      "Baustelle",
+      "Beton",
+      "Frischbeton",
+      "Schotter",
+      "Arbeit",
+      "Handwerk",
+      "Koordination",
+      "Teamwork",
+      "Helm",
+      "Schutzhelm",
+      "Arbeitskleidung",
+      "Baumaschine",
+      "Krananhänger",
+      "Gießen",
+      "Schütten",
+      "Rohbau",
+      "Konstruktion",
+      "Bauwesen",
+      "Infrastruktur",
+      "Bodenplatte",
+      "Baustellengelände",
+      "Stein",
+      "Kies",
+      "Technik",
+      "Mechanik",
+      "Heben",
+      "Last",
+      "Transport",
+      "Bauphase",
+      "Projekt",
+      "Erdarbeiten",
+      "Sicherheit",
+      "Arbeitsalltag",
+      "Präzision",
+      "Material",
+      "Industrie",
+      "Wirtschaft",
+      "Organisation",
+      "Baustellenarbeit",
+      "Vertikal"
+    ],
+    "resolution": "4K",
+    "duration": 9,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/vogelperspektive-auf-bauarbeiter-beim-entleeren-eines-betonkuebels-am-kran-in-ei.jpg",
+    "r2Key": "videos/vogelperspektive-auf-bauarbeiter-beim-entleeren-eines-betonkuebels-am-kran-in-ei.mov",
+    "r2Preview": "previews/vogelperspektive-auf-bauarbeiter-beim-entleeren-eines-betonkuebels-am-kran-in-ei.mp4",
+    "r2Hover": "previews/vogelperspektive-auf-bauarbeiter-beim-entleeren-eines-betonkuebels-am-kran-in-ei-hover.mp4",
+    "videoId": "stockvideo.de-G85B554Y",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
