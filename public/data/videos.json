@@ -1695,5 +1695,43 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776763435059",
+    "title": "Hand greift in einen Haufen aus gehäckseltem Pflanzenmaterial und lässt die trockene Biomasse langsam durch die Finger gleiten",
+    "slug": "hand-greift-in-einen-haufen-aus-gehaeckseltem-pflanzenmaterial-und-laesst-die-trockene-biomasse-langsam-durch-die-finger-gleiten",
+    "description": "Biomasse, Hand, Häckselgut, Pflanze, Rohstoff, Landwirtschaft, Natur, Ernte, Bioenergie, Trocken, Material, Nahaufnahme, Ökologie, Nachhaltigkeit, Gartenbau, Mulch, Häcksel, Finger, Greifen, Ressource, Umwelt, Substrat, Organisch, Holzschnitzel, Kompost, Struktur, Detail, Biokraftstoff, Textur, Braun, Agrarwirtschaft, Gartenabfall, Schnittgut, Zerkleinert, Biologisch, Rohmaterial, Energie, Handvoll, Zerfallen, Pflanzenteil, Halm, Futter, Einstreu, Forstwirtschaft, Erneuerbar, Kreislauf, Boden, Untersuchung, Qualität",
+    "category": "industrie",
+    "tags": [
+      "Diese Stockaufnahme zeigt in einer detaillierten Nahaufnahme eine menschliche Hand",
+      "die in eine große Menge von fein gehäckseltem",
+      "trockenem Pflanzenmaterial greift. Die Hand hebt eine Handvoll der bräunlichen Biomasse an und lässt sie kontrolliert wieder zurück auf den Haufen rieseln. Das Material besteht aus verschiedenen zerkleinerten Pflanzenteilen wie Halmen und kleinen Zweigen. Der Hintergrund ist dunkel und unscharf gehalten",
+      "wodurch der Fokus vollständig auf der Textur des Materials und der Bewegung liegt. Die Beleuchtung ist warm und seitlich ausgerichtet",
+      "was die Struktur der trockenen Rohstoffe hervorhebt."
+    ],
+    "resolution": "4K",
+    "duration": 7,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/hand-greift-in-einen-haufen-aus-gehaeckseltem-pflanzenmaterial-und-laesst-die-tr.jpg",
+    "r2Key": "videos/hand-greift-in-einen-haufen-aus-gehaeckseltem-pflanzenmaterial-und-laesst-die-tr.mov",
+    "r2Preview": "previews/hand-greift-in-einen-haufen-aus-gehaeckseltem-pflanzenmaterial-und-laesst-die-tr.mp4",
+    "r2Hover": "previews/hand-greift-in-einen-haufen-aus-gehaeckseltem-pflanzenmaterial-und-laesst-die-tr-hover.mp4",
+    "videoId": "stockvideo.de-F28OBFBT",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
