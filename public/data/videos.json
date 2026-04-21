@@ -2925,5 +2925,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776765490193",
+    "title": "Lagerarbeiter scannt Barcode an einem Versandkarton mit einem Handscanner im Hochregallager",
+    "slug": "lagerarbeiter-scannt-barcode-an-einem-versandkarton-mit-einem-handscanner-im-hochregallager",
+    "description": "Diese professionelle Stockaufnahme zeigt einen Mitarbeiter in einem Logistikzentrum bei der Inventur oder Kommissionierung. Die Person hält einen mobilen Handscanner und erfasst damit einen Barcode auf einem großen braunen Karton, der auf einer Palette im Regal steht. Anschließend entnimmt der Arbeiter ein flaches Objekt aus der geöffneten Kiste. Die Szene spielt in einem typischen Lagerumfeld mit blauen Metallregalen und gedämpfter Beleuchtung. Der Fokus liegt auf dem technischen Gerät und dem Prozess der digitalen Datenerfassung, was Effizienz und moderne Warenwirtschaft im industriellen Sektor verdeutlicht.",
+    "category": "industrie",
+    "tags": [
+      "Lager",
+      "Logistik",
+      "Handscanner",
+      "Barcode",
+      "Scannen",
+      "Karton",
+      "Versandkarton",
+      "Inventur",
+      "Kommissionierung",
+      "Warenlager",
+      "Paket",
+      "Palette",
+      "Lagerarbeiter",
+      "Arbeit",
+      "Technik",
+      "Digitalisierung",
+      "Warenwirtschaft",
+      "Lagerhaltung",
+      "Regal",
+      "Hochregallager",
+      "Industrie",
+      "Wirtschaft",
+      "Datenerfassung",
+      "Scanner",
+      "Gerät",
+      "Mobile",
+      "Prozess",
+      "Versand",
+      "Handel",
+      "E-Commerce",
+      "Verpackung",
+      "Mitarbeiter",
+      "Hand",
+      "Logistikzentrum",
+      "Betrieb",
+      "Infrastruktur",
+      "Effizienz",
+      "Materialfluss",
+      "Management",
+      "Organisation",
+      "Workflow",
+      "Supply Chain",
+      "Lagerist",
+      "Werkshalle",
+      "Dienstleistung",
+      "Güter",
+      "Produkt",
+      "Erfassung",
+      "System"
+    ],
+    "resolution": "4K",
+    "duration": 8,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/lagerarbeiter-scannt-barcode-an-einem-versandkarton-mit-einem-handscanner-im-hoc.jpg",
+    "r2Key": "videos/lagerarbeiter-scannt-barcode-an-einem-versandkarton-mit-einem-handscanner-im-hoc.mov",
+    "r2Preview": "previews/lagerarbeiter-scannt-barcode-an-einem-versandkarton-mit-einem-handscanner-im-hoc.mp4",
+    "r2Hover": "previews/lagerarbeiter-scannt-barcode-an-einem-versandkarton-mit-einem-handscanner-im-hoc-hover.mp4",
+    "videoId": "stockvideo.de-GAAS4N48",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
