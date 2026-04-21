@@ -6264,5 +6264,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776779448553",
+    "title": "Weißer Privatjet mit grünen Akzenten und geöffneter Kabinentür in einer hellen Flugzeugwartungshalle",
+    "slug": "weisser-privatjet-mit-gruenen-akzenten-und-geoeffneter-kabinentuer-in-einer-hellen-flugzeugwartungshalle",
+    "description": "Diese Stockaufnahme zeigt einen zweistrahligen Businessjet in einer modernen, weitläufigen Wartungshalle. Das Flugzeug ist weiß lackiert mit grünen Zierstreifen, wobei die Kabinentür mit integrierter Treppe für den Einstieg geöffnet ist. Die Szene ist in einem hellen Hangar mit Stahlträgerkonstruktion und großen Fensterfronten im Hintergrund aufgenommen. Neben dem Jet sind Teile anderer Flugzeuge sowie technische Hilfsmittel wie Leitern erkennbar. Die Atmosphäre ist sachlich und professionell, was den Bereich der exklusiven Personenbeförderung, Flugzeugwartung und die logistischen Abläufe in der privaten Luftfahrtindustrie dokumentiert.",
+    "category": "transport",
+    "tags": [
+      "Flugzeug",
+      "Privatjet",
+      "Hangar",
+      "Wartung",
+      "Businessjet",
+      "Luftfahrt",
+      "Kabinentür",
+      "Einstieg",
+      "Flugzeugwerft",
+      "Jet",
+      "Transport",
+      "Reise",
+      "Luxus",
+      "Instandhaltung",
+      "Flugplatz",
+      "Technik",
+      "Luftverkehr",
+      "Industriehalle",
+      "Flugzeugtechnik",
+      "Service",
+      "Business",
+      "Exklusiv",
+      "Luftfahrtindustrie",
+      "Halle",
+      "Flugzeugwartung",
+      "Geschäftsreise",
+      "Fluggerät",
+      "Zweistrahler",
+      "Weiß",
+      "Treppe",
+      "Kabine",
+      "Flugzeugbau",
+      "Technologie",
+      "Logistik",
+      "Sicherheit",
+      "Überprüfung",
+      "Arbeitsplatz",
+      "Innenaufnahme",
+      "Infrastruktur",
+      "Ausrüstung",
+      "Wartungshalle",
+      "Industrie",
+      "Mechanik",
+      "Luftfahrzeug",
+      "Reiseflugzeug",
+      "Luftfahrttechnik",
+      "Flugvorbereitung",
+      "Transportwesen",
+      "Flugwesen"
+    ],
+    "resolution": "4K",
+    "duration": 6,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/weisser-privatjet-mit-gruenen-akzenten-und-geoeffneter-kabinentuer-in-einer-hell.jpg",
+    "r2Key": "videos/weisser-privatjet-mit-gruenen-akzenten-und-geoeffneter-kabinentuer-in-einer-hell.mov",
+    "r2Preview": "previews/weisser-privatjet-mit-gruenen-akzenten-und-geoeffneter-kabinentuer-in-einer-hell.mp4",
+    "r2Hover": "previews/weisser-privatjet-mit-gruenen-akzenten-und-geoeffneter-kabinentuer-in-einer-hell-hover.mp4",
+    "videoId": "stockvideo.de-OLAS3UOT",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
