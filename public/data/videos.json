@@ -6018,5 +6018,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776779253131",
+    "title": "Detaillierte Innenansicht eines modernen Flugzeugcockpits mit aktiven digitalen Displays und Doppelsteuerhorn",
+    "slug": "detaillierte-innenansicht-eines-modernen-flugzeugcockpits-mit-aktiven-digitalen-displays-und-doppelsteuerhorn",
+    "description": "Diese Stockaufnahme bietet einen direkten Blick auf das Instrumentenpanel eines modernen Kleinflugzeugs. Zu sehen sind drei große digitale Multifunktionsdisplays, die verschiedene Flugdaten, Karten und Systeminformationen in leuchtenden Farben anzeigen. Zwischen den Bildschirmen sind analoge Backup-Instrumente und Bedienelemente integriert. Im unteren Bereich ragen zwei helle Steuerhörner in den Cockpitraum. Die Beleuchtung ist gleichmäßig und hebt die Beschriftungen der Schalter und Hebel hervor. Die Szene wirkt technisch präzise und dokumentiert den aktuellen Stand der Avionik in der allgemeinen Luftfahrt ohne sichtbare Personen.",
+    "category": "transport",
+    "tags": [
+      "Flugzeug",
+      "Cockpit",
+      "Avionik",
+      "Instrumententafel",
+      "Glascockpit",
+      "Luftfahrt",
+      "Navigation",
+      "Display",
+      "Steuerhorn",
+      "Instrumentierung",
+      "Flugdaten",
+      "Flugzeugtechnik",
+      "Steuerung",
+      "Monitor",
+      "Kleinflugzeug",
+      "Cockpitinstrument",
+      "Technologie",
+      "Fliegen",
+      "Cockpitbildschirm",
+      "Digital",
+      "Panel",
+      "Reiseflugzeug",
+      "Luftverkehr",
+      "Luftfahrttechnik",
+      "Ausrüstung",
+      "Schalter",
+      "Hebel",
+      "Flugzeuginterieur",
+      "Luftfahrzeug",
+      "Sicherheit",
+      "Navigationssystem",
+      "Elektronik",
+      "Innenaufnahme",
+      "Nahaufnahme",
+      "Präzision",
+      "Flugplatz",
+      "Hangar",
+      "Transport",
+      "Businessjet",
+      "Privatflugzeug",
+      "Flugvorbereitung",
+      "Kommunikation",
+      "Anzeige",
+      "Luftfahrtindustrie",
+      "Flugzeugbau",
+      "Modern",
+      "Information",
+      "System",
+      "Kontrolle"
+    ],
+    "resolution": "4K",
+    "duration": 7,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/detaillierte-innenansicht-eines-modernen-flugzeugcockpits-mit-aktiven-digitalen-.jpg",
+    "r2Key": "videos/detaillierte-innenansicht-eines-modernen-flugzeugcockpits-mit-aktiven-digitalen-.mov",
+    "r2Preview": "previews/detaillierte-innenansicht-eines-modernen-flugzeugcockpits-mit-aktiven-digitalen-.mp4",
+    "r2Hover": "previews/detaillierte-innenansicht-eines-modernen-flugzeugcockpits-mit-aktiven-digitalen--hover.mp4",
+    "videoId": "stockvideo.de-OHB6PQMT",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
