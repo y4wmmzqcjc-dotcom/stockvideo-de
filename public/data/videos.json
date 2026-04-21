@@ -5459,5 +5459,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776778582168",
+    "title": "Industrielle Crimpmaschine presst eine Metallhülse auf ein Bauteil in der automatisierten Fertigung",
+    "slug": "industrielle-crimpmaschine-presst-eine-metallhuelse-auf-ein-bauteil-in-der-automatisierten-fertigung",
+    "description": "Diese Stockaufnahme zeigt in einer zentrierten Nahaufnahme den Arbeitsvorgang einer hydraulischen Crimpmaschine. Die sternförmig angeordneten Pressbacken schließen sich präzise um eine metallische Hülse, um diese fest mit einem innenliegenden Bauteil zu verbinden. Die kühle, industrielle Beleuchtung und das metallische Design der Anlage unterstreichen den Fokus auf technische Genauigkeit und Stabilität in der modernen Produktion. Der Prozess verdeutlicht einen entscheidenden Schritt in der Konfektionierung technischer Komponenten, bei dem eine dauerhafte und belastbare mechanische Verbindung durch Kaltumformung erzeugt wird.",
+    "category": "technologie",
+    "tags": [
+      "Crimpen",
+      "Crimpmaschine",
+      "Metallverarbeitung",
+      "Industrie",
+      "Fertigung",
+      "Nahaufnahme",
+      "Präzision",
+      "Hydraulik",
+      "Pressbacken",
+      "Umformtechnik",
+      "Technik",
+      "Bauteil",
+      "Hülse",
+      "Montage",
+      "Automatisierung",
+      "Produktion",
+      "Maschinenbau",
+      "Werkstatt",
+      "Verbindungstechnik",
+      "Kaltverformung",
+      "Industrieanlage",
+      "Mechanik",
+      "Werkzeug",
+      "Qualitätssicherung",
+      "Hardware",
+      "Prozess",
+      "Fertigungstechnik",
+      "Detail",
+      "Metall",
+      "Stahl",
+      "Schließvorgang",
+      "Kraft",
+      "Technologie",
+      "Komponente",
+      "Befestigung",
+      "Ingenieurwesen",
+      "Elektronikfertigung",
+      "Maschinenteil",
+      "Arbeitsablauf",
+      "System",
+      "Ausrüstung",
+      "Metallhülse",
+      "Pressen",
+      "Druck",
+      "Stabilität",
+      "Zuverlässigkeit",
+      "Konstruktion",
+      "Industrial Design",
+      "Werkstück"
+    ],
+    "resolution": "4K",
+    "duration": 6,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/industrielle-crimpmaschine-presst-eine-metallhuelse-auf-ein-bauteil-in-der-autom.jpg",
+    "r2Key": "videos/industrielle-crimpmaschine-presst-eine-metallhuelse-auf-ein-bauteil-in-der-autom.mov",
+    "r2Preview": "previews/industrielle-crimpmaschine-presst-eine-metallhuelse-auf-ein-bauteil-in-der-autom.mp4",
+    "r2Hover": "previews/industrielle-crimpmaschine-presst-eine-metallhuelse-auf-ein-bauteil-in-der-autom-hover.mp4",
+    "videoId": "stockvideo.de-O2YPR1L4",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
