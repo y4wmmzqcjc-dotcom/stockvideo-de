@@ -5380,5 +5380,84 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776778506264",
+    "title": "Präzisions-Dosierkopf trägt gleichmäßige Bahnen einer schwarzen Dichtmasse auf eine weiße Oberfläche auf",
+    "slug": "praezisions-dosierkopf-traegt-gleichmaessige-bahnen-einer-schwarzen-dichtmasse-auf-eine-weisse-oberflaeche-auf",
+    "description": "Diese Stockaufnahme zeigt in einer extremen Nahaufnahme einen automatisierten Dosierprozess in einer industriellen Fertigung. Ein feiner Dosierkopf führt eine zähflüssige, schwarze Masse – vermutlich einen Klebstoff oder eine Dichtmasse – in präzisen, parallelen Bahnen auf eine glatte, weiße Unterlage. Die Szene ist durch blaues LED-Licht akzentuiert, das sich in den feuchten Bahnen spiegelt und die technische Genauigkeit des Vorgangs unterstreicht. Die ruhige und stetige Bewegung des Applikators verdeutlicht die Effizienz moderner Automatisierungstechnik in der Chemie- oder Automobilindustrie.",
+    "category": "technologie",
+    "tags": [
+      "Dosierung",
+      "Klebstoff",
+      "Dichtmasse",
+      "Automatisierung",
+      "Industrie",
+      "Nahaufnahme",
+      "Präzision",
+      "Fertigung",
+      "Chemie",
+      "Applikator",
+      "Technik",
+      "Prozess",
+      "Materialprüfung",
+      "Oberflächenbeschichtung",
+      "Klebetechnik",
+      "Industrieanlage",
+      "Produktion",
+      "Mechanik",
+      "Dosiersystem",
+      "Bauteil",
+      "Labor",
+      "Qualitätssicherung",
+      "Hightech",
+      "LED-Licht",
+      "Blau",
+      "Schwarz",
+      "Weiß",
+      "Kontrast",
+      "Viskosität",
+      "Flüssigkeit",
+      "Bahn",
+      "Parallel",
+      "Symmetrie",
+      "Automobilindustrie",
+      "Elektronikfertigung",
+      "Beschichtung",
+      "Hardware",
+      "Werkzeug",
+      "Montage",
+      "Industrieroboter",
+      "Fertigungstechnik",
+      "Detailaufnahme",
+      "Konsistenz",
+      "Materialfluss",
+      "Kleber",
+      "Abdichtung"
+    ],
+    "resolution": "4K",
+    "duration": 19,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/praezisions-dosierkopf-traegt-gleichmaessige-bahnen-einer-schwarzen-dichtmasse-a.jpg",
+    "r2Key": "videos/praezisions-dosierkopf-traegt-gleichmaessige-bahnen-einer-schwarzen-dichtmasse-a.mov",
+    "r2Preview": "previews/praezisions-dosierkopf-traegt-gleichmaessige-bahnen-einer-schwarzen-dichtmasse-a.mp4",
+    "r2Hover": "previews/praezisions-dosierkopf-traegt-gleichmaessige-bahnen-einer-schwarzen-dichtmasse-a-hover.mp4",
+    "videoId": "stockvideo.de-O0W1B0YA",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
