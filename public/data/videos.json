@@ -3580,5 +3580,84 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776767209713",
+    "title": "Ingenieurin erläutert eine komplexe 3D-CAD-Planung für ein Gebäudeprojekt am Bildschirm",
+    "slug": "ingenieurin-erlaeutert-eine-komplexe-3d-cad-planung-fuer-ein-gebaeudeprojekt-am-bildschirm",
+    "description": "Diese Nahaufnahme zeigt die professionelle Arbeit an einer modernen CAD-Software zur Gebäudeplanung. Eine Frauenhand deutet mit einem Eingabestift präzise auf Details eines dreidimensionalen Architekturmodells, das auf einem großen Computermonitor dargestellt ist. Die Visualisierung zeigt komplexe Gebäudestrukturen mit farblichen Markierungen für verschiedene Funktionsbereiche oder Materialien. Im Hintergrund ist ein zweiter Monitor erkennbar, was auf einen hoch ausgestatteten Arbeitsplatz in einem Architektur- oder Planungsbüro hindeutet. Die Szene vermittelt technische Expertise, digitale Innovation und die Detailtiefe moderner Ingenieursdienstleistungen.",
+    "category": "industrie",
+    "tags": [
+      "CAD",
+      "Architektur",
+      "Planung",
+      "Ingenieurwesen",
+      "3D-Modell",
+      "Gebäudeplanung",
+      "Software",
+      "Digitalisierung",
+      "Monitor",
+      "Bildschirm",
+      "Hand",
+      "Stift",
+      "Architekturmodell",
+      "Konstruktion",
+      "Design",
+      "Technik",
+      "Technologie",
+      "Büro",
+      "Arbeitsplatz",
+      "Projektierung",
+      "Bauwesen",
+      "Visualisierung",
+      "BIM",
+      "Building Information Modeling",
+      "Zeichnung",
+      "Entwurf",
+      "Fachkraft",
+      "Detailaufnahme",
+      "Nahaufnahme",
+      "Expertise",
+      "Professionalität",
+      "Wirtschaft",
+      "Innovation",
+      "Architekturdesign",
+      "Gebäude",
+      "Struktur",
+      "Analyse",
+      "Datenerfassung",
+      "Computer",
+      "IT",
+      "Dienstleistung",
+      "Planungsprozess",
+      "Stadtplanung",
+      "Modernisierung",
+      "Immobilien",
+      "Bauprojekt"
+    ],
+    "resolution": "4K",
+    "duration": 7,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/ingenieurin-erlaeutert-eine-komplexe-3d-cad-planung-fuer-ein-gebaeudeprojekt-am-.jpg",
+    "r2Key": "videos/ingenieurin-erlaeutert-eine-komplexe-3d-cad-planung-fuer-ein-gebaeudeprojekt-am-.mov",
+    "r2Preview": "previews/ingenieurin-erlaeutert-eine-komplexe-3d-cad-planung-fuer-ein-gebaeudeprojekt-am-.mp4",
+    "r2Hover": "previews/ingenieurin-erlaeutert-eine-komplexe-3d-cad-planung-fuer-ein-gebaeudeprojekt-am--hover.mp4",
+    "videoId": "stockvideo.de-HB4RKRG6",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
