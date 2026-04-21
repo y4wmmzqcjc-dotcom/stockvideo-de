@@ -1733,5 +1733,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776763611118",
+    "title": "Arbeiter schüttet dunkles Schüttgut aus einem großen Papiersack in den Einfülltrichter einer industriellen Förderanlage",
+    "slug": "arbeiter-schuettet-dunkles-schuettgut-aus-einem-grossen-papiersack-in-den-einfuelltrichter-einer-industriellen-foerderanlage",
+    "description": "Diese professionelle Stockaufnahme zeigt eine Person in Arbeitskleidung, die einen großen, weißen Papiersack hält und dunkles, kleinteiliges Schüttgut in einen metallischen Einfülltrichter entleert. Im Hintergrund ist ein schräg verlaufendes Förderband mit Lamellen erkennbar, das bereits mit ähnlichem Material beladen ist. Staubpartikel in der Luft werden durch die warme, seitliche Beleuchtung sichtbar und unterstreichen die industrielle Atmosphäre. Die Szene ist als Nahaufnahme gestaltet, wobei der Fokus auf dem Schüttvorgang und der Interaktion zwischen Mensch und Maschine liegt. Die Umgebung wirkt wie eine moderne Produktionshalle oder eine Verarbeitungsanlage für organische Rohstoffe oder Granulate.",
+    "category": "",
+    "tags": [
+      "Produktion",
+      "Sack",
+      "Schütten",
+      "Industrie",
+      "Anlage",
+      "Förderband",
+      "Trichter",
+      "Arbeiter",
+      "Material",
+      "Rohstoff",
+      "Verarbeitung",
+      "Fabrik",
+      "Schüttgut",
+      "Befüllung",
+      "Handarbeit",
+      "Maschine",
+      "Prozess",
+      "Fertigung",
+      "Lager",
+      "Logistik",
+      "Papiersack",
+      "Granulat",
+      "Biomasse",
+      "Arbeitsprozess",
+      "Innenaufnahme",
+      "Nahaufnahme",
+      "Technik",
+      "Automatisierung",
+      "Zuführung",
+      "Transport",
+      "Mechanik",
+      "Arbeitskleidung",
+      "Schwerindustrie",
+      "Rohmaterial",
+      "Gewerbe",
+      "Betrieb",
+      "Handhabung",
+      "Befüllen",
+      "Werkstatt",
+      "Ausrüstung",
+      "Infrastruktur",
+      "System",
+      "Ladung",
+      "Vorbereitung",
+      "Materialfluss",
+      "Station",
+      "Industrieanlage",
+      "Arbeitsvorgang",
+      "Werkshalle"
+    ],
+    "resolution": "4K",
+    "duration": 7,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/arbeiter-schuettet-dunkles-schuettgut-aus-einem-grossen-papiersack-in-den-einfue.jpg",
+    "r2Key": "videos/arbeiter-schuettet-dunkles-schuettgut-aus-einem-grossen-papiersack-in-den-einfue.mov",
+    "r2Preview": "previews/arbeiter-schuettet-dunkles-schuettgut-aus-einem-grossen-papiersack-in-den-einfue.mp4",
+    "r2Hover": "previews/arbeiter-schuettet-dunkles-schuettgut-aus-einem-grossen-papiersack-in-den-einfue-hover.mp4",
+    "videoId": "stockvideo.de-F58R83LB",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
