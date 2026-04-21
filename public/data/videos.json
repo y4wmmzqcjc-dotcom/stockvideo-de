@@ -5053,5 +5053,86 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776778008993",
+    "title": "Drei verschiedene E-Gitarren und ein Bass auf Instrumentenständer in einer Werkstatt oder einem Musikraum",
+    "slug": "drei-verschiedene-e-gitarren-und-ein-bass-auf-instrumentenstaender-in-einer-werkstatt-oder-einem-musikraum",
+    "description": "Diese Stockaufnahme präsentiert eine Auswahl an Saiteninstrumenten in einer Nahaufnahme. Im Fokus stehen eine rote E-Gitarre im Vordergrund sowie zwei Instrumente aus hellem Naturholz, eine weitere E-Gitarre und ein E-Bass, die nebeneinander auf schwarzen Ständern platziert sind. Der Hintergrund zeigt eine rustikale Umgebung mit einer Holztür und Werkstattcharakter. Die statische Kameraeinstellung und die gleichmäßige, warme Beleuchtung betonen die unterschiedlichen Korpusformen, Tonabnehmer und die Materialbeschaffenheit der Instrumente, was eine kreative und handwerkliche Atmosphäre vermittelt.",
+    "category": "hobbys-und-freizeit",
+    "tags": [
+      "E-Gitarre",
+      "Bassgitarre",
+      "Musikinstrument",
+      "Gitarre",
+      "Instrumentenständer",
+      "Musik",
+      "Handwerk",
+      "Holz",
+      "Korpus",
+      "Saite",
+      "Tonabnehmer",
+      "Werkstatt",
+      "Musikraum",
+      "Studio",
+      "Hobby",
+      "Freizeit",
+      "Saiteninstrument",
+      "E-Bass",
+      "Musiker",
+      "Band",
+      "Equipment",
+      "Detail",
+      "Nahaufnahme",
+      "Naturholz",
+      "Lackierung",
+      "Rot",
+      "Hell",
+      "Rock",
+      "Pop",
+      "Jazz",
+      "Instrumentenbau",
+      "Kunst",
+      "Kultur",
+      "Unterhaltung",
+      "Lifestyle",
+      "Design",
+      "Form",
+      "Mechanik",
+      "Griffbrett",
+      "Steg",
+      "Potentiometer",
+      "Schalter",
+      "Klinkenbuchse",
+      "Musikgeschäft",
+      "Proberaum",
+      "Akustik",
+      "Handarbeit",
+      "Qualität"
+    ],
+    "resolution": "4K",
+    "duration": 8,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/drei-verschiedene-e-gitarren-und-ein-bass-auf-instrumentenstaender-in-einer-werk.jpg",
+    "r2Key": "videos/drei-verschiedene-e-gitarren-und-ein-bass-auf-instrumentenstaender-in-einer-werk.mov",
+    "r2Preview": "previews/drei-verschiedene-e-gitarren-und-ein-bass-auf-instrumentenstaender-in-einer-werk.mp4",
+    "r2Hover": "previews/drei-verschiedene-e-gitarren-und-ein-bass-auf-instrumentenstaender-in-einer-werk-hover.mp4",
+    "videoId": "stockvideo.de-NQMQ79Y4",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
