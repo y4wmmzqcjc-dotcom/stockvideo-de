@@ -1,18 +1,13 @@
-// admin-patch.js — v20260421B
-// Erweiterungen: Sortierung (neu zuerst) | Ampel-Indikator | Batch-Upload
+// admin-patch.js — v20260421C
 (function () {
   'use strict';
 
   var R2_BASE = 'https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev';
 
-  // ── 1. METADATEN-VOLLSTÄNDIGKEIT ─────────────────────────────────
+  // ── Helpers ─────────────────────────────────────────────────────────────────────────────
   function isComplete(v) {
-    return !!(
-      v.title && v.title.trim() &&
-      v.description && v.description.trim() &&
-      v.tags && Array.isArray(v.tags) && v.tags.length > 0 &&
-      v.category && v.category.trim()
-    );
+    return !!(v.title && v.title.trim() && v.description && v.description.trim() &&
+      v.tags && Array.isArray(v.tags) && v.tags.length > 0 && v.category && v.category.trim());
   }
 
   function getMissing(v) {
@@ -24,36 +19,141 @@
     return m;
   }
 
-  // ── 2. AMPEL ─────────────────────────────────────────────────────
+  function wordCount(str) {
+    return (str || '').trim().split(/\s+/).filter(Boolean).length;
+  }
+
+  // ── Unerwünschte UI-Elemente verstecken ─────────────────────────────────────────────────
+  function hideElements() {
+    // SEO-Slug Button (gefährlich — benennt R2-Dateien ohne videos.json-Update)
+    var slugBtn = document.getElementById('optimizeSlugsBtn');
+    if (slugBtn) slugBtn.style.display = 'none';
+
+    // Featured + Gradients aus Video-Modal entfernen
+    ['videoModalFeatured', 'videoModalGradients'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var row = el.closest('.form-row, .form-group, .field-row, tr') || el.parentElement;
+      if (row) row.style.display = 'none';
+    });
+
+    // Batch-Zone entfernen falls noch vorhanden
+    var batchZone = document.getElementById('bw-batch-zone');
+    if (batchZone) batchZone.remove();
+  }
+
+  // ── Ampel-Indikatoren ────────────────────────────────────────────────────────────────────
   function injectAmpels() {
-    var items = document.querySelectorAll('#videoListItems .video-item');
-    items.forEach(function (item, i) {
-      var v = admin.videos[i];
+    document.querySelectorAll('#videoListItems .video-item').forEach(function (item) {
+      if (item.querySelector('.bw-ampel')) return;
+      var id = item.dataset.id;
+      if (!id) return;
+      var v = admin.videos.find(function (x) { return String(x.id) === String(id); });
       if (!v) return;
-      var old = item.querySelector('.bw-ampel');
-      if (old) old.remove();
       var ok = isComplete(v);
-      var missing = getMissing(v);
-      var color = ok ? '#22c55e' : '#ef4444';
-      var glow  = ok ? '#22c55e55' : '#ef444455';
-      var tip   = ok ? 'Alle Metadaten vollständig — bereit zur Veröffentlichung' : 'Fehlend: ' + missing.join(', ');
       var dot = document.createElement('span');
       dot.className = 'bw-ampel';
-      dot.title = tip;
-      dot.style.cssText = 'display:inline-block;width:11px;height:11px;border-radius:50%;background:' + color + ';box-shadow:0 0 7px 2px ' + glow + ';margin-right:8px;flex-shrink:0;vertical-align:middle;cursor:help;transition:background .3s,box-shadow .3s;';
-      var titleEl = item.querySelector('.list-item-title, [class*="title"]');
-      if (!titleEl) titleEl = item.firstElementChild;
-      if (!titleEl) return;
-      var par = titleEl.parentElement || item;
-      if (getComputedStyle(par).display !== 'flex') {
-        par.style.display = 'flex';
-        par.style.alignItems = 'center';
-      }
-      par.insertBefore(dot, titleEl);
+      dot.title = ok ? 'Alle Metadaten vollständig' : 'Fehlt: ' + getMissing(v).join(', ');
+      dot.style.cssText = 'display:inline-block;width:10px;height:10px;border-radius:50%;' +
+        'margin-right:6px;flex-shrink:0;vertical-align:middle;background:' + (ok ? '#22c55e' : '#ef4444');
+      var titleEl = item.querySelector('.video-title, .video-name, h3, h4, strong') || item.firstChild;
+      if (titleEl && titleEl.parentNode) titleEl.parentNode.insertBefore(dot, titleEl);
     });
   }
 
-  // ── 3. SORTIERUNG (neueste zuerst) ───────────────────────────────
+  // ── Video-Metadaten automatisch erkennen (Dauer + FPS) ──────────────────────────
+  function autoDetectVideoMeta(file) {
+    var url = URL.createObjectURL(file);
+    var vid = document.createElement('video');
+    vid.preload = 'metadata';
+    vid.muted = true;
+    vid.playsInline = true;
+    vid.src = url;
+
+    vid.addEventListener('loadedmetadata', function () {
+      var durEl = document.getElementById('videoModalDuration');
+      if (durEl) durEl.value = Math.round(vid.duration);
+
+      var fpsEl = document.getElementById('videoModalFPS');
+      if (!fpsEl) { URL.revokeObjectURL(url); return; }
+
+      // FPS via requestVideoFrameCallback (modernes API)
+      if (typeof vid.requestVideoFrameCallback === 'function') {
+        var times = [];
+        function onFrame(now, meta) {
+          times.push(meta.mediaTime);
+          if (times.length < 30 && vid.currentTime < 1.5) {
+            vid.requestVideoFrameCallback(onFrame);
+          } else {
+            vid.pause();
+            URL.revokeObjectURL(url);
+            if (times.length >= 4) {
+              var diffs = [];
+              for (var i = 1; i < times.length; i++) diffs.push(times[i] - times[i - 1]);
+              var avg = diffs.reduce(function (a, b) { return a + b; }, 0) / diffs.length;
+              var fps = Math.round(1 / avg);
+              var common = [24, 25, 30, 48, 50, 60, 120];
+              var closest = common.reduce(function (a, b) { return Math.abs(b - fps) < Math.abs(a - fps) ? b : a; });
+              fpsEl.value = closest;
+            } else {
+              fpsEl.value = 25;
+            }
+          }
+        }
+        vid.currentTime = 0.01;
+        vid.play().then(function () {
+          vid.requestVideoFrameCallback(onFrame);
+        }).catch(function () {
+          URL.revokeObjectURL(url);
+          fpsEl.value = 25;
+        });
+      } else {
+        URL.revokeObjectURL(url);
+        fpsEl.value = 25;
+      }
+    });
+
+    vid.addEventListener('error', function () {
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  // ── File-Input: Titel prüfen + Auto-Detect ───────────────────────────────────────────────
+  function hookFileInput() {
+    var fileInput = document.getElementById('videoModalFile');
+    if (!fileInput || fileInput._bwHooked) return;
+    fileInput._bwHooked = true;
+
+    fileInput.addEventListener('change', function (e) {
+      var titleEl = document.getElementById('videoModalTitle_Input');
+      var title = titleEl ? titleEl.value.trim() : '';
+      var wc = wordCount(title);
+      if (wc < 5) {
+        var needed = 5 - wc;
+        alert('Bitte zuerst einen Titel mit mindestens 5 Wörtern eingeben.\n' +
+          (wc === 0 ? 'Noch kein Titel eingetragen.' : 'Noch ' + needed + ' Wort' + (needed === 1 ? '' : 'örter') + ' fehlen.'));
+        fileInput.value = '';
+        return;
+      }
+      var file = e.target.files[0];
+      if (file) autoDetectVideoMeta(file);
+    });
+  }
+
+  // ── openVideoModal: Standard-Preis + Hooks ──────────────────────────────────────────────
+  var _origOpen = admin.openVideoModal.bind(admin);
+  admin.openVideoModal = function (video) {
+    _origOpen(video);
+    setTimeout(function () {
+      // Standard-Preis 19.99 für neue Videos
+      var priceEl = document.getElementById('videoModalPrice');
+      if (priceEl && (!video || !video.price)) priceEl.value = '19.99';
+      hookFileInput();
+      hideElements();
+    }, 60);
+  };
+
+  // ── renderVideosList: neueste zuerst + Ampeln ─────────────────────────────────────────────
   var _origRender = admin.renderVideosList.bind(admin);
   admin.renderVideosList = function () {
     admin.videos.sort(function (a, b) { return Number(b.id) - Number(a.id); });
@@ -61,207 +161,51 @@
     setTimeout(injectAmpels, 80);
   };
 
+  // ── saveVideo: Ampeln aktualisieren ───────────────────────────────────────────────────────
   var _origSave = admin.saveVideo.bind(admin);
   admin.saveVideo = function () {
     _origSave();
-    setTimeout(injectAmpels, 250);
+    setTimeout(injectAmpels, 80);
   };
 
-  // ── 4. PUBLISH-FILTER ────────────────────────────────────────────
+  // ── publishToGitHub: unvollständige Videos herausfiltern ─────────────────────────────────
   var _origPublish = admin.publishToGitHub.bind(admin);
   admin.publishToGitHub = function () {
     var raw = localStorage.getItem('adminVideos');
     var all = JSON.parse(raw || '[]');
     var complete = all.filter(isComplete);
     var draftCount = all.length - complete.length;
-
     if (draftCount > 0) {
-      var draftNames = all
-        .filter(function (v) { return !isComplete(v); })
-        .map(function (v) { return '"' + (v.title || 'Unbenannt') + '"'; })
-        .join(', ');
-      var go = confirm(
-        draftCount + ' Video(s) mit roter Ampel werden NICHT veroeffentlicht:\n' +
-        draftNames + '\n\nNur ' + complete.length + ' vollstaendige Video(s) gehen live.\nFortfahren?'
-      );
-      if (!go) return;
+      var names = all.filter(function (v) { return !isComplete(v); }).map(function (v) { return v.title || ('[ID: ' + v.id + ']'); });
+      var msg = draftCount + ' Video(s) ohne vollständige Metadaten werden NICHT veröffentlicht:\n\n' +
+        names.join('\n') + '\n\nFortfahren?';
+      if (!confirm(msg)) return;
       localStorage.setItem('adminVideos', JSON.stringify(complete));
     }
-
     var result = _origPublish();
-
     if (draftCount > 0) {
       var restore = function () { localStorage.setItem('adminVideos', raw); };
-      if (result && typeof result.then === 'function') {
-        result.then(restore, restore);
-      } else {
-        setTimeout(restore, 8000);
-      }
+      if (result && result.then) { result.then(restore, restore); } else { setTimeout(restore, 8000); }
     }
     return result;
   };
 
-  // ── 5. BATCH-UPLOAD ──────────────────────────────────────────────
-  function slugFromFile(name) {
-    return name
-      .replace(/\.[^.]+$/, '')
-      .toLowerCase()
-      .replace(/ae/g,'ae').replace(/oe/g,'oe').replace(/ue/g,'ue')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-      .substring(0, 55) + '-4k-stock-video';
-  }
-
-  function uniqueSlug(base) {
-    var s = base, n = 2;
-    while (admin.videos.some(function (v) { return v.slug === s; })) {
-      s = base.replace(/-4k-stock-video$/, '') + '-' + n + '-4k-stock-video';
-      n++;
-    }
-    return s;
-  }
-
-  function addVideoEntry(slug, videoId, title) {
-    var entry = {
-      id: videoId,
-      title: title,
-      slug: slug,
-      description: '',
-      category: '',
-      tags: [],
-      resolution: '4K',
-      duration: 0,
-      fps: 25,
-      prices: { web: 19.99, standard: 19.99, premium: 19.99 },
-      thumbnail: R2_BASE + '/thumbs/' + slug + '.jpg',
-      r2Key: 'videos/' + slug + '.mp4',
-      r2Preview: 'previews/' + slug + '.mp4',
-      r2Hover: 'previews/' + slug + '-hover.mp4',
-      videoId: 'stockvideo.de-' + Math.random().toString(36).slice(2,10).toUpperCase(),
-      featured: false,
-      gradient: [{ color: '#1473e6', position: 0 }, { color: '#0d5fcf', position: 100 }]
-    };
-    admin.videos.unshift(entry);
-    localStorage.setItem('adminVideos', JSON.stringify(admin.videos));
-    admin.renderVideosList();
-  }
-
-  async function uploadOne(file, idx, statusEl, dotEl, barEl) {
-    var videoId = String(Date.now() + idx * 17);
-    var slug = uniqueSlug(slugFromFile(file.name));
-    dotEl.style.background = '#f59e0b';
-    statusEl.textContent = 'Verarbeitung laeuft...';
-    try {
-      await uploadVideo(file, {
-        slug: slug,
-        videoId: videoId,
-        onStatus: function (msg) { statusEl.textContent = msg; },
-        onProgress: function (pct) { barEl.style.width = Math.round(pct) + '%'; }
-      });
-      var title = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
-      addVideoEntry(slug, videoId, title);
-      dotEl.style.background = '#22c55e';
-      statusEl.textContent = 'Fertig — Metadaten bitte ergaenzen (rote Ampel)';
-      barEl.style.width = '100%';
-      barEl.style.background = '#22c55e';
-    } catch (e) {
-      dotEl.style.background = '#ef4444';
-      statusEl.textContent = 'Fehler: ' + (e.message || String(e));
-    }
-  }
-
-  function injectBatchUI() {
-    if (document.getElementById('bw-batch-zone')) return;
-    var panel = document.getElementById('panel-videos');
-    if (!panel) return;
-
-    var listDiv = document.getElementById('videosList');
-    var insertParent = listDiv ? listDiv.parentElement : panel;
-    var insertBefore = listDiv || insertParent.firstChild;
-
-    var wrap = document.createElement('div');
-    wrap.style.marginBottom = '20px';
-    wrap.innerHTML =
-      '<div id="bw-batch-zone" style="border:2px dashed #3a3a4a;border-radius:10px;padding:24px 20px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:#0f0f1a;">' +
-        '<div style="font-size:24px;margin-bottom:6px;">📥</div>' +
-        '<div style="font-size:14px;font-weight:600;color:#ccc;margin-bottom:4px;">Videos per Drag & Drop hochladen</div>' +
-        '<div style="font-size:12px;color:#555;">Bis zu 10 Videodateien gleichzeitig &middot; klicken zum Auswaehlen</div>' +
-        '<input type="file" id="bw-batch-input" accept="video/*" multiple style="display:none;">' +
-        '<div id="bw-batch-cards" style="margin-top:14px;display:flex;flex-direction:column;gap:8px;text-align:left;"></div>' +
-      '</div>';
-
-    insertParent.insertBefore(wrap, insertBefore);
-
-    var zone  = document.getElementById('bw-batch-zone');
-    var input = document.getElementById('bw-batch-input');
-    var cards = document.getElementById('bw-batch-cards');
-
-    function handleFiles(files) {
-      var arr = Array.from(files).filter(function (f) { return f.type.startsWith('video/'); }).slice(0, 10);
-      if (!arr.length) { alert('Bitte nur Videodateien hochladen.'); return; }
-      cards.innerHTML = '';
-      arr.forEach(function (file, idx) {
-        var card = document.createElement('div');
-        card.style.cssText = 'background:#1a1a2e;border:1px solid #2a2a3e;border-radius:8px;padding:10px 14px;display:flex;align-items:flex-start;gap:12px;';
-        var dot = document.createElement('div');
-        dot.style.cssText = 'width:10px;height:10px;border-radius:50%;background:#555;flex-shrink:0;margin-top:4px;';
-        var info = document.createElement('div');
-        info.style.cssText = 'flex:1;min-width:0;';
-        var fname = document.createElement('div');
-        fname.style.cssText = 'font-size:13px;font-weight:600;color:#e0e0e0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
-        fname.textContent = file.name;
-        var status = document.createElement('div');
-        status.style.cssText = 'font-size:11px;color:#777;margin-top:3px;';
-        status.textContent = 'Warte...';
-        var progWrap = document.createElement('div');
-        progWrap.style.cssText = 'height:3px;background:#2a2a3e;border-radius:2px;margin-top:8px;overflow:hidden;';
-        var bar = document.createElement('div');
-        bar.style.cssText = 'height:100%;width:0%;background:#4f46e5;transition:width .3s;border-radius:2px;';
-        progWrap.appendChild(bar);
-        info.append(fname, status, progWrap);
-        card.append(dot, info);
-        cards.appendChild(card);
-        uploadOne(file, idx, status, dot, bar);
-      });
-    }
-
-    zone.addEventListener('click', function (e) { if (e.target !== input) input.click(); });
-    input.addEventListener('change', function () { handleFiles(input.files); input.value = ''; });
-    zone.addEventListener('dragover', function (e) { e.preventDefault(); zone.style.borderColor = '#4f46e5'; zone.style.background = '#0d0d20'; });
-    zone.addEventListener('dragleave', function () { zone.style.borderColor = '#3a3a4a'; zone.style.background = '#0f0f1a'; });
-    zone.addEventListener('drop', function (e) {
-      e.preventDefault();
-      zone.style.borderColor = '#3a3a4a';
-      zone.style.background = '#0f0f1a';
-      handleFiles(e.dataTransfer.files);
-    });
-  }
-
-  // ── 6. PANEL SWITCH HOOK ─────────────────────────────────────────
+  // ── switchPanel: Aufräumen + Ampeln ──────────────────────────────────────────────────────────────
   var _origSwitch = admin.switchPanel.bind(admin);
   admin.switchPanel = function (name) {
     _origSwitch(name);
     if (name === 'videos') {
-      setTimeout(function () { injectBatchUI(); injectAmpels(); }, 150);
+      setTimeout(function () { hideElements(); injectAmpels(); }, 150);
     }
   };
 
-  // ── 7. MUTATION OBSERVER ─────────────────────────────────────────
-  var listEl = document.getElementById('videoListItems');
-  if (listEl) {
-    new MutationObserver(function () {
-      setTimeout(injectAmpels, 80);
-    }).observe(listEl, { childList: true });
+  // ── MutationObserver ──────────────────────────────────────────────────────────────────────────────
+  var listItems = document.getElementById('videoListItems');
+  if (listItems) {
+    new MutationObserver(function () { setTimeout(injectAmpels, 80); }).observe(listItems, { childList: true });
   }
 
-  // ── 8. INITIALISIERUNG ───────────────────────────────────────────
-  if (admin.videos && admin.videos.length) {
-    admin.renderVideosList();
-  }
-  var vpanel = document.getElementById('panel-videos');
-  if (vpanel && vpanel.style.display !== 'none') {
-    setTimeout(injectBatchUI, 200);
-  }
+  // ── Initialer Cleanup ───────────────────────────────────────────────────────────────────────────
+  hideElements();
 
-  console.log('[admin-patch] v20260421B geladen');
 })();
