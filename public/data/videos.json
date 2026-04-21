@@ -4889,5 +4889,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776777876570",
+    "title": "Luftaufnahme einer jungen Pappelplantage am Waldrand neben einer grünen Wiese unter bewölktem Himmel",
+    "slug": "luftaufnahme-einer-jungen-pappelplantage-am-waldrand-neben-einer-gruenen-wiese-unter-bewoelktem-himmel",
+    "description": "Diese Stockaufnahme zeigt eine großflächige Ansicht einer jungen Baumplantage, bestehend aus gleichmäßig gewachsenen Laubbäumen, vermutlich Pappeln. Die Bäume stehen in geordneten Reihen am Rand eines tiefer liegenden Waldstücks und grenzen an eine saftig grüne Wiese. Im Hintergrund ist ein dichter Mischwald sowie ein Teil eines ländlichen Gebäudes erkennbar. Die Perspektive aus der Luft vermittelt einen klaren Überblick über die forstwirtschaftliche Struktur und die herbstliche, aber noch grüne Vegetation. Das diffuse Tageslicht sorgt für eine natürliche und ruhige Stimmung in dieser ländlichen Landschaftsaufnahme.",
+    "category": "pflanzen-und-blumen",
+    "tags": [
+      "Wald",
+      "Plantage",
+      "Bäume",
+      "Luftaufnahme",
+      "Drohne",
+      "Forstwirtschaft",
+      "Natur",
+      "Grün",
+      "Landschaft",
+      "Laubwald",
+      "Pappel",
+      "Wiese",
+      "Umwelt",
+      "Ökologie",
+      "Landwirtschaft",
+      "Baumreihen",
+      "Waldrand",
+      "Vegetation",
+      "Draußen",
+      "Tag",
+      "Bewölkt",
+      "ländlich",
+      "Nachhaltigkeit",
+      "Biologie",
+      "Waldfläche",
+      "Ökosystem",
+      "Wachstum",
+      "Aufforstung",
+      "Holz",
+      "Ressource",
+      "Baumschule",
+      "Anbau",
+      "Erholung",
+      "Ruhe",
+      "Feld",
+      "Naturaufnahme",
+      "Panorama",
+      "Horizont",
+      "Deutschland",
+      "Europa",
+      "Laub",
+      "Sommer",
+      "Herbst",
+      "Struktur",
+      "Muster",
+      "Flora",
+      "Biotop",
+      "Grünfläche",
+      "Naturschutz"
+    ],
+    "resolution": "4K",
+    "duration": 10,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/luftaufnahme-einer-jungen-pappelplantage-am-waldrand-neben-einer-gruenen-wiese-u.jpg",
+    "r2Key": "videos/luftaufnahme-einer-jungen-pappelplantage-am-waldrand-neben-einer-gruenen-wiese-u.mov",
+    "r2Preview": "previews/luftaufnahme-einer-jungen-pappelplantage-am-waldrand-neben-einer-gruenen-wiese-u.mp4",
+    "r2Hover": "previews/luftaufnahme-einer-jungen-pappelplantage-am-waldrand-neben-einer-gruenen-wiese-u-hover.mp4",
+    "videoId": "stockvideo.de-NNP3ZG59",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
