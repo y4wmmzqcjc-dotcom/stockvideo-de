@@ -1531,5 +1531,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776758311009",
+    "title": "Moderner Serviceroboter mit Katzenohren und digitalem Displaygesicht in heller Innenraumumgebung neben einer Schaufensterpuppe",
+    "slug": "moderner-serviceroboter-mit-katzenohren-und-digitalem-displaygesicht-in-heller-innenraumumgebung-neben-einer-schaufensterpuppe",
+    "description": "Die Videoaufnahme zeigt eine detaillierte Nahaufnahme eines modernen, weißen Serviceroboters, der durch sein markantes Design mit angedeuteten Katzenohren auf der Oberseite des Gehäuses auffällt. Der Roboter befindet sich in einem hellen, lichtdurchfluteten Innenraum, der durch große Fensterfronten im Hintergrund geprägt ist. Auf der Vorderseite des Roboters ist ein digitales Display integriert, das als Gesicht dient. Zu Beginn der Sequenz zeigt dieses Display zwei stilisierte Spiralen als Augen sowie eine kleine Nase und einen Mund, was dem Gerät ein verspieltes, katzentypisches Aussehen verleiht. Unterhalb der Gesichtsanimation ist ein blaues Interaktionsfeld mit weißer Schrift zu erkennen, auf dem der Text „Bitte warten...“ steht.\n\nDer Körper des Roboters besteht aus glattem, weißem Kunststoff mit schwarzen Akzenten. An den Seiten des Kopfes befinden sich leuchtende rote LED-Elemente, die als Statusanzeigen fungieren. Im Verlauf der Aufnahme verändert sich die Mimik auf dem Display kurzzeitig; die Spiralaugen weichen für einen Moment schmalen, horizontalen Linien, bevor sie wieder in die ursprüngliche Form zurückkehren. Diese Animation simuliert ein Blinzeln oder eine Veränderung des Betriebszustandes. Der Roboter ist leicht schräg zur Kamera positioniert, wobei der Fokus scharf auf dem Display und der vorderen Gehäusepartie liegt.\n\nLinks im Hintergrund, leicht unscharf durch die geringe Schärfentiefe, steht eine menschenähnliche Schaufensterpuppe. Diese trägt einen eng anliegenden Anzug mit einem komplexen, blau-weißen Muster, das an organische Strukturen oder futuristische Rüstungselemente erinnert. Zudem trägt die Figur einen dunklen Helm oder eine Kopfbedeckung, die das Gesicht vollständig verdeckt. Die Positionierung der Puppe deutet auf eine Ausstellungs- oder Verkaufsfläche hin. Der Hintergrund lässt durch die Fenster eine grüne Außenanlage mit Bäumen und Rasenflächen erkennen, was auf einen Standort in einem modernen Bürogebäude, einem Showroom oder einem Technologiezentrum schließen lässt.\n\nDie Lichtverhältnisse sind natürlich und gleichmäßig, wobei das Tageslicht von der Seite einfällt und die Oberflächen des Roboters sanft betont. Die Farbstimmung ist neutral und wird von Weiß-, Grau- und Blautönen dominiert. Es sind keine hektischen Bewegungen oder Kamerafahrten vorhanden; die Kamera bleibt stabil auf das Hauptobjekt gerichtet, wodurch die technologischen Details des Roboters im Vordergrund stehen. Der Bodenbelag im Innenraum scheint dunkel und glatt zu sein, was einen Kontrast zum hellen Gehäuse des Roboters bildet. Das gesamte Szenario vermittelt einen Eindruck von modernster Technik, Automatisierung und Robotik im Dienstleistungssektor. Die Szenerie wirkt ruhig und professionell, wobei die spielerische Gestaltung des Roboters eine Brücke zwischen Hochtechnologie und menschlicher Interaktion schlägt. Die baulichen Details wie Fensterrahmen und Deckenstrukturen im Hintergrund unterstreichen die moderne Architektur des Raumes. Es sind keine Firmenlogos oder Markennamen sichtbar, die auf einen spezifischen Hersteller hindeuten.",
+    "category": "technologie",
+    "tags": [
+      "Serviceroboter",
+      "Roboter",
+      "Display",
+      "Technologie",
+      "Digital",
+      "Gesicht",
+      "Animation",
+      "Katzenohren",
+      "Weiß",
+      "Automat",
+      "Interaktion",
+      "Service",
+      "Fortschritt",
+      "Innovation",
+      "Innenaufnahme",
+      "Nahaufnahme",
+      "Fenster",
+      "Tageslicht",
+      "Schaufensterpuppe",
+      "Zukunft",
+      "Robotik",
+      "Modern",
+      "Technik",
+      "Displayanzeige",
+      "Elektronik",
+      "Gerät",
+      "Transportroboter",
+      "Gastronomie",
+      "Künstliche Intelligenz",
+      "Hardware",
+      "Kunststoff",
+      "Design",
+      "Funktionalität",
+      "Kommunikation",
+      "Statusanzeige",
+      "Licht",
+      "Hintergrundunschärfe",
+      "Automatisierung",
+      "Digitalisierung",
+      "Maschinenbau",
+      "Büro",
+      "Showroom",
+      "Ausstellungsstück",
+      "Helm",
+      "Muster",
+      "Kybernetik",
+      "Modernisierung",
+      "Ausstattung",
+      "Informationssystem"
+    ],
+    "resolution": "4K",
+    "duration": 6,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/moderner-serviceroboter-mit-katzenohren-und-digitalem-displaygesicht-in-heller-i.jpg",
+    "r2Key": "videos/moderner-serviceroboter-mit-katzenohren-und-digitalem-displaygesicht-in-heller-i.mov",
+    "r2Preview": "previews/moderner-serviceroboter-mit-katzenohren-und-digitalem-displaygesicht-in-heller-i.mp4",
+    "r2Hover": "previews/moderner-serviceroboter-mit-katzenohren-und-digitalem-displaygesicht-in-heller-i-hover.mp4",
+    "videoId": "stockvideo.de-C0HCS2DM",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
