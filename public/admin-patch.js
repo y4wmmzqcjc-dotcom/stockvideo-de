@@ -1,4 +1,4 @@
-// admin-patch.js — v20260421D
+// admin-patch.js — v20260421F
 (function () {
   'use strict';
   // ── Modal-Fix CSS
@@ -295,7 +295,7 @@
         'color:#c4b5fd','font-size:12px','line-height:1.6',
         'display:none'
       ].join(';');
-      const titleInput = document.querySelector('#modal-video-title,[name="title"],input[placeholder*="Titel"]');
+      const titleInput = document.querySelector('#videoModalTitle_Input');
       if (titleInput) titleInput.closest('label,div')?.after(el);
     }
     return el;
@@ -363,7 +363,7 @@
     input._kiHooked = true;
     input.addEventListener('change', e => {
       const file = e.target.files?.[0];
-      if (file && file.type.startsWith('video/')) runAnalysis(file);
+      if (file && file.type.startsWith('video/')) { const ti = document.querySelector('#videoModalTitle_Input'); if(ti && !ti.value.trim()) { ti.value = '⏳ KI analysiert...'; ti.dispatchEvent(new Event('input',{bubbles:true})); } runAnalysis(file); }
     });
   }
 
