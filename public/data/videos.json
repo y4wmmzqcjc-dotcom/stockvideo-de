@@ -2105,5 +2105,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776764207772",
+    "title": "Industrielle Extrusionsanlage in einer Fabrikhalle zur Kunststoffverarbeitung in der Draufsicht",
+    "slug": "industrielle-extrusionsanlage-in-einer-fabrikhalle-zur-kunststoffverarbeitung-in-der-draufsicht",
+    "description": "Diese Stockaufnahme zeigt eine komplexe industrielle Produktionsanlage, vermutlich eine Extrusionslinie zur Herstellung von Rohren oder Profilen. Die Kamerafahrt aus der Vogelperspektive offenbart verschiedene Maschinenelemente, darunter Förderschnecken, Steuerungseinheiten mit Displays, Rohrleitungen und Kabeltrassen. Die Fabrikumgebung ist hell und funktional gestaltet, mit sichtbaren Lagerelementen wie großen Kartonagen und Abfallbehältern im Hintergrund. Die Szene vermittelt einen Eindruck von moderner Fertigungstechnik und automatisierten industriellen Prozessen. Die technische Anlage ist in neutralen Grau- und Weißtönen gehalten und wirkt sauber und gut gewartet.",
+    "category": "industrie",
+    "tags": [
+      "Industrie",
+      "Fabrik",
+      "Maschine",
+      "Anlage",
+      "Extrusion",
+      "Produktion",
+      "Fertigung",
+      "Kunststoffverarbeitung",
+      "Extruder",
+      "Technik",
+      "Technologie",
+      "Automatisierung",
+      "Maschinenbau",
+      "Werkshalle",
+      "Halle",
+      "Draufsicht",
+      "Vogelperspektive",
+      "Steuerung",
+      "Display",
+      "Monitor",
+      "Kabel",
+      "Rohrleitung",
+      "Leitung",
+      "Förderanlage",
+      "Bauteil",
+      "Metall",
+      "Kunststoff",
+      "Rohr",
+      "Herstellung",
+      "Prozess",
+      "Industrieanlage",
+      "Arbeitsplatz",
+      "Wirtschaft",
+      "Engineering",
+      "Mechanik",
+      "Hardware",
+      "Apparatur",
+      "System",
+      "Fabrikhalle",
+      "Ausrüstung",
+      "Gerät",
+      "Energie",
+      "Stromversorgung",
+      "Kabeltrasse",
+      "Schaltschrank",
+      "Gehäuse",
+      "Lager",
+      "Logistik",
+      "Wartung"
+    ],
+    "resolution": "4K",
+    "duration": 13,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/industrielle-extrusionsanlage-in-einer-fabrikhalle-zur-kunststoffverarbeitung-in.jpg",
+    "r2Key": "videos/industrielle-extrusionsanlage-in-einer-fabrikhalle-zur-kunststoffverarbeitung-in.mov",
+    "r2Preview": "previews/industrielle-extrusionsanlage-in-einer-fabrikhalle-zur-kunststoffverarbeitung-in.mp4",
+    "r2Hover": "previews/industrielle-extrusionsanlage-in-einer-fabrikhalle-zur-kunststoffverarbeitung-in-hover.mp4",
+    "videoId": "stockvideo.de-FINXZF5S",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
