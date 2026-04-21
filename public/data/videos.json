@@ -3659,5 +3659,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776767464724",
+    "title": "Holzturm mit Rutsche und Klettermöglichkeit auf einem Sandspielplatz vor modernen Wohngebäuden an einem sonnigen Tag",
+    "slug": "holzturm-mit-rutsche-und-klettermoeglichkeit-auf-einem-sandspielplatz-vor-modernen-wohngebaeuden-an-einem-sonnigen-tag",
+    "description": "Diese Stockaufnahme zeigt ein hölzernes Spielgerät auf einem mit hellem Sand ausgelegten Spielplatz. Das Spielgerät besteht aus einem zentralen Turm mit Dach, einer metallischen Rutsche sowie einer schrägen Kletterwand. Im Hintergrund sind mehrstöckige, moderne Wohnkomplexe mit Balkonen unter einem leicht bewölkten, blauen Himmel zu sehen. Die Umgebung ist durch grüne Hecken, blühende Sträucher im Vordergrund und eine gepflegte Außenanlage geprägt. Die Lichtverhältnisse sind hell und natürlich, was eine ruhige, alltägliche Atmosphäre im urbanen Wohnumfeld schafft.",
+    "category": "gebude-und-architektur",
+    "tags": [
+      "Spielplatz",
+      "Rutsche",
+      "Klettergerüst",
+      "Holzspielgerät",
+      "Sandkasten",
+      "Wohnanlage",
+      "Außenaufnahme",
+      "Tag",
+      "Wohngebäude",
+      "Architektur",
+      "Spielgerät",
+      "Sand",
+      "Kletterwand",
+      "Spielturm",
+      "Freizeit",
+      "Urban",
+      "Wohnviertel",
+      "Gartenanlage",
+      "Strauch",
+      "Blume",
+      "Pflanze",
+      "Baum",
+      "Himmel",
+      "Wolke",
+      "Metallrutsche",
+      "Holz",
+      "Immobilie",
+      "Fassade",
+      "Balkon",
+      "Modern",
+      "Siedlung",
+      "Kinderspielplatz",
+      "Spielplatzgerät",
+      "Draußen",
+      "Sommer",
+      "Frühling",
+      "Sonnenschein",
+      "Natur",
+      "Grünanlage",
+      "Umfeld",
+      "Quartier",
+      "Wohnen",
+      "Erholung",
+      "Stadt",
+      "Park",
+      "Objekt",
+      "Struktur",
+      "Spielbereich",
+      "Hof"
+    ],
+    "resolution": "4K",
+    "duration": 11,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/holzturm-mit-rutsche-und-klettermoeglichkeit-auf-einem-sandspielplatz-vor-modern.jpg",
+    "r2Key": "videos/holzturm-mit-rutsche-und-klettermoeglichkeit-auf-einem-sandspielplatz-vor-modern.mov",
+    "r2Preview": "previews/holzturm-mit-rutsche-und-klettermoeglichkeit-auf-einem-sandspielplatz-vor-modern.mp4",
+    "r2Hover": "previews/holzturm-mit-rutsche-und-klettermoeglichkeit-auf-einem-sandspielplatz-vor-modern-hover.mp4",
+    "videoId": "stockvideo.de-HGF5EAXJ",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
