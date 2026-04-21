@@ -4233,5 +4233,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776768849604",
+    "title": "Große CNC-Brennschneidanlage bei der automatisierten Bearbeitung von massiven Stahlplatten in einer Werkhalle",
+    "slug": "grosse-cnc-brennschneidanlage-bei-der-automatisierten-bearbeitung-von-massiven-stahlplatten-in-einer-werkhalle",
+    "description": "Diese Stockaufnahme zeigt eine weitläufige Industriehalle, in der eine großformatige CNC-Brennschneidmaschine im Einsatz ist. Die Anlage bewegt sich automatisiert über lange Führungsschienen, während zwei Brennerköpfe eine dicke Stahlplatte mit intensiver Flammenbildung und Funkenflug präzise zuschneiden. Im Hintergrund sind weitere gelagerte Metallplatten und die industrielle Infrastruktur der Werkhalle sichtbar. Ein Arbeiter in Schutzkleidung beobachtet den Prozess am linken Bildrand. Die Szenerie ist sachlich dokumentiert und verdeutlicht die Dimensionen und die technische Effizienz moderner Metallverarbeitung in der Schwerindustrie.",
+    "category": "industrie",
+    "tags": [
+      "Brennschneidmaschine",
+      "CNC",
+      "Industriehalle",
+      "Stahlplatte",
+      "Metallbearbeitung",
+      "Fertigung",
+      "Schwerindustrie",
+      "Automatisierung",
+      "Fabrik",
+      "Stahl",
+      "Schneidbrenner",
+      "Funkenflug",
+      "Produktion",
+      "Werkhalle",
+      "Technik",
+      "Maschinenbau",
+      "Anlage",
+      "Werkstück",
+      "Trennen",
+      "Prozess",
+      "Präzision",
+      "Metallbau",
+      "Werkstatt",
+      "Technologie",
+      "Hitze",
+      "Bearbeitung",
+      "Schiene",
+      "Konstruktion",
+      "Metall",
+      "System",
+      "Mechanik",
+      "Werkzeug",
+      "Stahlbau",
+      "Lagerhalle",
+      "Material",
+      "Industrieanlage",
+      "Massiv",
+      "Bauteil",
+      "Arbeitsplatz",
+      "Industriearbeiter",
+      "Großanlage",
+      "Flamme",
+      "Zuschnitt",
+      "Hardware",
+      "Infrastruktur",
+      "Montage",
+      "Industriegelände",
+      "Effizienz",
+      "Handwerk"
+    ],
+    "resolution": "4K",
+    "duration": 10,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/grosse-cnc-brennschneidanlage-bei-der-automatisierten-bearbeitung-von-massiven-s.jpg",
+    "r2Key": "videos/grosse-cnc-brennschneidanlage-bei-der-automatisierten-bearbeitung-von-massiven-s.mov",
+    "r2Preview": "previews/grosse-cnc-brennschneidanlage-bei-der-automatisierten-bearbeitung-von-massiven-s.mp4",
+    "r2Hover": "previews/grosse-cnc-brennschneidanlage-bei-der-automatisierten-bearbeitung-von-massiven-s-hover.mp4",
+    "videoId": "stockvideo.de-IA35CNE8",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
