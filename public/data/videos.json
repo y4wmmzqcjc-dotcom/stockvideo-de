@@ -2351,5 +2351,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776764735899",
+    "title": "Präzises Sägen eines Aluminiumprofils mit einer Kreissäge und starkem Späneflug in Zeitlupe",
+    "slug": "praezises-saegen-eines-aluminiumprofils-mit-einer-kreissaege-und-starkem-spaeneflug-in-zeitlupe",
+    "description": "Diese Stockaufnahme zeigt den industriellen Trennvorgang eines Aluminiumprofils in einer automatisierten Fertigungsanlage. Ein rotierendes Kreissägeblatt schneidet mit hoher Geschwindigkeit durch das Metallgehäuse, während eine Vielzahl an silbernen Metallspänen effektvoll durch den Raum gewirbelt wird. Die Szene ist in kühlen, bläulichen Tönen gehalten und betont die technische Präzision sowie die Dynamik des Bearbeitungsprozesses. Das Werkstück ist fest in einer Haltevorrichtung eingespannt, was die Stabilität und Sicherheit der modernen Maschinenbau-Technik unterstreicht. Die Detailaufnahme fängt die Materialbeschaffenheit und die Kraft der mechanischen Einwirkung klar ein.",
+    "category": "industrie",
+    "tags": [
+      "Aluminiumprofil",
+      "Sägen",
+      "Kreissäge",
+      "Metallbearbeitung",
+      "Späne",
+      "Späneflug",
+      "Industrie",
+      "Fertigung",
+      "Trennen",
+      "Metall",
+      "Aluminium",
+      "Maschine",
+      "Werkzeug",
+      "Schnitt",
+      "Präzision",
+      "Maschinenbau",
+      "Automatisierung",
+      "Werkstatt",
+      "Produktion",
+      "Technik",
+      "Technologie",
+      "Sägeblatt",
+      "Rotation",
+      "Metallspäne",
+      "Handwerk",
+      "Bauteil",
+      "Profil",
+      "Bearbeitung",
+      "Werkstück",
+      "Industrieanlage",
+      "Anlage",
+      "Mechanik",
+      "Silber",
+      "Metallisch",
+      "Kraft",
+      "Dynamik",
+      "Detailaufnahme",
+      "Nahaufnahme",
+      "Werkzeugmaschine",
+      "Hardware",
+      "Konstruktion",
+      "Aluminiumverarbeitung",
+      "Kalt",
+      "Sauber",
+      "Modern",
+      "Fertigungstechnik",
+      "Trennschleifer",
+      "Prozess",
+      "Fortschritt"
+    ],
+    "resolution": "4K",
+    "duration": 20,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/praezises-saegen-eines-aluminiumprofils-mit-einer-kreissaege-und-starkem-spaenef.jpg",
+    "r2Key": "videos/praezises-saegen-eines-aluminiumprofils-mit-einer-kreissaege-und-starkem-spaenef.mov",
+    "r2Preview": "previews/praezises-saegen-eines-aluminiumprofils-mit-einer-kreissaege-und-starkem-spaenef.mp4",
+    "r2Hover": "previews/praezises-saegen-eines-aluminiumprofils-mit-einer-kreissaege-und-starkem-spaenef-hover.mp4",
+    "videoId": "stockvideo.de-FTQWD5YR",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
