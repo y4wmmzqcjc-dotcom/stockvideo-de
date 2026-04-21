@@ -5854,5 +5854,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776779144204",
+    "title": "Nahaufnahme eines geöffneten Turboprop-Triebwerks an einem Flugzeug zur technischen Wartung im Hangar",
+    "slug": "nahaufnahme-eines-geoeffneten-turboprop-triebwerks-an-einem-flugzeug-zur-technischen-wartung-im-hangar",
+    "description": "Diese Stockaufnahme zeigt eine detaillierte Ansicht eines Propellerflugzeugs in einer Wartungshalle. Die Triebwerksverkleidung ist weit geöffnet und gibt den Blick auf die komplexe Mechanik, Leitungen und technischen Komponenten des Turboprop-Antriebs frei. Im Vordergrund steht der glänzende Metallspinner mit den Propellerblättern. Die Umgebung der Industriehalle ist durch große Fenster im Hintergrund sowie Metallstrukturen gekennzeichnet. Die Szene ist sachlich und dokumentiert den Zustand einer Maschine während einer Inspektion oder Reparatur in einer professionellen Flugzeugwerft bei natürlichem Tageslicht.",
+    "category": "transport",
+    "tags": [
+      "Flugzeug",
+      "Triebwerk",
+      "Wartung",
+      "Hangar",
+      "Turboprop",
+      "Propeller",
+      "Luftfahrt",
+      "Technik",
+      "Mechanik",
+      "Instandhaltung",
+      "Reparatur",
+      "Flugzeugtechnik",
+      "Werkstatt",
+      "Industrie",
+      "Luftfahrttechnik",
+      "Motor",
+      "Inspektion",
+      "Bauteil",
+      "Metall",
+      "Turbine",
+      "Flugzeugwerft",
+      "Detailaufnahme",
+      "Technologie",
+      "Transport",
+      "Luftverkehr",
+      "Ingenieurwesen",
+      "Flugzeugbau",
+      "Service",
+      "Spinner",
+      "Propellerblatt",
+      "Maschine",
+      "Werkshalle",
+      "Hardware",
+      "Ausrüstung",
+      "Instandsetzung",
+      "Luftfahrtindustrie",
+      "Fachkraft",
+      "Luftfahrzeug",
+      "Gehäuse",
+      "Leitung",
+      "Verkabelung",
+      "Flugplatz",
+      "Businessjet",
+      "Privatjet",
+      "Sicherheit",
+      "Check",
+      "Luftfahrtmechanik",
+      "Industriehalle",
+      "Komponente"
+    ],
+    "resolution": "4K",
+    "duration": 10,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/nahaufnahme-eines-geoeffneten-turboprop-triebwerks-an-einem-flugzeug-zur-technis.jpg",
+    "r2Key": "videos/nahaufnahme-eines-geoeffneten-turboprop-triebwerks-an-einem-flugzeug-zur-technis.mov",
+    "r2Preview": "previews/nahaufnahme-eines-geoeffneten-turboprop-triebwerks-an-einem-flugzeug-zur-technis.mp4",
+    "r2Hover": "previews/nahaufnahme-eines-geoeffneten-turboprop-triebwerks-an-einem-flugzeug-zur-technis-hover.mp4",
+    "videoId": "stockvideo.de-OEVRHICM",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
