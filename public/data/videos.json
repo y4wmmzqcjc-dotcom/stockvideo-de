@@ -4643,5 +4643,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776777650060",
+    "title": "Historischer Kirchturm aus Sandstein mit goldener Turmuhr und Glockenstuhl unter bewölktem Himmel",
+    "slug": "historischer-kirchturm-aus-sandstein-mit-goldener-turmuhr-und-glockenstuhl-unter-bewoelktem-himmel",
+    "description": "Diese Stockaufnahme zeigt die obere Hälfte eines massiven, historischen Kirchturms aus dunklem Naturstein. Der Turm verfügt über markante Arkadenöffnungen, in denen ein Glockenstuhl und eine aufwendig verzierte, goldene Turmuhr mit römischen Ziffern sichtbar sind. Den Abschluss bildet ein dunkles Dach mit einer Turmkugel, einem Kreuz und einem Wetterhahn. Im Vordergrund ragen die grünen Blätter eines Baumes ins Bild, während im Hintergrund ein gleichmäßig grauer, bewölkter Himmel zu sehen ist. Zwei Stromleitungen kreuzen das Sichtfeld vor dem Bauwerk. Die Aufnahme wirkt ruhig und dokumentarisch, wobei die architektonischen Details des religiösen Gebäudes im Fokus stehen.",
+    "category": "gebude-und-architektur",
+    "tags": [
+      "Kirchturm",
+      "Kirche",
+      "Kirchuhr",
+      "Turmuhr",
+      "Glockenturm",
+      "Architektur",
+      "Sandstein",
+      "Historisch",
+      "Gebäude",
+      "Religion",
+      "Christentum",
+      "Kreuz",
+      "Wetterhahn",
+      "Stein",
+      "Fassade",
+      "Denkmal",
+      "Glockenstuhl",
+      "Turmspitze",
+      "Uhr",
+      "Gold",
+      "Zifferblatt",
+      "Altstadt",
+      "Kultur",
+      "Erbe",
+      "Bauwerk",
+      "Sakralbau",
+      "Himmel",
+      "Wolken",
+      "Baum",
+      "Blätter",
+      "Frühling",
+      "Naturstein",
+      "Mauerwerk",
+      "Arkade",
+      "Turmdach",
+      "Wetterfahne",
+      "Wahrzeichen",
+      "Dorfkirche",
+      "Antik",
+      "Statik",
+      "Stromleitung",
+      "Draußen",
+      "Tag",
+      "Europa",
+      "Tradition",
+      "Gemeinde",
+      "Turm",
+      "Monument",
+      "Detail"
+    ],
+    "resolution": "4K",
+    "duration": 9,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/historischer-kirchturm-aus-sandstein-mit-goldener-turmuhr-und-glockenstuhl-unter.jpg",
+    "r2Key": "videos/historischer-kirchturm-aus-sandstein-mit-goldener-turmuhr-und-glockenstuhl-unter.mov",
+    "r2Preview": "previews/historischer-kirchturm-aus-sandstein-mit-goldener-turmuhr-und-glockenstuhl-unter.mp4",
+    "r2Hover": "previews/historischer-kirchturm-aus-sandstein-mit-goldener-turmuhr-und-glockenstuhl-unter-hover.mp4",
+    "videoId": "stockvideo.de-NIUI193S",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
