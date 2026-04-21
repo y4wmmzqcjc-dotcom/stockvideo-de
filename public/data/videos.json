@@ -5216,5 +5216,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776778235619",
+    "title": "Luftaufnahme von dichten grünen Baumkronen am Rand eines Laubwaldes angrenzend an eine weite grüne Wiese",
+    "slug": "luftaufnahme-von-dichten-gruenen-baumkronen-am-rand-eines-laubwaldes-angrenzend-an-eine-weite-gruene-wiese",
+    "description": "Diese Stockaufnahme aus der Vogelperspektive zeigt den Übergang zwischen einer intensiv grünen Wiesenfläche und einem dichten Laubwald. Die Kamera schwebt über den geschlossenen Baumkronen, deren verschiedene Grüntöne und Blattstrukturen ein organisches Muster bilden. Der Waldrand verläuft diagonal durch das Bild und verdeutlicht die Grenze zwischen landwirtschaftlich genutzter Fläche und natürlichem Baumbestand. Das diffuse, weiche Tageslicht unterstreicht die friedliche und unberührte Stimmung der ländlichen Landschaft. Die Aufnahme eignet sich ideal zur Visualisierung von Themen wie Umweltschutz, Forstwirtschaft und ökologische Vielfalt.",
+    "category": "drohne-arials",
+    "tags": [
+      "Wald",
+      "Baumkrone",
+      "Wiese",
+      "Luftaufnahme",
+      "Drohne",
+      "Natur",
+      "Grün",
+      "Laubwald",
+      "Waldrand",
+      "Umwelt",
+      "Ökologie",
+      "Landschaft",
+      "Draußen",
+      "Vogelperspektive",
+      "Blätterdach",
+      "Forstwirtschaft",
+      "Nachhaltigkeit",
+      "Biologie",
+      "Struktur",
+      "Muster",
+      "Vegetation",
+      "Ökosystem",
+      "Wildnis",
+      "Feld",
+      "Gras",
+      "Sommer",
+      "Frühling",
+      "Pflanzen",
+      "Wachstum",
+      "Naturschutz",
+      "Klima",
+      "Sauerstoff",
+      "Flora",
+      "Dicht",
+      "Luftbild",
+      "Erholung",
+      "Ruhe",
+      "ländlich",
+      "Deutschland",
+      "Europa",
+      "Nationalpark",
+      "Naturbelassen",
+      "Weitwinkel",
+      "Waldfläche",
+      "Grünfläche",
+      "Biotop",
+      "Horizontale",
+      "Baum",
+      "Forst"
+    ],
+    "resolution": "4K",
+    "duration": 15,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/luftaufnahme-von-dichten-gruenen-baumkronen-am-rand-eines-laubwaldes-angrenzend-.jpg",
+    "r2Key": "videos/luftaufnahme-von-dichten-gruenen-baumkronen-am-rand-eines-laubwaldes-angrenzend-.mov",
+    "r2Preview": "previews/luftaufnahme-von-dichten-gruenen-baumkronen-am-rand-eines-laubwaldes-angrenzend-.mp4",
+    "r2Hover": "previews/luftaufnahme-von-dichten-gruenen-baumkronen-am-rand-eines-laubwaldes-angrenzend--hover.mp4",
+    "videoId": "stockvideo.de-NV9A2H83",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
