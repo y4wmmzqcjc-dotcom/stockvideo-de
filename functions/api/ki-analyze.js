@@ -1,12 +1,28 @@
 // Cloudflare Pages Function: /api/ki-analyze
 // GEMINI_KEY wird als Cloudflare Pages Secret hinterlegt (niemals im Code!)
-export async function onRequestPost(context) {
+export async function onRequest(context) {
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Content-Type': 'application/json'
   };
+  const { request, env } = context;
+
+  // OPTIONS preflight
+  if (request.method === 'OPTIONS') {
+    return new Response(null, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type'
+      }
+    });
+  }
+
+  if (request.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405, headers: corsHeaders });
+  }
+
   try {
-    const { request, env } = context;
     const GEMINI_KEY = env.GEMINI_KEY;
     if (!GEMINI_KEY) {
       return new Response(JSON.stringify({ error: 'GEMINI_KEY nicht konfiguriert' }), { status: 500, headers: corsHeaders });
@@ -36,14 +52,4 @@ export async function onRequestPost(context) {
   } catch (err) {
     return new Response(JSON.stringify({ error: 'Interner Fehler', detail: String(err) }), { status: 500, headers: corsHeaders });
   }
-}
-
-export async function onRequestOptions() {
-  return new Response(null, {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
-    }
-  });
 }
