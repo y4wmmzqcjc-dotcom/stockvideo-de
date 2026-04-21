@@ -3823,5 +3823,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776767716986",
+    "title": "Nahaufnahme von Händen die ein Brillenglas an einer Schleifmaschine bearbeiten unter pinker Laborbeleuchtung",
+    "slug": "nahaufnahme-von-haenden-die-ein-brillenglas-an-einer-schleifmaschine-bearbeiten-unter-pinker-laborbeleuchtung",
+    "description": "Diese Stockaufnahme zeigt in einer extremen Nahaufnahme die Hände einer Person, die ein markiertes Brillenglas präzise an eine rotierende Schleifscheibe halten. Während des Schleifvorgangs sind feine Partikel und Staub in der Luft erkennbar, die durch die Reibung entstehen. Die gesamte Szene ist in ein intensives, pinkes und violettes Licht getaucht, welches eine moderne, technologische Atmosphäre erzeugt. Der Fokus liegt scharf auf den Fingern und dem Glas, während der Hintergrund in einer sanften Unschärfe verschwimmt, was die handwerkliche Präzision im optischen Bereich betont.",
+    "category": "technologie",
+    "tags": [
+      "Brillenglas",
+      "Schleifen",
+      "Optiker",
+      "Handwerk",
+      "Nahaufnahme",
+      "Präzision",
+      "Brille",
+      "Glasbearbeitung",
+      "Werkstatt",
+      "Labor",
+      "Fertigung",
+      "Hände",
+      "Arbeit",
+      "Detail",
+      "Optik",
+      "Schleifmaschine",
+      "Handarbeit",
+      "Technik",
+      "Feinmechanik",
+      "Licht",
+      "Pink",
+      "Violett",
+      "Partikel",
+      "Staub",
+      "Reibung",
+      "Bearbeitung",
+      "Fachkraft",
+      "Korrekturglas",
+      "Glas",
+      "Werkzeug",
+      "Produktion",
+      "Sehhilfe",
+      "Handwerker",
+      "Qualität",
+      "Spezialisierung",
+      "Industrie",
+      "Prozess",
+      "Herstellung",
+      "Fokus",
+      "Schärfe",
+      "Manuell",
+      "Optikermeister",
+      "Technologie",
+      "Augenoptik",
+      "Arbeitsvorgang",
+      "Kreation",
+      "Montage",
+      "Finger",
+      "Glasrand"
+    ],
+    "resolution": "4K",
+    "duration": 12,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/nahaufnahme-von-haenden-die-ein-brillenglas-an-einer-schleifmaschine-bearbeiten-.jpg",
+    "r2Key": "videos/nahaufnahme-von-haenden-die-ein-brillenglas-an-einer-schleifmaschine-bearbeiten-.mov",
+    "r2Preview": "previews/nahaufnahme-von-haenden-die-ein-brillenglas-an-einer-schleifmaschine-bearbeiten-.mp4",
+    "r2Hover": "previews/nahaufnahme-von-haenden-die-ein-brillenglas-an-einer-schleifmaschine-bearbeiten--hover.mp4",
+    "videoId": "stockvideo.de-HLT5IWFZ",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
