@@ -6182,5 +6182,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776779373468",
+    "title": "Weitwinkelaufnahme einer Flugzeugwerft mit verschiedenen Kleinflugzeugen und Privatjets während technischer Wartungsarbeiten",
+    "slug": "weitwinkelaufnahme-einer-flugzeugwerft-mit-verschiedenen-kleinflugzeugen-und-privatjets-waehrend-technischer-wartungsarbeiten",
+    "description": "Diese Stockaufnahme zeigt die Innenansicht einer großen, modernen Wartungshalle für die allgemeine Luftfahrt aus einer erhöhten Perspektive. In der Halle befinden sich mehrere einmotorige und zweimotorige Kleinflugzeuge sowie Privatjets, die eng nebeneinander für Instandhaltungsmaßnahmen positioniert sind. Sichtbar sind geöffnete Triebwerksverkleidungen, Wartungsklappen und diverses technisches Equipment wie Werkzeugwagen und Leitern. Im Hintergrund sind Techniker bei der Arbeit an einer Maschine erkennbar. Die Szene vermittelt einen authentischen und strukturierten Eindruck eines professionellen Flugzeug-Servicebetriebs in einer hellen Industrieumgebung.",
+    "category": "transport",
+    "tags": [
+      "Flugzeug",
+      "Wartung",
+      "Hangar",
+      "Flugzeugwerft",
+      "Luftfahrt",
+      "Instandhaltung",
+      "Werkstatt",
+      "Industriehalle",
+      "Kleinflugzeug",
+      "Privatjet",
+      "Flugzeugtechnik",
+      "Service",
+      "Reparatur",
+      "Luftfahrtindustrie",
+      "Transport",
+      "Technik",
+      "Inspektion",
+      "Halle",
+      "Flugplatz",
+      "Businessjet",
+      "Flugzeugbau",
+      "Werkzeugwagen",
+      "Montage",
+      "Luftverkehr",
+      "Flugzeugwartung",
+      "General Aviation",
+      "Technologie",
+      "Logistik",
+      "Arbeit",
+      "Werft",
+      "Flugzeugmechanik",
+      "Propellerflugzeug",
+      "Jet",
+      "Sicherheit",
+      "Ingenieurwesen",
+      "Triebwerk",
+      "Fluggerät",
+      "Überprüfung",
+      "Arbeitsplatz",
+      "Innenaufnahme",
+      "Infrastruktur",
+      "Ausrüstung",
+      "Wartungshalle",
+      "Industrie",
+      "Flugvorbereitung",
+      "Mechanik",
+      "Fachkraft",
+      "Luftfahrzeug",
+      "Fachbetrieb"
+    ],
+    "resolution": "4K",
+    "duration": 5,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/weitwinkelaufnahme-einer-flugzeugwerft-mit-verschiedenen-kleinflugzeugen-und-pri.jpg",
+    "r2Key": "videos/weitwinkelaufnahme-einer-flugzeugwerft-mit-verschiedenen-kleinflugzeugen-und-pri.mov",
+    "r2Preview": "previews/weitwinkelaufnahme-einer-flugzeugwerft-mit-verschiedenen-kleinflugzeugen-und-pri.mp4",
+    "r2Hover": "previews/weitwinkelaufnahme-einer-flugzeugwerft-mit-verschiedenen-kleinflugzeugen-und-pri-hover.mp4",
+    "videoId": "stockvideo.de-OJYBY6CF",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
