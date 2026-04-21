@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/admin.css?v=20260418C">
     <link rel="stylesheet" href="/admin-articles.css?v=20260418C">
     <style>
-/* ── Wartungsmodus-Widget ── */
+/* ââ Wartungsmodus-Widget ââ */
 .mw-wrap{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 14px 6px;padding:9px 12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);transition:background .3s,border-color .3s}
 .mw-wrap.mw-active{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.35);animation:mwPulse 2s ease-in-out infinite}
 @keyframes mwPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,0)}50%{box-shadow:0 0 0 4px rgba(245,158,11,.15)}}
@@ -23,7 +23,7 @@
 .mw-toggle input:checked + .mw-slider{background:#f59e0b;border-color:#f59e0b}
 .mw-toggle input:checked + .mw-slider:before{transform:translateX(18px);background:#fff}
 
-/* ── Build-Status-Widget ── */
+/* ââ Build-Status-Widget ââ */
 .bsw{display:flex;align-items:center;gap:10px;margin:12px 14px 4px;padding:9px 12px;border-radius:12px;background:rgba(52,199,89,.07);border:1px solid rgba(52,199,89,.18);transition:background .4s,border-color .4s,box-shadow .4s;user-select:none;cursor:default}
 .bsw.bsw-building{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.28);animation:bswGlow 2s ease-in-out infinite}
 .bsw.bsw-done{background:rgba(52,199,89,.18);border-color:rgba(52,199,89,.45);animation:bswPop .45s ease-out}
@@ -66,7 +66,7 @@
                         <input type="text" id="otpInput" class="form-input" placeholder="000000" maxlength="6" inputmode="numeric">
                     </div>
                     <button class="button button-primary" onclick="auth.verifyOTP()">Anmelden</button>
-                    <button class="button button-secondary" style="width: 100%;" onclick="auth.backToPassword()">Zurück</button>
+                    <button class="button button-secondary" style="width: 100%;" onclick="auth.backToPassword()">ZurÃ¼ck</button>
                     <p style="color: var(--text-secondary); font-size: 0.75rem; text-align: center; margin-top: 1rem;">
                         Versuche: <span id="otpAttempts">0</span>/3
                     </p>
@@ -93,7 +93,7 @@
                 <!-- Wartungsmodus-Toggle -->
                 <div id="maintWidget" class="mw-wrap" title="Wartungsmodus ein-/ausschalten">
                   <div class="mw-left">
-                    <span class="mw-icon" id="maintIcon">🟢</span>
+                    <span class="mw-icon" id="maintIcon">ð¢</span>
                     <div>
                       <div class="mw-label" id="maintLabel">Live-Modus</div>
                       <div class="mw-sub" id="maintSub">Website erreichbar</div>
@@ -112,7 +112,7 @@
                       <circle class="bsw-track" cx="18" cy="18" r="15.9"/>
                       <circle class="bsw-fill"  id="bswFill"  cx="18" cy="18" r="15.9"/>
                     </svg>
-                    <div class="bsw-inner" id="bswInner">✓</div>
+                    <div class="bsw-inner" id="bswInner">â</div>
                   </div>
                   <div>
                     <div class="bsw-title" id="bswTitle">Live</div>
@@ -161,7 +161,7 @@
             <div id="panel-videos" class="content-panel">
                 <div class="content-header">
                     <h1 class="content-title">Videos verwalten</h1>
-                    <p class="content-subtitle">Erstellen, bearbeiten und löschen Sie Videos</p>
+                    <p class="content-subtitle">Erstellen, bearbeiten und lÃ¶schen Sie Videos</p>
                 </div>
                 <div style="padding: 2rem;">
                     <div id="videosAlert"></div>
@@ -170,11 +170,11 @@
                         <button id="videosPushBtn" class="button" style="background:#2563eb;color:#fff;border:none;padding:10px 22px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;" onclick="admin.publishToGitHub()">
                             <span style="font-size:16px;">&#8593;</span> Auf GitHub pushen
                         </button>
-                        <button id="repairGhostsBtn" class="button" title="Prüft alle Thumbnails — Videos ohne funktionierende R2-Datei werden entfernt" style="background:rgba(255,59,48,0.12);color:#ff6b6b;border:1px solid rgba(255,59,48,0.3);padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;" onclick="admin.repairGhosts()">
-                            🧹 Ghosts bereinigen
+                        <button id="repairGhostsBtn" class="button" title="PrÃ¼ft alle Thumbnails â Videos ohne funktionierende R2-Datei werden entfernt" style="background:rgba(255,59,48,0.12);color:#ff6b6b;border:1px solid rgba(255,59,48,0.3);padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;" onclick="admin.repairGhosts()">
+                            ð§¹ Ghosts bereinigen
                         </button>
-                        <button id="optimizeSlugsBtn" class="button" title="Leitet aus jedem Videotitel einen SEO-optimierten Slug ab und trägt 301-Redirects für alte URLs ein" style="background:rgba(34,197,94,0.12);color:#4ade80;border:1px solid rgba(34,197,94,0.3);padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;" onclick="admin.optimizeSlugs()">
-                            🔗 SEO-Slugs
+                        <button id="optimizeSlugsBtn" class="button" title="Leitet aus jedem Videotitel einen SEO-optimierten Slug ab und trÃ¤gt 301-Redirects fÃ¼r alte URLs ein" style="background:rgba(34,197,94,0.12);color:#4ade80;border:1px solid rgba(34,197,94,0.3);padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;" onclick="admin.optimizeSlugs()">
+                            ð SEO-Slugs
                         </button>
                     </div>
                     <div id="videosList"></div>
@@ -240,57 +240,57 @@
               </style>
               <div class="sc-wrap">
                 <div class="sc-topbar">
-                  <h2>🗂 Seiteninhalte</h2>
+                  <h2>ð Seiteninhalte</h2>
                   <button class="sc-pub-btn" id="scPublishBtn" onclick="admin.publishConfig()">
-                    <span>↑</span> Auf GitHub veröffentlichen
+                    <span>â</span> Auf GitHub verÃ¶ffentlichen
                   </button>
                 </div>
                 <div id="scAlert" class="sc-alert"></div>
 
                 <!-- Hero -->
                 <div class="sc-card">
-                  <div class="sc-card-title"><span>🎬</span> Hero-Bereich</div>
-                  <div class="sc-field"><label>Überschrift</label><input class="sc-input" id="scHeroTitle" type="text" placeholder="Lizenzfreie Stock Videos in 4K & HD"></div>
-                  <div class="sc-field"><label>Untertitel</label><textarea class="sc-textarea" id="scHeroSubtitle" rows="2" placeholder="Kurzer Begleittext unter der Überschrift…"></textarea></div>
-                  <div class="sc-field"><label>Suchfeld-Platzhalter</label><input class="sc-input" id="scHeroSearch" type="text" placeholder="Suche nach Videos…"></div>
+                  <div class="sc-card-title"><span>ð¬</span> Hero-Bereich</div>
+                  <div class="sc-field"><label>Ãberschrift</label><input class="sc-input" id="scHeroTitle" type="text" placeholder="Lizenzfreie Stock Videos in 4K & HD"></div>
+                  <div class="sc-field"><label>Untertitel</label><textarea class="sc-textarea" id="scHeroSubtitle" rows="2" placeholder="Kurzer Begleittext unter der Ãberschriftâ¦"></textarea></div>
+                  <div class="sc-field"><label>Suchfeld-Platzhalter</label><input class="sc-input" id="scHeroSearch" type="text" placeholder="Suche nach Videosâ¦"></div>
                 </div>
 
                 <!-- Site Meta -->
                 <div class="sc-card">
-                  <div class="sc-card-title"><span>🔍</span> Site-Beschreibung</div>
+                  <div class="sc-card-title"><span>ð</span> Site-Beschreibung</div>
                   <div class="sc-field"><label>Site-Name</label><input class="sc-input" id="scSiteName" type="text" placeholder="stockvideo.de"></div>
-                  <div class="sc-field"><label>Meta-Beschreibung (SEO)</label><textarea class="sc-textarea" id="scSiteDesc" rows="2" placeholder="Kurze Beschreibung der Seite für Suchmaschinen…"></textarea></div>
+                  <div class="sc-field"><label>Meta-Beschreibung (SEO)</label><textarea class="sc-textarea" id="scSiteDesc" rows="2" placeholder="Kurze Beschreibung der Seite fÃ¼r Suchmaschinenâ¦"></textarea></div>
                 </div>
 
                 <!-- Navigation -->
                 <div class="sc-card">
-                  <div class="sc-card-title"><span>🧭</span> Navigation</div>
+                  <div class="sc-card-title"><span>ð§­</span> Navigation</div>
                   <div class="sc-field"><label>CTA-Button Text</label><input class="sc-input" id="scNavCta" type="text" placeholder="Kontakt"></div>
                   <div class="sc-field">
                     <label>Navigationslinks</label>
                     <div id="scNavLinks"></div>
-                    <button class="sc-add-btn" onclick="admin.scAddNavLink()">+ Link hinzufügen</button>
+                    <button class="sc-add-btn" onclick="admin.scAddNavLink()">+ Link hinzufÃ¼gen</button>
                   </div>
                 </div>
 
                 <!-- Footer -->
                 <div class="sc-card">
-                  <div class="sc-card-title"><span>🔗</span> Footer</div>
-                  <div class="sc-field"><label>Copyright-Zeile</label><input class="sc-input" id="scFooterCopyright" type="text" placeholder="© 2026 stockvideo.de"></div>
+                  <div class="sc-card-title"><span>ð</span> Footer</div>
+                  <div class="sc-field"><label>Copyright-Zeile</label><input class="sc-input" id="scFooterCopyright" type="text" placeholder="Â© 2026 stockvideo.de"></div>
                   <div class="sc-field">
-                    <label>Fußzeilen-Spalten</label>
+                    <label>FuÃzeilen-Spalten</label>
                     <div id="scFooterCols"></div>
-                    <button class="sc-add-btn" style="margin-top:8px;" onclick="admin.scAddFooterCol()">+ Spalte hinzufügen</button>
+                    <button class="sc-add-btn" style="margin-top:8px;" onclick="admin.scAddFooterCol()">+ Spalte hinzufÃ¼gen</button>
                   </div>
                 </div>
 
                 <!-- Kontakt -->
                 <div class="sc-card">
-                  <div class="sc-card-title"><span>📬</span> Kontakt & Impressum</div>
+                  <div class="sc-card-title"><span>ð¬</span> Kontakt & Impressum</div>
                   <div class="sc-grid2">
                     <div class="sc-field"><label>Name</label><input class="sc-input" id="scContactName" type="text"></div>
                     <div class="sc-field"><label>E-Mail</label><input class="sc-input" id="scContactEmail" type="text"></div>
-                    <div class="sc-field"><label>Straße & Hausnummer</label><input class="sc-input" id="scContactStreet" type="text"></div>
+                    <div class="sc-field"><label>StraÃe & Hausnummer</label><input class="sc-input" id="scContactStreet" type="text"></div>
                     <div class="sc-field"><label>PLZ & Ort</label><input class="sc-input" id="scContactCity" type="text"></div>
                     <div class="sc-field"><label>Telefon</label><input class="sc-input" id="scContactPhone" type="text"></div>
                     <div class="sc-field"><label>Fax</label><input class="sc-input" id="scContactFax" type="text"></div>
@@ -316,15 +316,15 @@
     <div id="panel-calendar" class="content-panel">
         <div class="content-header">
             <h1 class="content-title">Redaktionskalender</h1>
-            <p class="content-subtitle">Artikel planen und Veröffentlichungen im Überblick</p>
+            <p class="content-subtitle">Artikel planen und VerÃ¶ffentlichungen im Ãberblick</p>
         </div>
         <div class="calendar-controls">
-            <button class="btn btn-secondary" onclick="calendarModule.prevMonth()">&larr; Zurück</button>
+            <button class="btn btn-secondary" onclick="calendarModule.prevMonth()">&larr; ZurÃ¼ck</button>
             <h2 id="calendar-month-title" style="margin:0;font-size:18px;color:#fff;"></h2>
             <button class="btn btn-secondary" onclick="calendarModule.nextMonth()">Weiter &rarr;</button>
         </div>
         <div class="calendar-legend">
-            <span class="legend-item"><span class="legend-dot" style="background:#34c759;"></span> Veröffentlicht</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#34c759;"></span> VerÃ¶ffentlicht</span>
             <span class="legend-item"><span class="legend-dot" style="background:#007aff;"></span> Geplant</span>
             <span class="legend-item"><span class="legend-dot" style="background:#8e8e93;"></span> Entwurf</span>
         </div>
@@ -342,9 +342,9 @@
             <p class="content-subtitle">Bilder organisieren, hochladen und in Artikel einbinden</p>
         </div>
         <div class="media-dropzone" id="media-dropzone" ondragover="mediaModule.dragOver(event)" ondragleave="mediaModule.dragLeave(event)" ondrop="mediaModule.drop(event)" onclick="document.getElementById('media-file-input').click()">
-            <div class="media-dropzone-icon">📷 🖼️ 📁</div>
+            <div class="media-dropzone-icon">ð· ð¼ï¸ ð</div>
             <div class="media-dropzone-text">Bilder hierher ziehen oder klicken zum Hochladen</div>
-            <div class="media-dropzone-hint">JPG, PNG, WebP, SVG — max. 10 MB pro Datei</div>
+            <div class="media-dropzone-hint">JPG, PNG, WebP, SVG â max. 10 MB pro Datei</div>
             <input type="file" id="media-file-input" multiple accept="image/*" style="display:none;" onchange="mediaModule.upload(this.files)">
         </div>
         <div class="media-stats">
@@ -366,8 +366,8 @@
             </div>
         </div>
         <div class="media-bulk-bar" id="media-bulk-bar" style="display:none;">
-            <span id="media-selected-count">0 ausgewählt</span>
-            <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);" onclick="mediaModule.bulkDelete()">Ausgewählte löschen</button>
+            <span id="media-selected-count">0 ausgewÃ¤hlt</span>
+            <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);" onclick="mediaModule.bulkDelete()">AusgewÃ¤hlte lÃ¶schen</button>
             <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);" onclick="mediaModule.deselectAll()">Auswahl aufheben</button>
         </div>
         <div class="media-grid" id="media-grid"></div>
@@ -377,7 +377,7 @@
     <div class="media-detail-sidebar" id="media-detail-sidebar" style="display:none;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
             <h3 style="font-size:16px;font-weight:600;color:#fff;">Bilddetails</h3>
-            <button class="btn btn-sm btn-secondary" onclick="mediaModule.closeDetail()">✕</button>
+            <button class="btn btn-sm btn-secondary" onclick="mediaModule.closeDetail()">â</button>
         </div>
         <div class="media-detail-preview" id="media-detail-preview"></div>
         <div class="media-detail-actions">
@@ -385,7 +385,7 @@
             <label class="btn btn-sm btn-secondary" style="cursor:pointer;margin:0;">
                 Ersetzen <input type="file" accept="image/*" style="display:none;" onchange="mediaModule.replace(this.files)">
             </label>
-            <button class="btn btn-sm" style="background:#ff3b30;color:#fff;" onclick="mediaModule.deleteActive()">Löschen</button>
+            <button class="btn btn-sm" style="background:#ff3b30;color:#fff;" onclick="mediaModule.deleteActive()">LÃ¶schen</button>
         </div>
         <div style="margin-top:16px;">
             <label class="form-label">Dateiname</label>
@@ -393,7 +393,7 @@
         </div>
         <div style="margin-top:12px;">
             <label class="form-label">Alt Text (SEO)</label>
-            <input type="text" class="form-input" id="media-detail-alt" placeholder="Bildbeschreibung für Suchmaschinen">
+            <input type="text" class="form-input" id="media-detail-alt" placeholder="Bildbeschreibung fÃ¼r Suchmaschinen">
         </div>
         <div style="margin-top:12px;">
             <label class="form-label">Kategorie</label>
@@ -407,14 +407,14 @@
         </div>
         <div style="margin-top:12px;">
             <label class="form-label">Verwendet in</label>
-            <div id="media-detail-usage" style="font-size:12px;color:#999;">—</div>
+            <div id="media-detail-usage" style="font-size:12px;color:#999;">â</div>
         </div>
         <div style="display:flex;gap:12px;font-size:11px;color:#666;margin-top:12px;">
-            <span id="media-detail-size">—</span>
-            <span id="media-detail-dims">—</span>
-            <span id="media-detail-date">—</span>
+            <span id="media-detail-size">â</span>
+            <span id="media-detail-dims">â</span>
+            <span id="media-detail-date">â</span>
         </div>
-        <button class="btn btn-primary" style="width:100%;margin-top:16px;" onclick="mediaModule.saveDetail()">Änderungen speichern</button>
+        <button class="btn btn-primary" style="width:100%;margin-top:16px;" onclick="mediaModule.saveDetail()">Ãnderungen speichern</button>
     </div>
 
     <div id="panel-design" class="content-panel" style="display:none"></div>
@@ -447,7 +447,7 @@
             <div class="form-group">
                 <label class="form-label">Kategorie</label>
                 <select class="select" id="videoModalCategory">
-                    <option value="">-- Wählen Sie eine Kategorie --</option>
+                    <option value="">-- WÃ¤hlen Sie eine Kategorie --</option>
                 </select>
             </div>
             <div class="form-group">
@@ -456,7 +456,7 @@
             </div>
             <div class="form-row">
                 <div>
-                    <label class="form-label">Auflösung</label>
+                    <label class="form-label">AuflÃ¶sung</label>
                     <select class="select" id="videoModalResolution">
                         <option value="4K">4K</option>
                         <option value="HD">HD</option>
@@ -472,7 +472,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="form-label">Preis (€)</label>
+                <label class="form-label">Preis (â¬)</label>
                 <input type="number" class="form-input" id="videoModalPrice" placeholder="49.99" min="0" step="0.01">
             </div>
             <div class="form-group">
@@ -589,7 +589,7 @@
       const prog = document.getElementById("videoModalUploadProgress");
       const r2 = document.getElementById("videoModalR2Key");
       const thumbKey = document.getElementById("videoModalThumbKey");
-      // Slug mit Kollisions-Schutz: bei Namenskonflikt automatisch -2, -3, … anhängen
+      // Slug mit Kollisions-Schutz: bei Namenskonflikt automatisch -2, -3, â¦ anhÃ¤ngen
       function _uniqueSlug(base){
         try{
           var editingIdx = (window.admin && window.admin.editingVideoId !== null && window.admin.editingVideoId !== undefined) ? window.admin.editingVideoId : -1;
@@ -626,7 +626,7 @@
               var hk=document.getElementById('videoModalHoverKey'); if(hk) hk.value=res.hoverKey||'';
               var vid=document.getElementById('videoModalVideoId'); if(vid) vid.value=res.videoId||'';
         if (thumbKey) thumbKey.value = res.thumbKey; var tu=document.getElementById("videoModalThumbnail"); if(tu&&res.thumbKey){tu.value="https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/"+res.thumbKey;}
-        status.textContent = "Upload fertig — speichere & publiziere…"; try{ var ti=document.getElementById("videoModalTitle"); if(ti && !ti.value) ti.value = f.name.replace(/\.[^.]+$/,""); var ds=document.getElementById("videoModalDescription"); if(ds && !ds.value) ds.value=ti?ti.value:""; if(window.admin && admin.saveVideo){ admin.saveVideo(); } status.textContent="Gespeichert. Publiziere zu GitHub…"; if(window.admin && admin.publishToGitHub){ await admin.publishToGitHub(); } status.textContent="Fertig! Live in ~1-2 Min via Cloudflare Pages."; }catch(e2){ status.textContent="Auto-Publish Fehler: "+e2.message; }
+        status.textContent = "Upload fertig â speichere & publiziereâ¦"; try{ var ti=document.getElementById("videoModalTitle"); if(ti && !ti.value) ti.value = f.name.replace(/\.[^.]+$/,""); var ds=document.getElementById("videoModalDescription"); if(ds && !ds.value) ds.value=ti?ti.value:""; if(window.admin && admin.saveVideo){ admin.saveVideo(); } status.textContent="Gespeichert. Publiziere zu GitHubâ¦"; if(window.admin && admin.publishToGitHub){ await admin.publishToGitHub(); } status.textContent="Fertig! Live in ~1-2 Min via Cloudflare Pages."; }catch(e2){ status.textContent="Auto-Publish Fehler: "+e2.message; }
       } catch (err) {
         status.textContent = "Fehler: " + err.message;
       }
@@ -656,13 +656,13 @@
       try{return origEdit(idx);}catch(e){console.error('editVideo',e);alert('Bearbeiten Fehler: '+e.message);}
     };
     var origDel=admin.deleteVideo.bind(admin);
-    // Passwort-Modal (identisch zu publishToGitHub) — liefert Admin-PW oder leeren String bei Abbruch
+    // Passwort-Modal (identisch zu publishToGitHub) â liefert Admin-PW oder leeren String bei Abbruch
     function _askAdminPw(){
       return new Promise(function(resolve){
         var saved=localStorage.getItem('adminPublishPw')||'';
         var ov=document.createElement('div');
         ov.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);z-index:99999;display:flex;align-items:center;justify-content:center;';
-        ov.innerHTML='<div style="background:#fff;padding:28px;border-radius:10px;min-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.2);font-family:sans-serif;"><h3 style="margin:0 0 18px;font-size:16px;font-weight:600;color:#111;">Video löschen & publizieren</h3><input id="_dpw" type="password" placeholder="Admin-Passwort" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:6px;font-size:14px;margin-bottom:10px;box-sizing:border-box;"><label style="display:flex;align-items:center;gap:7px;margin-bottom:16px;font-size:13px;color:#555;cursor:pointer;"><input type="checkbox" id="_dpsave"'+(saved?' checked':'')+'>Passwort speichern</label><div style="display:flex;gap:10px;"><button id="_dpok" style="flex:1;padding:10px;background:#2563eb;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:14px;font-weight:500;">Löschen</button><button id="_dpcancel" style="flex:1;padding:10px;background:#f1f5f9;color:#374151;border:1px solid #d1d5db;border-radius:6px;cursor:pointer;font-size:14px;">Abbrechen</button></div></div>';
+        ov.innerHTML='<div style="background:#fff;padding:28px;border-radius:10px;min-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.2);font-family:sans-serif;"><h3 style="margin:0 0 18px;font-size:16px;font-weight:600;color:#111;">Video lÃ¶schen & publizieren</h3><input id="_dpw" type="password" placeholder="Admin-Passwort" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:6px;font-size:14px;margin-bottom:10px;box-sizing:border-box;"><label style="display:flex;align-items:center;gap:7px;margin-bottom:16px;font-size:13px;color:#555;cursor:pointer;"><input type="checkbox" id="_dpsave"'+(saved?' checked':'')+'>Passwort speichern</label><div style="display:flex;gap:10px;"><button id="_dpok" style="flex:1;padding:10px;background:#2563eb;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:14px;font-weight:500;">LÃ¶schen</button><button id="_dpcancel" style="flex:1;padding:10px;background:#f1f5f9;color:#374151;border:1px solid #d1d5db;border-radius:6px;cursor:pointer;font-size:14px;">Abbrechen</button></div></div>';
         document.body.appendChild(ov);
         var inp=document.getElementById('_dpw');
         inp.value=saved;inp.focus();inp.select();
@@ -677,22 +677,22 @@
       });
     }
     admin.deleteVideo=async function(idx){
-      if(!confirm('Wirklich löschen?'))return;
+      if(!confirm('Wirklich lÃ¶schen?'))return;
       var self=this;
       var victim=this.videos[idx];
       var slug=(victim&&victim.slug)||'';
       var r2Key=(victim&&victim.r2Key)||null;
-      // Passwort zuerst erfragen (oder gespeichertes nutzen) — BEVOR lokaler State zerstört wird
+      // Passwort zuerst erfragen (oder gespeichertes nutzen) â BEVOR lokaler State zerstÃ¶rt wird
       var pw=await _askAdminPw();
-      if(!pw){return;} // Abbruch: nichts ändern
+      if(!pw){return;} // Abbruch: nichts Ã¤ndern
       // Lokal entfernen und UI direkt aktualisieren
       this.videos.splice(idx,1);
       try{localStorage.setItem('adminVideos',JSON.stringify(this.videos));}catch(e){}
       try{localStorage.setItem('adminLastChange',new Date().toISOString());}catch(e){}
       this.renderVideosList&&this.renderVideosList();
       this.updateDashboard&&this.updateDashboard();
-      this.showAlert&&this.showAlert('videosAlert','info','Video wird gelöscht & publiziert…');
-      // Snapshot VOR dem Push erfassen — für Build-Widget-Polling
+      this.showAlert&&this.showAlert('videosAlert','info','Video wird gelÃ¶scht & publiziertâ¦');
+      // Snapshot VOR dem Push erfassen â fÃ¼r Build-Widget-Polling
       var preSnapshot=null;
       try{
         var sr=await fetch('/data/videos.json?_pre='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-store,no-cache','Pragma':'no-cache'}});
@@ -706,11 +706,11 @@
         try{
           await fetch('https://stockvideo-checkout.rende.workers.dev/admin/delete-video',{method:'POST',headers:hdr,body:JSON.stringify({slug:slug,r2Key:r2Key})});
         }catch(e2){}
-        // Build-Widget triggern — zeigt oben den Deploy-Fortschritt wie bei Beiträgen
+        // Build-Widget triggern â zeigt oben den Deploy-Fortschritt wie bei BeitrÃ¤gen
         if(window.buildStatus&&window.buildStatus.triggerBuild){
           window.buildStatus.triggerBuild('/data/videos.json',preSnapshot);
         }
-        self.showAlert&&self.showAlert('videosAlert','success','Video gelöscht — Cloudflare Pages rebuildet (~60 s).');
+        self.showAlert&&self.showAlert('videosAlert','success','Video gelÃ¶scht â Cloudflare Pages rebuildet (~60 s).');
       }catch(e){
         self.showAlert&&self.showAlert('videosAlert','error','Fehler: '+e.message);
       }
@@ -741,7 +741,7 @@ function openBatch(){
 }
 function bind(){
   var b=document.getElementById("batchReprocessBtn"); if(b&&!b._bd){ b._bd=1; b.addEventListener("click",openBatch); }
-  var p=document.getElementById("batchReprocessPublish"); if(p&&!p._bd){ p._bd=1; p.addEventListener("click",function(){ if(window.admin&&admin.publishToGitHub){ admin.publishToGitHub(); } else { alert("publishToGitHub nicht verfügbar"); } }); }
+  var p=document.getElementById("batchReprocessPublish"); if(p&&!p._bd){ p._bd=1; p.addEventListener("click",function(){ if(window.admin&&admin.publishToGitHub){ admin.publishToGitHub(); } else { alert("publishToGitHub nicht verfÃ¼gbar"); } }); }
 }
 if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bind); else bind();
 document.addEventListener("change", async function(e){
@@ -774,7 +774,7 @@ window.maintMode = (function () {
   var PATH   = 'public/data/maintenance.json';
   var KEY    = 'maintModeActive';
 
-  /* ── UI-State setzen ─────────────────────────────────── */
+  /* ââ UI-State setzen âââââââââââââââââââââââââââââââââââ */
   function setUI(active, busy) {
     var wrap  = document.getElementById('maintWidget');
     var icon  = document.getElementById('maintIcon');
@@ -785,8 +785,8 @@ window.maintMode = (function () {
 
     if (busy) {
       wrap.className = 'mw-wrap';
-      if (icon) icon.textContent = '⏳';
-      if (lbl)  lbl.textContent  = 'Wird umgeschaltet…';
+      if (icon) icon.textContent = 'â³';
+      if (lbl)  lbl.textContent  = 'Wird umgeschaltetâ¦';
       if (sub)  sub.textContent  = 'Bitte warten';
       if (chk)  chk.disabled = true;
       return;
@@ -795,18 +795,18 @@ window.maintMode = (function () {
     if (chk) { chk.disabled = false; chk.checked = active; }
     if (active) {
       wrap.className = 'mw-wrap mw-active';
-      if (icon) icon.textContent = '🔴';
+      if (icon) icon.textContent = 'ð´';
       if (lbl)  lbl.textContent  = 'Wartungsmodus';
       if (sub)  sub.textContent  = 'Website offline';
     } else {
       wrap.className = 'mw-wrap';
-      if (icon) icon.textContent = '🟢';
+      if (icon) icon.textContent = 'ð¢';
       if (lbl)  lbl.textContent  = 'Live-Modus';
       if (sub)  sub.textContent  = 'Website erreichbar';
     }
   }
 
-  /* ── Aktuellen Stand laden ───────────────────────────── */
+  /* ââ Aktuellen Stand laden âââââââââââââââââââââââââââââ */
   function load() {
     fetch('/data/maintenance.json?_m=' + Date.now(), {
       cache: 'no-store',
@@ -823,11 +823,11 @@ window.maintMode = (function () {
     });
   }
 
-  /* ── Toggle via GitHub API ───────────────────────────── */
+  /* ââ Toggle via GitHub API âââââââââââââââââââââââââââââ */
   async function toggle(active) {
-    // Sicherheits-Bestätigung beim Aktivieren
+    // Sicherheits-BestÃ¤tigung beim Aktivieren
     if (active && !confirm(
-      '⚠️ Wartungsmodus aktivieren?\n\n' +
+      'â ï¸ Wartungsmodus aktivieren?\n\n' +
       'Die Website zeigt dann nur noch die Wartungsseite.\n' +
       'Das Admin-Panel (/panel.html) bleibt erreichbar.\n\n' +
       'Fortfahren?'
@@ -848,7 +848,7 @@ window.maintMode = (function () {
 
         var content = JSON.stringify({
           active: active,
-          message: 'Diese Website wird gerade gewartet. Wir sind bald wieder für Sie da.',
+          message: 'Diese Website wird gerade gewartet. Wir sind bald wieder fÃ¼r Sie da.',
           updatedAt: Date.now()
         }, null, 2) + '\n';
 
@@ -871,7 +871,7 @@ window.maintMode = (function () {
               JSON.stringify({active: !active, message:'', updatedAt:0}, null, 2) + '\n');
           }
           if (active) {
-            alert('✅ Wartungsmodus wird aktiviert.\nDie Seite ist in ~60 Sekunden im Wartungsmodus.');
+            alert('â Wartungsmodus wird aktiviert.\nDie Seite ist in ~60 Sekunden im Wartungsmodus.');
           }
           return;
         }
@@ -888,7 +888,7 @@ window.maintMode = (function () {
     }
   }
 
-  /* ── Init ─────────────────────────────────────────────── */
+  /* ââ Init âââââââââââââââââââââââââââââââââââââââââââââââ */
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', load);
   } else {
@@ -910,7 +910,7 @@ window.buildStatus = (function () {
 
   function $id(id) { return document.getElementById(id); }
 
-  // ── Visuelles Rendering ──────────────────────────────────────────────────
+  // ââ Visuelles Rendering ââââââââââââââââââââââââââââââââââââââââââââââââââ
   function render(state, elapsed) {
     var w     = $id('bswWidget');
     var fill  = $id('bswFill');
@@ -928,7 +928,7 @@ window.buildStatus = (function () {
 
     } else if (state === 'building') {
       w.className = 'bsw bsw-building';
-      // Ring füllt sich mit der Zeit (leer → voll, max 95%)
+      // Ring fÃ¼llt sich mit der Zeit (leer â voll, max 95%)
       var pct    = Math.min((elapsed || 0) / BUILD_MAX, 0.95);
       fill.style.strokeDashoffset = (100 - pct * 100).toFixed(1);
       var label  = elapsed < 60 ? elapsed + 's'
@@ -947,7 +947,7 @@ window.buildStatus = (function () {
     }
   }
 
-  // ── localStorage-Helpers ────────────────────────────────────────────────
+  // ââ localStorage-Helpers ââââââââââââââââââââââââââââââââââââââââââââââââ
   function getInfo() {
     var raw = localStorage.getItem(KEY);
     if (!raw) return null;
@@ -960,7 +960,7 @@ window.buildStatus = (function () {
     render('done');
   }
 
-  // ── 1-s-Tick für die Anzeige ─────────────────────────────────────────────
+  // ââ 1-s-Tick fÃ¼r die Anzeige âââââââââââââââââââââââââââââââââââââââââââââ
   function tick() {
     var info = getInfo();
     if (!info) { render('live'); return; }
@@ -969,7 +969,7 @@ window.buildStatus = (function () {
     render('building', elapsed);
   }
 
-  // ── Polling: Inhalt mit altem Snapshot vergleichen ───────────────────────
+  // ââ Polling: Inhalt mit altem Snapshot vergleichen âââââââââââââââââââââââ
   function pollCheck() {
     var info = getInfo();
     if (!info || !info.url || !info.snapshot) return;
@@ -980,7 +980,7 @@ window.buildStatus = (function () {
     })
     .then(function (r) { return r.text(); })
     .then(function (text) {
-      // Inhalt hat sich verändert → Deploy ist live!
+      // Inhalt hat sich verÃ¤ndert â Deploy ist live!
       if (text !== info.snapshot) markDone();
     })
     .catch(function () {/* Netzwerkfehler ignorieren */});
@@ -991,21 +991,21 @@ window.buildStatus = (function () {
     _pollTmr = setInterval(pollCheck, POLL_MS);
   }
 
-  // ── Öffentliche API ──────────────────────────────────────────────────────
+  // ââ Ãffentliche API ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
   // url        : welche JSON-Datei gepollt werden soll
   // preSnapshot: der ALTE Stand der Datei, VOR dem GitHub-Push erfasst
-  //              (muss vor dem Push abgerufen werden — damit ist er guaranteed alt)
+  //              (muss vor dem Push abgerufen werden â damit ist er guaranteed alt)
   function triggerBuild(url, preSnapshot) {
     var checkUrl = url || '/data/articles.json';
     var info = { start: Date.now(), url: checkUrl, snapshot: preSnapshot || null };
     localStorage.setItem(KEY, JSON.stringify(info));
     tick();
     startPolling();
-    // Erste Poll-Prüfung nach 3s (edge-case: Cloudflare war sehr schnell)
+    // Erste Poll-PrÃ¼fung nach 3s (edge-case: Cloudflare war sehr schnell)
     setTimeout(pollCheck, 3000);
   }
 
-  // ── Initialisierung ──────────────────────────────────────────────────────
+  // ââ Initialisierung ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
   function start() {
     clearInterval(_tickTmr);
     _tickTmr = setInterval(tick, 1000);
@@ -1043,6 +1043,6 @@ window.buildStatus = (function () {
 })();
 </script>
 
-  <script src="/admin-patch.js?v=20260421G"></script>
+  <script src="/admin-patch.js?v=20260421H"></script>
 </body>
 </html>
