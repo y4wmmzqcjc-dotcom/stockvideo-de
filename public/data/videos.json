@@ -5541,5 +5541,81 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776778682438",
+    "title": "Nahaufnahme der Motorhaube eines silbernen Servicefahrzeugs mit blauem „Servicewagen“-Schriftzug",
+    "slug": "nahaufnahme-der-motorhaube-eines-silbernen-servicefahrzeugs-mit-blauem-servicewagen-schriftzug",
+    "description": "Diese Stockaufnahme zeigt in einer statischen Nahaufnahme die Motorhaube eines silbernen Dienstfahrzeugs. Im Zentrum steht der deutlich lesbare, blaue Aufdruck „Servicewagen“. Am unteren Bildrand ist ein Teil der rot-weißen Warnmarkierung (Reflektorstreifen) erkennbar, die auf ein Einsatz- oder Wartungsfahrzeug hindeutet. Die glatte Metalloberfläche reflektiert dezent den hellen Himmel, was eine saubere und professionelle Optik erzeugt. Die Aufnahme eignet sich ideal für Themen rund um technischen Kundendienst, mobile Wartung, Handwerksleistungen oder infrastrukturelle Service-Dienstleistungen.",
+    "category": "transport",
+    "tags": [
+      "Servicewagen",
+      "Kundendienst",
+      "Fahrzeug",
+      "Wartung",
+      "Auto",
+      "Motorhaube",
+      "Silber",
+      "Schriftzug",
+      "Dienstwagen",
+      "Reparatur",
+      "Service",
+      "Technik",
+      "Handwerk",
+      "Montage",
+      "Einsatzfahrzeug",
+      "Mobil",
+      "Transport",
+      "Logistik",
+      "Warnmarkierung",
+      "Reflektor",
+      "Sicherheit",
+      "Metall",
+      "Oberfläche",
+      "Professionell",
+      "Dienstleistung",
+      "Fuhrpark",
+      "Firmenwagen",
+      "Infrastruktur",
+      "Nahaufnahme",
+      "Detail",
+      "Beschriftung",
+      "Blau",
+      "Silber-Metallic",
+      "Fleet Management",
+      "Pannenhilfe",
+      "Techniker",
+      "Werkstattwagen",
+      "Außendienst",
+      "Industrie",
+      "Handwerkerauto",
+      "Firmenlogo",
+      "Automotive",
+      "Mobilität"
+    ],
+    "resolution": "4K",
+    "duration": 9,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/nahaufnahme-der-motorhaube-eines-silbernen-servicefahrzeugs-mit-blauem-servicewa.jpg",
+    "r2Key": "videos/nahaufnahme-der-motorhaube-eines-silbernen-servicefahrzeugs-mit-blauem-servicewa.mov",
+    "r2Preview": "previews/nahaufnahme-der-motorhaube-eines-silbernen-servicefahrzeugs-mit-blauem-servicewa.mp4",
+    "r2Hover": "previews/nahaufnahme-der-motorhaube-eines-silbernen-servicefahrzeugs-mit-blauem-servicewa-hover.mp4",
+    "videoId": "stockvideo.de-O50QI445",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
