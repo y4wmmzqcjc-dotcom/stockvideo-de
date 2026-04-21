@@ -3416,5 +3416,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776766969395",
+    "title": "Mitarbeiter bei der mikroskopischen Qualitätsprüfung eines industriellen Kugellagers im Labor",
+    "slug": "mitarbeiter-bei-der-mikroskopischen-qualitaetspruefung-eines-industriellen-kugellagers-im-labor",
+    "description": "Diese Stockaufnahme zeigt eine konzentrierte Qualitätssicherung in einem modernen, technisch orientierten Laborumfeld. Ein männlicher Mitarbeiter blickt durch ein professionelles Digitalmikroskop, um die Oberfläche und die mechanischen Details eines Kugellagers präzise zu untersuchen. Parallel dazu wird die vergrößerte Nahaufnahme des Bauteils in Echtzeit auf einem danebenstehenden Monitor angezeigt. Die gesamte Szene ist in einem kühlen, blauen Licht gehalten, was die technologische und sterile Atmosphäre unterstreicht. Der Fokus liegt auf der Schnittstelle zwischen manueller Prüfung und digitaler Überwachung innerhalb industrieller Fertigungsprozesse.",
+    "category": "technologie",
+    "tags": [
+      "Qualitätskontrolle",
+      "Mikroskop",
+      "Labor",
+      "Prüfung",
+      "Kugellager",
+      "Industrie",
+      "Technik",
+      "Technologie",
+      "Monitor",
+      "Bildschirm",
+      "Qualitätssicherung",
+      "Mitarbeiter",
+      "Untersuchung",
+      "Präzision",
+      "Detail",
+      "Maschinenbau",
+      "Entwicklung",
+      "Forschung",
+      "Analyse",
+      "Digitalmikroskop",
+      "Bauteil",
+      "Mechanik",
+      "Optik",
+      "Messung",
+      "Fehleranalyse",
+      "Fertigung",
+      "Produktion",
+      "Blau",
+      "Licht",
+      "Atmosphäre",
+      "Professionalität",
+      "Arbeitsplatz",
+      "Hardware",
+      "Software",
+      "Kontrolle",
+      "Ingenieurwesen",
+      "Engineering",
+      "Dokumentation",
+      "Vergrößerung",
+      "Inspektion",
+      "Werkstück",
+      "Metall",
+      "Glanz",
+      "Laborumfeld",
+      "Fachkraft",
+      "Datenauswertung",
+      "Prozess",
+      "Instandhaltung",
+      "Modern"
+    ],
+    "resolution": "4K",
+    "duration": 8,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/mitarbeiter-bei-der-mikroskopischen-qualitaetspruefung-eines-industriellen-kugel.jpg",
+    "r2Key": "videos/mitarbeiter-bei-der-mikroskopischen-qualitaetspruefung-eines-industriellen-kugel.mov",
+    "r2Preview": "previews/mitarbeiter-bei-der-mikroskopischen-qualitaetspruefung-eines-industriellen-kugel.mp4",
+    "r2Hover": "previews/mitarbeiter-bei-der-mikroskopischen-qualitaetspruefung-eines-industriellen-kugel-hover.mp4",
+    "videoId": "stockvideo.de-H5XUQX3F",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
