@@ -1,4 +1,4 @@
-// admin-patch.js — v20260421F
+// admin-patch.js — v20260421G
 (function () {
   'use strict';
   // ── Modal-Fix CSS
@@ -247,7 +247,7 @@
     statusEl.textContent = '\u23f3 Lade SmolVLM (einmaliger Download ~500 MB)\u2026';
     const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3');
     _kiPipeline = await pipeline(
-      'image-text-to-text',
+      'image-to-text',
       'HuggingFaceTB/SmolVLM-256M-Instruct',
       { device: 'webgpu', dtype: 'q4',
         progress_callback: p => {
