@@ -1,4 +1,4 @@
-// admin-patch.js — v20260421Q
+// admin-patch.js — v20260421S
 (function () {
   'use strict';
   // ── Modal-Fix CSS
@@ -214,15 +214,11 @@
 
 
 
-// v20260421Q - Gemini Flash KI: encode small video → upload → analyze → THEN pipeline
+// v20260421S - Gemini KI: Key server-side via /api/ki-analyze
 (function () {
   'use strict';
 
-  const GEMINI_KEY = 'AIzaSyCcexqo3u_o_YVdYQX05zSQnTTgci6wkFA';
-  const GEMINI_UPLOAD = 'https://generativelanguage.googleapis.com/upload/v1beta/files';
-  const GEMINI_GEN = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
-
-  // ── Status-Toast ──────────────────────────────────────────────────────────
+  // ── Toast ─────────────────────────────────────────────────────────────────
   function getToast() {
     let el = document.getElementById('ki-toast');
     if (!el) {
@@ -236,189 +232,95 @@
     return el;
   }
   function setStatus(msg) { const t = getToast(); t.textContent = msg; t.style.display = 'block'; }
-  function hideStatus(delay) { setTimeout(() => { getToast().style.display = 'none'; }, delay || 3000); }
+  function hideStatus(d)  { setTimeout(() => { getToast().style.display = 'none'; }, d || 3000); }
 
-  // ── 640x360 WebM encodieren (max 15s) ────────────────────────────────────
-  function encodeSmallVideo(file) {
+  function withTimeout(promise, ms, label) {
+    return Promise.race([
+      promise,
+      new Promise((_, rej) => setTimeout(() => rej(new Error(label + ' Timeout')), ms))
+    ]);
+  }
+
+  // ── 3 JPEG Frames extrahieren ─────────────────────────────────────────────
+  function extractFrame(file, pos) {
     return new Promise((resolve, reject) => {
       const url = URL.createObjectURL(file);
       const video = document.createElement('video');
-      video.muted = true;
-      video.src = url;
-
-      video.addEventListener('loadedmetadata', () => {
-        const capDuration = Math.min(video.duration, 15);
-        const ar = video.videoWidth / video.videoHeight;
+      video.muted = true; video.src = url;
+      video.addEventListener('loadedmetadata', () => { video.currentTime = (video.duration || 10) * pos; });
+      video.addEventListener('seeked', () => {
         const canvas = document.createElement('canvas');
-        canvas.width = 640;
-        canvas.height = Math.round(640 / (ar || 1.778));
-        const ctx = canvas.getContext('2d');
-
-        const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp8')
-          ? 'video/webm;codecs=vp8' : 'video/webm';
-        const stream = canvas.captureStream(10);
-        const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 400000 });
-        const chunks = [];
-
-        recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
-        recorder.onstop = () => {
-          URL.revokeObjectURL(url);
-          resolve(new Blob(chunks, { type: 'video/webm' }));
-        };
-
-        let raf;
-        const draw = () => { ctx.drawImage(video, 0, 0, canvas.width, canvas.height); raf = requestAnimationFrame(draw); };
-
-        recorder.start(200);
-        video.currentTime = 0;
-        video.play().then(draw);
-
-        video.addEventListener('timeupdate', () => {
-          if (video.currentTime >= capDuration) {
-            cancelAnimationFrame(raf);
-            video.pause();
-            if (recorder.state !== 'inactive') recorder.stop();
-          }
-        });
-        video.addEventListener('ended', () => {
-          cancelAnimationFrame(raf);
-          if (recorder.state !== 'inactive') recorder.stop();
-        });
+        canvas.width = Math.min(video.videoWidth || 640, 768);
+        canvas.height = Math.round(canvas.width / ((video.videoWidth||16)/(video.videoHeight||9)));
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        URL.revokeObjectURL(url);
+        resolve(canvas.toDataURL('image/jpeg', 0.85).split(',')[1]);
       });
-
-      video.addEventListener('error', e => { URL.revokeObjectURL(url); reject(e); });
+      video.addEventListener('error', reject);
       video.load();
     });
-  }
-
-  // ── Gemini Files API: Upload + warte auf ACTIVE ───────────────────────────
-  async function uploadToGemini(blob) {
-    // Resumable upload starten
-    const initRes = await fetch(GEMINI_UPLOAD + '?key=' + GEMINI_KEY, {
-      method: 'POST',
-      headers: {
-        'X-Goog-Upload-Protocol': 'resumable',
-        'X-Goog-Upload-Command': 'start',
-        'X-Goog-Upload-Header-Content-Length': blob.size,
-        'X-Goog-Upload-Header-Content-Type': 'video/webm',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ file: { display_name: 'ki-analyse.webm' } })
-    });
-    const uploadUrl = initRes.headers.get('X-Goog-Upload-URL');
-    if (!uploadUrl) throw new Error('Kein Upload-URL von Gemini');
-
-    // Datei hochladen
-    const upRes = await fetch(uploadUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Length': blob.size,
-        'X-Goog-Upload-Offset': '0',
-        'X-Goog-Upload-Command': 'upload, finalize'
-      },
-      body: blob
-    });
-    const fileData = await upRes.json();
-    const fileUri = fileData.file && fileData.file.uri;
-    const fileName = fileData.file && fileData.file.name;
-    if (!fileUri) throw new Error('Kein fileUri von Gemini: ' + JSON.stringify(fileData).substring(0, 100));
-
-    // Warte auf ACTIVE
-    for (let i = 0; i < 30; i++) {
-      await new Promise(r => setTimeout(r, 2000));
-      const sRes = await fetch('https://generativelanguage.googleapis.com/v1beta/' + fileName + '?key=' + GEMINI_KEY);
-      const s = await sRes.json();
-      if (s.state === 'ACTIVE') return fileUri;
-      if (s.state === 'FAILED') throw new Error('Gemini Videoverarbeitung fehlgeschlagen');
-    }
-    throw new Error('Timeout: Gemini Video nicht bereit');
   }
 
   // ── Prompt ────────────────────────────────────────────────────────────────
   function getKiPrompt() {
     const ca = document.querySelector('#videoModalCategory');
     const cats = ca ? [...ca.options].filter(o => o.value).map(o => o.value).join(', ') : '';
-    return 'Analysiere dieses Stockvideo. Antworte NUR mit diesem JSON-Objekt:
-' +
+    return 'Analysiere diese 3 Frames aus einem Stockvideo (Anfang, Mitte, Ende). Antworte NUR mit diesem JSON:\n' +
       '{"titel":"Kurzer deutscher Titel max 60 Zeichen",' +
-      '"beschreibung":"Deutsche Beschreibung 1-2 Saetze was im Video zu sehen ist",' +
-      '"keywords":["keyword1","keyword2","keyword3","keyword4","keyword5"],' +
-      '"kategorie":"EINE der folgenden: ' + cats + '"}';
+      '"beschreibung":"Deutsche Beschreibung 1-2 Saetze",' +
+      '"keywords":["kw1","kw2","kw3","kw4","kw5"],' +
+      '"kategorie":"EINE aus: ' + cats + '"}';
   }
 
   // ── Felder befüllen ───────────────────────────────────────────────────────
   function fillFields(data) {
-    const ti = document.querySelector('#videoModalTitle_Input');
-    const de = document.querySelector('#videoModalDescription');
-    const kw = document.querySelector('#videoModalTags');
-    const ca = document.querySelector('#videoModalCategory');
-    if (ti && data.titel)        { ti.value = data.titel;        ti.dispatchEvent(new Event('input', {bubbles:true})); }
-    if (de && data.beschreibung) { de.value = data.beschreibung; de.dispatchEvent(new Event('input', {bubbles:true})); }
-    if (kw && data.keywords)     { kw.value = Array.isArray(data.keywords) ? data.keywords.join(', ') : String(data.keywords); kw.dispatchEvent(new Event('input', {bubbles:true})); }
-    if (ca && data.kategorie) {
-      const cat = String(data.kategorie).toLowerCase().trim();
-      const best = [...(ca.options || [])].find(o =>
-        o.value === data.kategorie ||
-        o.value.toLowerCase() === cat ||
-        o.value.replace(/-/g,'') === cat.replace(/-/g,'') ||
-        o.textContent.toLowerCase().trim().includes(cat)
-      );
-      if (best) { ca.value = best.value; ca.dispatchEvent(new Event('change', {bubbles:true})); }
+    const set = (sel, val, ev) => { const el = document.querySelector(sel); if (el && val) { el.value = val; el.dispatchEvent(new Event(ev||'input', {bubbles:true})); }};
+    set('#videoModalTitle_Input', data.titel);
+    set('#videoModalDescription', data.beschreibung);
+    set('#videoModalTags', Array.isArray(data.keywords) ? data.keywords.join(', ') : String(data.keywords||''));
+    if (data.kategorie) {
+      const ca = document.querySelector('#videoModalCategory');
+      if (ca) {
+        const cat = String(data.kategorie).toLowerCase().trim();
+        const best = [...ca.options].find(o => o.value === data.kategorie || o.value.toLowerCase() === cat || o.value.replace(/-/g,'') === cat.replace(/-/g,''));
+        if (best) { ca.value = best.value; ca.dispatchEvent(new Event('change', {bubbles:true})); }
+      }
     }
   }
 
-  // ── Hauptfunktion ─────────────────────────────────────────────────────────
+  // ── KI via /api/ki-analyze (Key server-side in CF Pages secret) ───────────
   async function runKiAnalysis(file) {
-    try {
-      setStatus('🎬 Erstelle Analyse-Video (640x360)...');
-      const blob = await encodeSmallVideo(file);
+    setStatus('📸 Extrahiere Frames...');
+    const [f1, f2, f3] = await withTimeout(
+      Promise.all([extractFrame(file, 0.2), extractFrame(file, 0.5), extractFrame(file, 0.8)]),
+      20000, 'Frame-Extraktion'
+    );
 
-      setStatus('📤 Lade hoch (' + Math.round(blob.size / 1024) + ' KB)...');
-      const fileUri = await uploadToGemini(blob);
-
-      setStatus('🤖 Gemini analysiert Inhalt...');
-      const res = await fetch(GEMINI_GEN + '?key=' + GEMINI_KEY, {
+    setStatus('🤖 Gemini analysiert...');
+    const res = await withTimeout(
+      fetch('/api/ki-analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [
-            { fileData: { mimeType: 'video/webm', fileUri: fileUri } },
-            { text: getKiPrompt() }
-          ]}],
-          generationConfig: { response_mime_type: 'application/json', temperature: 0.2, maxOutputTokens: 512 }
-        })
-      });
+        body: JSON.stringify({ frames: [f1, f2, f3], prompt: getKiPrompt() })
+      }),
+      30000, 'Gemini API'
+    );
 
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error('Gemini ' + res.status + ': ' + errText.substring(0, 120));
-      }
-
-      const result = await res.json();
-      const text = result.candidates && result.candidates[0] && result.candidates[0].content &&
-                   result.candidates[0].content.parts && result.candidates[0].content.parts[0] &&
-                   result.candidates[0].content.parts[0].text;
-      if (!text) throw new Error('Keine Antwort von Gemini');
-
-      const data = JSON.parse(text);
-      fillFields(data);
-
-      setStatus('✅ Titel & Metadaten gesetzt – Upload startet...');
-      hideStatus(2500);
-      return data;
-
-    } catch (err) {
-      setStatus('⚠️ KI-Fehler: ' + err.message);
-      hideStatus(5000);
-      console.error('[KI]', err);
-      // Fallback: leerer Titel damit Pipeline nicht blockiert
-      const ti = document.querySelector('#videoModalTitle_Input');
-      if (ti && !ti.value) ti.value = file.name.replace(/\.[^.]+$/, '');
-      throw err;
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error('API Fehler ' + res.status + ': ' + errText.substring(0, 100));
     }
+
+    const result = await res.json();
+    if (!result.analysis) throw new Error('Keine Antwort von Gemini');
+    const data = JSON.parse(result.analysis);
+    fillFields(data);
+    setStatus('✅ Metadaten gesetzt – Upload startet...');
+    hideStatus(2500);
+    return data;
   }
 
-  // ── Capture-Phase Listener: blockiert Upload bis KI fertig ────────────────
+  // ── Capture-Phase Listener ────────────────────────────────────────────────
   document.addEventListener('change', async function (e) {
     if (!e.target || e.target.id !== 'videoModalFile') return;
     if (e.target.__kiPassThrough) return;
@@ -429,17 +331,19 @@
     const file = e.target.files[0];
     if (!file) return;
 
-    // Save-Button sperren
-    const saveBtn = document.querySelector('#videoModalSaveBtn, button[id*="Save"], button[id*="save"]');
+    const saveBtn = document.querySelector('#videoModalSaveBtn, [id*="SaveBtn"]');
     if (saveBtn) { saveBtn.disabled = true; saveBtn.dataset.kiBlocked = '1'; }
 
     try {
-      await runKiAnalysis(file);
+      await withTimeout(runKiAnalysis(file), 60000, 'KI Gesamt');
     } catch (err) {
-      // KI fehlgeschlagen – trotzdem weiter mit Upload
+      setStatus('⚠️ KI übersprungen: ' + err.message.substring(0, 60));
+      hideStatus(4000);
+      console.error('[KI]', err);
+      const ti = document.querySelector('#videoModalTitle_Input');
+      if (ti && !ti.value) ti.value = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
     } finally {
       if (saveBtn) { saveBtn.disabled = false; delete saveBtn.dataset.kiBlocked; }
-      // Re-dispatch → panel.html uploadVideo läuft jetzt
       e.target.__kiPassThrough = true;
       e.target.dispatchEvent(new Event('change', { bubbles: true }));
       delete e.target.__kiPassThrough;
