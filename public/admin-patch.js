@@ -1,6 +1,8 @@
 // admin-patch.js — v20260421D
 (function () {
   'use strict';
+  // ── Modal-Fix CSS
+  (function(){const s=document.createElement('style');s.id='bw-patch-css';s.textContent='.modal.active .modal-content{display:block!important}';document.head.appendChild(s);})();
 
   var R2_BASE = 'https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev';
 
