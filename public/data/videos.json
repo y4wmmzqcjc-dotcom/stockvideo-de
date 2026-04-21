@@ -2515,5 +2515,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776764958124",
+    "title": "Autonomes Transportsystem mit blauer Materialbox fährt eigenständig durch ein modernes Industrielager",
+    "slug": "autonomes-transportsystem-mit-blauer-materialbox-faehrt-eigenstaendig-durch-ein-modernes-industrielager",
+    "description": "Diese Stockaufnahme zeigt ein fahrerloses Transportsystem (FTS), das eine hellblaue Kunststoffbox durch die Gänge eines weitläufigen Warenlagers befördert. Der mobile Roboter ist mit Sicherheitssensoren, Leuchtsignalen und einem Not-Aus-Schalter ausgestattet. Im Hintergrund sind ordentlich sortierte Hochregale mit Kartonagen und Paletten sichtbar. Die Kamera folgt dem autonomen Fahrzeug auf dem glatten Industrieboden, was den hohen Grad der Automatisierung und Digitalisierung in der modernen Intralogistik unterstreicht. Die Szene wirkt technologisch fortschrittlich, sauber und effizient organisiert.",
+    "category": "industrie",
+    "tags": [
+      "Roboter",
+      "Transportroboter",
+      "Fahrerloses Transportsystem",
+      "Automatisierung",
+      "Logistik",
+      "Lager",
+      "Intralogistik",
+      "Technologie",
+      "Industrie 4.0",
+      "Innovation",
+      "Warenlager",
+      "Transport",
+      "Autonom",
+      "Robotik",
+      "Lagerhalle",
+      "Fabrik",
+      "Effizienz",
+      "Modernisierung",
+      "Digitalisierung",
+      "Materialfluss",
+      "Kunststoffbox",
+      "Behälter",
+      "Sensor",
+      "Sicherheit",
+      "Not-Aus",
+      "Technik",
+      "Industrieboden",
+      "Regal",
+      "Hochregal",
+      "Karton",
+      "Verpackung",
+      "Versand",
+      "Palette",
+      "Logistikzentrum",
+      "Industrieanlage",
+      "Fortschritt",
+      "Maschinenbau",
+      "Fahrzeug",
+      "Mobile",
+      "Navigation",
+      "Steuerung",
+      "Prozess",
+      "Lagerhaltung",
+      "Warenfluss",
+      "Autonome Mobilität",
+      "Smart Factory",
+      "Arbeit",
+      "Zukunft",
+      "System"
+    ],
+    "resolution": "4K",
+    "duration": 17,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/autonomes-transportsystem-mit-blauer-materialbox-faehrt-eigenstaendig-durch-ein-.jpg",
+    "r2Key": "videos/autonomes-transportsystem-mit-blauer-materialbox-faehrt-eigenstaendig-durch-ein-.mov",
+    "r2Preview": "previews/autonomes-transportsystem-mit-blauer-materialbox-faehrt-eigenstaendig-durch-ein-.mp4",
+    "r2Hover": "previews/autonomes-transportsystem-mit-blauer-materialbox-faehrt-eigenstaendig-durch-ein--hover.mp4",
+    "videoId": "stockvideo.de-FYN0M1NH",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
