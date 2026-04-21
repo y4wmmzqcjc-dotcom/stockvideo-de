@@ -4561,5 +4561,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776777553213",
+    "title": "Regionalzug fährt auf einer zweigleisigen Bahnstrecke an Signalanlagen und grünen Hecken vorbei",
+    "slug": "regionalzug-faehrt-auf-einer-zweigleisigen-bahnstrecke-an-signalanlagen-und-gruenen-hecken-vorbei",
+    "description": "Diese Stockaufnahme zeigt einen modern gestalteten Regionalzug in Rot und Weiß, der mit erhöhter Geschwindigkeit auf einer zweigleisigen Bahnstrecke an der Kamera vorbeifährt. Die Szene ist aus einer niedrigen Perspektive hinter einer grünen Hecke gefilmt, was den Fokus auf die Dynamik der Schieneninfrastruktur lenkt. Im Hintergrund sind Oberleitungen, Eisenbahnsignale mit rotem Licht sowie eine Mischung aus Bäumen und funktionalen Randgebäuden unter einem bewölkten Himmel erkennbar. Die Aufnahme fängt den alltäglichen Schienenverkehr und die Mobilität im öffentlichen Nahverkehr in einer authentischen, europäischen Umgebung ein.",
+    "category": "transport",
+    "tags": [
+      "Regionalzug",
+      "Bahnstrecke",
+      "Schiene",
+      "Eisenbahn",
+      "Zug",
+      "Transport",
+      "Mobilität",
+      "Verkehr",
+      "Gleis",
+      "Schienenverkehr",
+      "Bahnübergang",
+      "Signal",
+      "Oberleitung",
+      "Fahrt",
+      "Geschwindigkeit",
+      "Nahverkehr",
+      "Pendeln",
+      "Reisen",
+      "Infrastruktur",
+      "Logistik",
+      "Zugfahrt",
+      "Personenzug",
+      "Triebwagen",
+      "Außenaufnahme",
+      "Tag",
+      "Bewölkt",
+      "Natur",
+      "Hecke",
+      "Gebüsch",
+      "Schotter",
+      "Gleisbett",
+      "Doppelgleis",
+      "Stromleitung",
+      "Mast",
+      "Eisenbahnsignal",
+      "Rotlicht",
+      "Transportwesen",
+      "Public Transport",
+      "Europa",
+      "Unterwegs",
+      "Ankunft",
+      "Abfahrt",
+      "Gleisanlage",
+      "Schienennetz",
+      "Verbindung",
+      "Reiseverkehr",
+      "Regionalexpress",
+      "Regionalbahn",
+      "DB"
+    ],
+    "resolution": "4K",
+    "duration": 22,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/regionalzug-faehrt-auf-einer-zweigleisigen-bahnstrecke-an-signalanlagen-und-grue.jpg",
+    "r2Key": "videos/regionalzug-faehrt-auf-einer-zweigleisigen-bahnstrecke-an-signalanlagen-und-grue.mov",
+    "r2Preview": "previews/regionalzug-faehrt-auf-einer-zweigleisigen-bahnstrecke-an-signalanlagen-und-grue.mp4",
+    "r2Hover": "previews/regionalzug-faehrt-auf-einer-zweigleisigen-bahnstrecke-an-signalanlagen-und-grue-hover.mp4",
+    "videoId": "stockvideo.de-NGES9JI3",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
