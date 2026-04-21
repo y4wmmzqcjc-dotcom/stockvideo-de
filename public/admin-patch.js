@@ -1,4 +1,4 @@
-// admin-patch.js — v20260421P
+// admin-patch.js — v20260421Q
 (function () {
   'use strict';
   // ── Modal-Fix CSS
@@ -213,148 +213,237 @@
 })();
 
 
-// v20260421P - Pipeline-Fix: KI FIRST, encoding AFTER (blocks upload until analysis done)
-(function() {
-  const MODEL_ID = "HuggingFaceTB/SmolVLM-256M-Instruct";
-  const CDN_URL = "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3/dist/transformers.min.js";
 
-  function getKiPrompt() {
-    const ca = document.querySelector("#videoModalCategory");
-    const cats = ca ? [...ca.options].filter(o => o.value).map(o => o.value).join(", ") : "";
-    return "Du analysierst ein Standbild aus einem Stockvideo. Antworte NUR mit diesem JSON (kein anderer Text):\n{\"titel\":\"kurzer deutscher Titel max 60 Zeichen\",\"beschreibung\":\"deutsche Beschreibung 1-2 Saetze\",\"keywords\":[\"keyword1\",\"keyword2\",\"keyword3\",\"keyword4\",\"keyword5\"],\"kategorie\":\"EINE aus: " + cats + "\"}";
+// v20260421Q - Gemini Flash KI: encode small video → upload → analyze → THEN pipeline
+(function () {
+  'use strict';
+
+  const GEMINI_KEY = 'AIzaSyCcexqo3u_o_YVdYQX05zSQnTTgci6wkFA';
+  const GEMINI_UPLOAD = 'https://generativelanguage.googleapis.com/upload/v1beta/files';
+  const GEMINI_GEN = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+
+  // ── Status-Toast ──────────────────────────────────────────────────────────
+  function getToast() {
+    let el = document.getElementById('ki-toast');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'ki-toast';
+      el.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1a1a2e;color:#e0e0ff;' +
+        'padding:13px 20px;border-radius:10px;z-index:99999;font-size:14px;font-family:sans-serif;' +
+        'box-shadow:0 4px 24px rgba(0,0,0,.55);display:none;max-width:320px;line-height:1.4;';
+      document.body.appendChild(el);
+    }
+    return el;
   }
+  function setStatus(msg) { const t = getToast(); t.textContent = msg; t.style.display = 'block'; }
+  function hideStatus(delay) { setTimeout(() => { getToast().style.display = 'none'; }, delay || 3000); }
 
-  function extractFrame(file) {
+  // ── 640x360 WebM encodieren (max 15s) ────────────────────────────────────
+  function encodeSmallVideo(file) {
     return new Promise((resolve, reject) => {
       const url = URL.createObjectURL(file);
-      const video = document.createElement("video");
-      video.muted = true; video.crossOrigin = "anonymous"; video.src = url;
-      video.addEventListener("loadeddata", () => { video.currentTime = Math.min(1, video.duration * 0.1); });
-      video.addEventListener("seeked", () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-        canvas.getContext("2d").drawImage(video, 0, 0);
-        URL.revokeObjectURL(url);
-        resolve(canvas.toDataURL("image/jpeg", 0.9));
+      const video = document.createElement('video');
+      video.muted = true;
+      video.src = url;
+
+      video.addEventListener('loadedmetadata', () => {
+        const capDuration = Math.min(video.duration, 15);
+        const ar = video.videoWidth / video.videoHeight;
+        const canvas = document.createElement('canvas');
+        canvas.width = 640;
+        canvas.height = Math.round(640 / (ar || 1.778));
+        const ctx = canvas.getContext('2d');
+
+        const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp8')
+          ? 'video/webm;codecs=vp8' : 'video/webm';
+        const stream = canvas.captureStream(10);
+        const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 400000 });
+        const chunks = [];
+
+        recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+        recorder.onstop = () => {
+          URL.revokeObjectURL(url);
+          resolve(new Blob(chunks, { type: 'video/webm' }));
+        };
+
+        let raf;
+        const draw = () => { ctx.drawImage(video, 0, 0, canvas.width, canvas.height); raf = requestAnimationFrame(draw); };
+
+        recorder.start(200);
+        video.currentTime = 0;
+        video.play().then(draw);
+
+        video.addEventListener('timeupdate', () => {
+          if (video.currentTime >= capDuration) {
+            cancelAnimationFrame(raf);
+            video.pause();
+            if (recorder.state !== 'inactive') recorder.stop();
+          }
+        });
+        video.addEventListener('ended', () => {
+          cancelAnimationFrame(raf);
+          if (recorder.state !== 'inactive') recorder.stop();
+        });
       });
-      video.addEventListener("error", () => { URL.revokeObjectURL(url); reject(new Error("Video nicht ladbar")); });
+
+      video.addEventListener('error', e => { URL.revokeObjectURL(url); reject(e); });
       video.load();
     });
   }
 
-  function getSaveBtn() {
-    return [...document.querySelectorAll("button")].find(b => b.textContent && b.textContent.trim().includes("Speichern"));
+  // ── Gemini Files API: Upload + warte auf ACTIVE ───────────────────────────
+  async function uploadToGemini(blob) {
+    // Resumable upload starten
+    const initRes = await fetch(GEMINI_UPLOAD + '?key=' + GEMINI_KEY, {
+      method: 'POST',
+      headers: {
+        'X-Goog-Upload-Protocol': 'resumable',
+        'X-Goog-Upload-Command': 'start',
+        'X-Goog-Upload-Header-Content-Length': blob.size,
+        'X-Goog-Upload-Header-Content-Type': 'video/webm',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ file: { display_name: 'ki-analyse.webm' } })
+    });
+    const uploadUrl = initRes.headers.get('X-Goog-Upload-URL');
+    if (!uploadUrl) throw new Error('Kein Upload-URL von Gemini');
+
+    // Datei hochladen
+    const upRes = await fetch(uploadUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Length': blob.size,
+        'X-Goog-Upload-Offset': '0',
+        'X-Goog-Upload-Command': 'upload, finalize'
+      },
+      body: blob
+    });
+    const fileData = await upRes.json();
+    const fileUri = fileData.file && fileData.file.uri;
+    const fileName = fileData.file && fileData.file.name;
+    if (!fileUri) throw new Error('Kein fileUri von Gemini: ' + JSON.stringify(fileData).substring(0, 100));
+
+    // Warte auf ACTIVE
+    for (let i = 0; i < 30; i++) {
+      await new Promise(r => setTimeout(r, 2000));
+      const sRes = await fetch('https://generativelanguage.googleapis.com/v1beta/' + fileName + '?key=' + GEMINI_KEY);
+      const s = await sRes.json();
+      if (s.state === 'ACTIVE') return fileUri;
+      if (s.state === 'FAILED') throw new Error('Gemini Videoverarbeitung fehlgeschlagen');
+    }
+    throw new Error('Timeout: Gemini Video nicht bereit');
   }
 
-  function setStatus(msg) {
-    const el = document.querySelector("#ki-status") || document.querySelector("#videoModalUploadStatus");
-    if (el) el.textContent = msg;
+  // ── Prompt ────────────────────────────────────────────────────────────────
+  function getKiPrompt() {
+    const ca = document.querySelector('#videoModalCategory');
+    const cats = ca ? [...ca.options].filter(o => o.value).map(o => o.value).join(', ') : '';
+    return 'Analysiere dieses Stockvideo. Antworte NUR mit diesem JSON-Objekt:
+' +
+      '{"titel":"Kurzer deutscher Titel max 60 Zeichen",' +
+      '"beschreibung":"Deutsche Beschreibung 1-2 Saetze was im Video zu sehen ist",' +
+      '"keywords":["keyword1","keyword2","keyword3","keyword4","keyword5"],' +
+      '"kategorie":"EINE der folgenden: ' + cats + '"}';
   }
 
-  async function runAnalysis(file) {
-    const saveBtn = getSaveBtn();
-    if (saveBtn) { saveBtn.disabled = true; saveBtn.dataset.kiBlocked = "1"; }
-    try {
-      setStatus("KI: Frame extrahieren...");
-      const frame = await extractFrame(file);
-      if (!window._kiProcessor || !window._kiModel) {
-        setStatus("KI: Modell laden (einmalig ~200 MB)...");
-        const lib = await import(CDN_URL);
-        const { AutoProcessor, AutoModelForVision2Seq, RawImage } = lib;
-        window._RawImage = RawImage;
-        const device = navigator.gpu ? "webgpu" : "wasm";
-        const dtype = device === "webgpu"
-          ? { embed_tokens: "fp16", vision_encoder: "q4", decoder_model_merged: "q4" }
-          : { embed_tokens: "fp16", vision_encoder: "fp16", decoder_model_merged: "q4" };
-        window._kiProcessor = await AutoProcessor.from_pretrained(MODEL_ID);
-        window._kiModel = await AutoModelForVision2Seq.from_pretrained(MODEL_ID, { device, dtype });
-      }
-      setStatus("KI: Bildinhalt analysieren...");
-      const processor = window._kiProcessor;
-      const model = window._kiModel;
-      const image = await window._RawImage.fromURL(frame);
-      const messages = [{ role: "user", content: [{ type: "image" }, { type: "text", text: getKiPrompt() }] }];
-      const text = processor.apply_chat_template(messages, { add_generation_prompt: true });
-      const inputs = await processor(text, [image]);
-      const outputIds = await model.generate({ ...inputs, max_new_tokens: 200, do_sample: false });
-      const raw = processor.batch_decode(outputIds, { skip_special_tokens: true })[0] || "";
-      const allJsons = [...raw.matchAll(/\{[\s\S]*?\}/g)];
-      const jsonMatch = allJsons.length ? allJsons[allJsons.length - 1] : null;
-      if (!jsonMatch) throw new Error("Kein JSON in Ausgabe: " + raw.slice(0, 200));
-      const data = JSON.parse(jsonMatch[0]);
-      const ti = document.querySelector("#videoModalTitle_Input");
-      const de = document.querySelector("#videoModalDescription");
-      const kw = document.querySelector("#videoModalTags");
-      const ca = document.querySelector("#videoModalCategory");
-      if (ti && data.titel) { ti.value = data.titel; ti.dispatchEvent(new Event("input", { bubbles: true })); }
-      if (de && data.beschreibung) { de.value = data.beschreibung; de.dispatchEvent(new Event("input", { bubbles: true })); }
-      if (kw && data.keywords) { kw.value = Array.isArray(data.keywords) ? data.keywords.join(", ") : String(data.keywords); kw.dispatchEvent(new Event("input", { bubbles: true })); }
-      if (ca && data.kategorie) {
-        const cat = String(data.kategorie).toLowerCase().trim();
-        const best = [...(ca.options || [])].find(o =>
-          o.value === cat || o.value.replace(/-/g, "") === cat ||
-          cat.replace(/-/g, "") === o.value.replace(/-/g, "") ||
-          o.textContent.toLowerCase().trim().includes(cat)
-        );
-        if (best) { ca.value = best.value; ca.dispatchEvent(new Event("change", { bubbles: true })); }
-      }
-      setStatus("KI fertig - alle Felder befuellt.");
-      return true;
-    } catch (err) {
-      console.error("KI-Analyse:", err);
-      setStatus("KI Fehler: " + err.message);
-      const ti = document.querySelector("#videoModalTitle_Input");
-      if (ti && ti.value.includes("KI")) { ti.value = ""; ti.dispatchEvent(new Event("input", { bubbles: true })); }
-      return false;
-    } finally {
-      const btn = getSaveBtn();
-      if (btn && btn.dataset.kiBlocked) { btn.disabled = false; delete btn.dataset.kiBlocked; }
+  // ── Felder befüllen ───────────────────────────────────────────────────────
+  function fillFields(data) {
+    const ti = document.querySelector('#videoModalTitle_Input');
+    const de = document.querySelector('#videoModalDescription');
+    const kw = document.querySelector('#videoModalTags');
+    const ca = document.querySelector('#videoModalCategory');
+    if (ti && data.titel)        { ti.value = data.titel;        ti.dispatchEvent(new Event('input', {bubbles:true})); }
+    if (de && data.beschreibung) { de.value = data.beschreibung; de.dispatchEvent(new Event('input', {bubbles:true})); }
+    if (kw && data.keywords)     { kw.value = Array.isArray(data.keywords) ? data.keywords.join(', ') : String(data.keywords); kw.dispatchEvent(new Event('input', {bubbles:true})); }
+    if (ca && data.kategorie) {
+      const cat = String(data.kategorie).toLowerCase().trim();
+      const best = [...(ca.options || [])].find(o =>
+        o.value === data.kategorie ||
+        o.value.toLowerCase() === cat ||
+        o.value.replace(/-/g,'') === cat.replace(/-/g,'') ||
+        o.textContent.toLowerCase().trim().includes(cat)
+      );
+      if (best) { ca.value = best.value; ca.dispatchEvent(new Event('change', {bubbles:true})); }
     }
   }
 
-  // =========================================================================
-  // CAPTURE-PHASE GATE: intercept change events on #videoModalFile BEFORE
-  // the panel.html bubble-phase listener that calls window.uploadVideo().
-  // Run KI analysis, then re-dispatch change so encoding/upload can start.
-  // =========================================================================
-  function installKiGate(input) {
-    if (!input || input.__kiGateInstalled) return;
-    input.__kiGateInstalled = true;
-    input.addEventListener("change", function(e) {
-      // If our own re-dispatch: let it through to bubble-phase uploadVideo handler
-      if (input.__kiPassThrough) {
-        input.__kiPassThrough = false;
-        return;
-      }
-      const file = input.files && input.files[0];
-      if (!file || !file.type || !file.type.startsWith("video/")) return;
-      // Block the panel.html bubble listener (and any other listeners) until KI is done.
-      e.stopImmediatePropagation();
-      e.preventDefault();
-      const ti = document.querySelector("#videoModalTitle_Input");
-      if (ti) { ti.value = "KI analysiert Inhalt bitte warten"; ti.dispatchEvent(new Event("input", { bubbles: true })); }
-      // Run analysis, then re-dispatch so uploadVideo starts ONLY after KI.
-      runAnalysis(file).then(function() {
-        if (!input.files || !input.files[0]) return;
-        input.__kiPassThrough = true;
-        // Synthetic change: bubble-phase only (our capture handler will see __kiPassThrough flag)
-        input.dispatchEvent(new Event("change", { bubbles: true }));
+  // ── Hauptfunktion ─────────────────────────────────────────────────────────
+  async function runKiAnalysis(file) {
+    try {
+      setStatus('🎬 Erstelle Analyse-Video (640x360)...');
+      const blob = await encodeSmallVideo(file);
+
+      setStatus('📤 Lade hoch (' + Math.round(blob.size / 1024) + ' KB)...');
+      const fileUri = await uploadToGemini(blob);
+
+      setStatus('🤖 Gemini analysiert Inhalt...');
+      const res = await fetch(GEMINI_GEN + '?key=' + GEMINI_KEY, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [
+            { fileData: { mimeType: 'video/webm', fileUri: fileUri } },
+            { text: getKiPrompt() }
+          ]}],
+          generationConfig: { response_mime_type: 'application/json', temperature: 0.2, maxOutputTokens: 512 }
+        })
       });
-    }, true); // capture phase - runs BEFORE document bubble-phase uploadVideo listener
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error('Gemini ' + res.status + ': ' + errText.substring(0, 120));
+      }
+
+      const result = await res.json();
+      const text = result.candidates && result.candidates[0] && result.candidates[0].content &&
+                   result.candidates[0].content.parts && result.candidates[0].content.parts[0] &&
+                   result.candidates[0].content.parts[0].text;
+      if (!text) throw new Error('Keine Antwort von Gemini');
+
+      const data = JSON.parse(text);
+      fillFields(data);
+
+      setStatus('✅ Titel & Metadaten gesetzt – Upload startet...');
+      hideStatus(2500);
+      return data;
+
+    } catch (err) {
+      setStatus('⚠️ KI-Fehler: ' + err.message);
+      hideStatus(5000);
+      console.error('[KI]', err);
+      // Fallback: leerer Titel damit Pipeline nicht blockiert
+      const ti = document.querySelector('#videoModalTitle_Input');
+      if (ti && !ti.value) ti.value = file.name.replace(/\.[^.]+$/, '');
+      throw err;
+    }
   }
 
-  function installAll() {
-    document.querySelectorAll('input[accept*="video"]').forEach(installKiGate);
-    const byId = document.getElementById("videoModalFile");
-    if (byId) installKiGate(byId);
-  }
+  // ── Capture-Phase Listener: blockiert Upload bis KI fertig ────────────────
+  document.addEventListener('change', async function (e) {
+    if (!e.target || e.target.id !== 'videoModalFile') return;
+    if (e.target.__kiPassThrough) return;
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", installAll);
-  } else {
-    installAll();
-  }
-  // Also re-install on admin modal re-render (videoModalFile can be re-rendered)
-  const mo = new MutationObserver(installAll);
-  mo.observe(document.body, { childList: true, subtree: true });
+    e.stopImmediatePropagation();
+    e.preventDefault();
+
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Save-Button sperren
+    const saveBtn = document.querySelector('#videoModalSaveBtn, button[id*="Save"], button[id*="save"]');
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.dataset.kiBlocked = '1'; }
+
+    try {
+      await runKiAnalysis(file);
+    } catch (err) {
+      // KI fehlgeschlagen – trotzdem weiter mit Upload
+    } finally {
+      if (saveBtn) { saveBtn.disabled = false; delete saveBtn.dataset.kiBlocked; }
+      // Re-dispatch → panel.html uploadVideo läuft jetzt
+      e.target.__kiPassThrough = true;
+      e.target.dispatchEvent(new Event('change', { bubbles: true }));
+      delete e.target.__kiPassThrough;
+    }
+  }, true);
+
 })();
