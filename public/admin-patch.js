@@ -1,4 +1,4 @@
-// admin-patch.js ÃÂ¢ÃÂÃÂ v20260421L
+// admin-patch.js ÃÂ¢ÃÂÃÂ v20260421M
 (function () {
   'use strict';
   // ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ Modal-Fix CSS
@@ -289,7 +289,7 @@ async function runAnalysis(file) {
     const outputIds = await model.generate({ ...inputs, max_new_tokens: 800, do_sample: false });
     const raw = processor.batch_decode(outputIds, { skip_special_tokens: true })[0] || '';
 
-    const jsonMatch = raw.match(/\{[\s\S]*?\}/);
+    const allJsons = [...raw.matchAll(/\{[\s\S]*?\}/g)]; const jsonMatch = allJsons.length ? allJsons[allJsons.length-1] : null;
     if (!jsonMatch) throw new Error('Kein JSON: ' + raw.slice(0, 120));
     const data = JSON.parse(jsonMatch[0]);
 
