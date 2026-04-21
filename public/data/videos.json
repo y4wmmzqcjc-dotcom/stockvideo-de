@@ -2679,5 +2679,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776765146787",
+    "title": "Drei Personen besprechen technische Zeichnungen einer Ausführungsplanung im Freien auf einer Baustelle",
+    "slug": "drei-personen-besprechen-technische-zeichnungen-einer-ausfuehrungsplanung-im-freien-auf-einer-baustelle",
+    "description": "Diese Stockaufnahme zeigt eine Gruppe von drei Personen in Arbeitskleidung, die gemeinsam einen großformatigen Plan betrachten. Die Kamera fokussiert in einer Nahaufnahme auf die Hände, die auf spezifische Details und farbige Markierungen der technischen Zeichnung deuten. Auf dem Dokument ist der Schriftzug „Ausführungsplanung“ sowie ein regionales Logo erkennbar. Die Szene findet draußen bei hellem Tageslicht statt, was durch die Schattenwürfe auf dem Papier deutlich wird. Die Stimmung wirkt konzentriert und kooperativ, typisch für eine Abstimmung im Bereich Bauwesen, Architektur oder Ingenieurtechnik direkt vor Ort.",
+    "category": "business",
+    "tags": [
+      "Bauplan",
+      "Ausführungsplanung",
+      "Baustelle",
+      "Ingenieur",
+      "Architekt",
+      "Besprechung",
+      "Teamarbeit",
+      "Planung",
+      "Zeichnung",
+      "Bautechnik",
+      "Tiefbau",
+      "Hände",
+      "Deuten",
+      "Finger",
+      "Arbeit",
+      "Projekt",
+      "Kooperation",
+      "Bauwesen",
+      "Handwerk",
+      "Fachkräfte",
+      "Bauleiter",
+      "Dokument",
+      "Papier",
+      "Entwurf",
+      "Konstruktion",
+      "Architektur",
+      "Projektmanagement",
+      "Baustellenbesprechung",
+      "Facharbeiter",
+      "Draußen",
+      "Tageslicht",
+      "Detailaufnahme",
+      "Nahaufnahme",
+      "Arbeitskleidung",
+      "Helm",
+      "Sicherheit",
+      "Infrastruktur",
+      "Vermessung",
+      "Planlesen",
+      "Kommunikation",
+      "Wirtschaft",
+      "Technik",
+      "Industrie",
+      "Erdarbeiten",
+      "Gemeinde",
+      "Freisen",
+      "Bauprojekt",
+      "Organisation",
+      "Strategie"
+    ],
+    "resolution": "4K",
+    "duration": 8,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/drei-personen-besprechen-technische-zeichnungen-einer-ausfuehrungsplanung-im-fre.jpg",
+    "r2Key": "videos/drei-personen-besprechen-technische-zeichnungen-einer-ausfuehrungsplanung-im-fre.mov",
+    "r2Preview": "previews/drei-personen-besprechen-technische-zeichnungen-einer-ausfuehrungsplanung-im-fre.mp4",
+    "r2Hover": "previews/drei-personen-besprechen-technische-zeichnungen-einer-ausfuehrungsplanung-im-fre-hover.mp4",
+    "videoId": "stockvideo.de-G2Y1SOCZ",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
