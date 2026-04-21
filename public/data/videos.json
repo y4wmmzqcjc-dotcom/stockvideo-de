@@ -4069,5 +4069,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776768127509",
+    "title": "Industrielle Brennschneidmaschine im Einsatz beim thermischen Trennen einer Metallplatte mit hellem Lichtbogen",
+    "slug": "industrielle-brennschneidmaschine-im-einsatz-beim-thermischen-trennen-einer-metallplatte-mit-hellem-lichtbogen",
+    "description": "Diese Stockaufnahme zeigt eine automatisierte Brennschneidmaschine in einer Industriehalle bei der präzisen Bearbeitung einer Metallplatte. In der Nahaufnahme ist der Schneidkopf zu sehen, der durch eine intensive, helle Flamme und einen starken Lichtbogen das Material durchtrennt, wobei glühende Funken zur Seite sprühen. Im Vordergrund ist ein Teil der Steuerungseinheit mit einer grünen Kontrollleuchte erkennbar, während der Hintergrund die Silhouette der Werkshalle andeutet. Die Aufnahme fängt die technische Dynamik und die Hitzeentwicklung des industriellen Fertigungsprozesses in einer sachlichen und professionellen Umgebung ein.",
+    "category": "industrie",
+    "tags": [
+      "Brennschneiden",
+      "Metallbearbeitung",
+      "Industrie",
+      "Maschine",
+      "Lichtbogen",
+      "Funkenflug",
+      "Stahl",
+      "Fertigung",
+      "CNC",
+      "Technik",
+      "Schneidkopf",
+      "Werkstatt",
+      "Produktion",
+      "Hitze",
+      "Metall",
+      "Trennen",
+      "Automatisierung",
+      "Fabrik",
+      "Industriehalle",
+      "Flamme",
+      "Präzision",
+      "Metallbau",
+      "Werkstück",
+      "Technologie",
+      "Prozess",
+      "Anlage",
+      "Maschinenbau",
+      "Stahlbau",
+      "Glühen",
+      "Bearbeitung",
+      "Handwerk",
+      "Bauteil",
+      "Schweißen",
+      "Plasma",
+      "Werkstoff",
+      "Konstruktion",
+      "Kontrolle",
+      "System",
+      "Hardware",
+      "Mechanik",
+      "Werkzeug",
+      "Schwerindustrie",
+      "Arbeitsplatz",
+      "Lichteffekt",
+      "Funke",
+      "Schiene",
+      "Kraft",
+      "Energie",
+      "Spezialmaschine"
+    ],
+    "resolution": "4K",
+    "duration": 8,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/industrielle-brennschneidmaschine-im-einsatz-beim-thermischen-trennen-einer-meta.jpg",
+    "r2Key": "videos/industrielle-brennschneidmaschine-im-einsatz-beim-thermischen-trennen-einer-meta.mov",
+    "r2Preview": "previews/industrielle-brennschneidmaschine-im-einsatz-beim-thermischen-trennen-einer-meta.mp4",
+    "r2Hover": "previews/industrielle-brennschneidmaschine-im-einsatz-beim-thermischen-trennen-einer-meta-hover.mp4",
+    "videoId": "stockvideo.de-HUQTTUZP",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
