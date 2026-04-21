@@ -3987,5 +3987,87 @@
         "position": 100
       }
     ]
+  },
+  {
+    "id": "1776767982091",
+    "title": "Automatisierte Brennschneidmaschine schneidet eine dicke Stahlplatte in einer Industriehalle mit hellem Funkenflug",
+    "slug": "automatisierte-brennschneidmaschine-schneidet-eine-dicke-stahlplatte-in-einer-industriehalle-mit-hellem-funkenflug",
+    "description": "Diese Stockaufnahme zeigt ein automatisiertes CNC-Brennschneidsystem bei der Bearbeitung einer massiven Metallplatte in einer großen Fabrikhalle. Der Schneidkopf bewegt sich präzise entlang einer Schiene, während eine heiße Flamme den Stahl durchtrennt und glühende Funken sowie Schlacke nach unten auswirft. Im Hintergrund ist die weitläufige, industrielle Umgebung mit weiteren Metalllagern und technischen Anlagen erkennbar. Die Szene vermittelt einen Eindruck von moderner Schwerindustrie und automatisierter Fertigungstechnik unter neutralen, sachlichen Lichtverhältnissen, wobei der Fokus auf dem thermischen Trennprozess liegt.",
+    "category": "industrie",
+    "tags": [
+      "Brennschneiden",
+      "Stahlplatte",
+      "Metallbearbeitung",
+      "CNC",
+      "Industrie",
+      "Maschine",
+      "Fabrik",
+      "Fertigung",
+      "Schneidbrenner",
+      "Funkenflug",
+      "Stahl",
+      "Automatisierung",
+      "Technik",
+      "Schwerindustrie",
+      "Metall",
+      "Trennen",
+      "Flamme",
+      "Industriehalle",
+      "Produktion",
+      "Maschinenbau",
+      "Werkstück",
+      "Hitze",
+      "Bearbeitung",
+      "Anlage",
+      "Prozess",
+      "Präzision",
+      "Werkstoff",
+      "Konstruktion",
+      "Schiene",
+      "Handwerk",
+      "Laserstrahl",
+      "Plasma",
+      "Schlacke",
+      "Metallbau",
+      "Werkstatt",
+      "Technologie",
+      "System",
+      "Hardware",
+      "Bauteil",
+      "Massiv",
+      "Industrieanlage",
+      "Arbeit",
+      "Mechanik",
+      "Gleis",
+      "Lagerhalle",
+      "Material",
+      "Hitzeeinwirkung",
+      "Werkzeug",
+      "Stahlbau"
+    ],
+    "resolution": "4K",
+    "duration": 7,
+    "fps": 25,
+    "prices": {
+      "web": 19.99,
+      "standard": 19.99,
+      "premium": 19.99
+    },
+    "thumbnail": "https://pub-03757a2d41d2442dabdeaa0a62f5d1ad.r2.dev/thumbs/automatisierte-brennschneidmaschine-schneidet-eine-dicke-stahlplatte-in-einer-in.jpg",
+    "r2Key": "videos/automatisierte-brennschneidmaschine-schneidet-eine-dicke-stahlplatte-in-einer-in.mov",
+    "r2Preview": "previews/automatisierte-brennschneidmaschine-schneidet-eine-dicke-stahlplatte-in-einer-in.mp4",
+    "r2Hover": "previews/automatisierte-brennschneidmaschine-schneidet-eine-dicke-stahlplatte-in-einer-in-hover.mp4",
+    "videoId": "stockvideo.de-HRNMZ1FA",
+    "featured": false,
+    "gradient": [
+      {
+        "color": "#1473e6",
+        "position": 0
+      },
+      {
+        "color": "#0d5fcf",
+        "position": 100
+      }
+    ]
   }
 ]
